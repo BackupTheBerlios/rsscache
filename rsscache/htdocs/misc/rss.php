@@ -1,0 +1,167 @@
+<?php
+if (!defined ('MISC_RSS_PHP'))
+{
+define ('MISC_RSS_PHP', 1);
+
+
+function
+generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_desc_array)
+{
+  $version = 2; // RSS2.0
+
+  $p = '';
+  $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+
+  if ($version == 1)
+    $p .= '<rdf:RDF xmlns="http://purl.org/rss/1.0/">'."\n";
+  else
+    $p .= '<rss version="2.0">'."\n";
+
+  $p .= '  <channel>'."\n"
+       .'    <title>'
+       .$title
+       .'</title>'."\n"
+       .'    <link>'
+       .$link
+       .'</link>'."\n"
+       .'    <description>'
+       .$desc
+       .'</description>'."\n"
+//     .'    <dc:date>%ld</dc:date>'
+;
+
+  $i_max = sizeof ($item_title_array);
+  if ($version == 1)
+    {
+      $p .= '<items>'."\n"
+           .'<rdf:Seq>'."\n";
+
+      for ($i = 0; $i < $i_max; $i++)
+        $p .= "\n".'        <rdf:li rdf:resource="'
+             .htmlspecialchars ($item_link_array[$i], ENT_QUOTES)
+             .'"/>';
+
+      $p .= '</rdf:Seq>'."\n"
+           .'</items>'."\n"
+           .'</channel>'."\n";
+    }
+
+  for ($i = 0; $i < $i_max; $i++)
+    {
+      if ($version == 1)
+        $p .= '<item rdf:about="'
+             .$item_link_array[$i]
+             .'">'."\n";
+      else
+        $p .= '    <item>'."\n";
+
+      $p .= '      <title>'
+           .htmlspecialchars ($item_title_array[$i], ENT_QUOTES)
+           .'</title>'."\n"
+           .'      <link>'
+           .htmlspecialchars ($item_link_array[$i], ENT_QUOTES)
+           .'</link>'."\n"
+           .'      <description>'
+           .htmlspecialchars ($item_desc_array[$i], ENT_QUOTES)
+           .'</description>'."\n"
+           .'      <pubDate>'
+           .strftime ("%Y%m%d %H:%M:%S", time ())
+           .'</pubDate>'."\n"
+           .'    </item>'."\n";
+    }
+
+  if ($version == 2)
+    $p .= '  </channel>'."\n";
+
+  $p .= '</rss>'."\n";
+
+  return $p;
+}
+
+
+function
+rsstool_table_insert ($db, $url, $title, $desc, $site, $dl_url, $date, $dl_date)
+{
+  $p = sprintf ("INSERT INTO `rsstool_table` ("
+      ." `rsstool_url`, `rsstool_url_md5`, `rsstool_url_crc32`,"
+      ." `rsstool_dl_url`, `rsstool_dl_url_md5`, `rsstool_dl_url_crc32`,"
+      ." `rsstool_title`, `rsstool_title_md5`, `rsstool_title_crc32`,"
+      ." `rsstool_site`, `rsstool_desc`, `rsstool_date`, `rsstool_dl_date`) VALUES ('"
+      .$db->sql_stresc ($url)
+      ."', '"
+      .$db->sql_stresc (md5 ($url))
+      ."', %u, '"
+      .$db->sql_stresc ($dl_url)
+      ."', '"
+      .$db->sql_stresc (md5 ($dl_url))
+      ."', %u, '"
+      .$db->sql_stresc ($title)
+      ."', '"
+      .$db->sql_stresc (md5 ($title))
+      ."', %u, '"
+      .$db->sql_stresc ($site)
+      ."', '"
+      .$db->sql_stresc ($desc)
+      ."', '"
+      .$db->sql_stresc ($date)
+      ."', '"
+      .$db->sql_stresc ($dl_date)
+      ."');", $db->sql_stresc (crc32 ($url)),
+              $db->sql_stresc (crc32 ($dl_url)),
+              $db->sql_stresc (crc32 ($title)));
+
+  $db->sql_write ($p, 1);
+}
+
+
+function
+rss_to_array ($tag, $array, $url)
+{
+  $doc = new DOMdocument();
+  $doc->load($url);
+
+  $rss_array = array();
+  $items = array();
+
+  foreach($doc->getElementsByTagName($tag) AS $node)
+    {
+      foreach($array AS $key => $value)
+        {
+          $items[$value] = $node->getElementsByTagName($value)->item(0)->nodeValue;
+        }
+      array_push($rss_array, $items);
+    }
+
+  return $rss_array;
+}
+
+
+function
+parse_rss_from_url ($rss_url)
+{
+  $rss_tags = array(
+    'title',
+    'link',
+    'guid',
+    'comments',
+    'description',
+    'pubDate',
+    'category',
+  );
+  $rss_item_tag = 'item';
+    
+  $rssfeed = rss_to_array($rss_item_tag, $rss_tags, $rss_url);
+    
+  return $rssfeed;
+}
+
+
+function
+parse_rss_from_file ($rss_file)
+{
+}
+
+
+}
+
+?>
