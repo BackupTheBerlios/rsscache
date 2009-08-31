@@ -4,20 +4,20 @@ $pwnoogle_name = 'pwnoogle \:D/';
 $pwnoogle_title = 'Upload, Download, and watch Demos and Videos of Games';
 
 
-$demo2video_root = dirname(__FILE__);
-$demo2video_download = "files";
-$demo2video_link = "http://pwnoogle.com:81";
-$demo2video_lock = "demo2video_convert.lock";
+$pwnoogle_root = dirname(__FILE__);
+$pwnoogle_download = "files";
+$pwnoogle_link = "http://pwnoogle.com:81";
+//$pwnoogle_lock = "pwnoogle_convert.lock";
 
-$demo2video_player_w = 320;
-$demo2video_player_h = 240;
-$demo2video_isnew = 3600 * 6;
-$demo2video_results = 10;
+$pwnoogle_player_w = 320;
+$pwnoogle_player_h = 240;
+$pwnoogle_isnew = 3600 * 6;
+$pwnoogle_results = 10;
 
-$demo2video_dbname = "jack";
-$demo2video_dbuser = "jack";
-$demo2video_dbpass = "poopoo";
-$demo2video_dbhost = "localhost";
+$pwnoogle_dbname = "jack";
+$pwnoogle_dbuser = "jack";
+$pwnoogle_dbpass = "poopoo";
+$pwnoogle_dbhost = "localhost";
 
 // method used for requests
 //$method = "GET";

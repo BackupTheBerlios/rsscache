@@ -6,8 +6,8 @@ require_once ('config.php');
 require_once ('misc/misc.php');
 require_once ('idtech3.php');
 require_once ('misc/widget.php');
-require_once ('demo2video_output.php');
-require_once ('demo2video_misc.php');
+require_once ('pwnoogle_output.php');
+require_once ('pwnoogle_misc.php');
 
 if ($use_gzip)
   ob_start ('ob_gzhandler'); // enable gzip
@@ -16,12 +16,12 @@ $t_ms = time_ms ();
 
 
 function
-demo2video ()
+pwnoogle ()
 {
-  global $demo2video_root,
-         $demo2video_lock,
-         $demo2video_results,
-         $demo2video_isnew,
+  global $pwnoogle_root,
+//         $pwnoogle_lock,
+         $pwnoogle_results,
+         $pwnoogle_isnew,
          $pwnoogle_name;
 
   $other = get_request_value ('other'); // show other video flag
@@ -38,7 +38,7 @@ demo2video ()
     $start = 0;
   $num = get_request_value ('num'); // number of results
   if (!($num))
-    $num = $demo2video_results;
+    $num = $pwnoogle_results;
 
   $player_name = get_request_value ('player_name'); // index
 
@@ -55,7 +55,7 @@ demo2video ()
   $latest_visit = get_request_value ('latest_visit');
   if (!($latest_visit))
     $last_visit = $latest_visit = time ();
-  else if ($latest_visit < time () - $demo2video_isnew)
+  else if ($latest_visit < time () - $pwnoogle_isnew)
     $last_visit = $latest_visit;
 */
 
@@ -77,17 +77,19 @@ demo2video ()
 
   $config = config_xml ();
 
+/*
   // get progress of conversion
   $progress = NULL;
   $lock = NULL;
-  if (file_exists ($demo2video_root.'/'.$demo2video_lock))
-    $lock = fopen ($demo2video_root.'/'.$demo2video_lock, 'r');
+  if (file_exists ($pwnoogle_root.'/'.$pwnoogle_lock))
+    $lock = fopen ($pwnoogle_root.'/'.$pwnoogle_lock, 'r');
   if ($lock)
     {
       $progress = fgets ($lock);
       fclose ($lock);
       $progress = trim ($progress);
     }
+*/
 
   $p = '<table border="0" cellpadding="0" cellspacing="0"><tr>';
 
@@ -98,10 +100,10 @@ demo2video ()
 //  else
       {
         if ($other == NULL)
-          $p .= demo2video_button_array ($config, $other, '%s&nbsp;', 0, (int) sizeof ($config->category));
+          $p .= pwnoogle_button_array ($config, $other, '%s&nbsp;', 0, (int) sizeof ($config->category));
         else
           // print 1st half of icons
-          $p .= demo2video_button_array ($config, $other, '%s&nbsp;', 0, (int) ceil (sizeof ($config->category) * 0.5) + 2);
+          $p .= pwnoogle_button_array ($config, $other, '%s&nbsp;', 0, (int) ceil (sizeof ($config->category) * 0.5) + 2);
       }
 
   $p .= '</center></td><td valign="top">';
@@ -129,7 +131,7 @@ demo2video ()
         .' <img src="images/2.png" border="0"> Wait'
         .' <img src="images/3.png" border="0"> Watch Demo Online'
         .'<br><nobr>'
-        .widget_upload ($demo2video_root.'/incoming/', 10000000, NULL, NULL,
+        .widget_upload ($pwnoogle_root.'/incoming/', 10000000, NULL, NULL,
                         'Thank you! The demo was uploaded successfully<br>'
                        .'It will be available for download within the next 1-2 minutes<br>'
 //                       .'Converting it to a flash movie will take a little longer though'
@@ -162,7 +164,7 @@ demo2video ()
            .($config->category[$i]->name == $c ? ' selected' : '')
            .' style="background-image:url('
            .'gsdata/logos/'
-           .demo2video_normalize ($config->category[$i]->name)
+           .pwnoogle_normalize ($config->category[$i]->name)
            .'_trans16.png'
            .');background-repeat:no-repeat;background-position:bottom left;padding-left:18px;"'
            .'>'
@@ -188,7 +190,7 @@ demo2video ()
       .'</span>'
       .'</form>&nbsp;</nobr>';
 
-//  $p .= '<br>'.demo2video_button_array ($config, $other, '&nbsp;%s', (int) ceil ($i * 0.5), 8);
+//  $p .= '<br>'.pwnoogle_button_array ($config, $other, '&nbsp;%s', (int) ceil ($i * 0.5), 8);
 
   $p .= '</td>';
 
@@ -199,7 +201,7 @@ demo2video ()
 
       // print 2nd half of icons
       $i = sizeof ($config->category);
-      $p .= demo2video_button_array ($config, $other, '&nbsp;%s', (int) ceil ($i * 0.5) + 2, $i - (int) ceil ($i * 0.5));
+      $p .= pwnoogle_button_array ($config, $other, '&nbsp;%s', (int) ceil ($i * 0.5) + 2, $i - (int) ceil ($i * 0.5));
 
       $p .= '</center></td>';
     }
@@ -208,20 +210,20 @@ demo2video ()
 ;
 
   // use XML
-//  echo widget_index ($demo2video_root.'/xml/', 0, '.xml', demo2video_index_func);
+//  echo widget_index ($pwnoogle_root.'/xml/', 0, '.xml', pwnoogle_index_func);
 //exit;
 
   // use SQL
   if ($v)
-    $d_array = demo2video_sql ($other, NULL, NULL, $f, $v, 0, 0, 0);
+    $d_array = pwnoogle_sql ($other, NULL, NULL, $f, $v, 0, 0, 0);
   else
-    $d_array = demo2video_sql ($other, $c, $q, $f, NULL, $start, $num ? $num : 0);
+    $d_array = pwnoogle_sql ($other, $c, $q, $f, NULL, $start, $num ? $num : 0);
 
   if (!($v))
     {
       $p .= '<br>';
 
-      $s = demo2video_page ($start, $num, sizeof ($d_array));
+      $s = pwnoogle_page ($start, $num, sizeof ($d_array));
       if ($s)
         {
           // left play all button
@@ -250,7 +252,7 @@ demo2video ()
 
   if ($v)
     {
-      $p .= demo2video_output_html ($d_array[0], 1, 0, 0); // 1 == player
+      $p .= pwnoogle_output_html ($d_array[0], 1, 0, 0); // 1 == player
     }
   else
     {
@@ -262,7 +264,7 @@ demo2video ()
           if ($i > 0)
             echo '</tr><tr>';
 
-          echo demo2video_output_html ($d_array[$i], 0, $start, $num ? $num : 0); // 0 == no player
+          echo pwnoogle_output_html ($d_array[$i], 0, $start, $num ? $num : 0); // 0 == no player
         }
     }
 
@@ -270,7 +272,7 @@ demo2video ()
 
   if (!($v))
     {
-      $s = demo2video_page ($start, $num, sizeof ($d_array));
+      $s = pwnoogle_page ($start, $num, sizeof ($d_array));
       if ($s)
         $p .= '<br>'.$s;
     }
@@ -294,11 +296,11 @@ if ($f == 'rss')
     $start = 0;
   $num = get_request_value ('num'); // number of results
   if (!($num))
-    $num = $demo2video_results;
+    $num = $pwnoogle_results;
 
     // use SQL
-    $d_array = demo2video_sql ($other, $c, $q, $f, NULL, $start, $num);
-    demo2video_output_rss ($d_array);
+    $d_array = pwnoogle_sql ($other, $c, $q, $f, NULL, $start, $num);
+    pwnoogle_output_rss ($d_array);
     exit;
   }
 
@@ -372,11 +374,11 @@ function toggleLights (lightsOff)
 
 ?>"><center><?php
 
-echo demo2video ();
+echo pwnoogle ();
 
 ?><br><br><br></center><?php
 
-echo widget_relate ($pwnoogle_name, misc_getlink ($demo2video_link, array (), true), NULL, 0, WIDGET_RELATE_ALL);
+echo widget_relate ($pwnoogle_name, misc_getlink ($pwnoogle_link, array (), true), NULL, 0, WIDGET_RELATE_ALL);
 
 //echo time_ms () - $t_ms;
 
