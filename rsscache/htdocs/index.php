@@ -24,7 +24,8 @@ pwnoogle ()
          $pwnoogle_isnew,
          $pwnoogle_name;
 
-  $other = get_request_value ('other'); // show other video flag
+//  $other = get_request_value ('other'); // show other video flag
+  $other = 'on';
 
   $c = get_request_value ('c'); // category
   $q = get_request_value ('q'); // search query
@@ -114,6 +115,7 @@ pwnoogle ()
 
   $p .= '<font style="font-size:16px;font-family:sans;color:#000;"><b>'.$pwnoogle_name.'</b></font><br><br>';
 
+/*
   if (!($player_name))
     $p .= ''
          .'<img src="images/1.png" border="0"> Enter Player Name'
@@ -140,7 +142,9 @@ pwnoogle ()
                        .misc_getlink ('', array (), true)
                        .'"><b>Ok</b></a>')
         .'</nobr><br>'
-        .'<span style="color:#bbb;">Supported: dm3 ' /* dm_43 dm_45 dm_46 */ .'dm_48 dm_66 dm_67 dm_68 dm_73</span>'
+        .'<span style="color:#bbb;">Supported: dm3 '
+//        .'dm_43 dm_45 dm_46 '
+        .'dm_48 dm_66 dm_67 dm_68 dm_73</span>'
         .'<br>'
 ;
 
@@ -150,9 +154,11 @@ pwnoogle ()
              .$progress
              ."</span><br>\n";
     }
+*/
 
-  $p .= 'Search Demo/Video:<br><nobr>'
-       .'<form method="GET" action="'
+//  $p .= 'Search Demo/Video:<br><nobr>';
+  $p .= 'Search Video:<br><nobr>';
+  $p .= '<form method="GET" action="'
        .$_SERVER['PHP_SELF']
        .'" style="display:inline;">'
        .'<select name="c">';
@@ -179,14 +185,14 @@ pwnoogle ()
       .'<input type="submit" value="Search">'
       .'<br>'
       .'<span style="color:#bbb;">'
-      .'Demos: '
-      .get_num_demos (NULL)
+//      .'Demos: '
+//      .get_num_demos (NULL)
       .' Videos: '
       .get_num_videos (NULL)
 //      .' Players: 0'
-      .' Other Videos:<input type="checkbox" name="other"'
-      .($other ? ' checked' : '')
-      .' onclick="form.submit();">'
+//      .' Other Videos:<input type="checkbox" name="other"'
+//      .($other ? ' checked' : '')
+//      .' onclick="form.submit();">'
       .'</span>'
       .'</form>&nbsp;</nobr>';
 
