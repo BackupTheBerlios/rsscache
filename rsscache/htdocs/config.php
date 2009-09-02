@@ -1,7 +1,8 @@
 <?php
 
-$pwnoogle_name = 'pwnoogle \:D/';
-$pwnoogle_title = 'Upload, Download, and watch Demos and Videos of Games';
+$pwnoogle_name = 'pwnoogle \:D/ (Preview)';
+//$pwnoogle_title = 'Upload, Download, and watch Demos and Videos of Games';
+$pwnoogle_title = 'Television makes living so easy';
 
 
 $pwnoogle_root = dirname(__FILE__);
