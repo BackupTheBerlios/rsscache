@@ -3,7 +3,7 @@
 //error_reporting(E_ALL | E_STRICT);
 
 
-require_once ("pwnoogle.php");
+require_once ("tv2.php");
 
 
 ?>

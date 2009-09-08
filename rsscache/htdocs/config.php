@@ -1,24 +1,23 @@
 <?php
 
-$pwnoogle_name = 'pwnoogle \:D/ (Preview)';
-//$pwnoogle_title = 'Upload, Download, and watch Demos and Videos of Games';
-$pwnoogle_title = 'Television makes living so easy';
+$tv2_name = 'pwnoogle \:D/ (Preview)';
+//$tv2_title = 'Upload, Download, and watch Demos and Videos of Games';
+$tv2_title = 'Television makes living so easy';
 
 
-$pwnoogle_root = dirname(__FILE__);
-$pwnoogle_download = "files";
-$pwnoogle_link = "http://pwnoogle.com:81";
-//$pwnoogle_lock = "pwnoogle_convert.lock";
+$tv2_root = dirname(__FILE__);
+$tv2_download = "files";
+$tv2_link = "http://pwnoogle.com:81";
 
-$pwnoogle_player_w = 320;
-$pwnoogle_player_h = 240;
-$pwnoogle_isnew = 3600 * 6;
-$pwnoogle_results = 10;
+$tv2_player_w = 320;
+$tv2_player_h = 240;
+$tv2_isnew = 3600 * 6;
+$tv2_results = 10;
 
-$pwnoogle_dbname = "jack";
-$pwnoogle_dbuser = "jack";
-$pwnoogle_dbpass = "poopoo";
-$pwnoogle_dbhost = "localhost";
+$tv2_dbname = "jack";
+$tv2_dbuser = "jack";
+$tv2_dbpass = "poopoo";
+$tv2_dbhost = "localhost";
 
 // method used for requests
 //$method = "GET";
