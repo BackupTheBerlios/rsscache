@@ -6,31 +6,31 @@ $tv2_title = 'Television makes living so easy';
 
 
 $tv2_root = dirname(__FILE__);
-$tv2_download = "files";
-$tv2_link = "http://pwnoogle.com:81";
+$tv2_download = 'files';
+$tv2_link = 'http://pwnoogle.com';
 
 $tv2_player_w = 320;
 $tv2_player_h = 240;
 $tv2_isnew = 3600 * 6;
 $tv2_results = 10;
 
-$tv2_dbname = "jack";
-$tv2_dbuser = "jack";
-$tv2_dbpass = "poopoo";
-$tv2_dbhost = "localhost";
+$tv2_dbname = 'jack';
+$tv2_dbuser = 'jack';
+$tv2_dbpass = 'poopoo';
+$tv2_dbhost = 'localhost';
 
 // method used for requests
-//$method = "GET";
+//$method = 'GET';
 
 // compression on/off
 $use_gzip = 1;
 
 // localization
-//$charset = "utf-8";
-//$title_s = "Portal";
-//$search_s = "Search";
-//$search_exact_s = "Search for exact phrase";
-//$search_desc_s = "Search in descriptions";
+//$charset = 'utf-8';
+//$title_s = 'Portal';
+//$search_s = 'Search';
+//$search_exact_s = 'Search for exact phrase';
+//$search_desc_s = 'Search in descriptions';
 
 // misc
 //$search_desc = 0;
