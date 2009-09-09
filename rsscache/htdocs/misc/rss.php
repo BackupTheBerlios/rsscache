@@ -89,15 +89,15 @@ rsstool_table_insert ($db, $url, $title, $desc, $site, $dl_url, $date, $dl_date)
       ." `rsstool_site`, `rsstool_desc`, `rsstool_date`, `rsstool_dl_date`) VALUES ('"
       .$db->sql_stresc ($url)
       ."', '"
-      .$db->sql_stresc (md5 ($url))
+      .md5 ($url, FALSE)
       ."', %u, '"
       .$db->sql_stresc ($dl_url)
       ."', '"
-      .$db->sql_stresc (md5 ($dl_url))
+      .md5 ($dl_url, FALSE)
       ."', %u, '"
       .$db->sql_stresc ($title)
       ."', '"
-      .$db->sql_stresc (md5 ($title))
+      .md5 ($title, FALSE)
       ."', %u, '"
       .$db->sql_stresc ($site)
       ."', '"
@@ -106,11 +106,12 @@ rsstool_table_insert ($db, $url, $title, $desc, $site, $dl_url, $date, $dl_date)
       .$db->sql_stresc ($date)
       ."', '"
       .$db->sql_stresc ($dl_date)
-      ."');", $db->sql_stresc (crc32 ($url)),
-              $db->sql_stresc (crc32 ($dl_url)),
-              $db->sql_stresc (crc32 ($title)));
+      ."');", crc32 ($url),
+              crc32 ($dl_url),
+              crc32 ($title));
 
-  $db->sql_write ($p, 1);
+  $db->sql_write ($p, 0);
+// return $p;
 }
 
 
