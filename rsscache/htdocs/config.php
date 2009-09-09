@@ -2,7 +2,7 @@
 
 $tv2_name = 'pwnoogle \:D/ (Preview)';
 //$tv2_title = 'Upload, Download, and watch Demos and Videos of Games';
-$tv2_title = 'Television makes living so easy';
+$tv2_title = 'like TV but cool';
 
 
 $tv2_root = dirname(__FILE__);
