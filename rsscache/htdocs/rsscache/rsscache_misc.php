@@ -19,7 +19,8 @@ get_num_demos ($game_name)
   $db->sql_open ($tv2_dbhost,
                  $tv2_dbuser,
                  $tv2_dbpass,
-                 $tv2_dbname);
+                 $tv2_dbname,
+                 1); // use cache
 
   $sql_statement = 'SELECT COUNT(*) FROM qdemos_demo_table WHERE qdemos_map NOT LIKE \'\''
                   .($game_name ? ' AND qdemos_game_name LIKE \''.$game_name.'\'' : '')
