@@ -3,16 +3,53 @@ header ('Content-type: text/html; charset=utf-8');
 //phpinfo();
 //error_reporting(E_ALL | E_STRICT);
 require_once ('config.php');
+
+
+if ($use_gzip == 1)
+  {
+    if (strpos ($HTTP_ACCEPT_ENCODING, 'x-gzip') !== false)
+      {
+        header ('Content-Encoding: x-gzip');
+        print ("\x1f\x8b\x08\x00\x00\x00\x00\x00");
+      }
+    else if (strpos ($HTTP_ACCEPT_ENCODING, 'gzip') !== false)
+      {
+        header ('Content-Encoding: gzip');
+        print ("\x1f\x8b\x08\x00\x00\x00\x00\x00");
+      }
+    else $use_gzip = 0;
+  }
+
+
+if ($use_memcache == 1)
+  {
+    $memcache = new Memcache;
+    $memcache->connect ('localhost', 11211) or die ("memcache: could not connect");
+    $use_memcache = 1;
+
+    // data from the cache
+    $p = unserialize ($memcache->get (md5 ($_SERVER['QUERY_STRING'])));
+
+    if ($p)
+      {
+        // DEBUG
+//        echo 'cached';
+
+        echo $p;
+
+        exit;
+     }
+  }
+
+
 require_once ('misc/misc.php');
 require_once ('idtech3.php');
 require_once ('misc/widget.php');
 require_once ('tv2_output.php');
 require_once ('tv2_misc.php');
 
-if ($use_gzip)
-  ob_start ('ob_gzhandler'); // enable gzip
 
-$t_ms = time_ms ();
+//$t_ms = time_ms ();
 
 
 function
@@ -264,15 +301,12 @@ tv2 ()
     }
   else
     {
-      echo $p;
-      $p = '';
-
       for ($i = 0; $d_array[$i]; $i++)
         {
           if ($i > 0)
-            echo '</tr><tr>';
+            $p .= '</tr><tr>';
 
-          echo tv2_output_html ($d_array[$i], 0, $start, $num ? $num : 0); // 0 == no player
+          $p .= tv2_output_html ($d_array[$i], 0, $start, $num ? $num : 0); // 0 == no player
         }
     }
 
@@ -313,9 +347,11 @@ if ($f == 'rss')
   }
 
 
-?><html>
+  $head = '<html>
 <head>
-<title><?php echo $tv2_name.' - '.$tv2_title; ?></title>
+<title>'
+.$tv2_name.' - '.$tv2_title
+.'</title>
 <!--link href="http://q3eu.com/jack.css" rel="stylesheet" type="text/css"-->
 <style type="text/css">
 
@@ -355,7 +391,7 @@ body.watch-lights-off {
 function pageScroll ()
 {
   window.scrollBy (0,150);
-  scrolldelay = setTimeout ('pageScroll()', 100);
+  scrolldelay = setTimeout (\'pageScroll()\', 100);
 }
 
 
@@ -363,11 +399,11 @@ function toggleLights (lightsOff)
 {
   if (lightsOff)
     {
-      addClass(document.body, 'watch-lights-off');
+      addClass(document.body, \'watch-lights-off\');
     }
   else
     {
-      removeClass(document.body, 'watch-lights-off');
+      removeClass(document.body, \'watch-lights-off\');
     }
 }
 
@@ -375,24 +411,37 @@ function toggleLights (lightsOff)
 </script>
 </head>
 <!-- body onLoad="pageScroll()" -->
-<body style="font-family:monospace;<?php
+<body style="font-family:monospace;'
+//.($v ? 'opacity:0.6;' : '')
+.'"><center>';
 
-//$v = get_request_value ('v'); // game filter
-//echo $v ? 'opacity:0.6;' : '';
 
-?>"><center><?php
+$end = '<br><br><br></center>'
+      .widget_relate ($tv2_name, misc_getlink ($tv2_link, array (), true), NULL, 0, WIDGET_RELATE_ALL)
+//      .time_ms () - $t_ms
+      .'</body></html>';
 
-echo tv2 ();
 
-?><br><br><br></center><?php
+$body = tv2 ();
 
-echo widget_relate ($tv2_name, misc_getlink ($tv2_link, array (), true), NULL, 0, WIDGET_RELATE_ALL);
 
-//echo time_ms () - $t_ms;
+// the _only_ echo
+$p = $head.$body.$end;
 
-?></body></html><?php
+if ($use_gzip == 1)
+  {
+    $size = strlen ($p);
+    $p = gzcompress ($p, 9);
+    $p = substr ($p, 0, $size);
+    print ($p);
+  }
+else echo $p;
 
-if ($use_gzip)
-  ob_end_flush ();
+// use memcache
+if ($use_memcache == 1)
+  {
+    $memcache->set (md5 ($_SERVER['QUERY_STRING']), serialize ($p))
+      or die ("memcache: failed to save data at the server");
+  }
 
 ?>

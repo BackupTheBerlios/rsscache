@@ -24,6 +24,8 @@ $tv2_dbhost = 'localhost';
 
 // compression on/off
 $use_gzip = 1;
+// memcache on/off
+$use_memcache = 0;
 
 // localization
 //$charset = 'utf-8';

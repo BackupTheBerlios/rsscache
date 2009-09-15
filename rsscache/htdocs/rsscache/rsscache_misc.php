@@ -13,6 +13,7 @@ get_num_demos ($game_name)
          $tv2_dbuser,
          $tv2_dbpass,
          $tv2_dbname;
+  global $use_memcache;
   $debug = 0;    
 
   $db = new misc_sql;  
@@ -20,7 +21,7 @@ get_num_demos ($game_name)
                  $tv2_dbuser,
                  $tv2_dbpass,
                  $tv2_dbname,
-                 1); // use cache
+                 $use_memcache); // use memcache
 
   $sql_statement = 'SELECT COUNT(*) FROM qdemos_demo_table WHERE qdemos_map NOT LIKE \'\''
                   .($game_name ? ' AND qdemos_game_name LIKE \''.$game_name.'\'' : '')

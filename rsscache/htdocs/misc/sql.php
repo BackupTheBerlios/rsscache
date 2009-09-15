@@ -34,7 +34,7 @@ var $database = NULL;
 var $conn = NULL;
 var $res = FALSE;
 
-var $use_cache = 0;
+var $use_memcache = 0;
 var $memcache = NULL;
 //var $row_pos = -1;
 
@@ -48,7 +48,7 @@ sql_stresc ($s)
 
 
 function
-sql_open ($host, $user, $password, $database, $use_cache = 0)
+sql_open ($host, $user, $password, $database, $use_memcache = 0)
 {
   if (!is_null ($this->conn))
     mysql_close ($this->conn);
@@ -61,11 +61,11 @@ sql_open ($host, $user, $password, $database, $use_cache = 0)
   $this->conn = mysql_connect ($host, $user, $password) or die (mysql_error ());
   mysql_select_db ($database, $this->conn);
 
-  if ($use_cache == 1)
+  if ($use_memcache == 1)
     {
       $this->memcache = new Memcache;
       $this->memcache->connect ('localhost', 11211) or die ("memcache: could not connect");
-      $this->use_cache = 1;
+      $this->use_memcache = 1;
     }
 }
 
@@ -159,7 +159,7 @@ sql_write ($sql_query_s, $debug)
       $this->res = NULL;
     }
 
-  if ($this->use_cache == 1)
+  if ($this->use_memcache == 1)
     {
       // data from the cache
       $this->res = unserialize ($this->memcache->get (md5 ($sql_query_s)));
@@ -169,7 +169,7 @@ sql_write ($sql_query_s, $debug)
     {
       $this->res = mysql_query ($sql_query_s);
 
-      if ($this->use_cache == 1)
+      if ($this->use_memcache == 1)
         {
           // store data in the cache (data will expire in 60 seconds)
           $this->memcache->set (md5 ($sql_query_s), serialize ($this->res), false, 60) 
