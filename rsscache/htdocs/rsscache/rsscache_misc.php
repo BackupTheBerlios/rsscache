@@ -7,37 +7,7 @@ require_once ('misc/sql.php');
 
 
 function
-get_num_demos ($game_name)
-{
-  global $tv2_dbhost,
-         $tv2_dbuser,
-         $tv2_dbpass,
-         $tv2_dbname;
-  global $use_memcache;
-  $debug = 0;    
-
-  $db = new misc_sql;  
-  $db->sql_open ($tv2_dbhost,
-                 $tv2_dbuser,
-                 $tv2_dbpass,
-                 $tv2_dbname,
-                 $use_memcache); // use memcache
-
-  $sql_statement = 'SELECT COUNT(*) FROM qdemos_demo_table WHERE qdemos_map NOT LIKE \'\''
-                  .($game_name ? ' AND qdemos_game_name LIKE \''.$game_name.'\'' : '')
-                  .';';
-
-  $db->sql_write ($sql_statement, $debug);
-  $r = $db->sql_read ($debug);
-
-  $db->sql_close ();
-
-  return $r[0][0];
-}
-
-
-function
-get_num_videos ($game_name)
+tv2_get_num_videos ($game_name)
 {
   global $tv2_dbhost,
          $tv2_dbuser,
@@ -51,8 +21,15 @@ get_num_videos ($game_name)
                  $tv2_dbpass,
                  $tv2_dbname);
 
-  $sql_statement = 'SELECT COUNT(*) FROM qdemos_demo_table WHERE 1'
-                  .($game_name ? ' AND qdemos_game_name LIKE \''.$game_name.'\'' : '')
+//  get num demos
+//  $sql_statement = 'SELECT COUNT(*) FROM qdemos_demo_table WHERE qdemos_map NOT LIKE \'\''
+//                  .($game_name ? ' AND qdemos_game_name LIKE \''.$game_name.'\'' : '')
+//                  .';';
+//  get num videos
+//  $sql_statement = 'SELECT COUNT(*) FROM qdemos_demo_table WHERE 1'
+//                  .($game_name ? ' AND qdemos_game_name LIKE \''.$game_name.'\'' : '')
+//                  .';';
+  $sql_statement = 'SELECT COUNT(*) FROM rsstool_'.$game_name.'_table WHERE 1'
                   .';';
 
   $db->sql_write ($sql_statement, $debug);
@@ -72,8 +49,8 @@ config_xml_normalize ($config)
 //      if ($config->category[$i]->query[$j]->name)
         if ($config->category[$i]->query[$j]->name == 'c')
           {
-            $config->category[$i]->demos = get_num_demos ($config->category[$i]->name);
-            $config->category[$i]->videos = get_num_videos ($config->category[$i]->name);
+            // add a new variable
+            $config->category[$i]->videos = tv2_get_num_videos ($config->category[$i]->name);
           }
 
   return $config;
