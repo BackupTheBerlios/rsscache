@@ -1,9 +1,12 @@
 <?php
 
-$tv2_name = 'pwnoogle \:D/ (Preview)';
 //$tv2_title = 'Upload, Download, and watch Demos and Videos of Games';
 $tv2_title = 'like TV but cool';
-
+$tv2_body_tag = '<body style="font-family:monospace;text-align:center;opacity:1.0;">';
+$tv2_logo = '<div style="font-size:32px;font-family:sans;color:#000;font-weight:bolder;width:100%;text-align:center;">'
+           .'pwnoogle \:D/ <img src="images/preview.png" border="0">'
+           .'</div>'
+           .'<br><br>';
 
 $tv2_root = dirname(__FILE__);
 $tv2_download = 'files';
@@ -25,7 +28,7 @@ $tv2_dbhost = 'localhost';
 // compression on/off
 $use_gzip = 1;
 // memcache on/off
-$use_memcache = 1;
+$use_memcache = 0;
 
 // localization
 //$charset = 'utf-8';

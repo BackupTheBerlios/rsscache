@@ -7,41 +7,6 @@ require_once ('misc/sql.php');
 
 
 function
-tv2_get_num_videos ($game_name)
-{
-  global $tv2_dbhost,
-         $tv2_dbuser,
-         $tv2_dbpass,
-         $tv2_dbname;
-  $debug = 0;    
-
-  $db = new misc_sql;  
-  $db->sql_open ($tv2_dbhost,
-                 $tv2_dbuser,
-                 $tv2_dbpass,
-                 $tv2_dbname);
-
-//  get num demos
-//  $sql_statement = 'SELECT COUNT(*) FROM qdemos_demo_table WHERE qdemos_map NOT LIKE \'\''
-//                  .($game_name ? ' AND qdemos_game_name LIKE \''.$game_name.'\'' : '')
-//                  .';';
-//  get num videos
-//  $sql_statement = 'SELECT COUNT(*) FROM qdemos_demo_table WHERE 1'
-//                  .($game_name ? ' AND qdemos_game_name LIKE \''.$game_name.'\'' : '')
-//                  .';';
-  $sql_statement = 'SELECT COUNT(*) FROM rsstool_'.$game_name.'_table WHERE 1'
-                  .';';
-
-  $db->sql_write ($sql_statement, $debug);
-  $r = $db->sql_read ($debug);
-
-  $db->sql_close ();
-
-  return $r[0][0];
-}
-
-
-function
 config_xml_normalize ($config)
 {
   for ($i = 0; $config->category[$i]; $i++)
@@ -58,144 +23,145 @@ config_xml_normalize ($config)
 
 
 function
-config_xml ()
+config_xml ($use_memcache = 0)
 {
   static $config = NULL;
 
-  if (!$config)
+  if ($config)
+    return $config;
+
+  if ($use_memcache == 1) 
     {
-      $config = simplexml_load_file ('config.xml');
-      $config = config_xml_normalize ($config);
+      $memcache = new Memcache;  
+      $memcache->connect ('localhost', 11211) or die ("memcache: could not connect");
+
+      // data from the cache
+      $config = unserialize ($memcache->get (md5 ('config.xml')));
+   
+      if ($config)
+        {
+        // DEBUG
+//        echo 'cached';
+          return $config;
+        } 
     }
+
+  $config = simplexml_load_file ('config.xml');
+  $config = config_xml_normalize ($config);
+
+  // use memcache
+  if ($use_memcache == 1)
+    {
+      $memcache->set (md5 ('config.xml'), serialize ($config))
+        or die ("memcache: failed to save data at the server");
+    }   
 
   return $config;
 }
 
 
 function
-config_xml_by_game_name ($game_name)
+config_xml_by_category ($category)
 {
   $config = config_xml ();
 
   for ($i = 0; $config->category[$i]; $i++)
-    if (!strcmp ($config->category[$i]->name, $game_name))
+    if (!strcmp ($config->category[$i]->name, $category))
       return $config->category[$i];
 
   return NULL;
 }
 
 
-// HACK
 function
-tv2_normalize ($game_name)
+tv2_get_num_videos_func ($db, $category)
 {
-  $p = strtolower ($game_name);
+  $debug = 0;    
 
-  if ($p == 'baseq3')
-    $game_name = 'quake3';
-  else if ($p == 'baseqz')
-    $game_name = 'quakelive';
+  $sql_statement = 'SELECT COUNT(*) FROM rsstool_'.$category.'_table WHERE 1'
+                  .';';
 
-  return $game_name;
+  $db->sql_write ($sql_statement, $debug);
+  $r = $db->sql_read ($debug);
+
+  return $r[0][0];
 }
 
 
 function
-tv2_normalize2 ($dest)
+tv2_get_num_videos ($category)
 {
-  global $tv2_root,
-         $tv2_download;
+  global $tv2_dbhost,
+         $tv2_dbuser,
+         $tv2_dbpass,
+         $tv2_dbname;
+  $num = 0;
 
-  // get filenames
+  $db = new misc_sql;  
+  $db->sql_open ($tv2_dbhost,
+                 $tv2_dbuser,
+                 $tv2_dbpass,
+                 $tv2_dbname);
+
+  if ($category)
+    {
+      $num = tv2_get_num_videos_func ($db, $category);
+    }
+  else
+    {
+      $config = config_xml ();
+      for ($i = 0; $config->category[$i]; $i++)
+        if ($config->category[$i]->name)
+          if ($config->category[$i]->name[0])
+            $num += tv2_get_num_videos_func ($db, $config->category[$i]->name);
+    }
+
+  $db->sql_close ();
+
+  return $num;
+}
+
+
+// HACK
+function
+tv2_normalize ($category)
+{
+  $p = strtolower ($category);
+
+  if ($p == 'baseq3')
+    $category = 'quake3';
+  else if ($p == 'baseqz')
+    $category = 'quakelive';
+
+  return $category;
+}
+
+
+function
+tv2_normalize2 (&$dest, $c)
+{
   for ($i = 0; $dest[$i]; $i++)
     {
-      $s = $tv2_download.'/'.$dest[$i]->demo_name;
-      if (file_exists ($tv2_root.'/'.$s))
-        $dest[$i]->demo_file = $s;
-      else
-        $dest[$i]->demo_file = NULL;
+      $dest[$i]['category'] = $c;
+      $dest[$i]['duration'] = 0;
 
-      $s = $tv2_download.'/'.set_suffix ($dest[$i]->demo_name, '.flv');
-      if (file_exists ($tv2_root.'/'.$s))
-        $dest[$i]->demo_flv = $s;
-      else
-        $dest[$i]->demo_flv = NULL;
+      if (strstr ($dest[$i]['rsstool_url'], 'www.google.com'))
+        $dest[$i]['rsstool_desc'] = substr ($dest[$i]['rsstool_desc'], 0, strrpos ($dest[$i]['rsstool_desc'], '<div '));
+      $dest[$i]['rsstool_desc'] = strip_tags ($dest[$i]['rsstool_desc'], '<img>');
 
-      $s = $tv2_download.'/'.set_suffix ($dest[$i]->demo_name, '.jpg');
-      if (file_exists ($tv2_root.'/'.$s))
-        $dest[$i]->demo_jpg = $s;
-      else
-        $dest[$i]->demo_jpg = NULL;
+      // remove eventual google redirect
+      if (strstr ($dest[$i]['rsstool_url'], 'www.google.com'))
+        {
+          $offset = strpos ($dest[$i]['rsstool_url'], '?q=') + 3;
+          $len = strpos ($dest[$i]['rsstool_url'], '&source=') - $offset;
+          $dest[$i]['rsstool_url'] = substr ($dest[$i]['rsstool_url'], $offset, $len);
+        }
     }
 }
 
 
-class st_player
-{
-  var $client;
-  var $name_raw;
-  var $name;
-  var $model;
-  var $score;
-  var $ping;
-}
-
-
-class st_players
-{
-  var $player;
-}
-
-
-class st_tv2
-{
-  var $demo_file;  // set if the demo is downloadable
-  var $demo_flv;   // name of the flv (if present)
-  var $demo_jpg;   // name of movie thumbnail (if present)
-
-  // extern video resource (youtube, etc.)
-  var $other;
-  var $other_title;
-  var $other_desc;
-
-  // this stuff comes from qdemos (SQL or XML)
-  var $demo_name;
-  var $demo_name_crc32;
-  var $demo_date;
-  var $demo_size;
-  var $demo_len;
-  var $demo_crc32;
-  var $demo_parse_date;
-
-  var $sv_name;
-  var $sv_version;
-
-  var $game_name;
-  var $game_version;
-  var $game_type;
-
-  var $match_date_min;
-  var $match_date_max;
-
-  var $map;
-
-  var $fraglimit;
-  var $capturelimit;
-  var $timelimit;
-
-  var $scores;
-
-  var $team_scores_red;
-  var $team_scores_blue;
-
-  var $max_players;
-
-  var $players;
-}
-
-
 function
-tv2_sql ($other, $c, $q, $f, $v, $start, $num)
+tv2_sql ($c, $q, $f, $v, $start, $num)
 {
   global $tv2_dbhost,
          $tv2_dbuser,
@@ -216,182 +182,88 @@ tv2_sql ($other, $c, $q, $f, $v, $start, $num)
     if ($c == '')
       $c = NULL;
 
-  $other = $db->sql_stresc ($other);
-  $c = $db->sql_stresc ($c);
+//  if (!($c))
+    $c = $db->sql_stresc ($c);
   $q = $db->sql_stresc ($q);
   $v = $db->sql_stresc ($v);
   $start = $db->sql_stresc ($start);
   $num = $db->sql_stresc ($num);
 
-  $sql_statement = 'SELECT * FROM `qdemos_demo_table` WHERE 1';
+//  if ($c)
+    $rsstool_table = 'rsstool_'.$c.'_table';
+/*
+  else
+    {
+      $config = config_xml ();
+      $count = 0;
+      $rsstool_table = '';
+      for ($i = 0; $config->category[$i]; $i++)
+        if ($config->category[$i]->name)
+          if ($config->category[$i]->name[0])
+          {
+            if ($count)
+              $rsstool_table .= ', ';
+            $rsstool_table .= 'rsstool_'.$config->category[$i]->name.'_table';
+            $count++;
+          }
+    }
+*/
+  $sql_statement = 'SELECT * FROM ( '.$rsstool_table.' ) WHERE 1';
 
   if ($v) // direct
-    $sql_statement .= ' AND ( `qdemos_demo_table`.`qdemos_demo_name_crc32` = '.$v.' )';
+    $sql_statement .= ' AND ( rsstool_title_crc32 = '.$v.' )';
   else
     {
       // functions
       if ($f == 'new')
-        $sql_statement .= ' AND ( `qdemos_demo_parse_date` > '.(time () - $tv2_isnew).' )';
+        $sql_statement .= ' AND ( rsstool_dl_date > '.(time () - $tv2_isnew).' )';
+/*
       else if ($f == '0_5min')
-        $sql_statement .= ' AND ( `qdemos_demo_len` > 0 && `qdemos_demo_len` < 301 )';
+        $sql_statement .= ' AND ( `tv2_len` > 0 && `tv2_len` < 301 )';
       else if ($f == '5_10min')
-        $sql_statement .= ' AND ( `qdemos_demo_len` > 300 && `qdemos_demo_len` < 601 )';
+        $sql_statement .= ' AND ( `tv2_len` > 300 && `tv2_len` < 601 )';
       else if ($f == '10_min')
-        $sql_statement .= ' AND ( `qdemos_demo_len` > 600 )';
+        $sql_statement .= ' AND ( `tv2_len` > 600 )';
+*/
       else if ($f == '1v1')
-//        $sql_statement .= ' AND MATCH ( qdemos_demo_name, qdemos_sv_name, qdemos_sv_version, qdemos_game_name, qdemos_game_version, qdemos_map) AGAINST (\' vs vs. deathmatch \' IN BOOLEAN MODE)';
-        $sql_statement .= ' AND MATCH ( `qdemos_demo_name` ) AGAINST (\'+vs\' IN BOOLEAN MODE)';
+//        $sql_statement .= ' AND MATCH ( `rsstool_title`, `rsstool_desc` ) AGAINST (\' vs vs. deathmatch \' IN BOOLEAN MODE)';
+        $sql_statement .= ' AND MATCH ( `rsstool_title`, `rsstool_desc` ) AGAINST (\'+vs\' IN BOOLEAN MODE)';
       else if ($f == 'ffa')
-        $sql_statement .= ' AND ( `qdemos_demo_len` > 600 )';
+        $sql_statement .= ' AND MATCH ( `rsstool_title`, `rsstool_desc` ) AGAINST (\'+vs\' IN BOOLEAN MODE)';
       else if ($f == 'tdm')
-        $sql_statement .= ' AND ( `qdemos_demo_len` > 600 )';
+        $sql_statement .= ' AND MATCH ( `rsstool_title`, `rsstool_desc` ) AGAINST (\'+vs\' IN BOOLEAN MODE)';
       else if ($f == 'ctf')
-        $sql_statement .= ' AND ( `qdemos_demo_len` > 600 )';
-
-      // game name
-      if ($c)
-        $sql_statement .= ' AND ( `qdemos_demo_table`.`qdemos_game_name` LIKE \''.$c.'\' )';
+        $sql_statement .= ' AND MATCH ( `rsstool_title`, `rsstool_desc` ) AGAINST (\'+vs\' IN BOOLEAN MODE)';
 
       // query
       if ($q)
         {
-/*
-          $sql_statement .= ' WHERE MATCH (`qdemos_demo_name`'
-                           .' ,`qdemos_sv_name`'
-                           .' ,`qdemos_sv_version`'
-                           .' ,`qdemos_game_name`'
-                           .' ,`qdemos_game_version`'
-                           .' ,`qdemos_map`'
-                           .') AGAINST (\''
-                           .$db->sql_prep_query ($rsstool->q, 0)
+          $sql_statement .= ' AND MATCH ( rsstool_title, rsstool_desc'
+                           .' ) AGAINST (\''
+                           .$db->sql_stresc ($q)
                            .'\''
                            .' IN BOOLEAN MODE'
                            .')';
-*/
-          $q_array = explode (' ', $q);
-          $q_size = sizeof ($q_array);
-          for ($i = 0; $i < $q_size; $i++)
-            {
-              $sql_statement .= ' AND ( `qdemos_demo_name` LIKE \'%'.$q_array[$i].'%\''
-                               .' OR `qdemos_sv_name` LIKE \'%'.$q_array[$i].'%\''
-                               .' OR `qdemos_sv_version` LIKE \'%'.$q_array[$i].'%\''
-                               .' OR `qdemos_game_name` LIKE \'%'.$q_array[$i].'%\''
-                               .' OR `qdemos_game_version` LIKE \'%'.$q_array[$i].'%\''
-                               .' OR `qdemos_map` LIKE \'%'.$q_array[$i].'%\''
-;
-              // players
-              $sql_statement .= ' OR `qdemos_demo_table`.`qdemos_demo_name_crc32`'
-                               .' IN ('
-                               .' SELECT `qdemos_demo_name_crc32`'
-                               .' FROM `qdemos_player_table`'
-                               .' WHERE `qdemos_player_name` LIKE \'%'.$q_array[$i].'%\''
-                               .' )'
-;
-              if ($other)
-                $sql_statement .= ' OR `qdemos_demo_table`.`qdemos_demo_name_crc32`'
-                                 .' IN ('
-                                 .' SELECT `qdemos_demo_name_crc32`'
-                                 .' FROM `qdemos_other`'
-                                 .' WHERE `qdemos_demo_title` LIKE \'%'.$q_array[$i].'%\''
-                                 .' OR `qdemos_demo_desc` LIKE \'%'.$q_array[$i].'%\''
-                                 .' )'
-;
-              $sql_statement .= ' )';
-            }
         }
 
-      // NO other videos
-      if ($other)
-        {
-        }
-      else
-        $sql_statement .= ' AND ( `qdemos_demo_table`.`qdemos_demo_size` != 0 )';
-
-      $sql_statement .= ' ORDER BY `qdemos_demo_parse_date` DESC';
-//      $sql_statement .= ' ORDER BY `qdemos_demo_name` ASC';
-//      $sql_statement .= ' ORDER BY `qdemos_demo_date` DESC';
+      $sql_statement .= ' ORDER BY `rsstool_dl_date` DESC';
+//      $sql_statement .= ' ORDER BY `rsstool_title` ASC';
       $sql_statement .= ' LIMIT '.$start.','.$num;
     }
 
   $db->sql_write ($sql_statement, $debug);
 //  $d = array ();
-  $d = $db->sql_read ($debug);
-
-  // NORMALIZE: clone an qdemos XML array from the SQL result
-  $dest = array ();
-  for ($i = 0; $d[$i]; $i++)
-    {
-      // unset integer indices
-      for ($j = 0; $j < sizeof ($d[$i]); $j++)
-        unset ($d[$i][$j]);
-
-      $dest[$i] = new st_tv2;
-      $keys = array_keys ((array) $dest[$i]);
-
-      for ($j = 0; $j < sizeof ($keys); $j++)
-        eval ("\$dest[\$i]->".$keys[$j]." = \$d[\$i][\"qdemos_".$keys[$j]."\"];");
-
-      $sql_statement = 'SELECT * FROM `qdemos_player_table`'
-                      .' WHERE ( `qdemos_demo_name_crc32` = '.$dest[$i]->demo_name_crc32.' )'
-                      .' ORDER BY `qdemos_player_score` DESC';
-
-      $db->sql_write ($sql_statement, 0);
-
-//      $p = array ();
-      $p = $db->sql_read (0);
-
-      $dest[$i]->players = new st_players;
-      $dest[$i]->players->player = array ();
-
-      for ($j = 0; $j < $db->sql_get_rows (); $j++)
-        {
-          $dest[$i]->players->player[$j] = new st_player;
-          $keys = array_keys ((array) $dest[$i]->players->player[$j]);
-
-          for ($k = 0; $k < sizeof ($keys); $k++)
-            eval ("\$dest[\$i]->players->player[\$j]->".$keys[$k]." = \$p[\$j][\"qdemos_player_".$keys[$k]."\"];");
-        }
-
-      // add title and desc from other videos from RSS
-      $dest[$i]->other = 0;
-//      if ($other)
-        {
-          // get title and desc from qdemos_other
-          $sql_statement = 'SELECT * FROM `qdemos_other` WHERE `qdemos_other`.`qdemos_demo_name_crc32` = '
-                          .$dest[$i]->demo_name_crc32;
-
-          $db->sql_write ($sql_statement, $debug);
-
-//          $p = array ();
-          $p = $db->sql_read ($debug);
-          if ($p)
-            {
-              $dest[$i]->other = 1;
-              $dest[$i]->other_title = $p[0]['qdemos_demo_title'];
-              $s = $p[0]['qdemos_demo_desc'];
-              if (strstr ($dest[$i]->demo_name, 'www.google.com'))
-                $s = substr ($s, 0, strrpos ($s, '<div '));
-              $dest[$i]->other_desc = strip_tags ($s, '<img><br>');
-
-              // remove eventual google redirect
-              if (strstr ($dest[$i]->demo_name, 'www.google.com'))
-                {
-                  $offset = strpos ($dest[$i]->demo_name, '?q=') + 3;
-                  $len = strpos ($dest[$i]->demo_name, '&source=') - $offset;
-                  $dest[$i]->demo_name = substr ($dest[$i]->demo_name, $offset, $len);
-                }
-            }
-        }
-   }
+  $d = $db->sql_read (0 /* $debug */);
 
   $db->sql_close ();
 
-  tv2_normalize2 ($dest);
+  tv2_normalize2 ($d, $c);
 
   // DEBUG
-//  print_r ($dest);
+//  echo '<tt><pre>';
+//  print_r ($d);
 
-  return $dest;
+  return $d;
 }
 
 

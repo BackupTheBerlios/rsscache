@@ -109,7 +109,7 @@ time_ms ()
 
 
 function
-time_count ($f, $t_date)
+time_count ($t_date)
 {
   static $t_now = 0;
   static $t_count = 0;
@@ -117,7 +117,7 @@ time_count ($f, $t_date)
   if ($t_now == 0)
     $t_now = $t_count = time ();
 
-  $p = '';
+  $p = NULL;
 
   while ($t_count > $t_date)
     {
@@ -128,19 +128,19 @@ time_count ($f, $t_date)
           $t_count -= 300;
           if ($t_calc)
             if ($t_count < $t_date)
-            $p .= sprintf ($f, $t_calc / 60 .' minutes');
+            $p .= sprintf ('%s', $t_calc / 60 .' minutes');
         }
       else if ($t_calc < 86400)
         {
           $t_count -= 3600;
           if ($t_count < $t_date)
-            $p .= sprintf ($f, $t_calc / 3600 .' hours');
+            $p .= sprintf ('%s', $t_calc / 3600 .' hours');
         }
       else
         {
           $t_count -= 86400;
           if ($t_count < $t_date)
-            $p .= sprintf ($f, $t_calc / 86400 .' days');
+            $p .= sprintf ('%s', $t_calc / 86400 .' days');
         }
     }
 
