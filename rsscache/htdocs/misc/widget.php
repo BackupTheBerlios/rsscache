@@ -25,6 +25,37 @@ define ('MISC_WIDGET_PHP', 1);
 require_once ('misc/misc.php');
 
 
+function
+widget_table ($title_array, $content_array, $title_attr, $row1_attr, $row2_attr)
+{
+/*
+  $cols = sizeof ($title_array);
+  $rows = $cols * 0.5;
+
+  $p = '<table border="0" cellpadding="1" cellspacing="0">';
+
+  for ($i = 0; $content_array[$i]; $i++)
+    {
+      $row_attr = ($i & 1) ? $row1_attr : $row2_attr;
+
+      $p .= '<tr '.$title_attr.'>'
+           .'<td><b>CVAR</b></td>'
+           .'<td><b>Value</b></td>'
+           .'</tr>';
+
+      $p .= '<tr bgcolor="'.$row_attr.'">';
+      $p .= '<td>'.$cvar.'</td>'
+           .'<td>'.$value.'</td>'
+           .'</tr>';
+    }
+
+  $p .= '</table>';
+
+  return $p;
+*/
+}
+
+
 /*
 0  	dev  	device number
 1 	ino 	inode number *
