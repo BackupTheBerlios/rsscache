@@ -1,10 +1,9 @@
 <?php
-header ('Content-type: text/html; charset=utf-8');
 //phpinfo();
 //error_reporting(E_ALL | E_STRICT);
 require_once ('config.php');
 require_once ('misc/misc.php');
-require_once ('misc/widget.php');
+//require_once ('misc/widget.php');
 require_once ('tv2_output.php');
 require_once ('tv2_misc.php');
 
@@ -307,6 +306,10 @@ if ($f == 'rss')
     tv2_output_rss ($d_array);
     exit;
   }
+
+
+header ('Content-type: text/html; charset=utf-8');
+
 
 $head = '<html>'
        .'<head>'

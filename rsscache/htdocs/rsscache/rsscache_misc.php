@@ -1,9 +1,7 @@
 <?php
 require_once ('config.php');
 require_once ('misc/misc.php');
-//require_once ('misc/widget.php');
 require_once ('misc/sql.php');
-//require_once ('qmaps.php');
 
 
 function
