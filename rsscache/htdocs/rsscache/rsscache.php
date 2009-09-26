@@ -71,9 +71,7 @@ tv2 ()
 
   $config = config_xml ();
 
-
   $p = '';
-
 
   // top
   $p .= '<div style="display:table;">';
@@ -165,17 +163,11 @@ tv2 ()
   $p .= '</div>'; // display:table-row
   $p .= '</div>'; // display:table
 
-
-
-
   // use SQL
   if ($v)
     $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
   else
     $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
-
-
-
 
   // show page-wise navigation (top)
   if (!($v))
@@ -198,21 +190,20 @@ tv2 ()
 
         }
 
-          // right play all button
-          $p .= '&nbsp<a href="'
-               .misc_getlink ('', array ('v' => NULL, 'f' => 'play_all'), true)
-               .'" title="Play all videos starting from here (TV)">'
-               .'<img src="images/play_all32.png" border="0">'
-               .'</a>'
+      // right play all button
+      $p .= '&nbsp<a href="'
+           .misc_getlink ('', array ('v' => NULL, 'f' => 'play_all'), true)
+           .'" title="Play all videos starting from here (TV)">'
+           .'<img src="images/play_all32.png" border="0">'
+           .'</a>'
 ;
     }
 
   $p .= '<br>';
   $p .= '<br>';
 
-
-
-  $p .= '<center><div style="display:table;text-align:center;">';
+  $p .= '<center>';
+  $p .= '<div style="display:table;text-align:center;">';
   $p .= '<div style="display:table-row;">';
 
   if ($v)
@@ -234,10 +225,8 @@ tv2 ()
     }
 
   $p .= '</div>'; // display:table-row
-  $p .= '</div></center>'; // display:table
-
-
-
+  $p .= '</div>'; // display:table
+  $p .= '</center>';
 
   // show page-wise navigation (bottom)
   if (!($v))
@@ -269,7 +258,9 @@ if ($use_gzip == 1)
         header ('Content-Encoding: gzip');
         print ("\x1f\x8b\x08\x00\x00\x00\x00\x00");
       }
-    else */ $use_gzip = 0;
+    else
+*/
+$use_gzip = 0;
   }
 
 

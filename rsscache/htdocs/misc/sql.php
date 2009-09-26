@@ -161,7 +161,9 @@ sql_write ($sql_query_s, $debug = 0)
   if ($this->use_memcache == 1)
     {
       // data from the cache
-      $this->res = unserialize ($this->memcache->get (md5 ($sql_query_s)));
+      $p = $this->memcache->get (md5 ($sql_query_s));
+      if ($p)
+        $this->res = unserialize ($p);
     }
 
   if ($this->res == NULL || $this->res == FALSE)
