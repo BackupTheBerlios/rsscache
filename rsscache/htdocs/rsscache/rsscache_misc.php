@@ -191,7 +191,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
 
       // category
       if ($c)
-        $sql_statement .= ' AND ( v2_category LIKE \''.$c.'\' )';
+        $sql_statement .= ' AND ( `tv2_category` LIKE \''.$c.'\' )';
 
       // query
       if ($q)
