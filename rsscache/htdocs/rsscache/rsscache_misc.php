@@ -179,20 +179,19 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
     $sql_statement .= ' AND ( `rsstool_url_crc32` = '.$v.' )';
   else
     {
-      // category
-      if ($c)
-        $sql_statement .= ' AND ( `tv2_category` LIKE \''.$c.'\' )';
-
       // functions
       if ($f == 'new')
         $sql_statement .= ' AND ( rsstool_dl_date > '.(time () - $tv2_isnew).' )';
-
       else if ($f == '0_5min')
         $sql_statement .= ' AND ( `tv2_duration` > 0 && `tv2_duration` < 301 )';
       else if ($f == '5_10min')
         $sql_statement .= ' AND ( `tv2_duration` > 300 && `tv2_duration` < 601 )';
       else if ($f == '10_min')
         $sql_statement .= ' AND ( `tv2_duration` > 600 )';
+
+      // category
+      if ($c)
+        $sql_statement .= ' AND ( v2_category LIKE \''.$c.'\' )';
 
       // query
       if ($q)
