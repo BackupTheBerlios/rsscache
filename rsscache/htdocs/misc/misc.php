@@ -210,11 +210,26 @@ parse_links ($s)
   // turn plain text urls into links
 //  return preg_replace ('/\\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]/i', "<a href=\"#\" onclick=\"open_url('\\0')\";return false;>\\0</a>", $s);
 //  return ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a href=\"\\0\">\\0</a>", $s);
-$s = eregi_replace("((([ftp://])|(http(s?)://))((:alnum:|[-\%\.\?\=\#\_\:\&\/\~\+\@\,\;])*))","<a href = '\\0' target='_blank'>\\0</a>", $s);
+//  $s = eregi_replace("((([ftp://])|(http(s?)://))((:alnum:|[-\%\.\?\=\#\_\:\&\/\~\+\@\,\;])*))","<a href = '\\0' target='_blank'>\\0</a>", $s);
+//  $s = eregi_replace("(([^/])www\.|(^www\.))((:alnum:|[-\%\.\?\=\#\_\:\&\/\~\+\@\,\;])*)", "\\2<a href = 'http://www.\\4'>www.\\4</a>", $s);
 
-$s = eregi_replace("(([^/])www\.|(^www\.))((:alnum:|[-\%\.\?\=\#\_\:\&\/\~\+\@\,\;])*)","\\2<a href = 'http://www.\\4' target='_blank'>www.\\4</a>", $s);
+  $a = explode (' ', $s);
+  $a = array_unique ($a); // remove dupes
 
-  return $s.'!!!';
+  // find eventual urls
+  $a_size = sizeof ($a);
+  for ($i = 0; $i < $a_size; $i++)
+    if (strlen ($a[$i]) > 4 &&
+        !strstr ($a[$i], '..') &&
+        substr_count ($a[$i], '.') == 2)
+      {
+        if (stristr ($a[$i], 'http://'))
+          $s = str_replace ($a[$i], '<a href="'.$a[$i].'">'.$a[$i].'</a>', $s);
+        else
+          $s = str_replace ($a[$i], '<a href="http://'.$a[$i].'">'.$a[$i].'</a>', $s);
+      }
+
+  return $s;
 }
 
 

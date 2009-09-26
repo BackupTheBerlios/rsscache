@@ -19,7 +19,8 @@ tv2 ()
          $tv2_results,
          $tv2_isnew,
          $tv2_body_tag,
-         $tv2_logo;
+         $tv2_logo,
+         $tv2_search_s;
 
   $c = get_request_value ('c'); // category
   $q = get_request_value ('q'); // search query
@@ -66,7 +67,7 @@ tv2 ()
          );
   $a_size = sizeof ($a);
   for ($i = 0; $i < $a_size; $i++)
-    setcookie ($a[$i][0], $a[$i][1], $expire);
+    setcookie ($a[$i][0], $a[$i][1], $tv2_cookie_expire);
 //bool setcookie  ( string $name  [, string $value  [, int $expire= 0  [, string $path  [, string $domain  [, bool $secure= false  [, bool $httponly= false  ]]]]]] )
 
   $config = config_xml ();
@@ -102,7 +103,9 @@ tv2 ()
 //    $p .= '<b><font style="color:#bbb;">Welcome, </font>'.colorize ($user_name, 1).'<font style="color:#bbb;"> to</font></b><br>';
 
   // logo
+  $p .= '<a href="/" style="text-decoration:none;">';
   $p .= $tv2_logo;
+  $p .= '</a>';
 
   // form
   $p .= '<nobr>';
@@ -131,7 +134,7 @@ tv2 ()
   $p .= '<input type="text" name="q"'
        .($q ? ' value="'.$q.'"' : '')
        .'>'
-       .'<input type="submit" value="Search">'
+       .'<input type="submit" value="'.$tv2_search_s.'">'
        .'</form></nobr>';
 
   // videos total
@@ -264,11 +267,10 @@ $use_gzip = 0;
   }
 
 
-if ($use_memcache == 1)
+if ($memcache_expire > 0)
   {
     $memcache = new Memcache;
     $memcache->connect ('localhost', 11211) or die ("memcache: could not connect");
-    $use_memcache = 1;
 
     // data from the cache
     $p = unserialize ($memcache->get (md5 ($_SERVER['QUERY_STRING'])));
@@ -353,7 +355,7 @@ if ($use_gzip == 1)
 else echo $p;
 
 // use memcache
-if ($use_memcache == 1)
+if ($memcache_expire > 0)
   {
     $memcache->set (md5 ($_SERVER['QUERY_STRING']), serialize ($p))
       or die ("memcache: failed to save data at the server");

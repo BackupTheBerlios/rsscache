@@ -54,14 +54,14 @@ config_xml_normalize ($config)
 
 
 function
-config_xml ($use_memcache = 0)
+config_xml ($memcache_expire = 0)
 {
   static $config = NULL;
 
   if ($config)
     return $config;
 
-  if ($use_memcache == 1) 
+  if ($memcache_expire > 0) 
     {
       $memcache = new Memcache;  
       $memcache->connect ('localhost', 11211) or die ("memcache: could not connect");
@@ -85,7 +85,7 @@ config_xml ($use_memcache = 0)
   $config = config_xml_normalize ($config);
 
   // use memcache
-  if ($use_memcache == 1)
+  if ($memcache_expire > 0)
     {
       $memcache->set (md5 ('config.xml'), serialize ($config))
         or die ("memcache: failed to save data at the server");
