@@ -112,7 +112,7 @@ tv2 ()
 
   $p .= '<form method="GET" action="'
        .$_SERVER['PHP_SELF']
-       .'" style="display:inline;" name="tv2_form">';
+       .'" style="display:inline;text-align:left;" name="tv2_form">';
 
   // select
   $p .= '<select name="c">';
@@ -142,9 +142,9 @@ tv2 ()
        .'document.tv2_form.q.focus ();'."\n"
        .'</script>';
 
-  $p .= '</form>';
-
   $p .= '</nobr>';
+
+  $p .= '</form>';
 
   // videos total
   $p .= '<span style="color:#bbb;">'
