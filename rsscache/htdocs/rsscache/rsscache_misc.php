@@ -213,8 +213,10 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
             }
         }
 
-      $sql_statement .= ' ORDER BY `rsstool_dl_date` DESC';
-//      $sql_statement .= ' ORDER BY `rsstool_title` ASC';
+      if ($f == 'related')
+        $sql_statement .= ' ORDER BY `rsstool_title` ASC';
+      else
+        $sql_statement .= ' ORDER BY `rsstool_dl_date` DESC';
       $sql_statement .= ' LIMIT '.$start.','.$num;
     }
 

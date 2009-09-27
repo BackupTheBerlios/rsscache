@@ -54,12 +54,14 @@ tv2 ()
     $last_visit = $latest_visit;
 */
 
-  $expire = time() + 3600 * 24 * 180; // 6 months
+  // set cookies
+
   $a = array (
-           array ('user_name', $user_name),
-           array ('last_visit', ''),
-           array ('latest_visit', ''),
-           array ('c', $c),
+//           array ('user_name', $user_name),
+//           array ('last_visit', ''),
+//           array ('latest_visit', ''),
+//           array ('c', $c),    
+           array ('c', ''),
 //           array ('q', $q),
 //           array ('f', $f),
 //           array ('v', $v),
@@ -67,7 +69,6 @@ tv2 ()
   $a_size = sizeof ($a);
   for ($i = 0; $i < $a_size; $i++)
     setcookie ($a[$i][0], $a[$i][1], $tv2_cookie_expire);
-//bool setcookie  ( string $name  [, string $value  [, int $expire= 0  [, string $path  [, string $domain  [, bool $secure= false  [, bool $httponly= false  ]]]]]] )
 
   $config = config_xml ();
 
@@ -88,8 +89,8 @@ tv2 ()
     {
       // left icons
       $s = 0;
-      $l= (int) ceil (sizeof ($config->category) * 0.5) + 2;
-      $p .= tv2_button_array ($config, '&nbsp;%s', $s, $l);
+      $l = (int) ceil (sizeof ($config->category) * 0.5);
+      $p .= tv2_button_array ($config, ' <nobr>%s</nobr>', $s, $l);
     }
 
   $p .= '</div>'; // display:table-cell
@@ -108,9 +109,10 @@ tv2 ()
 
   // form
   $p .= '<nobr>';
+
   $p .= '<form method="GET" action="'
        .$_SERVER['PHP_SELF']
-       .'" style="display:inline;">';
+       .'" style="display:inline;" name="tv2_form">';
 
   // select
   $p .= '<select name="c">';
@@ -133,8 +135,16 @@ tv2 ()
   $p .= '<input type="text" name="q"'
        .($q ? ' value="'.$q.'"' : '')
        .'>'
-       .'<input type="submit" value="'.$tv2_search_s.'">'
-       .'</form></nobr>';
+       .'<input type="submit" value="'.$tv2_search_s.'">';
+
+  // focus
+  $p .= '<script type="text/javascript">'."\n"
+       .'document.tv2_form.q.focus ();'."\n"
+       .'</script>';
+
+  $p .= '</form>';
+
+  $p .= '</nobr>';
 
   // videos total
   $p .= '<span style="color:#bbb;">'
@@ -146,20 +156,20 @@ tv2 ()
   $p .= '<br>';
 
   // center icons
-  $p .= '<div style="text-align:center;vertical-align:bottom;">';
-  $s = (int) ceil (sizeof ($config->category) * 0.5) + 2;
+  $p .= '<span style="text-align:center;vertical-align:bottom;">';
+  $s = (int) ceil (sizeof ($config->category) * 0.5);
   $l = 8;
-  $p .= tv2_button_array ($config, '&nbsp;%s', $s, $l);
-  $p .= '</div>';
+  $p .= tv2_button_array ($config, ' <nobr>%s</nobr>', $s, $l);
+  $p .= '</span>';
 
   $p .= '</div>'; // display:table-cell
 
   $p .= '<div style="width:50%;vertical-align:top;text-align:right;display:table-cell;">';
 
   // right icons
-  $s = (int) ceil (sizeof ($config->category) * 0.5) + 10;
+  $s = (int) ceil (sizeof ($config->category) * 0.5) + 8;
   $l = sizeof ($config->category) - $s;
-  $p .= tv2_button_array ($config, '&nbsp;%s', $s, $l);
+  $p .= tv2_button_array ($config, '<nobr>%s</nobr> ', $s, $l);
 
   $p .= '</div>'; // display:table-cell
   $p .= '</div>'; // display:table-row
@@ -172,7 +182,7 @@ tv2 ()
     $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
 
   // show page-wise navigation (top)
-  if (!($v))
+  if (!$v)
     {
       $p .= '<br>';
       $p .= '<br>';
@@ -231,7 +241,7 @@ tv2 ()
   $p .= '</center>';
 
   // show page-wise navigation (bottom)
-  if (!($v))
+  if (!$v)
     {
       $s = tv2_page ($start, $num, sizeof ($d_array));
       if ($s)
@@ -331,15 +341,16 @@ $head = '<html>'
        .'    }'."\n"
        .'}'."\n"
        ."\n"
-       .'</script>'."\n"
+       .'</script>'
 */
-       .'</head>'."\n"
+       .'</head>'
        .$tv2_body_tag
 ;
 
 $body = tv2 ();
 
-$end = '<br><br><br>'
+$end = ''
+//      .'<br><br><br>'
 //      .widget_relate ($tv2_name, misc_getlink ($tv2_link, array (), true), NULL, 0, WIDGET_RELATE_ALL)
 //      .time_ms () - $t_ms
       .'</body>'
