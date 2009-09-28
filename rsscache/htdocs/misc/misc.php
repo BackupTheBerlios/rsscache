@@ -227,6 +227,14 @@ short_name ($str, $limit)
 
 
 function
+in_tag ($s)
+{
+  // are we inside a tag?
+  return strpos ($s, '>') < strpos ($s, '<');
+}
+
+
+function
 parse_links ($s)
 {
   // turn plain text urls into links
@@ -235,7 +243,7 @@ parse_links ($s)
 //  $s = eregi_replace("((([ftp://])|(http(s?)://))((:alnum:|[-\%\.\?\=\#\_\:\&\/\~\+\@\,\;])*))","<a href = '\\0' target='_blank'>\\0</a>", $s);
 //  $s = eregi_replace("(([^/])www\.|(^www\.))((:alnum:|[-\%\.\?\=\#\_\:\&\/\~\+\@\,\;])*)", "\\2<a href = 'http://www.\\4'>www.\\4</a>", $s);
 
-  $a = explode (' ', $s);
+  $a = explode (' ', strip_tags ($s));
   $a = array_unique ($a); // remove dupes
 
   // find eventual urls
