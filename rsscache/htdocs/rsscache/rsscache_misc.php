@@ -122,20 +122,23 @@ tv2_normalize ($category)
 
 
 function
-tv2_normalize2 ($db, &$dest, $c)
+tv2_normalize2 ($db, $dest, $c)
 {
   $debug = 0;
 
   for ($i = 0; $dest[$i]; $i++)
     {
-      // remove eventual google redirect
       if (strstr ($dest[$i]['rsstool_url'], 'www.google.com'))
         {
-          $dest[$i]['rsstool_desc'] = substr ($dest[$i]['rsstool_desc'], 0, strrpos ($dest[$i]['rsstool_desc'], '<div '));
-
+          // remove eventual google redirect
           $offset = strpos ($dest[$i]['rsstool_url'], '?q=') + 3;
           $len = strpos ($dest[$i]['rsstool_url'], '&source=') - $offset;
           $dest[$i]['rsstool_url'] = substr ($dest[$i]['rsstool_url'], $offset, $len);
+
+          // desc
+          $offset = 0;
+          $len = strrpos ($dest[$i]['rsstool_desc'], '<div ');
+          $dest[$i]['rsstool_desc'] = substr ($dest[$i]['rsstool_desc'], $offset, $len);
         }
       else if (strstr ($dest[$i]['rsstool_url'], 'www.youtube.com'))
         {
@@ -145,6 +148,8 @@ tv2_normalize2 ($db, &$dest, $c)
       // strip tags from the desc
       $dest[$i]['rsstool_desc'] = strip_tags ($dest[$i]['rsstool_desc'], '<img>');
     }
+
+  return $dest;
 }
 
 
@@ -224,7 +229,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
 //  $d = array ();
   $d = $db->sql_read (0 /* $debug */);
 
-  tv2_normalize2 ($db, $d, $c);
+  $d = tv2_normalize2 ($db, $d, $c);
 
   $db->sql_close ();
 

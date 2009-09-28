@@ -147,20 +147,20 @@ tv2 ()
   $p .= '</form>';
 
   // videos total
-  $p .= '<span style="color:#bbb;">'
+  $p .= '<div style="color:#bbb;">'
        .' Videos: '
        .tv2_get_num_videos (NULL)
        .', tv2 engine version 0.1pre'
-       .'</span>';
+       .'</div>';
 
   $p .= '<br>';
 
   // center icons
-  $p .= '<span style="text-align:center;vertical-align:bottom;">';
+  $p .= '<div style="text-align:center;vertical-align:bottom;">';
   $s = (int) ceil (sizeof ($config->category) * 0.5);
   $l = 8;
   $p .= tv2_button_array ($config, ' <nobr>%s</nobr>', $s, $l);
-  $p .= '</span>';
+  $p .= '</div>';
 
   $p .= '</div>'; // display:table-cell
 
