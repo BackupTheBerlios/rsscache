@@ -207,13 +207,30 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                            .' IN BOOLEAN MODE'
                            .' )';
 */
-          $q_array = explode (' ', $q);
-          $q_size = sizeof ($q_array); 
-          for ($i = 0; $i < $q_size; $i++)
+          if ($f == 'related')
             {
+              $s = str_replace (' ', '%', trim ($q));
               $sql_statement .= ' AND ('
-                               .' rsstool_title LIKE \'%'.$q_array[$i].'%\''
-                               .' OR rsstool_desc LIKE \'%'.$q_array[$i].'%\''
+                               .' rsstool_title LIKE \'%'.$s.'%\''
+                               .' )';
+            }
+          else
+            {
+/*
+              $q_array = explode (' ', $q);
+              $q_size = sizeof ($q_array); 
+              for ($i = 0; $i < $q_size; $i++)
+                {
+                  $sql_statement .= ' AND ('
+                                   .' rsstool_title LIKE \'%'.$q_array[$i].'%\''
+                                   .' OR rsstool_desc LIKE \'%'.$q_array[$i].'%\''
+                                   .' )';
+                }
+*/
+              $s = str_replace (' ', '%', trim ($q));                         
+              $sql_statement .= ' AND ('    
+                               .' rsstool_title LIKE \'%'.$s.'%\''              
+                               .' OR rsstool_desc LIKE \'%'.$s.'%\''              
                                .' )';
             }
         }
