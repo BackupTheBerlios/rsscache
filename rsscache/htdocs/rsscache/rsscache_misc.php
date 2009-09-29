@@ -146,7 +146,7 @@ tv2_normalize2 ($db, $dest, $c)
         }
 
       // strip tags from the desc
-      $dest[$i]['rsstool_desc'] = strip_tags ($dest[$i]['rsstool_desc'], '<img>');
+      $dest[$i]['rsstool_desc'] = strip_tags ($dest[$i]['rsstool_desc'], '<img><br>');
     }
 
   return $dest;
@@ -192,15 +192,29 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
       else if ($f == '10_min')
         $sql_statement .= ' AND ( `tv2_duration` > 600 )';
 
-      // category
+      // category and blacklist
       if ($c)
-        $sql_statement .= ' AND ( `tv2_category` LIKE \''.$c.'\' )';
+        {
+          $sql_statement .= ' AND ( `tv2_category` LIKE \''.$c.'\' )';
+
+          // blacklist
+          $category = config_xml_by_category ($c);
+          $s = '';
+          for ($i = 0; $category->feed[$i]; $i++)
+            $s .= ($i > 0 ? ' ' : '').((string) $category->feed[$i]->blacklist);
+          $b = explode (' ', $s);
+          $b = array_unique ($b); // remove dupes
+          for ($i = 0; $b[$i]; $i++)
+            $sql_statement .= ' AND ( rsstool_title NOT LIKE \'%'.$b[$i].'%\' )'
+                             .' AND ( rsstool_desc NOT LIKE \'%'.$b[$i].'%\' )'
+;
+        }
 
       // query
       if ($q)
         {
 /*
-          $sql_statement .= ' AND MATCH ( rsstool_title, rsstool_desc'
+          $sql_statement .= ' AND MATCH ( rsstool_desc'
                            .' ) AGAINST (\''
                            .$db->sql_stresc ($q)
                            .'\''
@@ -216,17 +230,6 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
             }
           else
             {
-/*
-              $q_array = explode (' ', $q);
-              $q_size = sizeof ($q_array); 
-              for ($i = 0; $i < $q_size; $i++)
-                {
-                  $sql_statement .= ' AND ('
-                                   .' rsstool_title LIKE \'%'.$q_array[$i].'%\''
-                                   .' OR rsstool_desc LIKE \'%'.$q_array[$i].'%\''
-                                   .' )';
-                }
-*/
               $s = str_replace (' ', '%', trim ($q));                         
               $sql_statement .= ' AND ('    
                                .' rsstool_title LIKE \'%'.$s.'%\''              
@@ -235,9 +238,9 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
             }
         }
 
-      if ($f == 'related')
-        $sql_statement .= ' ORDER BY `rsstool_title` ASC';
-      else
+//      if ($f == 'related')
+//        $sql_statement .= ' ORDER BY `rsstool_title` ASC';
+//      else
         $sql_statement .= ' ORDER BY `rsstool_dl_date` DESC';
       $sql_statement .= ' LIMIT '.$start.','.$num;
     }

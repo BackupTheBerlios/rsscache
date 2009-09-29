@@ -148,9 +148,8 @@ tv2 ()
 
   // videos total
   $p .= '<div style="color:#bbb;">'
-       .' Videos: '
        .tv2_get_num_videos (NULL)
-       .', tv2 engine version 0.1pre'
+       .' videos, tv2 engine version 0.1pre'
        .'</div>';
 
   $p .= '<br>';
