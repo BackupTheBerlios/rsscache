@@ -19,6 +19,8 @@ $tv2_logo = '<span style="font-size:32px;font-family:sans;color:#000;font-weight
            .'<br>'
            .'<br>'
 ;
+$tv2_videos_s = 'videos and demos';
+
 
 $tv2_root = dirname(__FILE__);
 $tv2_link = 'http://pwnoogle.com';

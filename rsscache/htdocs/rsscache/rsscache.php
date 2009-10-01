@@ -19,7 +19,9 @@ tv2 ()
          $tv2_isnew,
          $tv2_body_tag,
          $tv2_logo,
-         $tv2_search_s;
+         $tv2_search_s,
+         $tv2_videos_s;
+  $tv2_version_s = '0.1pre';
 
   $c = get_request_value ('c'); // category
   $q = get_request_value ('q'); // search query
@@ -79,13 +81,11 @@ tv2 ()
   $p .= '<div style="display:table-row;">';
   $p .= '<div style="width:50%;vertical-align:top;text-align:left;display:table-cell;">';
 
-/*
-  if (!$v)
-    {
-      $p .= widget_carousel ('carousel_xml.php');
-    }
-  else
-*/
+//  if (!$v)
+//    {
+//      $p .= widget_carousel ('carousel_xml.php');
+//    }
+//  else
     {
       // left icons
       $s = 0;
@@ -147,9 +147,11 @@ tv2 ()
   $p .= '</form>';
 
   // videos total
-  $p .= '<div style="color:#bbb;">'
+  $p .= '<div style="color:#bbb;'
+//       .'text-align:left;'
+       .'">'
        .tv2_get_num_videos (NULL)
-       .' videos, tv2 engine version 0.1pre'
+       .' '.$tv2_videos_s.', tv2 engine '.$tv2_version_s
        .'</div>';
 
   $p .= '<br>';

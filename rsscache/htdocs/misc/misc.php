@@ -235,6 +235,25 @@ in_tag ($s)
 
 
 function
+is_url ($s)
+{
+  // checks if string is a url
+  $is_url = 0;
+  if (strlen ($s) > 4 &&
+      isalpha ($s[0]) &&
+      !strstr ($s, '..') &&
+      substr_count ($s, '.') == 2)
+    $is_url = 1;
+  if (stristr ($s, '.net') ||
+      stristr ($s, '.org') ||
+      stristr ($s, '.com'))
+    $is_url = 1;
+
+  return $is_url;
+}
+
+
+function
 parse_links ($s)
 {
   // turn plain text urls into links
@@ -244,15 +263,12 @@ parse_links ($s)
 //  $s = eregi_replace("(([^/])www\.|(^www\.))((:alnum:|[-\%\.\?\=\#\_\:\&\/\~\+\@\,\;])*)", "\\2<a href = 'http://www.\\4'>www.\\4</a>", $s);
 
   $a = explode (' ', strip_tags ($s));
-  $a = array_unique ($a); // remove dupes
+  $a = array_merge (array_unique ($a)); // remove dupes
 
   // find eventual urls
   $a_size = sizeof ($a);
   for ($i = 0; $i < $a_size; $i++)
-    if (strlen ($a[$i]) > 4 &&
-        isalpha ($a[$i][0]) &&
-        !strstr ($a[$i], '..') &&
-        substr_count ($a[$i], '.') == 2)
+    if (is_url ($a[$i]))
       {
         if (stristr ($a[$i], 'http://'))
           $s = str_replace ($a[$i], '<a href="'.$a[$i].'">'.$a[$i].'</a>', $s);

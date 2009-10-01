@@ -199,11 +199,12 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
 
           // blacklist
           $category = config_xml_by_category ($c);
+          $separator = ',';
           $s = '';
           for ($i = 0; $category->feed[$i]; $i++)
-            $s .= ($i > 0 ? ' ' : '').((string) $category->feed[$i]->blacklist);
-          $b = explode (' ', $s);
-          $b = array_unique ($b); // remove dupes
+            $s .= ($i > 0 ? $separator : '').((string) $category->feed[$i]->blacklist);
+          $b = explode ($separator, $s);
+          $b = array_merge (array_unique ($b)); // remove dupes
           for ($i = 0; $b[$i]; $i++)
             $sql_statement .= ' AND ( rsstool_title NOT LIKE \'%'.$b[$i].'%\' )'
                              .' AND ( rsstool_desc NOT LIKE \'%'.$b[$i].'%\' )'

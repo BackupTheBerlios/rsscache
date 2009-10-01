@@ -2,6 +2,10 @@
 //phpinfo();
 //error_reporting(E_ALL | E_STRICT);
 
-require_once ('tv2.php');
+if (!strncmp ($_SERVER['HTTP_HOST'], 'demos.', 6) ||
+    !strncmp ($_SERVER['SERVER_NAME'], 'demos.', 6))
+  require_once ('upload_demos.php');
+else
+  require_once ('tv2.php');
 
 ?>
