@@ -370,6 +370,31 @@ widget_video_dailymotion ($video_id, $width=420, $height=336)
 
 
 function
+widget_video_xfire ($video_id, $width=405, $height=344)
+{
+//  $video_id = '1';
+  $url = 'http://media.xfire.com/swf/embedplayer.swf';
+
+  // original: 405x344
+  $p = ''
+      .'<object width="'.$width.'" height="'.$height.'">'
+      .'<embed src="'.$url.'"'
+      .' type="application/x-shockwave-flash" allowscriptaccess="always"'
+      .' allowfullscreen="true" width="'
+      .$width
+      .'" height="'
+      .$height
+      .'" flashvars="videoid='
+      .$video_id
+      .'">'
+      .'</embed>'
+      .'</object>'
+;
+  return $p;
+}
+
+
+function
 widget_video_myspace ($video_id, $width=425, $height=360)
 {
 //  $video_id = 'k4H0eU9uhV7waa1XXp';
