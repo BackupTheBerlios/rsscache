@@ -112,9 +112,10 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
       // category and blacklist
       if ($c)
         {
+          // category
           $sql_statement .= ' AND ( `tv2_category` LIKE \''.$c.'\' )';
 
-          // blacklist
+          // category-wise blacklist
           $category = config_xml_by_category ($c);
           $separator = ',';
           $s = '';
