@@ -1,4 +1,7 @@
 <?php
+if (!defined ('TV2_PHP'))
+{
+define ('TV2_PHP', 1);
 //phpinfo();
 //error_reporting(E_ALL | E_STRICT);
 require_once ('config.php');
@@ -25,6 +28,9 @@ tv2 ()
 
   $c = get_request_value ('c'); // category
   $q = get_request_value ('q'); // search query
+  $desc = get_request_value ('desc'); // search in desc?
+  if (!($desc))
+    $desc = 0;
 
   $f = get_request_value ('f'); // function
 
@@ -137,12 +143,15 @@ tv2 ()
        .'>'
        .'<input type="submit" value="'.$tv2_search_s.'">';
 
-  // focus
-  $p .= '<script type="text/javascript">'."\n"
-       .'document.tv2_form.q.focus ();'."\n"
-       .'</script>';
+  // focus (javascript)
+//  $p .= '<script type="text/javascript">'."\n"
+//       .'document.tv2_form.q.focus ();'."\n"
+//       .'</script>';
 
   $p .= '</nobr>';
+
+  // search in desc
+  $p .= '<input type="hidden" name="desc" value="1">';
 
   $p .= '</form>';
 
@@ -178,9 +187,9 @@ tv2 ()
 
   // use SQL
   if ($v)
-    $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
+    $d_array = tv2_sql (NULL, NULL, $desc, $f, $v, 0, 0, 0);
   else
-    $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
+    $d_array = tv2_sql ($c, $q, $desc, $f, NULL, $start, $num ? $num : 0);
 
   // show page-wise navigation (top)
   if (!$v)
@@ -192,6 +201,7 @@ tv2 ()
 
       if ($s)
         {
+/*
           // left play all button
           $p .= '&nbsp<a href="'
                .misc_getlink ('', array ('v' => NULL, 'f' => 'play_all'), true)
@@ -199,10 +209,11 @@ tv2 ()
                .'<img src="images/play_all32.png" border="0">'
                .'</a>'
 ;
+*/
           $p .= $s;
 
         }
-
+/*
       // right play all button
       $p .= '&nbsp<a href="'
            .misc_getlink ('', array ('v' => NULL, 'f' => 'play_all'), true)
@@ -210,6 +221,7 @@ tv2 ()
            .'<img src="images/play_all32.png" border="0">'
            .'</a>'
 ;
+*/
     }
 
   $p .= '<br>';
@@ -302,6 +314,9 @@ if ($f == 'rss')
   {
     $c = get_request_value ('c'); // game filter
     $q = get_request_value ('q'); // search query
+    $desc = get_request_value ('desc'); // search in desc?
+    if (!($desc))
+      $desc = 0;
 
     $f = get_request_value ('f'); // function
 
@@ -313,7 +328,7 @@ if ($f == 'rss')
       $num = $tv2_results;
 
     // use SQL
-    $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num);
+    $d_array = tv2_sql ($c, $q, $desc, $f, NULL, $start, $num);
     tv2_output_rss ($d_array);
     exit;
   }
@@ -375,5 +390,10 @@ if ($memcache_expire > 0)
     $memcache->set (md5 ($_SERVER['QUERY_STRING']), serialize ($p))
       or die ("memcache: failed to save data at the server");
   }
+
+
+
+}
+
 
 ?>
