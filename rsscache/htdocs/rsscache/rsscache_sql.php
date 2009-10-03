@@ -282,13 +282,13 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
     $sql_statement .= ' AND ( rsstool_url_crc32 = '.$v.' )';
   else
     {
-      // category and its whitelist > blacklist
+      // category, whitelist, and blacklist
       if ($c)
         {
           // category
           $sql_statement .= ' AND ( `tv2_category` LIKE \''.$c.'\' )';
 
-          // collect amd simplify whitelist and blacklist
+          // collect and simplify whitelist and blacklist
           $category = config_xml_by_category ($c);
           $separator = ',';
           if ($category->whitelist)
@@ -302,7 +302,7 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
               $b = array_merge (array_unique ($b)); // remove dupes
             }
 
-          // whitelist AND(OR()...)
+          // whitelist AND((LIKE)OR(LIKE))
           if ($w[0])
             {
               $sql_statement .= ' AND (';
@@ -314,7 +314,7 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
               $sql_statement .= ' )';
             }
 
-          // blacklist ...AND(AND())...
+          // blacklist AND((NOT LIKE)AND(NOT LIKE))
           if ($b[0])
             {
               $sql_statement .= ' AND (';
