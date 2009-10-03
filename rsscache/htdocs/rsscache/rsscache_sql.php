@@ -86,6 +86,70 @@ tv2_get_num_days ($category)
 
 
 function
+tv2_sql_related_cb ($value)
+{
+  if (strlen (trim ($value)) < 4)
+    return false;
+
+  $l = '_-0123456789/()[]{}#';
+  $i_max = strlen ($l);
+  for ($i = 0; $i < $i_max; $i++)
+    if (strchr ($value, $l[$i]))
+      return false;
+
+  return true;
+}
+
+
+function
+tv2_sql_related ($s)
+{
+  $a = explode (' ', strtolower ($s));
+  $a = array_filter ($a, 'tv2_sql_related_cb');
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($a);
+
+  $s = implode (' ', $a);
+  $s = trim ($s);
+  $s = str_replace ('  ', ' ', 
+       str_replace ('  ', ' ', 
+       str_replace ('  ', ' ', $s)));
+
+  return $s;
+}
+
+
+function
+tv2_sql_keywords ($s)
+{
+  for ($i = 0; $s[$i]; $i++)
+    if (!isalpha ($s[$i]))
+      $s[$i] = ' ';
+
+  $a = explode (' ', strtolower ($s));
+
+  for ($i = 0; $a[$i]; $i++)
+    {
+      $a[$i] = trim ($a[$i]);
+//      if (strlen ((string) $a[$i]) < 4)
+//        $a[$i] = '';
+    }
+  $a = array_merge (array_unique ($a));
+
+  // DEBUG
+  echo '<pre><tt>';
+  print_r ($a);
+
+  $s = implode (' ', $a);
+  $s = trim ($s);
+echo '['.$s.']';
+  return $s;
+}
+
+
+function
 tv2_sql_normalize ($db, $dest, $c)
 {
   $debug = 0;
@@ -111,6 +175,9 @@ tv2_sql_normalize ($db, $dest, $c)
 
       // strip tags from the desc
       $dest[$i]['rsstool_desc'] = strip_tags ($dest[$i]['rsstool_desc'], '<img><br>');
+
+//      $dest[$i]['keywords'] = tv2_sql_keywords ($dest[$i]['rsstool_title'].' '.strip_tags ($dest[$i]['rsstool_desc']));
+      $dest[$i]['related'] = tv2_sql_related ($dest[$i]['rsstool_title']);
     }
 
   return $dest;
@@ -221,24 +288,19 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
           // category
           $sql_statement .= ' AND ( `tv2_category` LIKE \''.$c.'\' )';
 
-          // collect whitelist and blacklist
+          // collect amd simplify whitelist and blacklist
           $category = config_xml_by_category ($c);
           $separator = ',';
-          $whitelist = '';
-          $blacklist = '';
-          for ($i = 0; isset ($category->feed[$i]); $i++)
+          if ($category->whitelist)
             {
-              if (strlen ((string) $category->feed[$i]->whitelist))
-                $whitelist .= ($i > 0 ? $separator : '').((string) $category->feed[$i]->whitelist);
-              if (strlen ((string) $category->feed[$i]->blacklist))
-                $blacklist .= ($i > 0 ? $separator : '').((string) $category->feed[$i]->blacklist);
+              $w = explode ($separator, $category->whitelist);
+              $w = array_merge (array_unique ($w)); // remove dupes
             }
-
-          // simplify whitelist and blacklist
-          $w = explode ($separator, $whitelist);
-          $b = explode ($separator, $blacklist);
-          $w = array_merge (array_unique ($w)); // remove dupes
-          $b = array_merge (array_unique ($b)); // remove dupes
+          if ($category->blacklist)
+            {
+              $b = explode ($separator, $category->blacklist);
+              $b = array_merge (array_unique ($b)); // remove dupes
+            }
 
           // whitelist AND(OR()...)
           if ($w[0])
