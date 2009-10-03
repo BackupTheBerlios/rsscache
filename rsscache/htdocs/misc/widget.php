@@ -311,11 +311,16 @@ widget_video ($video_url, $width=400, $height=300, $fgcolor="#ffffff", $bgcolor=
 function
 widget_video_youtube ($video_id, $width=425, $height=344, $fgcolor="#ffffff", $bgcolor="#000000", $bgcolor2="#444444", $bgcolor3="#ff0000")
 {
+  
+
   $url = 'http://www.youtube.com/v/'
         .$video_id
        .'&fs=1'             // allow fullscreen
-       .'&ap=%2526fmt%3D18' // embed stereo, 480 x 270 resolution (original: 425x344)
-//       .'&ap=%2526fmt%3D22' // embed stereo, 1280 x 720 resolution
+       . (
+          ($width == -1 || $height == -1) ?
+          '&ap=%2526fmt%3D22' : // embed stereo, 1280 x 720 resolution
+          '&ap=%2526fmt%3D18' // embed stereo, 480 x 270 resolution (original: 425x344)
+        )
        .'&showsearch=0'     // no search
        .'&rel=0'            // no related
 //       .'#t=03m22s'         // skip to
@@ -324,6 +329,12 @@ widget_video_youtube ($video_id, $width=425, $height=344, $fgcolor="#ffffff", $b
 //       .'&color1=0x000000'
 //       .'&color2=0x000000'
 ;
+
+  if ($width == -1 || $height == -1)
+    {
+      $width = 900;
+      $height = 506;
+    }
 
   $p = ''
        .'<object width="'.$width.'" height="'.$height.'">'
@@ -337,8 +348,6 @@ widget_video_youtube ($video_id, $width=425, $height=344, $fgcolor="#ffffff", $b
        .$height
        .'"></embed>'
        .'</object>';
-
-//  $p .= '<br><a href="http://www.youtube.com/v/'.$video_id.'">Direct</a>';
 
   return $p;
 }

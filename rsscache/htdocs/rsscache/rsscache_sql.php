@@ -39,6 +39,39 @@ tv2_get_num_videos ($category)
 
 
 function
+tv2_get_num_days ($category)
+{
+  global $tv2_dbhost,
+         $tv2_dbuser,
+         $tv2_dbpass,
+         $tv2_dbname;
+  $debug = 0;
+
+  $db = new misc_sql;  
+  $db->sql_open ($tv2_dbhost,
+                 $tv2_dbuser,
+                 $tv2_dbpass,
+                 $tv2_dbname);
+
+  $sql_statement = 'SELECT rsstool_dl_date FROM rsstool_table WHERE 1';
+
+  if ($category)
+    $sql_statement .= ' AND ( tv2_category LIKE \''.$category.'\' )';
+
+  $sql_statement .= ' ORDER BY rsstool_dl_date ASC'
+                   .' LIMIT 1'
+                   .';';
+
+  $db->sql_write ($sql_statement, $debug);
+  $r = $db->sql_read ($debug);
+
+  $db->sql_close ();
+
+  return (int) ((time () - $r[0][0]) / 86400);
+}
+
+
+function
 tv2_sql_normalize ($db, $dest, $c)
 {
   $debug = 0;
@@ -109,24 +142,54 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
       else if ($f == '10_min')
         $sql_statement .= ' AND ( tv2_duration > 600 )';
 
-      // category and blacklist
+      // category and whitelist > blacklist
       if ($c)
         {
           // category
           $sql_statement .= ' AND ( `tv2_category` LIKE \''.$c.'\' )';
 
-          // category-wise blacklist
+          // whitelist AND(OR()) > blacklist AND()
           $category = config_xml_by_category ($c);
           $separator = ',';
-          $s = '';
+          $whitelist = '';
+          $blacklist = '';
           for ($i = 0; $category->feed[$i]; $i++)
-            $s .= ($i > 0 ? $separator : '').((string) $category->feed[$i]->blacklist);
-          $b = explode ($separator, $s);
+            {
+              if (strlen ((string) $category->feed[$i]->whitelist))
+                $whitelist .= ($i > 0 ? $separator : '').((string) $category->feed[$i]->whitelist);
+              if (strlen ((string) $category->feed[$i]->blacklist))
+                $blacklist .= ($i > 0 ? $separator : '').((string) $category->feed[$i]->blacklist);
+            }
+
+          $w = explode ($separator, $whitelist);
+          $w = array_merge (array_unique ($w)); // remove dupes
+          $b = explode ($separator, $blacklist);
           $b = array_merge (array_unique ($b)); // remove dupes
-          for ($i = 0; $b[$i]; $i++)
-            $sql_statement .= ' AND ( rsstool_title NOT LIKE \'%'.$b[$i].'%\' )'
-                             .' AND ( rsstool_desc NOT LIKE \'%'.$b[$i].'%\' )'
+
+          // category-wise whitelist AND(OR()...)
+          if ($w[0])
+            {
+              $sql_statement .= ' AND (';
+              for ($i = 0; $w[$i]; $i++)
+                $sql_statement .= ($i > 0 ? ' OR' : '')
+                                 .' ( rsstool_title LIKE \'%'.$w[$i].'%\' )'
+                                 .' OR ( rsstool_desc LIKE \'%'.$w[$i].'%\' )'
 ;
+              $sql_statement .= ' )';
+            }
+
+          // category-wise blacklist ...AND(AND())...
+          if ($b[0])
+            {
+              $sql_statement .= ' AND (';
+              for ($i = 0; $b[$i]; $i++)
+                $sql_statement .=  ($i > 0 ? ' AND' : '')
+                                 .' ( rsstool_title NOT LIKE \'%'.$b[$i].'%\' )'
+                                 .' AND ( rsstool_desc NOT LIKE \'%'.$b[$i].'%\' )'
+;
+              $sql_statement .= ' )';
+            }
+
         }
 
       // query
@@ -166,9 +229,9 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
             }
         }
 
-//      if ($f == 'related')
-//        $sql_statement .= ' ORDER BY rsstool_title ASC';
-//      else
+      if ($f == 'related')
+        $sql_statement .= ' ORDER BY rsstool_title ASC';
+      else
         $sql_statement .= ' ORDER BY rsstool_dl_date DESC';
       $sql_statement .= ' LIMIT '.$start.','.$num;
     }

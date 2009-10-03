@@ -15,8 +15,9 @@ config_xml_normalize ($config)
 //      if ($config->category[$i]->query[$j]->name)
         if ($config->category[$i]->query[$j]->name == 'c')
           {
-            // add a new variable
+            // add new variables
             $config->category[$i]->videos = tv2_get_num_videos ($config->category[$i]->name);
+            $config->category[$i]->days = tv2_get_num_days ($config->category[$i]->name);
           }
 
   return $config;
@@ -31,7 +32,7 @@ config_xml ($memcache_expire = 0)
   if ($config)
     return $config;
 
-  if ($memcache_expire > 0) 
+  if ($memcache_expire > 0)
     {
       $memcache = new Memcache;  
       $memcache->connect ('localhost', 11211) or die ("memcache: could not connect");
@@ -40,7 +41,10 @@ config_xml ($memcache_expire = 0)
       $p = $memcache->get (md5 ('config.xml'));
       if ($p)
         {
-          $config = unserialize ($p);
+          $config = // unserialize (
+$p
+//)
+;
    
           if ($config)
             {
@@ -51,13 +55,19 @@ config_xml ($memcache_expire = 0)
         }
     }
 
+  // DEBUG
+//  echo 'read config';
+
   $config = simplexml_load_file ('config.xml');
   $config = config_xml_normalize ($config);
 
   // use memcache
   if ($memcache_expire > 0)
     {
-      $memcache->set (md5 ('config.xml'), serialize ($config))
+      $memcache->set (md5 ('config.xml'), // serialize (
+$config
+//)
+)
         or die ("memcache: failed to save data at the server");
     }   
 

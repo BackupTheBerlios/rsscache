@@ -1,4 +1,4 @@
-<?php
+<?
 if (!defined ('TV2_PHP'))
 {
 define ('TV2_PHP', 1);
@@ -23,7 +23,8 @@ tv2 ()
          $tv2_body_tag,
          $tv2_logo,
          $tv2_search_s,
-         $tv2_videos_s;
+         $tv2_videos_s,
+         $tv2_days_s;
   $tv2_version_s = '0.1pre';
 
   $c = get_request_value ('c'); // category
@@ -160,7 +161,15 @@ tv2 ()
 //       .'text-align:left;'
        .'">'
        .tv2_get_num_videos (NULL)
-       .' '.$tv2_videos_s.', tv2 engine '.$tv2_version_s
+       .' '.$tv2_videos_s;
+
+  // days total
+  $p .= ', '
+       .tv2_get_num_days (NULL)
+       .' '.$tv2_days_s;
+
+  // engine version
+  $p .= ', tv2 engine '.$tv2_version_s
        .'</div>';
 
   $p .= '<br>';
