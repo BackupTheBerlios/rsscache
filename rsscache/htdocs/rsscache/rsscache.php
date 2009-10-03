@@ -24,7 +24,8 @@ tv2 ()
          $tv2_logo,
          $tv2_search_s,
          $tv2_videos_s,
-         $tv2_days_s;
+         $tv2_days_s,
+         $tv2_cookie_expire;
   $tv2_version_s = '0.1pre';
 
   $c = get_request_value ('c'); // category
@@ -75,8 +76,7 @@ tv2 ()
 //           array ('f', $f),
 //           array ('v', $v),
          );
-  $a_size = sizeof ($a);
-  for ($i = 0; $i < $a_size; $i++)
+  for ($i = 0; isset ($a[$i]); $i++)
     setcookie ($a[$i][0], $a[$i][1], $tv2_cookie_expire);
 
   $config = config_xml ();
@@ -123,7 +123,7 @@ tv2 ()
 
   // select
   $p .= '<select name="c">';
-  for ($i = 0; $config->category[$i]; $i++)
+  for ($i = 0; isset ($config->category[$i]); $i++)
     if ($config->category[$i]->select == 1)
       $p .= '<option'
            .' value="'.$config->category[$i]->name.'"'
@@ -246,7 +246,7 @@ tv2 ()
     }
   else
     {
-      for ($i = 0; $d_array[$i]; $i++)
+      for ($i = 0; isset ($d_array[$i]); $i++)
         {
           if ($i > 0)
             {

@@ -61,6 +61,20 @@ tv2_get_num_days ($category)
   $sql_statement .= ' ORDER BY rsstool_dl_date ASC'
                    .' LIMIT 1'
                    .';';
+/*
+  $sql_statement = 'SELECT rsstool_dl_date';
+
+  if ($category)
+    $sql_statement .= ' FROM ( SELECT rsstool_dl_date FROM rsstool_table WHERE ( tv2_category LIKE \''.$category.'\' ) )';
+  else
+    $sql_statement .= ' FROM ( SELECT rsstool_dl_date FROM rsstool_table WHERE 1 )';
+
+  $sql_statement .= ''
+                   .' WHERE 1'
+                   .' ORDER BY rsstool_dl_date ASC'
+                   .' LIMIT 1'
+                   .';';
+*/
 
   $db->sql_write ($sql_statement, $debug);
   $r = $db->sql_read ($debug);
@@ -76,7 +90,7 @@ tv2_sql_normalize ($db, $dest, $c)
 {
   $debug = 0;
 
-  for ($i = 0; $dest[$i]; $i++)
+  for ($i = 0; isset ($dest[$i]); $i++)
     {
       if (strstr ($dest[$i]['rsstool_url'], 'www.google.com'))
         {
@@ -111,7 +125,7 @@ tv2_sql_csv2array ($csv)
 
   $a = explode ($separator, $csv);
   // remove terminators
-  for ($i = 0; $a[$i]; $i++)
+  for ($i = 0; isset ($a[$i]); $i++)
     {
       $s = strchr ($a[$i], $terminator) + 1;
       $l = (strrchr ($a[$i], $terminator) - 1) - $s;
@@ -212,7 +226,7 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
           $separator = ',';
           $whitelist = '';
           $blacklist = '';
-          for ($i = 0; $category->feed[$i]; $i++)
+          for ($i = 0; isset ($category->feed[$i]); $i++)
             {
               if (strlen ((string) $category->feed[$i]->whitelist))
                 $whitelist .= ($i > 0 ? $separator : '').((string) $category->feed[$i]->whitelist);
@@ -230,7 +244,7 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
           if ($w[0])
             {
               $sql_statement .= ' AND (';
-              for ($i = 0; $w[$i]; $i++)
+              for ($i = 0; isset ($w[$i]); $i++)
                 $sql_statement .= ($i > 0 ? ' OR' : '')
                                  .' ( rsstool_title LIKE \'%'.$w[$i].'%\' )'
                                  .' OR ( rsstool_desc LIKE \'%'.$w[$i].'%\' )'
@@ -242,7 +256,7 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
           if ($b[0])
             {
               $sql_statement .= ' AND (';
-              for ($i = 0; $b[$i]; $i++)
+              for ($i = 0; isset ($b[$i]); $i++)
                 $sql_statement .=  ($i > 0 ? ' AND' : '')
                                  .' ( rsstool_title NOT LIKE \'%'.$b[$i].'%\' )'
                                  .' AND ( rsstool_desc NOT LIKE \'%'.$b[$i].'%\' )'
@@ -278,7 +292,7 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
               $sql_statement .= ' AND (';
               $query_separator = ',';
               $q_array = explode ($query_separator, $q);
-              for ($i = 0; $q_array[$i]; $i++)
+              for ($i = 0; isset ($q_array[$i]); $i++)
                 {
 //                  $s = str_replace (' ', '%', trim ($q_array[$i]));
                   $s = $q_array[$i];
