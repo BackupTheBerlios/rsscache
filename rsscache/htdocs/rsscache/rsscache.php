@@ -24,7 +24,6 @@ tv2 ()
          $tv2_logo,
          $tv2_search_s,
          $tv2_videos_s,
-         $tv2_days_s,
          $tv2_cookie_expire;
   $tv2_version_s = '0.1pre';
 
@@ -166,7 +165,7 @@ tv2 ()
   // days total
   $p .= ', '
        .tv2_get_num_days (NULL)
-       .' '.$tv2_days_s;
+       .' days';
 
   // engine version
   $p .= ', tv2 engine '.$tv2_version_s

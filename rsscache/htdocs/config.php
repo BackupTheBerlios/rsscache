@@ -23,8 +23,7 @@ $tv2_logo = '<span style="font-size:32px;font-family:sans-serif;color:#000;font-
            .'<br>'
 ;
 $tv2_videos_s = 'videos and demos';
-$tv2_days_s = 'days';
-$tv2_related_s = 'Find realted '.$tv2_videos_s;
+$tv2_related_s = 'Find related '.$tv2_videos_s;
 
 
 $tv2_root = dirname(__FILE__);

@@ -186,17 +186,13 @@ isip ($ip)
 
 
 function
-misc_get_keywords_filter ($value)
+misc_get_keywords_alnum ($s)
 {
-  if (strlen (trim ($value)) < 4)
+  if (strlen (trim ($s)) < 4)
     return false;
 
-//  $l = '_-0123456789/()[]{}#';
-//  $i_max = strlen ($l);
-  $i_max = strlen ($value);
-  for ($i = 0; $i < $i_max; $i++)
-//    if (strchr ($value, $l[$i]))
-    if (!isalpha ($value[$i]))
+  for ($i = 0; $s[$i]; $i++)
+    if (!isalnum ($s[$i]))
       return false;
 
   return true;
@@ -204,12 +200,27 @@ misc_get_keywords_filter ($value)
 
 
 function
-misc_get_keywords ($s)
+misc_get_keywords_alpha ($s)
+{
+  if (strlen (trim ($s)) < 4)
+    return false;
+
+  for ($i = 0; $s[$i]; $i++)
+    if (!isalpha ($s[$i]))
+      return false;
+
+  return true;
+}
+
+
+function
+misc_get_keywords ($s, $flag = 0) // default = isalnum
 {
   $a = explode (' ', strtolower ($s));
-  $a = array_filter ($a, 'misc_get_keywords_filter');
   for ($i = 0; isset ($a[$i]); $i++)
     $a[$i] = trim ($a[$i]);
+  // TODO: more sensitivity instead of array_filter()
+  $a = array_filter ($a, (!$flag ? 'misc_get_keywords_alnum' : 'misc_get_keywords_alpha'));
   $a = array_merge (array_unique ($a));
 
   // DEBUG
