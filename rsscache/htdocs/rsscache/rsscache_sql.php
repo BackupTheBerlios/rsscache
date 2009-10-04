@@ -238,6 +238,8 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
                   .' rsstool_dl_date,'
                   .' tv2_category,'
                   .' tv2_duration'
+//                  .' tv2_title_keywords'
+//                  .' tv2_desc_keywords'
                   .' FROM ( rsstool_table ) WHERE 1';
 
   if ($v) // direct
@@ -257,13 +259,6 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
             {
               $w = explode ($separator, $category->whitelist);
               $w = array_merge (array_unique ($w)); // remove dupes
-            }
-          if ($category->blacklist)
-            {
-              $b = explode ($separator, $category->blacklist);
-              $b = array_merge (array_unique ($b)); // remove dupes
-            }
-
           // whitelist AND((LIKE)OR(LIKE))
           if ($w[0])
             {
@@ -275,7 +270,11 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
 ;
               $sql_statement .= ' )';
             }
-
+            }
+          if ($category->blacklist)
+            {
+              $b = explode ($separator, $category->blacklist);
+              $b = array_merge (array_unique ($b)); // remove dupes
           // blacklist AND((NOT LIKE)AND(NOT LIKE))
           if ($b[0])
             {
@@ -287,7 +286,8 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
 ;
               $sql_statement .= ' )';
             }
-        } // category and whitelist > blacklist
+            }
+        } // category, whitelist, and blacklist
 
       // query
       if ($q)
