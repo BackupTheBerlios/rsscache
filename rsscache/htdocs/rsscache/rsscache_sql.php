@@ -119,8 +119,9 @@ tv2_sql_normalize ($db, $dest, $c)
       // strip tags from the desc
       $dest[$i]['rsstool_desc'] = strip_tags ($dest[$i]['rsstool_desc'], '<img><br>');
 
-//      $dest[$i]['tv2_desc_keywords'] = misc_get_keywords (strip_tags ($dest[$i]['rsstool_desc']), 0); // isalnum
-//      $dest[$i]['tv2_title_keywords'] = misc_get_keywords ($dest[$i]['rsstool_title'], 1); // isalpha
+      // TODO: obsolete
+      $dest[$i]['tv2_desc_keywords'] = misc_get_keywords (strip_tags ($dest[$i]['rsstool_desc']), 0); // isalnum
+      $dest[$i]['tv2_title_keywords'] = misc_get_keywords ($dest[$i]['rsstool_title'], 1); // isalpha
 
       if (strstr ($dest[$i]['rsstool_url'], $tv2_link))
         $dest[$i]['tv2_local_url'] = str_replace ($tv2_link, '', $dest[$i]['rsstool_url']);
@@ -229,7 +230,7 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
   $start = $db->sql_stresc ($start);
   $num = $db->sql_stresc ($num);
 
-//  $sql_statement = 'SELECT * FROM ( rsstool_table ) WHERE 1';
+//  $sql_statement = 'SELECT * FROM rsstool_table WHERE 1';
   $sql_statement = 'SELECT'
                   .' rsstool_url,'
                   .' rsstool_url_crc32,'
@@ -296,7 +297,8 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
             {
                   $s = str_replace (' ', '%', trim ($q));
                   $sql_statement .= ' AND ('
-                                   .' tv2_title_keywords LIKE \'%'.$s.'%\''
+//                                   .' tv2_title_keywords LIKE \'%'.$s.'%\''
+                                   .' rsstool_title LIKE \'%'.$s.'%\''
                                    .' )'
 ;
             }
