@@ -1,4 +1,7 @@
 <?php
+if (!defined ('TV2_CONFIG_PHP'))
+{
+define ('TV2_CONFIG_PHP', 1);
 
 
 // compression 1/0
@@ -21,6 +24,7 @@ $tv2_logo = '<span style="font-size:32px;font-family:sans-serif;color:#000;font-
 ;
 $tv2_videos_s = 'videos and demos';
 $tv2_days_s = 'days';
+$tv2_related_s = 'Find realted '.$tv2_videos_s;
 
 
 $tv2_root = dirname(__FILE__);
@@ -42,6 +46,10 @@ $tv2_dbname = 'jack';
 $tv2_dbuser = 'jack';
 $tv2_dbpass = 'poopoo';
 $tv2_dbhost = 'localhost';
+
+
+
+}
 
 
 ?>

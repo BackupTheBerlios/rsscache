@@ -186,6 +186,44 @@ isip ($ip)
 
 
 function
+misc_get_keywords_filter ($value)
+{
+  if (strlen (trim ($value)) < 4)
+    return false;
+
+//  $l = '_-0123456789/()[]{}#';
+//  $i_max = strlen ($l);
+  $i_max = strlen ($value);
+  for ($i = 0; $i < $i_max; $i++)
+//    if (strchr ($value, $l[$i]))
+    if (!isalpha ($value[$i]))
+      return false;
+
+  return true;
+}
+
+
+function
+misc_get_keywords ($s)
+{
+  $a = explode (' ', strtolower ($s));
+  $a = array_filter ($a, 'misc_get_keywords_filter');
+  for ($i = 0; isset ($a[$i]); $i++)
+    $a[$i] = trim ($a[$i]);
+  $a = array_merge (array_unique ($a));
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($a);
+
+  $s = implode (' ', $a);
+  $s = trim ($s);
+
+  return $s;
+}
+
+
+function
 get_suffix ($filename)
 // get_suffix() never returns NULL
 {
