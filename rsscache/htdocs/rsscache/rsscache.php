@@ -367,6 +367,110 @@ $head = '<html>'
        ."\n"
        .'</script>'
 */
+       .'<style type="text/css">'."\n"
+/*
+       ."\n"
+       .'a.thumbnail {'."\n"
+       .'  position: relative;'."\n"
+       .'  z-index: 0;'."\n"
+       .'}'."\n"
+       ."\n"
+       .'a.thumbnail:hover {'."\n"
+       .'  z-index: 50;'."\n"
+       .'}'."\n"
+       ."\n"
+       .'a.thumbnail span {'."\n"
+       .'  position: absolute;'."\n"
+       .'  left: -1000px;'."\n"
+       .'  visibility: hidden;'."\n"
+       .'}'."\n"
+       ."\n"
+       .'a.thumbnail:hover span {'."\n"
+       .'  visibility: visible;'."\n"
+       .'  top: -4px;'."\n"
+        .'  left: 16px;'."\n"
+       .'}'."\n"
+       ."\n"
+*/
+.'
+
+a
+{
+  color:#00f;
+  text-decoration:none;
+}
+
+
+a:hover
+{
+  color:#f40;
+//  background-color:#fec;
+//  color:WindowText;
+//  background-color:Window;
+  text-decoration:none;
+}'
+
+/*
+a span
+{
+  display:none;
+}
+
+
+a:hover span
+{
+  font:12px sans-serif,arial;
+  position:absolute;
+  top:30px;
+  left:10px;
+  padding:2px;
+  display:block;
+//  white-space:nowrap;
+  color:InfoText;
+  background-color:InfoBackground;
+  border:1px solid #000;
+  text-align:left;
+  text-decoration:none;
+}
+
+.widget_a_img
+{
+  position: relative;
+  z-index:0;
+  text-decoration:none;
+}
+
+
+.widget_a_img:hover
+{
+  z-index:1;
+}
+
+
+.widget_a_img span
+{
+  display:none;
+}
+
+
+.widget_a_img:hover span
+{
+  font:12px sans-serif,arial;
+  position:absolute;
+  top:30px;
+  left:10px;
+  padding:2px;
+  display:block;
+//  white-space:nowrap;
+  color:InfoText;
+  background-color:InfoBackground;
+  border:1px solid #000;
+  text-align:left;
+  text-decoration:none;
+}
+*/
+       .'</style>'
+
        .'</head>'
        .$tv2_body_tag
 ;

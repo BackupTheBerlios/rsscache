@@ -296,7 +296,7 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
             {
                   $s = str_replace (' ', '%', trim ($q));
                   $sql_statement .= ' AND ('
-                                   .' rsstool_title LIKE \'%'.$s.'%\''
+                                   .' tv2_title_keywords LIKE \'%'.$s.'%\''
                                    .' )'
 ;
             }
@@ -322,7 +322,7 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
                   $s = $q_array[$i];
                   $sql_statement .= ($i > 0 ? ' OR' : '')
                                    .' rsstool_title LIKE \'%'.$s.'%\''              
-                                   .($desc ? ' or rsstool_desc LIKE \'%'.$s.'%\'' : '')
+                                   .($desc ? ' OR rsstool_desc LIKE \'%'.$s.'%\'' : '')
 ;
                 }
               $sql_statement .= ' )';
