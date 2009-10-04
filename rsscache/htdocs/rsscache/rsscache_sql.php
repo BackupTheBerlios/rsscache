@@ -119,8 +119,8 @@ tv2_sql_normalize ($db, $dest, $c)
       // strip tags from the desc
       $dest[$i]['rsstool_desc'] = strip_tags ($dest[$i]['rsstool_desc'], '<img><br>');
 
-      $dest[$i]['tv2_desc_keywords'] = misc_get_keywords (strip_tags ($dest[$i]['rsstool_desc']), 0); // isalnum
-      $dest[$i]['tv2_title_keywords'] = misc_get_keywords ($dest[$i]['rsstool_title'], 1); // isalpha
+//      $dest[$i]['tv2_desc_keywords'] = misc_get_keywords (strip_tags ($dest[$i]['rsstool_desc']), 0); // isalnum
+//      $dest[$i]['tv2_title_keywords'] = misc_get_keywords ($dest[$i]['rsstool_title'], 1); // isalpha
 
       if (strstr ($dest[$i]['rsstool_url'], $tv2_link))
         $dest[$i]['tv2_local_url'] = str_replace ($tv2_link, '', $dest[$i]['rsstool_url']);
@@ -237,10 +237,10 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
                   .' rsstool_desc,'
                   .' rsstool_dl_date,'
                   .' tv2_category,'
-                  .' tv2_duration'
-//                  .' tv2_title_keywords'
-//                  .' tv2_desc_keywords'
-                  .' FROM ( rsstool_table ) WHERE 1';
+                  .' tv2_duration,'
+                  .' tv2_title_keywords,'
+                  .' tv2_desc_keywords'
+                  .' FROM rsstool_table WHERE 1';
 
   if ($v) // direct
     $sql_statement .= ' AND ( rsstool_url_crc32 = '.$v.' )';
