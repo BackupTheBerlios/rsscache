@@ -4,7 +4,7 @@
 
 if (!strncmp ($_SERVER['HTTP_HOST'], 'demos.', 6) ||
     !strncmp ($_SERVER['SERVER_NAME'], 'demos.', 6))
-  require_once ('upload_demos.php');
+  require_once ('pwnoogle_demos.php');
 else
   require_once ('tv2.php');
 
