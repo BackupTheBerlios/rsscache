@@ -152,9 +152,9 @@ sql_write ($sql_query_s, $debug = 0)
         .$sql_query_s
         .'</tt><br><br>';
 
-  if ($this->res != FALSE)
+  if ($this->res)
     {
-      mysql_free_result ($this->res);
+//      mysql_free_result ($this->res);
       $this->res = NULL;
     }
 
