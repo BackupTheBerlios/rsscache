@@ -26,6 +26,22 @@ require_once ('misc/misc.php');
 
 
 function
+widget_captcha ($len)
+{
+  $t = microtime();
+  $s = md5 ($t);
+  $s = substr ($s, 0, $len);
+
+  // set session object or cookie with CAPTCHA
+
+  $p .= $s;
+  $p .= '<input type="test" size="'.$len.'" maxsize="'.$len.'" name="widget_captcha">';
+
+  return $s;
+}
+
+
+function
 widget_table ($title_array, $content_array, $title_attr, $row1_attr, $row2_attr)
 {
 /*
