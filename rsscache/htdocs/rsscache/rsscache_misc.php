@@ -10,14 +10,21 @@ require_once ('tv2_sql.php');
 function
 config_xml_normalize ($config)
 {
+  $stats = tv2_sql_stats ();
+
+  // add new variables
+  $config->videos = $stats['videos'];
+  $config->days = $stats['days'];
+
   for ($i = 0; $config->category[$i]; $i++)
     for ($j = 0; $config->category[$i]->query[$j]; $j++)
 //      if ($config->category[$i]->query[$j]->name)
         if ($config->category[$i]->query[$j]->name == 'c')
           {
-            // add new variables
-            $config->category[$i]->videos = tv2_get_num_videos ($config->category[$i]->name);
-            $config->category[$i]->days = tv2_get_num_days ($config->category[$i]->name);
+            $stats = tv2_sql_stats ($config->category[$i]->name);
+
+            $config->category[$i]->videos = $stats['videos'];
+            $config->category[$i]->days = $stats['days'];
           }
 
   return $config;

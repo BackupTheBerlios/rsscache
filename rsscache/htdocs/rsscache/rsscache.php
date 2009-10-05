@@ -15,96 +15,130 @@ require_once ('tv2_misc.php');
 
 
 function
-tv2_search_form ()
+tv2_output_html ($d, $start, $num)
 {
-  global $tv2_root,
-         $tv2_results,
-         $tv2_isnew,
-         $tv2_body_tag,
-         $tv2_logo,
-         $tv2_search_s,
+  global $tv2_isnew,
          $tv2_videos_s,
-         $tv2_cookie_expire;
-  $tv2_version_s = '0.1pre';
+         $tv2_player_w,
+         $tv2_player_h,
+         $tv2_related_s,
+         $tv2_captcha;
 
-  $c = get_request_value ('c'); // category
-  $q = get_request_value ('q'); // search query
-  $desc = get_request_value ('desc'); // search in desc?
-  if (!($desc))
-    $desc = 0;
-
-  $f = get_request_value ('f'); // function
-
-  $v = get_request_value ('v'); // own video
-
-  $start = get_request_value ('start'); // offset
-  if (!($start))
-    $start = 0;
-  $num = get_request_value ('num'); // number of results
-  if (!($num))
-    $num = $tv2_results;
-
-  $config = config_xml ();
+  $category = config_xml_by_category (strtolower ($d['tv2_category'])); // for logo
 
   $p = '';
 
-  // user name
-  $p .= '<div style="display:inline"><form method="GET" action="'
-       .$_SERVER['PHP_SELF']
-       .'" name="tv2_form">';
-//  $user_name = get_request_value ("user_name");
-//  if ($user_name)
-//    $p .= '<b><font style="color:#bbb;">Welcome, </font>'.colorize ($user_name, 1).'<font style="color:#bbb;"> to</font></b><br>';
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($d);
+
+  $p .= '<div style="text-align:right;vertical-align:top;display:table-cell;">';
 
   // logo
-  $p .= '<a href="/" style="text-decoration:none;">';
-  $p .= $tv2_logo;
-  $p .= '</a><br>';
+  $p .= '<nobr>&nbsp;'.tv2_button ($category).'&nbsp;</nobr><br>';
 
+  // tv2_include_logo ()
+  $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
 
-  // select
-  $p .= tv2_select ($c);
+  $p .= '</div>';
+  $p .= '<div style="text-align:left;vertical-align:top;display:table-cell;height:32px;">';
 
-  // input search query
-  $p .= '<input type="text" name="q"'
-       .($q ? ' value="'.$q.'"' : '')
-       .'>'
-       .'<input type="submit" value="'.$tv2_search_s.'">';
+  $p .= '<nobr>';
 
-  // focus (javascript)
-//  $p .= '<script type="text/javascript">'."\n"
-//       .'document.tv2_form.q.focus ();'."\n"
-//       .'</script>';
+  // is new?
+  if (time () - $d['rsstool_dl_date'] < $tv2_isnew)
+    $p .= '<img src="images/new.png" border="0" alt="New!"> ';
 
-  // search in desc
-  $p .= '<input type="hidden" name="desc" value="1">';
+  // link
+  if ($d['tv2_demux'] > 0)
+    $s = misc_getlink ('', array ('v' => $d['rsstool_url_crc32']), true);
+  else
+    $s = misc_getlink ($d['rsstool_url'], array (), false);
 
-  // videos total
-  $p .= '<div style="color:#bbb;'
-//       .'text-align:left;'
-       .'">'
-       .tv2_get_num_videos (NULL)
-       .' '.$tv2_videos_s;
+  // title
+  $p .= '<b><a href="'.$s.'">'.$d['rsstool_title'].'</a></b>';
 
-  // days total
-  $p .= ', '
-       .tv2_get_num_days (NULL)
-       .' days';
+  // duration
+//  if ($d['tv2_duration'] > 0)
+    $p .= gmstrftime ($d['tv2_duration'] > 3599 ? ' %H:%M:%S' : ' %M:%S', (int) $d['tv2_duration']);
 
-  // engine version
-  $p .= ', tv2 engine '.$tv2_version_s
-       .'</div>';
-  $p .= '</form>';
+  // player button (embed)
+  $p .= tv2_player_button ($d);
+
+  // related
+  $p .= tv2_related_button ($d);
+
+  $p .= '</nobr>';
+
+  // description
+  $p .= '<div style="width:400px;">';
+  $s = tv2_include ($d);
+  if (!empty ($s))
+    $p .= $s.'<br>';
+
+  // direct link
+  $p .= '<nobr><a href="'.urldecode ($d['rsstool_url']).'">'.urldecode ($d['rsstool_url']).'</a></nobr><br>';
+  // HACK
+  if ($d['tv2_demux'] == 1) // youtube
+    $p .= ''
+//         .'<nobr><a href="'.urldecode ($d['rsstool_url']).'&fmt=18">'.'&fmt=18'.'</a> HQ</nobr>&nbsp;'
+//         .'<nobr><a href="'.urldecode ($d['rsstool_url']).'&fmt=22">'.'&fmt=22'.'</a> HD</nobr><br>'
+;
+
+  $p .= tv2_move_form ($d);
+
+  $p .= tv2_keywords ($d);
+
+  $p .= '</div>';
+
   $p .= '</div>';
 
   return $p;
 }
 
 
+function
+tv2_rss ($d_array)
+{
+  global $tv2_link;
+  global $tv2_name;
+  global $tv2_title;
+
+//    header ('Content-type: text/xml');
+    header ('Content-type: application/xml');
+//    header ('Content-type: text/xml-external-parsed-entity');
+//    header ('Content-type: application/xml-external-parsed-entity');
+//    header ('Content-type: application/xml-dtd');
+
+  $rss_title_array = array ();
+  $rss_link_array = array ();
+  $rss_desc_array = array ();
+
+  for ($i = 0; isset ($d_array[$i]); $i++)
+    {
+      $rss_title_array[$i] = $d_array[$i]['rsstool_title'];
+      $rss_link_array[$i] = $d_array[$i]['rsstool_url'];
+      $rss_desc_array[$i] = $d_array[$i]['rsstool_desc'];
+    }
+
+  // DEBUG
+//  print_r ($rss_title_array);
+//  print_r ($rss_link_array);
+//  print_r ($rss_desc_array);
+
+  echo generate_rss ($tv2_name,
+                     $tv2_link,
+                     $tv2_title,
+                     $rss_title_array, $rss_link_array, $rss_desc_array);
+}
+
+
+
+
 
 
 function
-tv2 ()
+tv2_body ()
 {
   global $tv2_root,
          $tv2_results,
@@ -114,60 +148,18 @@ tv2 ()
          $tv2_search_s,
          $tv2_videos_s,
          $tv2_cookie_expire;
-  $tv2_version_s = '0.1pre';
+  global $config;
+  global $f, $c, $q, $desc, $v, $start, $num;
 
-  $c = get_request_value ('c'); // category
-  $q = get_request_value ('q'); // search query
-  $desc = get_request_value ('desc'); // search in desc?
-  if (!($desc))
-    $desc = 0;
+  // use SQL
+  if ($v)
+    $d_array = tv2_sql (NULL, NULL, $desc, $f, $v, 0, 0, 0);
+  else
+    $d_array = tv2_sql ($c, $q, $desc, $f, NULL, $start, $num ? $num : 0);
 
-  $f = get_request_value ('f'); // function
 
-  $v = get_request_value ('v'); // own video
+  // output
 
-  $start = get_request_value ('start'); // offset
-  if (!($start))
-    $start = 0;
-  $num = get_request_value ('num'); // number of results
-  if (!($num))
-    $num = $tv2_results;
-
-  $user_name = get_request_value ('user_name'); // index
-
-  // change user_name in cookie
-  if (isset ($_GET['user_name']))
-    { 
-      $user_name = $_GET['user_name'];
-      if (strlen (trim ($user_name)) == 0)
-        $user_name = get_request_value ('user_name');
-    }
-
-/*
-  $last_visit = get_request_value ('last_visit');
-  $latest_visit = get_request_value ('latest_visit');
-  if (!($latest_visit))
-    $last_visit = $latest_visit = time ();
-  else if ($latest_visit < time () - $tv2_isnew)
-    $last_visit = $latest_visit;
-*/
-
-  // set cookies
-
-  $a = array (
-//           array ('user_name', $user_name),
-//           array ('last_visit', ''),
-//           array ('latest_visit', ''),
-//           array ('c', $c),    
-           array ('c', ''),
-//           array ('q', $q),
-//           array ('f', $f),
-//           array ('v', $v),
-         );
-  for ($i = 0; isset ($a[$i]); $i++)
-    setcookie ($a[$i][0], $a[$i][1], $tv2_cookie_expire);
-
-  $config = config_xml ();
 
   $p = '';
 
@@ -180,31 +172,19 @@ tv2 ()
     {
       // icons
       $s = 0;
-      $l = (int) ceil (sizeof ($config->category) * 0.5);
+      $l = sizeof ($config->category);
       $p .= tv2_button_array ($config, '%s ', $s, $l);
-  // more icons
-  $s = (int) ceil (sizeof ($config->category) * 0.5);
-  $l = sizeof ($config->category) - $s;
-  $p .= tv2_button_array ($config, '%s ', $s, $l);
     }
-
-
-
 
   // formular
   $p .= tv2_search_form ();
 
-  // use SQL
-  if ($v)
-    $d_array = tv2_sql (NULL, NULL, $desc, $f, $v, 0, 0, 0);
-  else
-    $d_array = tv2_sql ($c, $q, $desc, $f, NULL, $start, $num ? $num : 0);
-
   // show page-wise navigation (top)
   if (!$v)
     {
-      $p .= '<br>';
-      $p .= '<br>';
+      $p .= '<br>'
+           .'<br>'
+;
 
       $s = tv2_page ($start, $num, sizeof ($d_array));
 
@@ -220,7 +200,6 @@ tv2 ()
 ;
 */
           $p .= $s;
-
         }
 /*
       // right play all button
@@ -233,32 +212,42 @@ tv2 ()
 */
     }
 
-  $p .= '<br>';
-  $p .= '<br>';
+  $p .= '<br>'
+       .'<br>'
+;
 
 //  $p .= '<center>';
-  $p .= '<div style="display:table;text-align:center;">';
-  $p .= '<div style="display:table-row;">';
+  $p .= '<div style="display:table;width:100%">';
 
+  // embed player
   if ($v)
     {
-      $p .= tv2_output_html ($d_array[0], 1, 0, 0); // 1 == player
+      $p .= '<div style="display:table-row;text-align:center">';  
+      $p .= '<div style="text-align:right;vertical-align:top;display:table-cell;">';
+      $p .= tv2_player ($d);
+      $p .= '</div>';
+      $p .= '</div>';
+
+      $p .= '<div style="display:table-row;text-align:center;">';
+      $p .= tv2_output_html ($d_array[0], 0, 0); // 1 == player
+      $p .= '</div>';
     }
-  else
+  else  
     {
+      $p .= '<div style="display:table-row;text-align:center">';
+      $p .= '<div style="text-align:right;vertical-align:top;display:table-cell;">';
+      $p .= tv2_time_count ($d_array[$i]);
+      $p .= '</div>';  
+      $p .= '</div>';
+
       for ($i = 0; isset ($d_array[$i]); $i++)
         {
-          if ($i > 0)
-            {
-              $p .= '</div>';
-              $p .= '<div style="display:table-row;text-align:center;">';
-            }
-
-          $p .= tv2_output_html ($d_array[$i], 0, $start, $num ? $num : 0); // 0 == no player
+          $p .= '<div style="display:table-row;text-align:center;">';
+          $p .= tv2_output_html ($d_array[$i], $start, $num ? $num : 0); // 0 == no player
+          $p .= '</div>';
         }
     }
 
-  $p .= '</div>'; // display:table-row
   $p .= '</div>'; // display:table
 //  $p .= '</center>';
 
@@ -277,6 +266,38 @@ tv2 ()
 
 
 // main ()
+
+
+
+
+
+$f = get_request_value ('f'); // function
+  $c = get_request_value ('c'); // category
+  $q = get_request_value ('q'); // search query
+  $desc = get_request_value ('desc'); // search in desc?
+  if (!($desc))
+    $desc = 0;
+  $f = get_request_value ('f'); // function
+  $v = get_request_value ('v'); // own video
+  $start = get_request_value ('start'); // offset
+  if (!($start))
+    $start = 0;
+  $num = get_request_value ('num'); // number of results
+  if (!($num))
+    $num = $tv2_results;
+//  $user_name = get_request_value ("user_name");
+//  $last_visit = get_request_value ('last_visit');
+//  $latest_visit = get_request_value ('latest_visit');
+//  if (!($latest_visit))
+//    $last_visit = $latest_visit = time ();
+//  else if ($latest_visit < time () - $tv2_isnew)
+//    $last_visit = $latest_visit;
+
+
+$config = config_xml ();
+
+
+
 
 
 if ($use_gzip == 1)
@@ -318,32 +339,61 @@ if ($memcache_expire > 0)
   }
 
 
-$f = get_request_value ('f'); // function
+
+
+
+
+
+
+
+// RSS only
 if ($f == 'rss')
   {
-    $c = get_request_value ('c'); // game filter
-    $q = get_request_value ('q'); // search query
-    $desc = get_request_value ('desc'); // search in desc?
-    if (!($desc))
-      $desc = 0;
-
-    $f = get_request_value ('f'); // function
-
-    $start = get_request_value ('start'); // offset
-    if (!($start))
-      $start = 0;
-    $num = get_request_value ('num'); // number of results
-    if (!($num))
-      $num = $tv2_results;
-
-    // use SQL
     $d_array = tv2_sql ($c, $q, $desc, $f, NULL, $start, $num);
-    tv2_output_rss ($d_array);
+    tv2_rss ($d_array);
     exit;
   }
 
 
+
+
+
+
+
+
+
+
+
+
 header ('Content-type: text/html; charset=utf-8');
+
+
+  // set cookies
+//  if (isset ($_GET['user_name'])) // change user_name in cookie
+//    { 
+//      $user_name = $_GET['user_name'];
+//      if (strlen (trim ($user_name)) == 0)
+//        $user_name = get_request_value ('user_name');
+//    }
+  $a = array (
+//           array ('user_name', $user_name),
+//           array ('last_visit', ''),
+//           array ('latest_visit', ''),
+//           array ('c', $c),    
+           array ('c', ''),
+//           array ('q', $q),
+//           array ('f', $f),
+//           array ('v', $v),
+         );
+  for ($i = 0; isset ($a[$i]); $i++)
+    setcookie ($a[$i][0], $a[$i][1], $tv2_cookie_expire);
+
+if (islocalhost ())
+  {
+    // admin stuff
+  }
+
+$tv2_captcha = widget_captcha (3);
 
 
 $head = '<html>'
@@ -351,132 +401,12 @@ $head = '<html>'
        .'<title>'
        .$tv2_title
        .'</title>'
-/*
-       .'<script type="text/javascript">'."\n"
-       ."\n"
-       .'function toggleLights (lightsOff)'."\n"
-       .'{'."\n"
-       .'  if (lightsOff)'."\n"
-       .'    {'."\n"
-       .'      addClass(document.body, \'watch-lights-off\');'."\n"
-       .'    }'."\n"
-       .'  else'."\n"
-       .'    {'."\n"
-       .'      removeClass(document.body, \'watch-lights-off\');'."\n"
-       .'    }'."\n"
-       .'}'."\n"
-       ."\n"
-       .'</script>'
-*/
-       .'<style type="text/css">'."\n"
-/*
-       ."\n"
-       .'a.thumbnail {'."\n"
-       .'  position: relative;'."\n"
-       .'  z-index: 0;'."\n"
-       .'}'."\n"
-       ."\n"
-       .'a.thumbnail:hover {'."\n"
-       .'  z-index: 50;'."\n"
-       .'}'."\n"
-       ."\n"
-       .'a.thumbnail span {'."\n"
-       .'  position: absolute;'."\n"
-       .'  left: -1000px;'."\n"
-       .'  visibility: hidden;'."\n"
-       .'}'."\n"
-       ."\n"
-       .'a.thumbnail:hover span {'."\n"
-       .'  visibility: visible;'."\n"
-       .'  top: -4px;'."\n"
-        .'  left: 16px;'."\n"
-       .'}'."\n"
-       ."\n"
-*/
-.'
-
-a
-{
-  color:#00f;
-  text-decoration:none;
-}
-
-
-a:hover
-{
-  color:#f40;
-//  background-color:#fec;
-//  color:WindowText;
-//  background-color:Window;
-  text-decoration:none;
-}'
-
-/*
-a span
-{
-  display:none;
-}
-
-
-a:hover span
-{
-  font:12px sans-serif,arial;
-  position:absolute;
-  top:30px;
-  left:10px;
-  padding:2px;
-  display:block;
-//  white-space:nowrap;
-  color:InfoText;
-  background-color:InfoBackground;
-  border:1px solid #000;
-  text-align:left;
-  text-decoration:none;
-}
-
-.widget_a_img
-{
-  position: relative;
-  z-index:0;
-  text-decoration:none;
-}
-
-
-.widget_a_img:hover
-{
-  z-index:1;
-}
-
-
-.widget_a_img span
-{
-  display:none;
-}
-
-
-.widget_a_img:hover span
-{
-  font:12px sans-serif,arial;
-  position:absolute;
-  top:30px;
-  left:10px;
-  padding:2px;
-  display:block;
-//  white-space:nowrap;
-  color:InfoText;
-  background-color:InfoBackground;
-  border:1px solid #000;
-  text-align:left;
-  text-decoration:none;
-}
-*/
-       .'</style>'
-
+       .'<link rel="stylesheet" type="text/css" media="screen" href="/tv2.css">'
        .'</head>'
        .$tv2_body_tag
 ;
 
-$body = tv2 ();
+$body = tv2_body ();
 
 $end = ''
 //      .'<br><br><br>'

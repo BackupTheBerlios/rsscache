@@ -28,16 +28,44 @@ require_once ('misc/misc.php');
 function
 widget_captcha ($len)
 {
-  $t = microtime();
+  $t = microtime () * time ();
   $s = md5 ($t);
   $s = substr ($s, 0, $len);
 
   // set session object or cookie with CAPTCHA
+/*
+  session_start ();
+
+  $captcha = imagecreatefrompng('captcha.png');
+  $black = imagecolorallocate ($captcha, 0, 0, 0);
+  $line = imagecolorallocate ($captcha, 233, 239, 239);
+  imageline ($captcha, 0, 0, 39, 29, $line);
+  imageline ($captcha, 40, 0, 64, 29, $line);
+  imagestring ($captcha, 5, 20, 10, $string, $black);
+
+  $_SESSION['key'] = md5($string);
+
+header ("Content-type: image/png");
+imagepng ($captcha);
+*/
+
+/*
+session_start();
+
+//Encrypt the posted code field and then compare with the stored key
+
+if(md5($_POST['widget_captcha']) != $_SESSION['key'])
+{
+  die("Error: You must enter the code correctly");
+}else{
+  echo 'You entered the code correctly';
+}
+*/
 
   $p .= $s;
-  $p .= '<input type="test" size="'.$len.'" maxsize="'.$len.'" name="widget_captcha">';
+  $p .= '<input type="text" size="'.$len.'" maxsize="'.$len.'" name="widget_captcha">';
 
-  return $s;
+  return $p;
 }
 
 

@@ -178,14 +178,6 @@ islocalhost ()
 
 
 function
-isip ($ip)
-{
-  // $ip can also be a list of ip's
-  return stristr ($ip, $_SERVER['REMOTE_ADDR']);
-}
-
-
-function
 misc_get_keywords_alnum ($s)
 {
   if (strlen (trim ($s)) < 4)

@@ -8,7 +8,7 @@ require_once ('misc/sql.php');
 
 
 function
-tv2_get_num_videos ($category)
+tv2_update_category ($rsstool_url_crc32, $new_category)
 {
   global $tv2_dbhost,
          $tv2_dbuser,
@@ -22,6 +22,7 @@ tv2_get_num_videos ($category)
                  $tv2_dbpass,
                  $tv2_dbname);
 
+/*
     // all at once
 //  $sql_statement = 'SELECT COUNT(*) AS rows, tv2_category FROM rsstool_table WHERE 1';
 //  $sql_statement .= ' GROUP BY tv2_category ';
@@ -40,11 +41,12 @@ tv2_get_num_videos ($category)
   $db->sql_close ();
 
   return $r[0][0];
+*/
 }
 
 
 function
-tv2_get_num_days ($category)
+tv2_sql_stats ($category = NULL)
 {
   global $tv2_dbhost,
          $tv2_dbuser,
@@ -52,12 +54,35 @@ tv2_get_num_days ($category)
          $tv2_dbname;
   $debug = 0;
 
+  $stats = array ('videos' => 0, 'days' => 0);
+
   $db = new misc_sql;  
   $db->sql_open ($tv2_dbhost,
                  $tv2_dbuser,
                  $tv2_dbpass,
                  $tv2_dbname);
 
+
+  // videos
+  // all at once
+//  $sql_statement = 'SELECT COUNT(*) AS rows, tv2_category FROM rsstool_table WHERE 1';
+//  $sql_statement .= ' GROUP BY tv2_category ';
+//  $sql_statement .= ';';
+
+  $sql_statement = 'SELECT COUNT(*) FROM rsstool_table WHERE 1';
+
+  if ($category)
+    $sql_statement .= ' AND tv2_category = \''.$category.'\'';
+
+  $sql_statement .= ';';
+
+  $db->sql_write ($sql_statement, $debug);
+  $r = $db->sql_read ($debug);
+
+  $stats['videos'] = (int) $r[0][0];
+
+
+  // days
   $sql_statement = 'SELECT rsstool_dl_date FROM rsstool_table WHERE 1';
 
   if ($category)
@@ -84,9 +109,12 @@ tv2_get_num_days ($category)
   $db->sql_write ($sql_statement, $debug);
   $r = $db->sql_read ($debug);
 
+  $stats['days'] = (int) ((time () - $r[0][0]) / 86400);
+
   $db->sql_close ();
 
-  return (int) ((time () - $r[0][0]) / 86400);
+
+  return $stats;
 }
 
 
