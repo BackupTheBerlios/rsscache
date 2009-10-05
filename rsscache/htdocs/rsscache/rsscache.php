@@ -63,21 +63,7 @@ tv2_search_form ()
 
 
   // select
-  $p .= '<select name="c">';
-  for ($i = 0; isset ($config->category[$i]); $i++)
-    if ($config->category[$i]->select == 1)
-      $p .= '<option'
-           .' value="'.$config->category[$i]->name.'"'
-           .($config->category[$i]->name == $c ? ' selected' : '')
-           .' style="background-image:url('
-           .'gsdata/logos/'
-           .tv2_normalize ($config->category[$i]->name)
-           .'_trans16.png'
-           .');background-repeat:no-repeat;background-position:bottom left;padding-left:18px;"'
-           .'>'
-           .$config->category[$i]->title
-           .'</option>';
-  $p .= '</select>';
+  $p .= tv2_select ($c);
 
   // input search query
   $p .= '<input type="text" name="q"'
