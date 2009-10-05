@@ -15,6 +15,109 @@ require_once ('tv2_misc.php');
 
 
 function
+tv2_search_form ()
+{
+  global $tv2_root,
+         $tv2_results,
+         $tv2_isnew,
+         $tv2_body_tag,
+         $tv2_logo,
+         $tv2_search_s,
+         $tv2_videos_s,
+         $tv2_cookie_expire;
+  $tv2_version_s = '0.1pre';
+
+  $c = get_request_value ('c'); // category
+  $q = get_request_value ('q'); // search query
+  $desc = get_request_value ('desc'); // search in desc?
+  if (!($desc))
+    $desc = 0;
+
+  $f = get_request_value ('f'); // function
+
+  $v = get_request_value ('v'); // own video
+
+  $start = get_request_value ('start'); // offset
+  if (!($start))
+    $start = 0;
+  $num = get_request_value ('num'); // number of results
+  if (!($num))
+    $num = $tv2_results;
+
+  $config = config_xml ();
+
+  $p = '';
+
+  // user name
+  $p .= '<div style="display:inline"><form method="GET" action="'
+       .$_SERVER['PHP_SELF']
+       .'" name="tv2_form">';
+//  $user_name = get_request_value ("user_name");
+//  if ($user_name)
+//    $p .= '<b><font style="color:#bbb;">Welcome, </font>'.colorize ($user_name, 1).'<font style="color:#bbb;"> to</font></b><br>';
+
+  // logo
+  $p .= '<a href="/" style="text-decoration:none;">';
+  $p .= $tv2_logo;
+  $p .= '</a><br>';
+
+
+  // select
+  $p .= '<select name="c">';
+  for ($i = 0; isset ($config->category[$i]); $i++)
+    if ($config->category[$i]->select == 1)
+      $p .= '<option'
+           .' value="'.$config->category[$i]->name.'"'
+           .($config->category[$i]->name == $c ? ' selected' : '')
+           .' style="background-image:url('
+           .'gsdata/logos/'
+           .tv2_normalize ($config->category[$i]->name)
+           .'_trans16.png'
+           .');background-repeat:no-repeat;background-position:bottom left;padding-left:18px;"'
+           .'>'
+           .$config->category[$i]->title
+           .'</option>';
+  $p .= '</select>';
+
+  // input search query
+  $p .= '<input type="text" name="q"'
+       .($q ? ' value="'.$q.'"' : '')
+       .'>'
+       .'<input type="submit" value="'.$tv2_search_s.'">';
+
+  // focus (javascript)
+//  $p .= '<script type="text/javascript">'."\n"
+//       .'document.tv2_form.q.focus ();'."\n"
+//       .'</script>';
+
+  // search in desc
+  $p .= '<input type="hidden" name="desc" value="1">';
+
+  // videos total
+  $p .= '<div style="color:#bbb;'
+//       .'text-align:left;'
+       .'">'
+       .tv2_get_num_videos (NULL)
+       .' '.$tv2_videos_s;
+
+  // days total
+  $p .= ', '
+       .tv2_get_num_days (NULL)
+       .' days';
+
+  // engine version
+  $p .= ', tv2 engine '.$tv2_version_s
+       .'</div>';
+  $p .= '</form>';
+  $p .= '</div>';
+
+  return $p;
+}
+
+
+
+
+function
 tv2 ()
 {
   global $tv2_root,
@@ -83,115 +186,27 @@ tv2 ()
   $p = '';
 
   // top
-  $p .= '<div style="display:table;">';
-  $p .= '<div style="display:table-row;">';
-  $p .= '<div style="width:50%;vertical-align:top;text-align:left;display:table-cell;">';
-
 //  if (!$v)
 //    {
 //      $p .= widget_carousel ('carousel_xml.php');
 //    }
 //  else
     {
-      // left icons
+      // icons
       $s = 0;
       $l = (int) ceil (sizeof ($config->category) * 0.5);
-      $p .= tv2_button_array ($config, ' <nobr>%s</nobr>', $s, $l);
+      $p .= tv2_button_array ($config, '%s ', $s, $l);
+  // more icons
+  $s = (int) ceil (sizeof ($config->category) * 0.5);
+  $l = sizeof ($config->category) - $s;
+  $p .= tv2_button_array ($config, '%s ', $s, $l);
     }
 
-  $p .= '</div>'; // display:table-cell
 
-  $p .= '<div style="vertical-align:display:table-cell;">';
 
-  // user name
-//  $user_name = get_request_value ("user_name");
-//  if ($user_name)
-//    $p .= '<b><font style="color:#bbb;">Welcome, </font>'.colorize ($user_name, 1).'<font style="color:#bbb;"> to</font></b><br>';
 
-  // logo
-  $p .= '<a href="/" style="text-decoration:none;">';
-  $p .= $tv2_logo;
-  $p .= '</a>';
-
-  // form
-  $p .= '<nobr>';
-
-  $p .= '<form method="GET" action="'
-       .$_SERVER['PHP_SELF']
-       .'" style="display:inline;text-align:left;" name="tv2_form">';
-
-  // select
-  $p .= '<select name="c">';
-  for ($i = 0; isset ($config->category[$i]); $i++)
-    if ($config->category[$i]->select == 1)
-      $p .= '<option'
-           .' value="'.$config->category[$i]->name.'"'
-           .($config->category[$i]->name == $c ? ' selected' : '')
-           .' style="background-image:url('
-           .'gsdata/logos/'
-           .tv2_normalize ($config->category[$i]->name)
-           .'_trans16.png'
-           .');background-repeat:no-repeat;background-position:bottom left;padding-left:18px;"'
-           .'>'
-           .$config->category[$i]->title
-           .'</option>';
-  $p .= '</select>';
-
-  // input search query
-  $p .= '<input type="text" name="q"'
-       .($q ? ' value="'.$q.'"' : '')
-       .'>'
-       .'<input type="submit" value="'.$tv2_search_s.'">';
-
-  // focus (javascript)
-//  $p .= '<script type="text/javascript">'."\n"
-//       .'document.tv2_form.q.focus ();'."\n"
-//       .'</script>';
-
-  $p .= '</nobr>';
-
-  // search in desc
-  $p .= '<input type="hidden" name="desc" value="1">';
-
-  $p .= '</form>';
-
-  // videos total
-  $p .= '<div style="color:#bbb;'
-//       .'text-align:left;'
-       .'">'
-       .tv2_get_num_videos (NULL)
-       .' '.$tv2_videos_s;
-
-  // days total
-  $p .= ', '
-       .tv2_get_num_days (NULL)
-       .' days';
-
-  // engine version
-  $p .= ', tv2 engine '.$tv2_version_s
-       .'</div>';
-
-  $p .= '<br>';
-
-  // center icons
-  $p .= '<div style="text-align:center;vertical-align:bottom;">';
-  $s = (int) ceil (sizeof ($config->category) * 0.5);
-  $l = 8;
-  $p .= tv2_button_array ($config, ' <nobr>%s</nobr>', $s, $l);
-  $p .= '</div>';
-
-  $p .= '</div>'; // display:table-cell
-
-  $p .= '<div style="width:50%;vertical-align:top;text-align:right;display:table-cell;">';
-
-  // right icons
-  $s = (int) ceil (sizeof ($config->category) * 0.5) + 8;
-  $l = sizeof ($config->category) - $s;
-  $p .= tv2_button_array ($config, '<nobr>%s</nobr> ', $s, $l);
-
-  $p .= '</div>'; // display:table-cell
-  $p .= '</div>'; // display:table-row
-  $p .= '</div>'; // display:table
+  // formular
+  $p .= tv2_search_form ();
 
   // use SQL
   if ($v)
@@ -235,7 +250,7 @@ tv2 ()
   $p .= '<br>';
   $p .= '<br>';
 
-  $p .= '<center>';
+//  $p .= '<center>';
   $p .= '<div style="display:table;text-align:center;">';
   $p .= '<div style="display:table-row;">';
 
@@ -259,7 +274,7 @@ tv2 ()
 
   $p .= '</div>'; // display:table-row
   $p .= '</div>'; // display:table
-  $p .= '</center>';
+//  $p .= '</center>';
 
   // show page-wise navigation (bottom)
   if (!$v)

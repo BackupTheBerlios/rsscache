@@ -30,7 +30,7 @@ tv2_get_num_videos ($category)
   $sql_statement = 'SELECT COUNT(*) FROM rsstool_table WHERE 1';
 
   if ($category)
-    $sql_statement .= ' AND ( tv2_category LIKE \''.$category.'\' )';
+    $sql_statement .= ' AND tv2_category = \''.$category.'\'';
 
   $sql_statement .= ';';
 
@@ -61,7 +61,7 @@ tv2_get_num_days ($category)
   $sql_statement = 'SELECT rsstool_dl_date FROM rsstool_table WHERE 1';
 
   if ($category)
-    $sql_statement .= ' AND ( tv2_category LIKE \''.$category.'\' )';
+    $sql_statement .= ' AND tv2_category = \''.$category.'\'';
 
   $sql_statement .= ' ORDER BY rsstool_dl_date ASC'
                    .' LIMIT 1'
@@ -119,9 +119,11 @@ tv2_sql_normalize ($db, $dest, $c)
       // strip tags from the desc
       $dest[$i]['rsstool_desc'] = strip_tags ($dest[$i]['rsstool_desc'], '<img><br>');
 
-      // TODO: obsolete
-      $dest[$i]['tv2_desc_keywords'] = misc_get_keywords (strip_tags ($dest[$i]['rsstool_desc']), 0); // isalnum
-      $dest[$i]['tv2_title_keywords'] = misc_get_keywords ($dest[$i]['rsstool_title'], 1); // isalpha
+      // HACK: for development
+//      $dest[$i]['tv2_related'] = misc_get_keywords ($dest[$i]['rsstool_title'], 1); // isalpha
+//      $dest[$i]['tv2_keywords'] = misc_get_keywords ($dest[$i]['rsstool_title']
+//                                                    .' '
+//                                                    .strip_tags ($dest[$i]['rsstool_desc']), 0); // isalnum
 
       if (strstr ($dest[$i]['rsstool_url'], $tv2_link))
         $dest[$i]['tv2_local_url'] = str_replace ($tv2_link, '', $dest[$i]['rsstool_url']);
@@ -144,66 +146,6 @@ tv2_sql_normalize ($db, $dest, $c)
     }
 
   return $dest;
-}
-
-
-function
-tv2_sql_csv2array ($csv)
-{
-  $terminator = '"';
-  $separator = ',';
-
-  $a = explode ($separator, $csv);
-  // remove terminators
-  for ($i = 0; isset ($a[$i]); $i++)
-    {
-      $s = strchr ($a[$i], $terminator) + 1;
-      $l = (strrchr ($a[$i], $terminator) - 1) - $s;
-      if ($l > 0)
-        $a[$i] = substr ($a[$i], $s, $l);
-    }
-
-  return array_merge (array_unique ($a)); // remove dupes
-}
-
-
-function
-tv2_sql_array2like ($a)
-{
-  // TODO: take -/+ into account
-  $sql_statement = ''
-/*
-                  .' AND MATCH ('
-                  .' rsstool_title,'
-                  .' rsstool_desc'
-                  .' ) AGAINST (\''
-                  .$db->sql_stresc ($q)
-                  .'\''
-                  .' IN BOOLEAN MODE'
-                  .' )'
-*/
-;
-  return $sql_statement;
-}
-
-
-function
-tv2_sql_array2match ($a)
-{
-  // TODO
-  $sql_statement = ''
-/*
-                  .' AND MATCH ('
-                  .' rsstool_title,'
-                  .' rsstool_desc'
-                  .' ) AGAINST (\''
-                  .$db->sql_stresc ($q)
-                  .'\''
-                  .' IN BOOLEAN MODE'
-                  .' )'
-*/
-;
-  return $sql_statement;
 }
 
 
@@ -239,56 +181,59 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
                   .' rsstool_dl_date,'
                   .' tv2_category,'
                   .' tv2_duration,'
-                  .' tv2_title_keywords,'
-                  .' tv2_desc_keywords'
+                  .' tv2_related,'
+                  .' tv2_keywords'
                   .' FROM rsstool_table WHERE 1';
 
   if ($v) // direct
     $sql_statement .= ' AND ( rsstool_url_crc32 = '.$v.' )';
   else
     {
-      // category, whitelist, and blacklist
+      // category
+      if ($c)
+        $sql_statement .= ' AND ( `tv2_category` = \''.$c.'\' )';
+
+      $category = NULL;
       if ($c)
         {
-          // category
-          $sql_statement .= ' AND ( `tv2_category` LIKE \''.$c.'\' )';
-
-          // collect and simplify whitelist and blacklist
           $category = config_xml_by_category ($c);
           $separator = ',';
-          if ($category->whitelist)
-            {
-              $w = explode ($separator, $category->whitelist);
-              $w = array_merge (array_unique ($w)); // remove dupes
-          // whitelist AND((LIKE)OR(LIKE))
-          if ($w[0])
-            {
-              $sql_statement .= ' AND (';
-              for ($i = 0; isset ($w[$i]); $i++)
-                $sql_statement .= ($i > 0 ? ' OR' : '')
-                                 .' ( rsstool_title LIKE \'%'.$w[$i].'%\' )'
-                                 .' OR ( rsstool_desc LIKE \'%'.$w[$i].'%\' )'
+        }
+
+      // whitelist
+      if ($category)
+        if ($category->whitelist)
+          {
+            $w = explode ($separator, $category->whitelist);
+            $w = array_merge (array_unique ($w)); // remove dupes
+            if ($w[0])
+              {
+                $sql_statement .= ' AND (';
+                for ($i = 0; isset ($w[$i]); $i++)
+                  $sql_statement .= ($i > 0 ? ' OR' : '')
+                                   .' tv2_keywords LIKE \'%'.$w[$i].'%\''
 ;
-              $sql_statement .= ' )';
-            }
-            }
-          if ($category->blacklist)
-            {
-              $b = explode ($separator, $category->blacklist);
-              $b = array_merge (array_unique ($b)); // remove dupes
-          // blacklist AND((NOT LIKE)AND(NOT LIKE))
-          if ($b[0])
-            {
-              $sql_statement .= ' AND (';
-              for ($i = 0; isset ($b[$i]); $i++)
-                $sql_statement .=  ($i > 0 ? ' AND' : '')
-                                 .' ( rsstool_title NOT LIKE \'%'.$b[$i].'%\' )'
-                                 .' AND ( rsstool_desc NOT LIKE \'%'.$b[$i].'%\' )'
+                $sql_statement .= ' )';
+              }
+          }
+
+      // blacklist
+      if ($category)
+        if ($category->blacklist)
+          {
+            $b = explode ($separator, $category->blacklist);
+            $b = array_merge (array_unique ($b)); // remove dupes
+            if ($b[0])
+              {
+                $sql_statement .= ' AND (';
+                for ($i = 0; isset ($b[$i]); $i++)
+                  $sql_statement .=  ($i > 0 ? ' AND' : '')
+                                   .' tv2_keywords NOT LIKE \'%'.$w[$i].'%\''   
 ;
-              $sql_statement .= ' )';
-            }
-            }
-        } // category, whitelist, and blacklist
+                $sql_statement .= ' )';
+              }
+          }
+
 
       // query
       if ($q)
@@ -297,8 +242,8 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
             {
                   $s = str_replace (' ', '%', trim ($q));
                   $sql_statement .= ' AND ('
-//                                   .' tv2_title_keywords LIKE \'%'.$s.'%\''
-                                   .' rsstool_title LIKE \'%'.$s.'%\''
+                                   .' tv2_related LIKE \'%'.$s.'%\''
+//                                   .' rsstool_title LIKE \'%'.$s.'%\''
                                    .' )'
 ;
             }
@@ -320,11 +265,12 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
               $q_array = explode ($query_separator, $q);
               for ($i = 0; isset ($q_array[$i]); $i++)
                 {
-//                  $s = str_replace (' ', '%', trim ($q_array[$i]));
-                  $s = $q_array[$i];
+                  $s = str_replace (' ', '%', trim ($q_array[$i]));
+//                  $s = $q_array[$i];
                   $sql_statement .= ($i > 0 ? ' OR' : '')
-                                   .' rsstool_title LIKE \'%'.$s.'%\''              
-                                   .($desc ? ' OR rsstool_desc LIKE \'%'.$s.'%\'' : '')
+//                                   .' rsstool_title LIKE \'%'.$s.'%\''              
+//                                   .($desc ? ' OR rsstool_desc LIKE \'%'.$s.'%\'' : '')
+                                   .' ( tv2_keywords LIKE \'%'.$s.'%\' )'
 ;
                 }
               $sql_statement .= ' )';

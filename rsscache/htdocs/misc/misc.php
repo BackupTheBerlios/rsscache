@@ -216,6 +216,10 @@ misc_get_keywords_alpha ($s)
 function
 misc_get_keywords ($s, $flag = 0) // default = isalnum
 {
+  for ($i = 0; $s[$i]; $i++)
+    if (ispunct ($s[$i]))
+      $s[$i] = ' ';
+
   $a = explode (' ', strtolower ($s));
   for ($i = 0; isset ($a[$i]); $i++)
     $a[$i] = trim ($a[$i]);
