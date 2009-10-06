@@ -15,131 +15,14 @@ require_once ('tv2_misc.php');
 
 
 function
-tv2_output_html ($d, $start, $num)
+tv2_body ()
 {
   global $tv2_isnew,
          $tv2_videos_s,
          $tv2_player_w,
          $tv2_player_h,
-         $tv2_related_s,
-         $tv2_captcha;
+         $tv2_related_s;
 
-  $category = config_xml_by_category (strtolower ($d['tv2_category'])); // for logo
-
-  $p = '';
-
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($d);
-
-  $p .= '<div style="text-align:right;vertical-align:top;display:table-cell;">';
-
-  // logo
-  $p .= '<nobr>&nbsp;'.tv2_button ($category).'&nbsp;</nobr><br>';
-
-  // tv2_include_logo ()
-  $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
-
-  $p .= '</div>';
-  $p .= '<div style="text-align:left;vertical-align:top;display:table-cell;height:32px;">';
-
-  $p .= '<nobr>';
-
-  // is new?
-  if (time () - $d['rsstool_dl_date'] < $tv2_isnew)
-    $p .= '<img src="images/new.png" border="0" alt="New!"> ';
-
-  // link
-  if ($d['tv2_demux'] > 0)
-    $s = misc_getlink ('', array ('v' => $d['rsstool_url_crc32']), true);
-  else
-    $s = misc_getlink ($d['rsstool_url'], array (), false);
-
-  // title
-  $p .= '<b><a href="'.$s.'">'.$d['rsstool_title'].'</a></b>';
-
-  // duration
-//  if ($d['tv2_duration'] > 0)
-    $p .= gmstrftime ($d['tv2_duration'] > 3599 ? ' %H:%M:%S' : ' %M:%S', (int) $d['tv2_duration']);
-
-  // player button (embed)
-  $p .= tv2_player_button ($d);
-
-  // related
-  $p .= tv2_related_button ($d);
-
-  $p .= '</nobr>';
-
-  // description
-  $p .= '<div style="width:400px;">';
-  $s = tv2_include ($d);
-  if (!empty ($s))
-    $p .= $s.'<br>';
-
-  // direct link
-  $p .= '<nobr><a href="'.urldecode ($d['rsstool_url']).'">'.urldecode ($d['rsstool_url']).'</a></nobr><br>';
-  // HACK
-  if ($d['tv2_demux'] == 1) // youtube
-    $p .= ''
-//         .'<nobr><a href="'.urldecode ($d['rsstool_url']).'&fmt=18">'.'&fmt=18'.'</a> HQ</nobr>&nbsp;'
-//         .'<nobr><a href="'.urldecode ($d['rsstool_url']).'&fmt=22">'.'&fmt=22'.'</a> HD</nobr><br>'
-;
-
-  $p .= tv2_move_form ($d);
-
-  $p .= tv2_keywords ($d);
-
-  $p .= '</div>';
-
-  $p .= '</div>';
-
-  return $p;
-}
-
-
-function
-tv2_rss ($d_array)
-{
-  global $tv2_link;
-  global $tv2_name;
-  global $tv2_title;
-
-//    header ('Content-type: text/xml');
-    header ('Content-type: application/xml');
-//    header ('Content-type: text/xml-external-parsed-entity');
-//    header ('Content-type: application/xml-external-parsed-entity');
-//    header ('Content-type: application/xml-dtd');
-
-  $rss_title_array = array ();
-  $rss_link_array = array ();
-  $rss_desc_array = array ();
-
-  for ($i = 0; isset ($d_array[$i]); $i++)
-    {
-      $rss_title_array[$i] = $d_array[$i]['rsstool_title'];
-      $rss_link_array[$i] = $d_array[$i]['rsstool_url'];
-      $rss_desc_array[$i] = $d_array[$i]['rsstool_desc'];
-    }
-
-  // DEBUG
-//  print_r ($rss_title_array);
-//  print_r ($rss_link_array);
-//  print_r ($rss_desc_array);
-
-  echo generate_rss ($tv2_name,
-                     $tv2_link,
-                     $tv2_title,
-                     $rss_title_array, $rss_link_array, $rss_desc_array);
-}
-
-
-
-
-
-
-function
-tv2_body ()
-{
   global $tv2_root,
          $tv2_results,
          $tv2_isnew,
@@ -157,9 +40,9 @@ tv2_body ()
   else
     $d_array = tv2_sql ($c, $q, $desc, $f, NULL, $start, $num ? $num : 0);
 
-
-  // output
-
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($d_array);
 
   $p = '';
 
@@ -185,71 +68,114 @@ tv2_body ()
       $p .= '<br>'
            .'<br>'
 ;
+  $p .= '<center>';
 
       $s = tv2_page ($start, $num, sizeof ($d_array));
 
       if ($s)
         {
-/*
           // left play all button
-          $p .= '&nbsp<a href="'
-               .misc_getlink ('', array ('v' => NULL, 'f' => 'play_all'), true)
-               .'" title="Play all videos starting from here (TV)">'
-               .'<img src="images/play_all32.png" border="0">'
-               .'</a>'
-;
-*/
+//          $p .= '&nbsp'.tv2_play_all_button ();
           $p .= $s;
         }
-/*
+
       // right play all button
-      $p .= '&nbsp<a href="'
-           .misc_getlink ('', array ('v' => NULL, 'f' => 'play_all'), true)
-           .'" title="Play all videos starting from here (TV)">'
-           .'<img src="images/play_all32.png" border="0">'
-           .'</a>'
-;
-*/
+//          $p .= '&nbsp'.tv2_play_all_button ();
     }
+
+//  $p .= '</center>';
 
   $p .= '<br>'
        .'<br>'
 ;
 
-//  $p .= '<center>';
-  $p .= '<div style="display:table;width:100%">';
+  $p .= '<table border="0">';
+  for ($i = 0; isset ($d_array[$i]); $i++)
+    {
+  $d = $d_array[$i];
+  // output
+  $category = config_xml_by_category (strtolower ($d['tv2_category'])); // for logo
+
+  $p .= '<tr>';
+  $p .= '<td>';
 
   // embed player
   if ($v)
-    {
-      $p .= '<div style="display:table-row;text-align:center">';  
-      $p .= '<div style="text-align:right;vertical-align:top;display:table-cell;">';
-      $p .= tv2_player ($d);
-      $p .= '</div>';
-      $p .= '</div>';
-
-      $p .= '<div style="display:table-row;text-align:center;">';
-      $p .= tv2_output_html ($d_array[0], 0, 0); // 1 == player
-      $p .= '</div>';
-    }
+    $p .= tv2_player ($d);
   else  
-    {
-      $p .= '<div style="display:table-row;text-align:center">';
-      $p .= '<div style="text-align:right;vertical-align:top;display:table-cell;">';
-      $p .= tv2_time_count ($d_array[$i]);
-      $p .= '</div>';  
-      $p .= '</div>';
+    $p .= tv2_time_count ($d);
 
-      for ($i = 0; isset ($d_array[$i]); $i++)
-        {
-          $p .= '<div style="display:table-row;text-align:center;">';
-          $p .= tv2_output_html ($d_array[$i], $start, $num ? $num : 0); // 0 == no player
-          $p .= '</div>';
-        }
+  $p .= '</td>';
+  $p .= '<td>';
+
+  // logo
+  $p .= '<nobr>&nbsp;'.tv2_button ($category).'&nbsp;</nobr><br>';
+
+  // tv2_include_logo ()
+  $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
+
+  $p .= '</td>';
+  $p .= '<td>';
+
+  $p .= '<nobr>';
+
+  // is new?
+  if (time () - $d['rsstool_dl_date'] < $tv2_isnew)
+    $p .= '<img src="images/new.png" border="0" alt="New!"> ';
+
+  // link
+  if ($d['tv2_demux'] > 0)
+    $s = misc_getlink ('', array ('v' => $d['rsstool_url_crc32']), true);
+  else
+    $s = misc_getlink ($d['rsstool_url'], array (), false);
+
+  // title
+  $p .= '<b><a href="'.$s.'">'.$d['rsstool_title'].'</a></b>';
+
+  // duration
+  $p .= tv2_duration ($d);
+
+  // player button (embed)
+  $p .= tv2_player_button ($d);
+
+  // related
+  $p .= tv2_related_button ($d);
+
+  $p .= '</nobr>';
+
+  $p .= '<div style="width:400px;">';
+
+  // description
+  $p .= tv2_include ($d);
+
+  $p .= '<br>';
+
+  // direct link
+  $p .= '<nobr>';
+  $p .= tv2_direct_link ($d);
+  $p .= '</nobr>';
+
+  $p .= '<br>';
+  $p .= tv2_move_form ($d);
+
+  $p .= '<div style="color:#bbb;">';
+  $p .= tv2_keywords ($d);
+  $p .= '</div>';
+
+  $p .= '<br>'  
+//       .'<br>'
+;
+
+//      $p .= tv2_output_html ($d[$i], $start, $num ? $num : 0); // 0 == no player
+      $p .= '</td>';
+  $p .= '</tr>';
+
     }
+  $p .= '</table>';
 
-  $p .= '</div>'; // display:table
-//  $p .= '</center>';
+  
+
+//  $p .= '<center>';
 
   // show page-wise navigation (bottom)
   if (!$v)
@@ -258,6 +184,8 @@ tv2_body ()
       if ($s)
         $p .= '<br>'.$s;
     }
+
+  $p .= '</center>';
 
   return $p;
 }
@@ -295,6 +223,44 @@ $f = get_request_value ('f'); // function
 
 
 $config = config_xml ();
+
+// RSS only
+if ($f == 'rss')
+  {
+    $d = tv2_sql ($c, $q, $desc, $f, NULL, $start, $num);
+    tv2_rss ($d);
+    exit;
+  }
+else if ($f == 'captcha')
+  {
+    tv2_captcha_image ('');
+    exit;
+  }
+
+
+
+
+  // set cookies
+//  if (isset ($_GET['user_name'])) // change user_name in cookie
+//    { 
+//      $user_name = $_GET['user_name'];
+//      if (strlen (trim ($user_name)) == 0)
+//        $user_name = get_request_value ('user_name');
+//    }
+  $a = array (
+//           array ('user_name', $user_name),
+//           array ('last_visit', ''),
+//           array ('latest_visit', ''),
+//           array ('c', $c),    
+           array ('c', ''),
+//           array ('q', $q),
+//           array ('f', $f),
+//           array ('v', $v),
+         );
+  for ($i = 0; isset ($a[$i]); $i++)
+    setcookie ($a[$i][0], $a[$i][1], $tv2_cookie_expire);
+
+
 
 
 
@@ -340,61 +306,13 @@ if ($memcache_expire > 0)
 
 
 
-
-
-
-
-
-
-// RSS only
-if ($f == 'rss')
-  {
-    $d_array = tv2_sql ($c, $q, $desc, $f, NULL, $start, $num);
-    tv2_rss ($d_array);
-    exit;
-  }
-
-
-
-
-
-
-
-
-
-
-
-
 header ('Content-type: text/html; charset=utf-8');
 
-
-  // set cookies
-//  if (isset ($_GET['user_name'])) // change user_name in cookie
-//    { 
-//      $user_name = $_GET['user_name'];
-//      if (strlen (trim ($user_name)) == 0)
-//        $user_name = get_request_value ('user_name');
-//    }
-  $a = array (
-//           array ('user_name', $user_name),
-//           array ('last_visit', ''),
-//           array ('latest_visit', ''),
-//           array ('c', $c),    
-           array ('c', ''),
-//           array ('q', $q),
-//           array ('f', $f),
-//           array ('v', $v),
-         );
-  for ($i = 0; isset ($a[$i]); $i++)
-    setcookie ($a[$i][0], $a[$i][1], $tv2_cookie_expire);
 
 if (islocalhost ())
   {
     // admin stuff
   }
-
-$tv2_captcha = widget_captcha (3);
-
 
 $head = '<html>'
        .'<head>'
