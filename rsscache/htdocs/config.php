@@ -7,7 +7,7 @@ define ('TV2_CONFIG_PHP', 1);
 // compression 1/0
 $use_gzip = 1;
 // use memcache? 0 == off
-$memcache_expire = 0;
+$memcache_expire = 600;
 
 
 // localization and style
@@ -15,7 +15,7 @@ $memcache_expire = 0;
 $tv2_search_s = 'Search';
 $tv2_title = 'pwnoogle \:D/ - upload, download, and watch videos and demos of games';
 $tv2_body_tag = '<body style="font-family:sans-serif;font-size:13px;opacity:1.0;">';
-$tv2_table_tag = '<table style="font-family:sans-serif;font-size:13px;opacity:1.0;" border="0">';
+$tv2_table_tag = '<table style="font-family:sans-serif;font-size:13px;opacity:1.0;" cellspacing="0" cellpadding="0" border="0">';
 $tv2_logo = '<span style="font-size:32px;font-family:sans-serif;color:#000;font-weight:bolder;width:100%;text-align:center">'
            .'pwnoogle \:D/'
 //           .' <img src="images/preview.png" border="0">'

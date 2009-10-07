@@ -48,14 +48,20 @@ tv2_body ()
   $p = '';
 
   // flash carousel with icons
-  $p .= widget_carousel ('carousel_xml.php');
+//  $p .= widget_carousel ('carousel_xml.php', '100%', 150);
 
   // icons
   $s = 0;
   $l = sizeof ($config->category);
   $p .= tv2_button_array ($config, '%s ', $s, $l);
 
-//  $p .= '<div style="display:inline">';
+  $p .= '<br>'  
+       .'<br>'  
+;  
+
+  $p .= '<div style="display:inline">';
+
+  $p .= '<center>';
 
   // logo
   $p .= '<nobr>';
@@ -70,14 +76,17 @@ tv2_body ()
   // stats and version
   $p .= '<br>'.tv2_stats ();
 
-//  $p .= '</div>';
+  $p .= '</div>';
+
+  $p .= '</center>';
 
   // show page-wise navigation (top)
   if (!$v)
     {
-      $p .= '<br>'
-           .'<br>'
-;
+//      $p .= '<br>'
+//           .'<br>'
+//;
+
   $p .= '<center>';
 
       $s = tv2_page ($start, $num, sizeof ($d_array));
@@ -277,25 +286,6 @@ else if ($f == 'captcha')
 
 
 
-if ($use_gzip == 1)
-  {
-/*
-    if (strpos ($HTTP_ACCEPT_ENCODING, 'x-gzip') !== false)
-      {
-        header ('Content-Encoding: x-gzip');
-        print ("\x1f\x8b\x08\x00\x00\x00\x00\x00");
-      }
-    else if (strpos ($HTTP_ACCEPT_ENCODING, 'gzip') !== false)
-      {
-        header ('Content-Encoding: gzip');
-        print ("\x1f\x8b\x08\x00\x00\x00\x00\x00");
-      }
-    else
-*/
-$use_gzip = 0;
-  }
-
-
 if ($memcache_expire > 0)
   {
     $memcache = new Memcache;
@@ -348,12 +338,7 @@ $end = ''
 $p = $head.$body.$end;
 
 if ($use_gzip == 1)
-  {
-    $size = strlen ($p);
-    $p = gzcompress ($p, 9);
-    $p = substr ($p, 0, $size);
-    print ($p);
-  }
+  echo_gzip ($p);
 else echo $p;
 
 // use memcache

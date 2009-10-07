@@ -591,9 +591,9 @@ widget_upload ($upload_path, $max_file_size, $mime_type, $submit_button_html, $u
 
 
 function
-widget_carousel ($xmlfile)
+widget_carousel ($xmlfile, $width=200, $height=150)
 {
-  $p = 'test'
+  $p = ''
       .'<span class="carousel_container">'
       .'<span id="carousel1">'
       .'</span>'
@@ -603,11 +603,11 @@ widget_carousel ($xmlfile)
       .'swfobject.embedSWF ('."\n"
       .'  "misc/carousel.swf",'."\n"
       .'  "carousel1",'."\n"
-      .'  "200", "150",'."\n"
+      .'  "'.$width.'", "'.$height.'",'."\n"
       .'  "9.0.0",'."\n"
       .'  false,'."\n"
       .'  {'."\n"
-      .'    xmlfile:'.$xmlfile.','."\n"
+      .'    xmlfile:"'.$xmlfile.'",'."\n"
       .'    loaderColor:"0xffffff",'."\n"
       .'    messages:"  ::  ::  ::  "'."\n"
       .'  },'."\n"

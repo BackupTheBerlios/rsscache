@@ -231,6 +231,15 @@ misc_get_keywords ($s, $flag = 0) // default = isalnum
 
 
 function
+echo_gzip ($p)
+{
+  ob_start ('ob_gzhandler');
+  echo $p;
+  ob_end_flush ();
+}
+
+
+function
 get_suffix ($filename)
 // get_suffix() never returns NULL
 {
