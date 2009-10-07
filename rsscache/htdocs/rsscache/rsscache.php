@@ -27,6 +27,7 @@ tv2_body ()
          $tv2_results,
          $tv2_isnew,
          $tv2_body_tag,
+         $tv2_table_tag,
          $tv2_logo,
          $tv2_search_s,
          $tv2_videos_s,
@@ -46,21 +47,30 @@ tv2_body ()
 
   $p = '';
 
-  // top
-//  if (!$v)
-//    {
-//      $p .= widget_carousel ('carousel_xml.php');
-//    }
-//  else
-    {
-      // icons
-      $s = 0;
-      $l = sizeof ($config->category);
-      $p .= tv2_button_array ($config, '%s ', $s, $l);
-    }
+  // flash carousel with icons
+  $p .= widget_carousel ('carousel_xml.php');
 
-  // formular
+  // icons
+  $s = 0;
+  $l = sizeof ($config->category);
+  $p .= tv2_button_array ($config, '%s ', $s, $l);
+
+//  $p .= '<div style="display:inline">';
+
+  // logo
+  $p .= '<nobr>';
+  $p .= tv2_logo ();
+  $p .= '</nobr>';
+
+  // search
+  $p .= '<nobr>';
   $p .= tv2_search_form ();
+  $p .= '</nobr>';
+
+  // stats and version
+  $p .= '<br>'.tv2_stats ();
+
+//  $p .= '</div>';
 
   // show page-wise navigation (top)
   if (!$v)
@@ -89,7 +99,7 @@ tv2_body ()
        .'<br>'
 ;
 
-  $p .= '<table border="0">';
+  $p .= $tv2_table_tag;
   for ($i = 0; isset ($d_array[$i]); $i++)
     {
   $d = $d_array[$i];
@@ -97,16 +107,17 @@ tv2_body ()
   $category = config_xml_by_category (strtolower ($d['tv2_category'])); // for logo
 
   $p .= '<tr>';
-  $p .= '<td>';
+  $p .= '<td align="right">';
 
   // embed player
   if ($v)
+{
     $p .= tv2_player ($d);
-  else  
-    $p .= tv2_time_count ($d);
-
   $p .= '</td>';
   $p .= '<td>';
+}
+  else  
+    $p .= tv2_time_count ($d);
 
   // logo
   $p .= '<nobr>&nbsp;'.tv2_button ($category).'&nbsp;</nobr><br>';
@@ -135,8 +146,12 @@ tv2_body ()
   // duration
   $p .= tv2_duration ($d);
 
+//  $p .= '&nbsp;';
+
   // player button (embed)
   $p .= tv2_player_button ($d);
+
+  $p .= '&nbsp;';
 
   // related
   $p .= tv2_related_button ($d);
@@ -148,10 +163,10 @@ tv2_body ()
   // description
   $p .= tv2_include ($d);
 
-  $p .= '<br>';
+//  $p .= '<br>';
 
   // direct link
-  $p .= '<nobr>';
+  $p .= ' <nobr>';
   $p .= tv2_direct_link ($d);
   $p .= '</nobr>';
 
@@ -160,14 +175,10 @@ tv2_body ()
 
   $p .= '<div style="color:#bbb;">';
   $p .= tv2_keywords ($d);
+
   $p .= '</div>';
 
-  $p .= '<br>'  
-//       .'<br>'
-;
-
-//      $p .= tv2_output_html ($d[$i], $start, $num ? $num : 0); // 0 == no player
-      $p .= '</td>';
+  $p .= '</td>';
   $p .= '</tr>';
 
     }
