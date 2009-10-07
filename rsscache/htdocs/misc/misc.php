@@ -115,6 +115,20 @@ scandir4 ($path, $sort)
 
 
 function
+misc_download ($url, $path)
+{
+  if (!($img = file_get_contents ($url, FILE_BINARY)))
+    return;
+
+  if (!($out = fopen ($path, 'wb')))
+    return;
+ 
+  fwrite ($out, $img);
+  fclose ($out);
+}
+
+
+function
 time_ms ()
 // returns milliseconds since midnight
 {
