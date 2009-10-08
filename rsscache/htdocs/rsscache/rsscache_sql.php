@@ -251,10 +251,7 @@ tv2_sql_match_func ($db, $q, $whitelist, $blacklist)
           for ($i = 0; isset ($q_array[$i]); $i++)
             {
               $s = str_replace (' ', '%', trim ($q_array[$i]));
-//              $s = $q_array[$i];
               $p .= ($i > 0 ? ' OR' : '')
-//                   .' rsstool_title LIKE \'%'.$s.'%\''              
-//                   .($desc ? ' OR rsstool_desc LIKE \'%'.$s.'%\'' : '')
                    .' ( tv2_keywords LIKE \'%'.$s.'%\' )'
 ;
             }
@@ -267,7 +264,7 @@ tv2_sql_match_func ($db, $q, $whitelist, $blacklist)
 
 
 function
-tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
+tv2_sql ($c, $q, $f, $v, $start, $num)
 {
   global $tv2_dbhost,
          $tv2_dbuser,

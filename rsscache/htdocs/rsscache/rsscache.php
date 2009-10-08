@@ -33,13 +33,13 @@ tv2_body ()
          $tv2_videos_s,
          $tv2_cookie_expire;
   global $config;
-  global $f, $c, $q, $desc, $v, $start, $num;
+  global $f, $c, $q, $v, $start, $num;
 
   // use SQL
   if ($v)
-    $d_array = tv2_sql (NULL, NULL, $desc, $f, $v, 0, 0, 0);
+    $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
   else
-    $d_array = tv2_sql ($c, $q, $desc, $f, NULL, $start, $num ? $num : 0);
+    $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
 
   // DEBUG
 //  echo '<pre><tt>';
@@ -226,9 +226,6 @@ tv2_body ()
 $f = get_request_value ('f'); // function
   $c = get_request_value ('c'); // category
   $q = get_request_value ('q'); // search query
-  $desc = get_request_value ('desc'); // search in desc?
-  if (!($desc))
-    $desc = 0;
   $f = get_request_value ('f'); // function
   $v = get_request_value ('v'); // own video
   $start = get_request_value ('start'); // offset
@@ -251,7 +248,7 @@ $config = config_xml ();
 // RSS only
 if ($f == 'rss')
   {
-    $d = tv2_sql ($c, $q, $desc, $f, NULL, $start, $num);
+    $d = tv2_sql ($c, $q, $f, NULL, $start, $num);
     tv2_rss ($d);
     exit;
   }
