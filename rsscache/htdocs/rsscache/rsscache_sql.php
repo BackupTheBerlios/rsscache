@@ -151,9 +151,11 @@ tv2_sql_normalize ($db, $dest, $c)
 //                                                    .' '
 //                                                    .strip_tags ($dest[$i]['rsstool_desc']), 0); // isalnum
 
+      // local url
       if (strstr ($dest[$i]['rsstool_url'], $tv2_link))
         $dest[$i]['tv2_local_url'] = str_replace ($tv2_link, '', $dest[$i]['rsstool_url']);
 
+      // demux
       $dest[$i]['tv2_demux'] = 0;
       if (strstr ($dest[$i]['rsstool_url'], 'www.youtube.com'))
         $dest[$i]['tv2_demux'] = 1;
@@ -182,82 +184,84 @@ tv2_sql_normalize ($db, $dest, $c)
 function
 tv2_sql_match_func ($db, $q, $whitelist, $blacklist)
 {
-          $separator = ',';
+  $separator = ',';
+
   $p = '';
 
-      // whitelist
-        if ($whitelist)
-          {
-            $a = explode ($separator, $whitelist);
-            $a = array_merge (array_unique ($a)); // remove dupes
-            if ($a[0])
-              {
-                $p .= ' AND (';
-                for ($i = 0; isset ($a[$i]); $i++)
-                  $p .= ($i > 0 ? ' OR' : '')
-                                   .' tv2_keywords LIKE \'%'.$a[$i].'%\''
-;
-                $p .= ' )';
-              }
-          }
-
-      // blacklist
-          if ($blacklist)
-          {
-            $a = explode ($separator, $blacklist);
-            $a = array_merge (array_unique ($a)); // remove dupes
-            if ($a[0])
-              {
-                $p .= ' AND (';
-                for ($i = 0; isset ($a[$i]); $i++)
-                  $p .=  ($i > 0 ? ' AND' : '')
-                                   .' tv2_keywords NOT LIKE \'%'.$a[$i].'%\''   
-;
-                $p .= ' )';
-              }
-          }
-
-      // query
-      if ($q)
+  // whitelist
+  if ($whitelist)
+    {
+      $a = explode ($separator, $whitelist);
+      $a = array_merge (array_unique ($a)); // remove dupes
+      if ($a[0])
         {
-          if ($f == 'related')
-            {
-                  $s = str_replace (' ', '%', trim ($q));
-                  $p .= ' AND ('
-                                   .' tv2_related LIKE \'%'.$s.'%\''
-//                                   .' rsstool_title LIKE \'%'.$s.'%\''
-                                   .' )'
+          $p .= ' AND (';
+          for ($i = 0; isset ($a[$i]); $i++)
+            $p .= ($i > 0 ? ' OR' : '')
+                             .' tv2_keywords LIKE \'%'.$a[$i].'%\''
 ;
-            }
-          else
-            {
+          $p .= ' )';
+        }
+    }
+
+  // blacklist
+  if ($blacklist)
+    {
+      $a = explode ($separator, $blacklist);
+      $a = array_merge (array_unique ($a)); // remove dupes
+      if ($a[0])
+        {
+          $p .= ' AND (';
+          for ($i = 0; isset ($a[$i]); $i++)
+            $p .=  ($i > 0 ? ' AND' : '')
+                             .' tv2_keywords NOT LIKE \'%'.$a[$i].'%\''   
+;
+          $p .= ' )';
+        }
+    }
+
+  // query
+  if ($q)
+    {
+      if ($f == 'related')
+        {
+          $s = str_replace (' ', '%', trim ($q));
+          $p .= ' AND ('
+               .' tv2_related LIKE \'%'.$s.'%\''
+//             .' rsstool_title LIKE \'%'.$s.'%\''
+               .' )'
+;
+        }
+      else
+        {
 /*
-              $p .= ' AND MATCH ('
-                               .' rsstool_title,'
-                               .' rsstool_desc'
-                               .' ) AGAINST (\''
-                               .$db->sql_stresc ($q)
-                               .'\''
-                               .' IN BOOLEAN MODE'
-                               .' )';
+          $p .= ' AND MATCH ('
+               .' rsstool_title,'
+               .' rsstool_desc'
+               .' ) AGAINST (\''
+               .$db->sql_stresc ($q)
+               .'\''
+               .' IN BOOLEAN MODE'
+               .' )';
 */
 
-              $p .= ' AND (';
-              $query_separator = ',';
-              $q_array = explode ($query_separator, $q);
-              for ($i = 0; isset ($q_array[$i]); $i++)
-                {
-                  $s = str_replace (' ', '%', trim ($q_array[$i]));
-//                  $s = $q_array[$i];
-                  $p .= ($i > 0 ? ' OR' : '')
-//                                   .' rsstool_title LIKE \'%'.$s.'%\''              
-//                                   .($desc ? ' OR rsstool_desc LIKE \'%'.$s.'%\'' : '')
-                                   .' ( tv2_keywords LIKE \'%'.$s.'%\' )'
+          $p .= ' AND (';
+          $query_separator = ',';
+          $q_array = explode ($query_separator, $q);
+          for ($i = 0; isset ($q_array[$i]); $i++)
+            {
+              $s = str_replace (' ', '%', trim ($q_array[$i]));
+//              $s = $q_array[$i];
+              $p .= ($i > 0 ? ' OR' : '')
+//                   .' rsstool_title LIKE \'%'.$s.'%\''              
+//                   .($desc ? ' OR rsstool_desc LIKE \'%'.$s.'%\'' : '')
+                   .' ( tv2_keywords LIKE \'%'.$s.'%\' )'
 ;
-                }
-              $p .= ' )';
             }
-        } // query
+          $p .= ' )';
+        }
+    } // query
+
   return $p;
 }
 
