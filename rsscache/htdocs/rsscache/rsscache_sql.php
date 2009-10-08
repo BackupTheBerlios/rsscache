@@ -137,7 +137,8 @@ tv2_sql_normalize ($db, $dest, $c)
           // desc
           $offset = 0;
           $len = strrpos ($dest[$i]['rsstool_desc'], '<div ');
-          $dest[$i]['rsstool_desc'] = substr ($dest[$i]['rsstool_desc'], $offset, $len);
+          if ($len)
+            $dest[$i]['rsstool_desc'] = substr ($dest[$i]['rsstool_desc'], $offset, $len);
         }
       else if (strstr ($dest[$i]['rsstool_url'], 'www.youtube.com'))
         {
@@ -351,11 +352,12 @@ tv2_sql ($c, $q, $desc, $f, $v, $start, $num)
 
   $d = tv2_sql_normalize ($db, $d, $c);
 
-  $db->sql_close ();
-
   // DEBUG
 //  echo '<tt><pre>';
 //  print_r ($d);
+
+  $db->sql_close ();
+
 
   return $d;
 }

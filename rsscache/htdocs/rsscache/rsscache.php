@@ -144,10 +144,11 @@ tv2_body ()
     $p .= '<img src="images/new.png" border="0" alt="New!"> ';
 
   // link
+  $s = '&seo='.str_replace (' ', '_', tv2_keywords ($d));
   if ($d['tv2_demux'] > 0)
-    $s = misc_getlink ('', array ('v' => $d['rsstool_url_crc32']), true);
+    $s = misc_getlink ('', array ('v' => $d['rsstool_url_crc32']), true).$s;
   else
-    $s = misc_getlink ($d['rsstool_url'], array (), false);
+    $s = misc_getlink ($d['rsstool_url'], array (), false).$s;
 
   // title
   $p .= '<b><a href="'.$s.'">'.$d['rsstool_title'].'</a></b>';
@@ -169,6 +170,8 @@ tv2_body ()
 
   $p .= '<div style="width:400px;">';
 
+  $p .= tv2_thumbnail ($d);
+
   // description
   $p .= tv2_include ($d);
 
@@ -178,6 +181,7 @@ tv2_body ()
   $p .= ' <nobr>';
   $p .= tv2_direct_link ($d);
   $p .= '</nobr>';
+
 
   $p .= '<br>';
   $p .= tv2_move_form ($d);
