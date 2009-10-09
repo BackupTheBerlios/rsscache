@@ -232,7 +232,7 @@ widget_index ($dir, $recursive, $suffix, $index_func)
 
 
 function
-widget_video ($video_url, $width=400, $height=300, $fgcolor="#ffffff", $bgcolor="#000000", $bgcolor2="#444444", $bgcolor3="#ff0000")
+widget_video ($video_url, $width = 400, $height = 300, $fgcolor = '#ffffff', $bgcolor = '#000000', $bgcolor2 = '#444444', $bgcolor3 = '#ff0000')
 {
   $p = '<script type="text/javascript" src="misc/flowplayer-3.0.3.min.js"></script>'
       .'<a href="'.$video_url.'" id="player"></a>'
@@ -271,44 +271,25 @@ widget_video ($video_url, $width=400, $height=300, $fgcolor="#ffffff", $bgcolor=
       .'//-->'."\n"
       .'</script>';
 
-  /*
-    first argument supplies standard Flash parameters. See full list:
-    http://kb.adobe.com/selfservice/viewContent.do?externalId=tn_12701
-    second argument is Flowplayer specific configuration. See full list:
-    http://flowplayer.org/player/configuration.html
-  */
 /*
-  $p = '<script type="text/javascript" src="misc/flashembed.min.js"></script>'
-      .'<script><!--'."\n"
-      .'flashembed (\"player\",'."\n"
-      .'      {'."\n"
-      .'        src: 'misc/FlowPlayerDark.swf','."\n"
-//    .'          src: 'misc/FlowPlayerClassic.swf','."\n"
-//    .'          src: 'misc/FlowPlayerLP.swf','."\n"
-//    .'          src: 'misc/FlowPlayerLight.swf','."\n"
-      .'        width: "
-      .$width
-      .','."\n"
-      .'        height: "
-      .$height
-      .''."\n"
-      .'      },'."\n"
-      .'      {config: {'."\n"
-      .'        autoPlay: true,'."\n"
-      .'        autoBuffering: true,'."\n"
-//      .'        controlBarBackgroundColor:'0x000000','."\n"
-      .'        initialScale: 'orig','."\n"
-      .'        videoFile: '../"
-      .$video_url
-      .'','."\n"
-      .'        useNativeFullScreen: true,'."\n"
-      .'        initialVolumePercentage: 100,'."\n"
-      .'        startingBufferLength: 2,'."\n"
-      .'        useSmoothing: true'."\n"
-      .'      }});'."\n"
-      .'-->'."\n"
-      .'</script>'
-      .'<div id=\"player\"></div>';
+        <script type="text/javascript" src="swfobject.js"></script>
+        <script type="text/javascript">
+                swfobject.registerObject("player","9.0.98","expressInstall.swf");
+        </script>
+
+        <object id="player" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" name="player" width="328" height="200">
+                <param name="movie" value="player.swf" />
+                <param name="allowfullscreen" value="true" />
+                <param name="allowscriptaccess" value="always" />
+                <param name="flashvars" value="file=video.flv&image=preview.jpg" />
+                <object type="application/x-shockwave-flash" data="player.swf" width="328" height="200">
+                        <param name="movie" value="player.swf" />
+                        <param name="allowfullscreen" value="true" />
+                        <param name="allowscriptaccess" value="always" />
+                        <param name="flashvars" value="file=video.flv&image=preview.jpg" />
+                        <p><a href="http://get.adobe.com/flashplayer">Get Flash</a> to see this player.</p>
+                </object>
+        </object>
 */
   return $p;
 }
