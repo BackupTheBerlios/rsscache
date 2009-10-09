@@ -199,6 +199,7 @@ tv2_body ()
       $p .= '<br>';
       $p .= tv2_prev_video_button ($d);
       $p .= tv2_next_video_button ($d);
+      $p .= tv2_vote ($d);
     }
 
   $p .= '</div>';
