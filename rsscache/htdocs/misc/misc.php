@@ -462,45 +462,25 @@ get_request_value ($name)
 
 
 function
-html_head_tags_meta ($name, $content)
+misc_seo_description ($html_body)
 {
-  if ($name && $content)
-    return '<meta name="'
-          .$name
-          .'" content="'
-          .$content
-          .'">'
-          ."\n";
-
-  return '';
+  // generate meta tag from the body
+  $p = strip_tags ($html_body);
+  $p = str_replace (array ('&nbsp;', '&gt;', '&lt;', '\n'), ' ', $p);
+  $p = misc_get_keywords ($p, 1);
+  return '<meta name="Description" content="'.$p.'">';
 }
 
 
 function
-html_head_tags_http_equiv ($http_equiv, $content)
-{
-  if ($http_equiv && $content)
-    return '<meta http-equiv="'
-          .$http_equiv
-          .'" content="'
-          .$content
-          .'">'
-          ."\n";
-
-  return '';
-}
-
-
-function
-html_head_tags ($icon, $title, $refresh, $charset,
-                $use_dc, $desc, $keywords, $identifier, $lang, $author)
+misc_head_tags ($icon, $refresh = 0, $charset = 'UTF-8')
 {
   $p = '';
 
-  $p .= html_head_tags_http_equiv ('Content-Type', 'text/html; charset='.($charset ? $charset : 'UTF-8'));
+  $p .= '<meta name="Content-Type" content="text/html; charset='.$charset.'">';
 
   if ($refresh > 0)
-    $p .= html_head_tags_http_equiv ('refresh', $refresh.'; URL='.$_SERVER['REQUEST_URI']);
+    $p .= '<meta name="refresh" content="'.$refresh.'; url='.$_SERVER['REQUEST_URI'].'">';
 
 /*
     <meta http-equiv="imagetoolbar" content="no">
@@ -511,59 +491,7 @@ html_head_tags ($icon, $title, $refresh, $charset,
 */
 
   if ($icon)
-    $p .= '<link rel="icon" href="'
-         .$icon
-         .'" type="image/png">'
-         ."\n";
-
-  if ($title)
-    $p .= '<title>'
-          .$title
-          .'</title>'
-          ."\n";
-
-  if ($use_dc)
-    $p .= html_head_tags_meta ('description', $desc ? $desc : $title)
-         .html_head_tags_meta ('author', $author ? $author : 'Admin')
-         .html_head_tags_meta ('keywords', $keywords ? $keywords : 'html, php')
-         .html_head_tags_meta ('robots', 'follow')
-         .'<!-- Dublin Core -->\n'
-         .html_head_tags_meta ('DC.Title', $desc ? $desc : $title)
-         .html_head_tags_meta ('DC.Creator', $author ? $author : 'Admin')
-         .html_head_tags_meta ('DC.Subject', $desc ? $desc : $title)
-         .html_head_tags_meta ('DC.Description', $desc ? $desc : $title)
-         .html_head_tags_meta ('DC.Publisher', $author ? $author : 'Admin')
-//         .html_head_tags_meta ('DC.Contributor', '')
-//         .html_head_tags_meta ('DC.Date', '')
-         .html_head_tags_meta ('DC.Type', 'Software')
-         .html_head_tags_meta ('DC.Format', 'text/html')
-         .html_head_tags_meta ('DC.Identifier', $identifier ? $identifier : 'localhost')
-//         .html_head_tags_meta ('DC.Source', '')
-         .html_head_tags_meta ('DC.Language', $lang ? $lang : 'en')
-//         .html_head_tags_meta ('DC.Relation', '')
-//         .html_head_tags_meta ('DC.Coverage', '')
-//         .html_head_tags_meta ('DC.Rights', 'GPL')
-
-//       .html_head_tags_meta ('description', 'Trapping keyboard events with Javascript -- in a cross-browser way [Sniptools]')
-//       .html_head_tags_meta ('keywords', 'Javascript keyboard events, keypress, javascript, keyCode, which, repeat, keydown event, Sniptools')
-//       .html_head_tags_meta ('author', 'Shashank Tripathi')
-//       .html_head_tags_meta ('revisit-after', '1 week')
-//       .html_head_tags_meta ('robots', 'index,all')
-//       .html_head_tags_meta ('revisit-after', '7 days')
-//       .html_head_tags_meta ('author', 'Shashank Tripathi')
-//       .html_head_tags_meta ('generator', 'Homesite 5.0&nbsp; | &nbsp;  Dreamweaver 6 beta&nbsp; | &nbsp; TopStyle 3&nbsp; | &nbsp; Notepad&nbsp; | &nbsp; Adobe PS 7.0')
-//       .html_head_tags_meta ('resource-type', 'Public')
-//       .html_head_tags_meta ('classification', 'Internet Services')
-//       .html_head_tags_meta ('MSSmartTagsPreventParsing', 'TRUE')
-//       .html_head_tags_meta ('robots', 'ALL')
-//       .html_head_tags_meta ('distribution', 'Global')
-//       .html_head_tags_meta ('rating', 'Safe For Kids')
-//       .html_head_tags_meta ('language', 'English')
-//       .html_head_tags_meta ('doc-type', 'Public')
-//       .html_head_tags_meta ('doc-class', 'Living Document')
-//       .html_head_tags_meta ('doc-rights', 'Copywritten Work')
-//       .html_head_tags_meta ('distribution', 'Global')
-;
+    $p .= '<link rel="icon" href="'.$icon.'" type="image/png">';
 
   return $p;
 }

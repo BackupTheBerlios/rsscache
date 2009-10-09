@@ -316,17 +316,19 @@ if (islocalhost ())
     // admin stuff
   }
 
+$body = tv2_body ();
+
 $head = '<html>'
        .'<head>'
        .'<title>'
        .$tv2_title
        .'</title>'
        .'<link rel="stylesheet" type="text/css" media="screen" href="/tv2.css">'
+       .'<meta name="google-site-verification" content="akU6AtYoOtUZ5n8IGHTC3s5uc9AOAnPeqxkckHSi224" />'
+       .misc_seo_description ($body)
        .'</head>'
        .$tv2_body_tag
 ;
-
-$body = tv2_body ();
 
 $end = ''
 //      .'<br><br><br>'
