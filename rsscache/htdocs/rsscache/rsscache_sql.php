@@ -188,6 +188,19 @@ tv2_sql_match_func ($db, $q, $whitelist, $blacklist)
 
   $p = '';
 
+  if ($q)
+    {
+      if ($f == 'related')
+        {
+          $s = str_replace (' ', '%', trim ($q));
+          $p .= ' AND ('
+               .' tv2_related LIKE \'%'.$s.'%\''
+               .' )'
+;
+          return $p;
+        }
+    }
+
   // whitelist
   if ($whitelist)
     {
@@ -198,7 +211,7 @@ tv2_sql_match_func ($db, $q, $whitelist, $blacklist)
           $p .= ' AND (';
           for ($i = 0; isset ($a[$i]); $i++)
             $p .= ($i > 0 ? ' OR' : '')
-                             .' tv2_keywords LIKE \'%'.$a[$i].'%\''
+                 .' tv2_keywords LIKE \'%'.$a[$i].'%\''
 ;
           $p .= ' )';
         }
@@ -213,8 +226,8 @@ tv2_sql_match_func ($db, $q, $whitelist, $blacklist)
         {
           $p .= ' AND (';
           for ($i = 0; isset ($a[$i]); $i++)
-            $p .=  ($i > 0 ? ' AND' : '')
-                             .' tv2_keywords NOT LIKE \'%'.$a[$i].'%\''   
+            $p .= ($i > 0 ? ' AND' : '')
+                 .' tv2_keywords NOT LIKE \'%'.$a[$i].'%\''   
 ;
           $p .= ' )';
         }
@@ -223,44 +236,81 @@ tv2_sql_match_func ($db, $q, $whitelist, $blacklist)
   // query
   if ($q)
     {
-      if ($f == 'related')
+      $p .= ' AND (';
+      $a = explode ($separator, $q);
+      for ($i = 0; isset ($a[$i]); $i++)
         {
-          $s = str_replace (' ', '%', trim ($q));
-          $p .= ' AND ('
-               .' tv2_related LIKE \'%'.$s.'%\''
-//             .' rsstool_title LIKE \'%'.$s.'%\''
-               .' )'
+          $s = str_replace (' ', '%', trim ($a[$i]));
+          $p .= ($i > 0 ? ' OR' : '')
+               .' ( tv2_keywords LIKE \'%'.$s.'%\' )'
 ;
         }
-      else
-        {
-/*
-          $p .= ' AND MATCH ('
-               .' rsstool_title,'
-               .' rsstool_desc'
-               .' ) AGAINST (\''
-               .$db->sql_stresc ($q)
-               .'\''
-               .' IN BOOLEAN MODE'
-               .' )';
-*/
-
-          $p .= ' AND (';
-          $query_separator = ',';
-          $q_array = explode ($query_separator, $q);
-          for ($i = 0; isset ($q_array[$i]); $i++)
-            {
-              $s = str_replace (' ', '%', trim ($q_array[$i]));
-              $p .= ($i > 0 ? ' OR' : '')
-                   .' ( tv2_keywords LIKE \'%'.$s.'%\' )'
-;
-            }
-          $p .= ' )';
-        }
+      $p .= ' )';
     } // query
 
   return $p;
 }
+
+
+/*
+function
+tv2_sql_match_func ($db, $q, $whitelist, $blacklist)
+{
+  $separator = ',';
+
+  $p = '';
+
+  if ($q)
+    {
+      if ($f == 'related')
+        {
+          $s = str_replace (' ', '%', trim ($db->sql_stresc ($q)));
+          $p .= ' AND ( tv2_related LIKE \'%'.$s.'%\' )';
+          return $p;
+        }
+    }
+
+  $p .= ' AND MATCH ('
+       .' tv2_keywords'
+       .' ) AGAINST (\'';
+
+  // whitelist
+  if ($whitelist)
+    {
+      $a = explode ($separator, $db->sql_stresc ($whitelist));
+      for ($i = 0; $a[$i]; $i++)
+        $a[$i] = trim ($a[$i]);
+      $a = array_merge (array_unique ($a)); // remove dupes
+      $p .= ' +'.implode (' +', $a).' ';
+    }
+
+  // blacklist
+  if ($blacklist)
+    {
+      $a = explode ($separator, $db->sql_stresc ($blacklist));
+      for ($i = 0; $a[$i]; $i++)
+        $a[$i] = trim ($a[$i]);
+      $a = array_merge (array_unique ($a)); // remove dupes
+      $p .= ' -'.implode (' -', $a).' ';
+    }
+
+  // query
+  if ($q)
+    {
+      $a = explode ($separator, $db->sql_stresc ($q));
+      for ($i = 0; $a[$i]; $i++)
+        $a[$i] = trim ($a[$i]);
+      $a = array_merge (array_unique ($a)); // remove dupes
+      $p .= ' +'.implode (' +', $a).' ';
+    }
+
+  $p .= ' \''
+       .' IN BOOLEAN MODE'
+       .' )';
+
+  return $p;
+}
+*/
 
 
 function
