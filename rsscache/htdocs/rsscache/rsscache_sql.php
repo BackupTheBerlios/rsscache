@@ -336,6 +336,10 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
         $sql_statement .= ' AND ( tv2_duration > 300 && tv2_duration < 601 )';
       else if ($f == '10_min')
         $sql_statement .= ' AND ( tv2_duration > 600 )';
+      else if ($f == 'prev')
+        $sql_statement .= ' AND ( 1 )';
+      else if ($f == 'next')
+        $sql_statement .= ' AND ( 1 )';
 
       // sort
       if ($f == 'related') // we sort related by title for playlist

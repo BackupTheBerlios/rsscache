@@ -120,12 +120,15 @@ tv2_body ()
 
   // embed player
   if ($v)
-{
-    $p .= tv2_player ($d);
-  $p .= '</td>';
-  $p .= '<td>';
-}
-  else  
+    {
+      $p .= tv2_player ($d);
+      $p .= '</td>';
+      $p .= '<td>';
+    }
+  else if ($f == 'related') // we sort related by title for playlist
+    {
+    }
+  else
     $p .= tv2_time_count ($d);
 
   // logo
@@ -144,11 +147,13 @@ tv2_body ()
     $p .= '<img src="images/new.png" border="0" alt="New!"> ';
 
   // link
-  $s = '&seo='.str_replace (' ', '_', tv2_keywords ($d));
   if ($d['tv2_demux'] > 0)
-    $s = misc_getlink ('', array ('v' => $d['rsstool_url_crc32']), true).$s;
+    {
+      $s = '&seo='.str_replace (' ', '_', tv2_keywords ($d));
+      $s = misc_getlink ('', array ('v' => $d['rsstool_url_crc32']), true).$s;
+    }
   else
-    $s = misc_getlink ($d['rsstool_url'], array (), false).$s;
+    $s = misc_getlink ($d['rsstool_url'], array (), false);
 
   // title
   $p .= '<b><a href="'.$s.'">'.$d['rsstool_title'].'</a></b>';
@@ -188,6 +193,13 @@ tv2_body ()
 
   $p .= '<div style="color:#bbb;">';
   $p .= tv2_keywords ($d);
+
+  if ($v)
+    {
+      $p .= '<br>';
+      $p .= tv2_prev_video_button ($d);
+      $p .= tv2_next_video_button ($d);
+    }
 
   $p .= '</div>';
 
