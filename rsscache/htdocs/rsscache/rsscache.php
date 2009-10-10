@@ -51,9 +51,7 @@ tv2_body ()
 //  $p .= widget_carousel ('carousel_xml.php', '100%', 150);
 
   // icons
-  $s = 0;
-  $l = sizeof ($config->category);
-  $p .= tv2_button_array ($config, '%s ', $s, $l);
+  $p .= tv2_button_array ($config, '%s ', 0, sizeof ($config->category));
 
   $p .= '<br>'  
        .'<br>'  
@@ -69,9 +67,13 @@ tv2_body ()
   $p .= '</nobr>';
 
   // search
-  $p .= '<nobr>';
+  $p .= '&nbsp;<nobr>';
   $p .= tv2_search_form ();
   $p .= '</nobr>';
+
+  // category
+  $category = config_xml_by_category (strtolower ($c)); // for category logo
+  $p .= '&nbsp;'.tv2_button ($category);
 
   // stats and version
   $p .= '<br>'.tv2_stats ();
@@ -173,9 +175,16 @@ tv2_body ()
 
   $p .= '</nobr>';
 
-  $p .= '<div style="width:400px;">';
-
-  $p .= tv2_thumbnail ($d);
+  if ($v)
+    {
+      $p .= '<div style="width:400px;">';
+      $p .= tv2_thumbnail ($d, 128);
+    }
+  else
+    {
+      $p .= '<div style="width:600px;">';
+      $p .= tv2_thumbnail ($d, 196);
+    }
 
   // description
   $p .= tv2_include ($d);
@@ -188,8 +197,9 @@ tv2_body ()
   $p .= '</nobr>';
 
 
-  $p .= '<br>';
+  $p .= '<br><nobr>';
   $p .= tv2_move_form ($d);
+  $p .= '</nobr>';
 
   $p .= '<div style="color:#bbb;">';
   $p .= tv2_keywords ($d);
@@ -265,12 +275,6 @@ if ($f == 'rss')
     tv2_rss ($d);
     exit;
   }
-else if ($f == 'captcha')
-  {
-    tv2_captcha_image ('');
-    exit;
-  }
-
 
 
 
@@ -285,8 +289,7 @@ else if ($f == 'captcha')
 //           array ('user_name', $user_name),
 //           array ('last_visit', ''),
 //           array ('latest_visit', ''),
-//           array ('c', $c),    
-           array ('c', ''),
+           array ('c', $c),    
 //           array ('q', $q),
 //           array ('f', $f),
 //           array ('v', $v),
@@ -298,38 +301,33 @@ else if ($f == 'captcha')
 
 
 
-
-
 if ($memcache_expire > 0)
   {
     $memcache = new Memcache;
-    $memcache->connect ('localhost', 11211) or die ("memcache: could not connect");
-
-    // data from the cache
-    $p = unserialize ($memcache->get (md5 ($_SERVER['QUERY_STRING'])));
-
-    if ($p)
+    if ($memcache->connect ('localhost', 11211) == TRUE)
       {
-        // DEBUG
-//        echo 'cached';
+        // data from the cache
+        $p = $memcache->get (md5 ($_SERVER['QUERY_STRING']));
 
-        echo $p;
+        if ($p != FALSE)
+          {
+            $p = unserialize ($p);
 
-        exit;
-     }
+            // DEBUG
+//            echo 'cached';
+
+            echo $p;
+
+            exit;
+          }
+      }
   }
 
-
-
-header ('Content-type: text/html; charset=utf-8');
-
-
-if (islocalhost ())
-  {
-    // admin stuff
-  }
-
-$body = tv2_body ();
+  // admin
+//if (islocalhost ())
+//  $body = tv2_body (1);
+//else
+  $body = tv2_body ();
 
 $head = '<html>'
        .'<head>'
@@ -360,8 +358,7 @@ else echo $p;
 // use memcache
 if ($memcache_expire > 0)
   {
-    $memcache->set (md5 ($_SERVER['QUERY_STRING']), serialize ($p))
-      or die ("memcache: failed to save data at the server");
+    $memcache->set (md5 ($_SERVER['QUERY_STRING']), serialize ($p), 0, $memcache_expire);
   }
 
 

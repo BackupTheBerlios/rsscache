@@ -26,8 +26,31 @@ require_once ('misc/misc.php');
 
 
 function
-widget_captcha ($len)
+widget_captcha ($captcha_path)
 {
+  // use random captcha image
+  $captcha_md5 = '202cb962ac59075b964b07152d234b70';
+  $img = 'images/captcha/'.$captcha_md5.'.jpg'; // image name is md5 of the captcha in the image
+
+  $p = '';
+
+  $p .= '<input type="hidden" name="widget_captcha_key" value="'.$captcha_md5.'">';
+  $p .= '<img src="'.$img.'" border="0">';
+  $p .= '<input type="text" size="3" maxsize="3" name="widget_captcha">';
+
+  return $p;
+}
+
+
+function
+widget_captcha_check ()
+{
+  $widget_captcha = get_request_value ($widget_captcha);
+  $widget_captcha_key = get_request_value ($widget_captcha_check);
+
+  if (md5 ($widget_captcha) == $widget_captcha_key)
+    return TRUE;
+  return FALSE;
 }
 
 

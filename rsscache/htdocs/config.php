@@ -7,7 +7,7 @@ define ('TV2_CONFIG_PHP', 1);
 // compression 1/0
 $use_gzip = 1;
 // use memcache? 0 == off
-$memcache_expire = 0;
+$memcache_expire = 120;
 
 
 // localization and style
@@ -34,12 +34,11 @@ $tv2_cookie_expire = time() + 3600 * 24 * 180; // 6 months
 
 
 // player settings
-$tv2_player_w = 400;
-$tv2_player_h = 300;
-//$tv2_player_w = -1; // max. width
-//$tv2_player_h = -1; // max. height
-$tv2_isnew = 3600 * 6;
-$tv2_results = 10;
+$tv2_player_w = 400; // max. width
+$tv2_player_h = 300; // max. height
+//$tv2_player_w = -1; $tv2_player_h = -1; // fullscreen
+$tv2_isnew = 3600 * 6; // how long new files are marked as new
+$tv2_results = 10; // results per page
 
 
 // database settings
