@@ -166,7 +166,7 @@ tv2_sql_normalize ($db, $dest, $c)
       else if ($dest[$i]['tv2_local_url'])
         {
           // local flv
-          $flv = str_replace ($tv2_link, $tv2_root, $dest[$i]['rsstool_url']);
+          $flv = str_replace ($tv2_link, $tv2_root.'/', $dest[$i]['rsstool_url']);
           $flv = set_suffix ($flv, '.flv');
           if (file_exists ($flv))
             $dest[$i]['tv2_demux'] = 4;
