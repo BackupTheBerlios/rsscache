@@ -24,18 +24,18 @@ tv2_update_category ($rsstool_url_crc32, $new_category)
 
 /*
     // all at once
-//  $sql_statement = 'SELECT COUNT(*) AS rows, tv2_category FROM rsstool_table WHERE 1';
-//  $sql_statement .= ' GROUP BY tv2_category ';
-//  $sql_statement .= ';';
+//  $sql_query_s = 'SELECT COUNT(*) AS rows, tv2_category FROM rsstool_table WHERE 1';
+//  $sql_query_s .= ' GROUP BY tv2_category ';
+//  $sql_query_s .= ';';
 
-  $sql_statement = 'SELECT COUNT(*) FROM rsstool_table WHERE 1';
+  $sql_query_s = 'SELECT COUNT(*) FROM rsstool_table WHERE 1';
 
   if ($category)
-    $sql_statement .= ' AND tv2_category = \''.$category.'\'';
+    $sql_query_s .= ' AND tv2_category = \''.$category.'\'';
 
-  $sql_statement .= ';';
+  $sql_query_s .= ';';
 
-  $db->sql_write ($sql_statement, $debug);
+  $db->sql_write ($sql_query_s, $debug);
   $r = $db->sql_read ($debug);
 
   $db->sql_close ();
@@ -65,48 +65,48 @@ tv2_sql_stats ($category = NULL)
 
   // videos
   // all at once
-//  $sql_statement = 'SELECT COUNT(*) AS rows, tv2_category FROM rsstool_table WHERE 1';
-//  $sql_statement .= ' GROUP BY tv2_category ';
-//  $sql_statement .= ';';
+//  $sql_query_s = 'SELECT COUNT(*) AS rows, tv2_category FROM rsstool_table WHERE 1';
+//  $sql_query_s .= ' GROUP BY tv2_category ';
+//  $sql_query_s .= ';';
 
-  $sql_statement = 'SELECT COUNT(*) FROM rsstool_table WHERE 1';
+  $sql_query_s = 'SELECT COUNT(*) FROM rsstool_table WHERE 1';
 
   if ($category)
-    $sql_statement .= ' AND tv2_category = \''.$category.'\'';
+    $sql_query_s .= ' AND tv2_category = \''.$category.'\'';
 
-  $sql_statement .= ';';
+  $sql_query_s .= ';';
 
-  $db->sql_write ($sql_statement, $debug);
+  $db->sql_write ($sql_query_s, $debug);
   $r = $db->sql_read ($debug);
 
   $stats['videos'] = (int) $r[0][0];
 
 
   // days
-  $sql_statement = 'SELECT rsstool_dl_date FROM rsstool_table WHERE 1';
+  $sql_query_s = 'SELECT rsstool_dl_date FROM rsstool_table WHERE 1';
 
   if ($category)
-    $sql_statement .= ' AND tv2_category = \''.$category.'\'';
+    $sql_query_s .= ' AND tv2_category = \''.$category.'\'';
 
-  $sql_statement .= ' ORDER BY rsstool_dl_date ASC'
+  $sql_query_s .= ' ORDER BY rsstool_dl_date ASC'
                    .' LIMIT 1'
                    .';';
 /*
-  $sql_statement = 'SELECT rsstool_dl_date';
+  $sql_query_s = 'SELECT rsstool_dl_date';
 
   if ($category)
-    $sql_statement .= ' FROM ( SELECT rsstool_dl_date FROM rsstool_table WHERE ( tv2_category LIKE \''.$category.'\' ) )';
+    $sql_query_s .= ' FROM ( SELECT rsstool_dl_date FROM rsstool_table WHERE ( tv2_category LIKE \''.$category.'\' ) )';
   else
-    $sql_statement .= ' FROM ( SELECT rsstool_dl_date FROM rsstool_table WHERE 1 )';
+    $sql_query_s .= ' FROM ( SELECT rsstool_dl_date FROM rsstool_table WHERE 1 )';
 
-  $sql_statement .= ''
+  $sql_query_s .= ''
                    .' WHERE 1'
                    .' ORDER BY rsstool_dl_date ASC'
                    .' LIMIT 1'
                    .';';
 */
 
-  $db->sql_write ($sql_statement, $debug);
+  $db->sql_write ($sql_query_s, $debug);
   $r = $db->sql_read ($debug);
 
   $stats['days'] = (int) ((time () - $r[0][0]) / 86400);
@@ -336,8 +336,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
   $start = $db->sql_stresc ($start);
   $num = $db->sql_stresc ($num);
 
-//  $sql_statement = 'SELECT * FROM rsstool_table WHERE 1';
-  $sql_statement = 'SELECT'
+//  $sql_query_s = 'SELECT * FROM rsstool_table WHERE 1';
+  $sql_query_s = 'SELECT'
                   .' rsstool_url,'
                   .' rsstool_url_crc32,'
                   .' rsstool_title,'
@@ -350,12 +350,12 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                   .' FROM rsstool_table WHERE 1';
 
   if ($v) // direct
-    $sql_statement .= ' AND ( rsstool_url_crc32 = '.$v.' )';
+    $sql_query_s .= ' AND ( rsstool_url_crc32 = '.$v.' )';
   else
     {
       // category
       if ($c)
-        $sql_statement .= ' AND ( `tv2_category` = \''.$c.'\' )';
+        $sql_query_s .= ' AND ( `tv2_category` = \''.$c.'\' )';
 
       $whitelist = NULL;
       $blacklist = NULL;
@@ -375,33 +375,33 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
             }
         }
 
-      $sql_statement .= tv2_sql_match_func ($db, $q, $whitelist, $blacklist);
+      $sql_query_s .= tv2_sql_match_func ($db, $q, $whitelist, $blacklist);
 
       // functions
       if ($f == 'new')
-        $sql_statement .= ' AND ( rsstool_dl_date > '.(time () - $tv2_isnew).' )';
+        $sql_query_s .= ' AND ( rsstool_dl_date > '.(time () - $tv2_isnew).' )';
       else if ($f == '0_5min')
-        $sql_statement .= ' AND ( tv2_duration > 0 && tv2_duration < 301 )';
+        $sql_query_s .= ' AND ( tv2_duration > 0 && tv2_duration < 301 )';
       else if ($f == '5_10min')
-        $sql_statement .= ' AND ( tv2_duration > 300 && tv2_duration < 601 )';
+        $sql_query_s .= ' AND ( tv2_duration > 300 && tv2_duration < 601 )';
       else if ($f == '10_min')
-        $sql_statement .= ' AND ( tv2_duration > 600 )';
+        $sql_query_s .= ' AND ( tv2_duration > 600 )';
       else if ($f == 'prev')
-        $sql_statement .= ' AND ( 1 )';
+        $sql_query_s .= ' AND ( 1 )';
       else if ($f == 'next')
-        $sql_statement .= ' AND ( 1 )';
+        $sql_query_s .= ' AND ( 1 )';
 
       // sort
       if ($f == 'related') // we sort related by title for playlist
-        $sql_statement .= ' ORDER BY rsstool_title ASC';
+        $sql_query_s .= ' ORDER BY rsstool_title ASC';
       else
-        $sql_statement .= ' ORDER BY rsstool_dl_date DESC';
+        $sql_query_s .= ' ORDER BY rsstool_dl_date DESC';
 
       // limit
-      $sql_statement .= ' LIMIT '.$start.','.$num;
+      $sql_query_s .= ' LIMIT '.$start.','.$num;
     }
 
-  $db->sql_write ($sql_statement, $debug);
+  $db->sql_write ($sql_query_s, $debug);
 //  $d = array ();
   $d = $db->sql_read (0 /* $debug */);
 
