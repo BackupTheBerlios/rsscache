@@ -31,7 +31,7 @@ var $user = NULL;
 var $password = NULL;
 var $database = NULL;
 var $conn = NULL;
-var $res = FALSE;
+var $res = NULL;
 
 var $memcache_expire = 0; // 0 == off
 var $memcache = NULL;
@@ -152,11 +152,7 @@ sql_write ($sql_query_s, $debug = 0)
         .$sql_query_s
         .'</tt><br><br>';
 
-  if ($this->res)
-    {
-//      mysql_free_result ($this->res);
-      $this->res = NULL;
-    }
+//  mysql_free_result ($this->res);
 
   if ($this->memcache_expire > 0)
     {
@@ -172,8 +168,8 @@ sql_write ($sql_query_s, $debug = 0)
 
       if ($this->memcache_expire > 0)
         {
-          // store data in the cache (data will expire in 60 seconds)
-          $this->memcache->set (md5 ($sql_query_s), serialize ($this->res), false, 60) 
+          // store data in the cache
+          $this->memcache->set (md5 ($sql_query_s), serialize ($this->res), false, $this->memcache_expire)
             or die ("memcache: failed to save data at the server");
         }
     }
@@ -187,13 +183,7 @@ sql_write ($sql_query_s, $debug = 0)
 function
 sql_close ()
 {
-// TODO: fix this shit
-//  if (!is_null ($this->res))
-//  if ($this->res != FALSE)
-//    { 
-//      mysql_free_result ($this->res);
-//      $this->res = FALSE;
-//    }
+//  mysql_free_result ($this->res);
 
   if (!is_null ($this->conn))
     {
