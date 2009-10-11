@@ -280,25 +280,39 @@ set_suffix ($filename, $suffix)
 
 
 function
-short_name ($str, $limit)
+str_shorten ($s, $limit)
 {
   // Make sure a small or negative limit doesn't cause a negative length for substr().
   if ($limit < 3)
     $limit = 3;
 
   // Now truncate the string if it is over the limit.
-  if (strlen ($str) > $limit)
-    return substr($str, 0, $limit - 3) . '..';
+  if (strlen ($s) > $limit)
+    return substr($s, 0, $limit - 3).'..';
   else
-    return $str;
+    return $s;
+}
+
+
+function
+short_name ($s, $limit)
+{
+  return str_shorten ($s, $limit);
+}
+
+
+function
+isintag ($s)
+{
+  // are we inside a tag?
+  return strpos ($s, '>') < strpos ($s, '<');
 }
 
 
 function
 in_tag ($s)
 {
-  // are we inside a tag?
-  return strpos ($s, '>') < strpos ($s, '<');
+  return isintag ($s);
 }
 
 
@@ -480,7 +494,7 @@ misc_head_tags ($icon, $refresh = 0, $charset = 'UTF-8')
   $p .= '<meta name="Content-Type" content="text/html; charset='.$charset.'">';
 
   if ($refresh > 0)
-    $p .= '<meta name="refresh" content="'.$refresh.'; url='.$_SERVER['REQUEST_URI'].'">';
+    $p .= '<meta name="refresh" content="refresh: '.$refresh.'; url='.$_SERVER['REQUEST_URI'].'">';
 
 /*
     <meta http-equiv="imagetoolbar" content="no">

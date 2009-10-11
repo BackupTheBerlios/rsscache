@@ -41,6 +41,9 @@ tv2_body ()
   else
     $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
 
+  // category
+  $category = config_xml_by_category (strtolower ($c));
+
   // DEBUG
 //  echo '<pre><tt>';
 //  print_r ($d_array);
@@ -71,10 +74,6 @@ tv2_body ()
   $p .= tv2_search_form ();
   $p .= '</nobr>';
 
-  // category
-  $category = config_xml_by_category (strtolower ($c)); // for category logo
-  $p .= '&nbsp;'.tv2_button ($category);
-
   // stats and version
   $p .= '<br>'.tv2_stats ();
 
@@ -89,19 +88,25 @@ tv2_body ()
 //           .'<br>'
 //;
 
-  $p .= '<center>';
+      $p .= '<center>';
 
       $s = tv2_page ($start, $num, sizeof ($d_array));
 
       if ($s)
         {
+          // category button
+          $p .= '&nbsp;'.tv2_button ($category);
+
           // left play all button
 //          $p .= '&nbsp'.tv2_play_all_button ();
           $p .= $s;
         }
 
+      // category button
+      $p .= '&nbsp;'.tv2_button ($category);
+
       // right play all button
-//          $p .= '&nbsp'.tv2_play_all_button ();
+//      $p .= '&nbsp'.tv2_play_all_button ();
     }
 
 //  $p .= '</center>';
@@ -115,7 +120,7 @@ tv2_body ()
     {
   $d = $d_array[$i];
   // output
-  $category = config_xml_by_category (strtolower ($d['tv2_category'])); // for logo
+  $d_category = config_xml_by_category (strtolower ($d['tv2_category'])); // for logo
 
   $p .= '<tr>';
   $p .= '<td align="right">';
@@ -134,7 +139,7 @@ tv2_body ()
     $p .= tv2_time_count ($d);
 
   // logo
-  $p .= '<nobr>&nbsp;'.tv2_button ($category).'&nbsp;</nobr><br>';
+  $p .= '<nobr>&nbsp;'.tv2_button ($d_category).'&nbsp;</nobr><br>';
 
   // tv2_include_logo ()
   $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
@@ -186,6 +191,8 @@ tv2_body ()
       $p .= tv2_thumbnail ($d, 196);
     }
 
+  $p .= '<br>';
+
   // description
   $p .= tv2_include ($d);
 
@@ -197,9 +204,12 @@ tv2_body ()
   $p .= '</nobr>';
 
 
-  $p .= '<br><nobr>';
-  $p .= tv2_move_form ($d);
-  $p .= '</nobr>';
+  if ($d_category->movable == 1)
+    {
+      $p .= '<br><nobr>';
+      $p .= tv2_move_form ($d);
+      $p .= '</nobr>';
+    }
 
   $p .= '<div style="color:#bbb;">';
   $p .= tv2_keywords ($d);

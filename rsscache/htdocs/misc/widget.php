@@ -36,7 +36,7 @@ widget_captcha ($captcha_path)
 
   $p .= '<input type="hidden" name="widget_captcha_key" value="'.$captcha_md5.'">';
   $p .= '<img src="'.$img.'" border="0">';
-  $p .= '<input type="text" size="3" maxsize="3" name="widget_captcha">';
+  $p .= '<input type="text" size="3" maxsize="3" name="widget_captcha" disabled="disabled">';
 
   return $p;
 }
