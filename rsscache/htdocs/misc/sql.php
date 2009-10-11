@@ -187,12 +187,13 @@ sql_write ($sql_query_s, $debug = 0)
 function
 sql_close ()
 {
+// TODO: fix this shit
 //  if (!is_null ($this->res))
-  if ($this->res != FALSE)
-    { 
-      mysql_free_result ($this->res);
-      $this->res = FALSE;
-    }
+//  if ($this->res != FALSE)
+//    { 
+//      mysql_free_result ($this->res);
+//      $this->res = FALSE;
+//    }
 
   if (!is_null ($this->conn))
     {

@@ -25,6 +25,110 @@ define ('MISC_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 
 
+function
+misc_explode_tag ($html_tag)
+{
+  // returns 2d array with tag name and attributes and their values
+  $s = strpos ($html_tag, '<') + 1;
+  $l = strrpos ($html_tag, '>') - $s;
+  $p = substr ($html_tag, $s, $l);
+  $p = trim ($p);
+  // '=      "' to '="'
+  $p = str_replace (array ('= "','=  "'), '="', $p);
+  $p = str_replace (array ('= "','=  "'), '="', $p);
+  $p = str_replace (array ('= "','=  "'), '="', $p);
+  // '      ="' to '="'
+  $p = str_replace (array (' ="','  ="'), '="', $p);
+  $p = str_replace (array (' ="','  ="'), '="', $p);
+  $p = str_replace (array (' ="','  ="'), '="', $p);
+
+  // DEBUG
+//  echo $p;
+
+  $a = explode (' ', $p);
+  $a = array_merge (array_unique ($a));
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($a);
+
+  $tag = array ();
+  $count = 0;
+  for ($i = 0; isset ($a[$i]); $i++)
+    if (strpos ($a[$i], '=')) // is attribute
+      {
+        $aa = explode ('=', $a[$i], 2);
+
+        $tag[strtolower (trim ($aa[0]))] = '"'.trim (trim ($aa[1]), '"').'"'; // trim first spaces then quotes
+      }
+    else // attribute without value (e.g. tag name)
+      $tag[strtolower (trim ($a[$i]))] = NULL;
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($tag);
+
+  return $tag;
+}
+
+
+function
+misc_implode_tag ($tag)
+{
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($tag);
+
+  $p = '';
+
+  $p .= '<';
+
+  $a = array_keys ($tag);
+  for ($i = 0; $a[$i]; $i++)
+    {
+      if ($i > 0)
+        $p .= ' ';
+
+      $p .= $a[$i];
+
+      if ($tag[$a[$i]])
+        $p .= '='.$tag[$a[$i]];
+    }
+
+  $p .= '>';
+
+  return $p;
+}
+
+
+function
+misc_gettag ($html_tag, $attr = array(), $use_existing_attr = false)
+{
+  $tag = misc_explode_tag ($html_tag);
+
+  if (!$use_existing_attr)
+    {
+      // BUT keep the attributes without value (e.g. tag name)
+      $attr_keys = array_keys ($tag);
+      for ($i = 0; $attr_keys[$i]; $i++)
+        if ($tag[$attr_keys[$i]] == NULL)
+          $a[$attr_keys[$i]] = $tag[$attr_keys[$i]];
+      $tag = $a;
+    }
+
+  if (!$attr)
+    return misc_implode_tag ($tag);
+
+//  $tag = array_replace ($tag, $attr);
+  $attr_keys = array_keys ($attr);
+  for ($i = 0; $attr_keys[$i]; $i++)
+    if ($attr[$attr_keys[$i]] != NULL)
+      $tag[$attr_keys[$i]] = '"'.trim ($attr[$attr_keys[$i]], '"').'"';
+
+  return misc_implode_tag ($tag);
+}
+
+
 $ctype__ = array(32,32,32,32,32,32,32,32,32,40,40,40,40,40,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,
   -120,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,4,4,4,4,4,4,4,4,4,4,16,16,16,16,16,16,
   16,65,65,65,65,65,65,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16,16,16,16,16,
