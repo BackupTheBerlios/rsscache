@@ -66,7 +66,7 @@ widget_table ($title_array, $content_array)
   $p .= '<table class="widget_table" border="0" cellpadding="1" cellspacing="0">';
 
   // titles
-  $p .= '<tr class="widget_table_title">'
+  $p .= '<tr class="widget_table_title">';
   for ($i = 0; $title_array[$i]; $i++)
     $p .= '<td class="widget_table_td">'.$title_array[$i].'</td>';
   $p .= '</tr>';
