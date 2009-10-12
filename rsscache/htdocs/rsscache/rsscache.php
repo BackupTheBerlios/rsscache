@@ -339,6 +339,10 @@ if ($memcache_expire > 0)
       }
   }
 
+
+$tv2_captcha = widget_captcha ('images/captcha/');
+
+
   // admin
 //if (islocalhost ())
 //  $body = tv2_body (1);

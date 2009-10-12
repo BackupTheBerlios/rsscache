@@ -28,12 +28,27 @@ require_once ('misc/misc.php');
 function
 widget_captcha ($captcha_path)
 {
+  global $tv2_root;
+
   // use random captcha image
-  $captcha_md5 = '202cb962ac59075b964b07152d234b70'; // TODO: get random with opendir()...
+  if (!($handle = opendir ($tv2_root.'/'.$captcha_path)))
+    return 'ERROR: problem with CAPTCHA';
+
+  $a = array ();
+  $count = 0;
+  while (false !== ($p = readdir ($handle)))
+    $a[$count++] = $p;
+
+  closedir ($handle);
+
+  srand (microtime () * time ());
+  $r = rand (0, sizeof ($a) - 1);
+
+  $captcha_md5 = set_suffix ($a[$r], '');
+
   $img = $captcha_path.'/'.$captcha_md5.'.jpg'; // image name is md5 of the captcha in the image
 
   $p = '';
-
   $p .= '<input type="hidden" name="widget_captcha_key" value="'.$captcha_md5.'">';
   $p .= '<img src="'.$img.'" border="0" title="enter this CAPTCHA in the field to the right">';
   $p .= '<input type="text" size="3" maxsize="3" name="widget_captcha" disabled="disabled" title="enter the CAPTCHA you see left from here">';
