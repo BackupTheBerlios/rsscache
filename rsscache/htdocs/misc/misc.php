@@ -406,17 +406,10 @@ short_name ($s, $limit)
 
 
 function
-isintag ($s)
+in_tag ($s)
 {
   // are we inside a tag?
   return strpos ($s, '>') < strpos ($s, '<');
-}
-
-
-function
-in_tag ($s)
-{
-  return isintag ($s);
 }
 
 
@@ -425,14 +418,14 @@ is_url ($s)
 {
   // checks if string is a url
   $is_url = 0;
+
   if (strlen ($s) > 4 &&
       isalpha ($s[0]) &&
       !strstr ($s, '..') &&
       substr_count ($s, '.') == 2)
     $is_url = 1;
-  if (stristr ($s, '.net') ||
-      stristr ($s, '.org') ||
-      stristr ($s, '.com'))
+
+  if (in_array (substr ($s, -4), array ('.net', '.org', '.com'))
     $is_url = 1;
 
   return $is_url;
