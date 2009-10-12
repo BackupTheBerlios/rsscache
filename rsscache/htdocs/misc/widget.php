@@ -29,8 +29,8 @@ function
 widget_captcha ($captcha_path)
 {
   // use random captcha image
-  $captcha_md5 = '202cb962ac59075b964b07152d234b70';
-  $img = 'images/captcha/'.$captcha_md5.'.jpg'; // image name is md5 of the captcha in the image
+  $captcha_md5 = '202cb962ac59075b964b07152d234b70'; // TODO: get random with opendir()...
+  $img = $captcha_path.'/'.$captcha_md5.'.jpg'; // image name is md5 of the captcha in the image
 
   $p = '';
 
@@ -55,33 +55,34 @@ widget_captcha_check ()
 
 
 function
-widget_table ($title_array, $content_array, $title_attr, $row1_attr, $row2_attr)
+widget_table ($title_array, $content_array)
 {
-/*
+  // $cols == number of titles in $title_array 
   $cols = sizeof ($title_array);
   $rows = $cols * 0.5;
 
-  $p = '<table border="0" cellpadding="1" cellspacing="0">';
+  $p = '';
 
-  for ($i = 0; $content_array[$i]; $i++)
+  $p .= '<table class="widget_table" border="0" cellpadding="1" cellspacing="0">';
+
+  // titles
+  $p .= '<tr class="widget_table_title">'
+  for ($i = 0; $title_array[$i]; $i++)
+    $p .= '<td class="widget_table_td">'.$title_array[$i].'</td>';
+  $p .= '</tr>';
+
+  // content
+  for ($i = 0; $i < $rows; $i++)
     {
-      $row_attr = ($i & 1) ? $row1_attr : $row2_attr;
-
-      $p .= '<tr '.$title_attr.'>'
-           .'<td><b>CVAR</b></td>'
-           .'<td><b>Value</b></td>'
-           .'</tr>';
-
-      $p .= '<tr bgcolor="'.$row_attr.'">';
-      $p .= '<td>'.$cvar.'</td>'
-           .'<td>'.$value.'</td>'
-           .'</tr>';
+      $p .= '<tr class="widget_table_tr'.(($i & 1) + 1).'">';
+      for ($j = $rows * $cols; $j < $cols; $j++)
+        $p .= '<td class="widget_table_td">'.$content_array[$j].'</td>';
+      $p .= '</tr>';
     }
 
   $p .= '</table>';
 
   return $p;
-*/
 }
 
 
