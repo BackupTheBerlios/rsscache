@@ -35,8 +35,8 @@ widget_captcha ($captcha_path)
   $p = '';
 
   $p .= '<input type="hidden" name="widget_captcha_key" value="'.$captcha_md5.'">';
-  $p .= '<img src="'.$img.'" border="0">';
-  $p .= '<input type="text" size="3" maxsize="3" name="widget_captcha" disabled="disabled">';
+  $p .= '<img src="'.$img.'" border="0" title="enter this CAPTCHA in the field to the right">';
+  $p .= '<input type="text" size="3" maxsize="3" name="widget_captcha" disabled="disabled" title="enter the CAPTCHA you see left from here">';
 
   return $p;
 }
