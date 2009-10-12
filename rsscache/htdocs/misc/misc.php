@@ -425,7 +425,7 @@ is_url ($s)
       substr_count ($s, '.') == 2)
     $is_url = 1;
 
-  if (in_array (substr ($s, -4), array ('.net', '.org', '.com'))
+  if (in_array (substr ($s, -4), array ('.net', '.org', '.com')))
     $is_url = 1;
 
   return $is_url;
