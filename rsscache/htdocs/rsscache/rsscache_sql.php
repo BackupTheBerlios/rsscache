@@ -182,6 +182,26 @@ tv2_sql_normalize ($db, $dest, $c)
 
 
 function
+tv2_sql_match_normalize ($q)
+{
+  /*
+    google style
+
+    ALL of these words: test1 test2
+    the exact wording or phrase: "test3  " "test4  "
+    ONE OR MORE of these words: test5 OR test6
+    ANY of these unwanted words: -test7 -test8
+
+    1) test1 test2 test5 OR test6 "test3  " "test4  " -test7 -test8
+
+    2) http://www.google.com/search?q=test1+test2+test5+OR+test6+%22test3++%22+%22test4++%22+-test7+-test8
+  */
+  $match = $p;
+  return $match;
+}
+
+
+function
 tv2_sql_match_func ($db, $q, $whitelist, $blacklist)
 {
   $separator = ',';
