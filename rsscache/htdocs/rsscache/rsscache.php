@@ -38,6 +38,12 @@ tv2_body ()
   global $config;
   global $f, $c, $q, $v, $start, $num;
 
+  if (widget_captcha_check ())
+    {
+      tv2_update_category ($v, $c);
+      $v = NULL;
+    }
+
   // use SQL
   if ($v)
     $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
@@ -267,7 +273,7 @@ tv2_body ()
 
 
 
-$f = get_request_value ('f'); // function
+  $f = get_request_value ('f'); // function
   $c = get_request_value ('c'); // category
   $q = get_request_value ('q'); // search query
   $f = get_request_value ('f'); // function
@@ -288,6 +294,7 @@ $f = get_request_value ('f'); // function
 
 
 $config = config_xml ();
+
 
 // RSS only
 if ($f == 'rss')

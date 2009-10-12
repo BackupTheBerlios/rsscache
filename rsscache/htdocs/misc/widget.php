@@ -52,7 +52,7 @@ widget_captcha ($captcha_path)
   $p = '';
   $p .= '<input type="hidden" name="widget_captcha_key" value="'.$captcha_md5.'">';
   $p .= '<img src="'.$img.'" border="0" title="enter this CAPTCHA in the field to the right">';
-  $p .= '<input type="text" size="3" maxsize="3" name="widget_captcha" disabled="disabled" title="enter the CAPTCHA you see left from here">';
+  $p .= '<input type="text" size="3" maxsize="3" name="widget_captcha" title="enter the CAPTCHA you see left from here">';
 
   return $p;
 }
@@ -61,8 +61,11 @@ widget_captcha ($captcha_path)
 function
 widget_captcha_check ()
 {
-  $widget_captcha = get_request_value ($widget_captcha);
-  $widget_captcha_key = get_request_value ($widget_captcha_check);
+  $widget_captcha = get_request_value ('widget_captcha');
+  $widget_captcha_key = get_request_value ('widget_captcha_key');
+
+  // DEBUG
+//  echo md5 ($widget_captcha).' == '.$widget_captcha_key.'<br>';
 
   if (md5 ($widget_captcha) == $widget_captcha_key)
     return TRUE;

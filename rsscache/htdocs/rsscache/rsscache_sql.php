@@ -22,26 +22,12 @@ tv2_update_category ($rsstool_url_crc32, $new_category)
                  $tv2_dbpass,
                  $tv2_dbname);
 
-/*
-    // all at once
-//  $sql_query_s = 'SELECT COUNT(*) AS rows, tv2_category FROM rsstool_table WHERE 1';
-//  $sql_query_s .= ' GROUP BY tv2_category ';
-//  $sql_query_s .= ';';
-
-  $sql_query_s = 'SELECT COUNT(*) FROM rsstool_table WHERE 1';
-
-  if ($category)
-    $sql_query_s .= ' AND tv2_category = \''.$category.'\'';
-
-  $sql_query_s .= ';';
+  $sql_query_s = 'UPDATE rsstool_table SET tv2_category = \''.$db->sql_stresc ($new_category).'\''
+                .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
 
   $db->sql_write ($sql_query_s, $debug);
-  $r = $db->sql_read ($debug);
 
   $db->sql_close ();
-
-  return $r[0][0];
-*/
 }
 
 
