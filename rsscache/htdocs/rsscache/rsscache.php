@@ -24,6 +24,8 @@ tv2_body ()
          $tv2_related_s;
 
   global $tv2_root,
+         $tv2_link,
+         $tv2_link_static,
          $tv2_results,
          $tv2_isnew,
          $tv2_body_tag,
@@ -160,7 +162,10 @@ tv2_body ()
       $s = misc_getlink ('', array ('v' => $d['rsstool_url_crc32']), true).$s;
     }
   else
-    $s = misc_getlink ($d['rsstool_url'], array (), false);
+    {
+      $link = tv2_link_normalize ($d['rsstool_url']); // local, static or other server?
+      $s = misc_getlink ($link, array (), false);
+    }
 
   // title
   $p .= '<b><a href="'.$s.'">'.$d['rsstool_title'].'</a></b>';

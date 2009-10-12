@@ -255,7 +255,7 @@ widget_index ($dir, $recursive, $suffix, $index_func)
 
 
 function
-widget_video ($video_url, $width = 400, $height = 300, $fgcolor = '#ffffff', $bgcolor = '#000000', $bgcolor2 = '#444444', $bgcolor3 = '#ff0000')
+widget_video ($video_url, $preview_image = NULL, $width = 400, $height = 300, $fgcolor = '#ffffff', $bgcolor = '#000000', $bgcolor2 = '#444444', $bgcolor3 = '#ff0000')
 {
   $p = '<script type="text/javascript" src="misc/flowplayer-3.1.4.min.js"></script>'
       .'<a href="'.$video_url.'" id="player"></a>'
@@ -291,29 +291,34 @@ widget_video ($video_url, $width = 400, $height = 300, $fgcolor = '#ffffff', $bg
       .'        }'."\n"
       .'    }'."\n"
       .'});'."\n"
-      .'//-->'."\n"
+      .'//-->'
       .'</script>';
 
-/*
-        <script type="text/javascript" src="swfobject.js"></script>
-        <script type="text/javascript">
-                swfobject.registerObject("player","9.0.98","expressInstall.swf");
-        </script>
+//  return $p;
 
-        <object id="player" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" name="player" width="328" height="200">
-                <param name="movie" value="player.swf" />
-                <param name="allowfullscreen" value="true" />
-                <param name="allowscriptaccess" value="always" />
-                <param name="flashvars" value="file=video.flv&image=preview.jpg" />
-                <object type="application/x-shockwave-flash" data="player.swf" width="328" height="200">
-                        <param name="movie" value="player.swf" />
-                        <param name="allowfullscreen" value="true" />
-                        <param name="allowscriptaccess" value="always" />
-                        <param name="flashvars" value="file=video.flv&image=preview.jpg" />
-                        <p><a href="http://get.adobe.com/flashplayer">Get Flash</a> to see this player.</p>
-                </object>
-        </object>
-*/
+  $s = '';
+  if ($preview_image)
+    $s = '&image='.$preview_image;
+
+  $p = ''
+//      .'<script type="text/javascript" src="misc/swfobject.js"></script>'
+//      .'<script type="text/javascript">'."\n"
+//      .'swfobject.registerObject("player","9.0.98","misc/expressInstall.swf");'."\n"
+//      .'</script>'
+      .'<object id="player" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" name="player" width="'.$width.'" height="'.$height.'">'
+      .'<param name="movie" value="misc/player.swf" />'
+      .'<param name="allowfullscreen" value="true" />' 
+      .'<param name="allowscriptaccess" value="always" />' 
+      .'<param name="flashvars" value="file='.$video_url.''.$s.'" />'
+      .'<object type="application/x-shockwave-flash" data="misc/player.swf" width="'.$width.'" height="'.$height.'">'
+      .'<param name="movie" value="misc/player.swf" />'
+      .'<param name="allowfullscreen" value="true" />'
+      .'<param name="allowscriptaccess" value="always" />'
+      .'<param name="flashvars" value="file='.$video_url.''.$s.'" />'
+//      .<p><a href="http://get.adobe.com/flashplayer">Get Flash</a> to see this player.</p>'
+      .'</object>'
+      .'</object>';
+
   return $p;
 }
 

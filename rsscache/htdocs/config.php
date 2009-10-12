@@ -27,7 +27,7 @@ $tv2_videos_s = 'videos and demos';
 $tv2_related_s = 'Find related '.$tv2_videos_s;
 
 
-$tv2_root = dirname(__FILE__);
+$tv2_root = dirname(__FILE__).'/';
 $tv2_link = 'http://pwnoogle.com/';
 $tv2_link_static = 'http://allowdl.com/pwnoogle/'; // static content
 $tv2_cookie_expire = time() + 3600 * 24 * 180; // 6 months
