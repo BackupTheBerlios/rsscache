@@ -257,8 +257,10 @@ widget_index ($dir, $recursive, $suffix, $index_func)
 function
 widget_video ($video_url, $preview_image = NULL, $width = 400, $height = 300, $fgcolor = '#ffffff', $bgcolor = '#000000', $bgcolor2 = '#444444', $bgcolor3 = '#ff0000')
 {
+  $url = $video_url;
+
   $p = '<script type="text/javascript" src="misc/flowplayer-3.1.4.min.js"></script>'
-      .'<a href="'.$video_url.'" id="player"></a>'
+      .'<a href="'.$url.'" id="player"></a>'
       .'<script><!--'."\n"
       .'flowplayer('."\n"
       .'  "player",'."\n"
@@ -296,9 +298,8 @@ widget_video ($video_url, $preview_image = NULL, $width = 400, $height = 300, $f
 
 //  return $p;
 
-  $s = '';
   if ($preview_image)
-    $s = '&image='.$preview_image;
+    $url = '&image='.$preview_image;
 
   $p = ''
 //      .'<script type="text/javascript" src="misc/swfobject.js"></script>'
@@ -309,12 +310,12 @@ widget_video ($video_url, $preview_image = NULL, $width = 400, $height = 300, $f
       .'<param name="movie" value="misc/player.swf" />'
       .'<param name="allowfullscreen" value="true" />' 
       .'<param name="allowscriptaccess" value="always" />' 
-      .'<param name="flashvars" value="file='.$video_url.''.$s.'" />'
+      .'<param name="flashvars" value="file='.$url.'" />'
       .'<object type="application/x-shockwave-flash" data="misc/player.swf" width="'.$width.'" height="'.$height.'">'
       .'<param name="movie" value="misc/player.swf" />'
       .'<param name="allowfullscreen" value="true" />'
       .'<param name="allowscriptaccess" value="always" />'
-      .'<param name="flashvars" value="file='.$video_url.''.$s.'" />'
+      .'<param name="flashvars" value="file='.$url.'" />'
 //      .<p><a href="http://get.adobe.com/flashplayer">Get Flash</a> to see this player.</p>'
       .'</object>'
       .'</object>';
@@ -326,7 +327,7 @@ widget_video ($video_url, $preview_image = NULL, $width = 400, $height = 300, $f
 function
 widget_video_youtube ($video_id, $width=425, $height=344, $fgcolor="#ffffff", $bgcolor="#000000", $bgcolor2="#444444", $bgcolor3="#ff0000")
 {
-  
+// &loop=1&autoplay=1
 
   $url = 'http://www.youtube.com/v/'
         .$video_id
@@ -355,9 +356,12 @@ widget_video_youtube ($video_id, $width=425, $height=344, $fgcolor="#ffffff", $b
        .'<object width="'.$width.'" height="'.$height.'">'
        .'<param name="movie" value="'.$url.'">'
        .'</param><param name="allowFullScreen" value="true"></param>'
+//       .'</param><param name="autoplay" value="true"></param>'
        .'<embed src="'
        .$url
-       .'" type="application/x-shockwave-flash" allowfullscreen="true" width="'
+       .'" type="application/x-shockwave-flash" allowfullscreen="true"'
+//       .' autoplay="true"'
+       .' width="'
        .$width
        .'" height="'
        .$height
