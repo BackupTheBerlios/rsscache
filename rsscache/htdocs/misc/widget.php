@@ -257,13 +257,13 @@ widget_index ($dir, $recursive, $suffix, $index_func)
 function
 widget_video ($video_url, $width = 400, $height = 300, $fgcolor = '#ffffff', $bgcolor = '#000000', $bgcolor2 = '#444444', $bgcolor3 = '#ff0000')
 {
-  $p = '<script type="text/javascript" src="misc/flowplayer-3.0.3.min.js"></script>'
+  $p = '<script type="text/javascript" src="misc/flowplayer-3.1.4.min.js"></script>'
       .'<a href="'.$video_url.'" id="player"></a>'
       .'<script><!--'."\n"
       .'flowplayer('."\n"
       .'  "player",'."\n"
       .'  {'."\n"
-      .'    src: "misc/flowplayer-3.0.3.swf",'."\n"
+      .'    src: "misc/flowplayer-3.1.4.swf",'."\n"
       .'    width:'.$width.','."\n"
       .'    height:'.$height."\n"
       .'  },'."\n"
