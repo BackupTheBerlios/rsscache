@@ -103,13 +103,19 @@ tv2_body ()
           // left play all button
 //          $p .= '&nbsp'.tv2_play_all_button ();
           $p .= $s;
+
         }
 
-      // category button
-      $p .= '&nbsp;'.tv2_button ($category);
+      if (sizeof ($d_array) > 0)
+        {
+          // category button
+          $p .= '&nbsp;'.tv2_button ($category);
 
-      // right play all button
-//      $p .= '&nbsp'.tv2_play_all_button ();
+          // right play all button
+//        $p .= '&nbsp'.tv2_play_all_button ();
+        }
+      else
+        $p .= '<br><br>:(';
     }
 
 //  $p .= '</center>';
@@ -167,9 +173,8 @@ tv2_body ()
       $link = tv2_link_normalize ($d['rsstool_url']); // local, static or other server?
       $s = misc_getlink ($link, array (), false);
     }
-
-  // title
-  $p .= '<b><a href="'.$s.'">'.$d['rsstool_title'].'</a></b>';
+  // link as title
+  $p .= '<b><a href="'.$s.'" title="'.$d['rsstool_title'].'">'.str_shorten ($d['rsstool_title'], 64).'</a></b>';
 
   // duration
   $p .= tv2_duration ($d);

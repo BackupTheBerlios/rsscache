@@ -37,7 +37,8 @@ widget_captcha ($captcha_path)
   $a = array ();
   $count = 0;
   while (false !== ($p = readdir ($handle)))
-    $a[$count++] = $p;
+    if (get_suffix ($p) == '.jpg')
+      $a[$count++] = $p;
 
   closedir ($handle);
 
@@ -414,12 +415,12 @@ widget_video_dailymotion ($video_id, $width=420, $height=336)
 
 
 function
-widget_video_xfire ($video_id, $width=405, $height=344)
+widget_video_xfire ($video_id, $width=425, $height=279)
 {
 //  $video_id = '1';
   $url = 'http://media.xfire.com/swf/embedplayer.swf';
 
-  // original: 405x344
+  // original: 425x279
   $p = ''
       .'<object width="'.$width.'" height="'.$height.'">'
       .'<embed src="'.$url.'"'
