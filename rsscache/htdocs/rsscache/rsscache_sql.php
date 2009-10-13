@@ -92,15 +92,6 @@ tv2_sql_stats ($category = NULL)
   $r = $db->sql_read ($debug);
 
   $stats['videos'] = (int) $r[0][0];
-/*
-  $db->sql_close ();
-  $db = new misc_sql;  
-
-  $db->sql_open ($tv2_dbhost,
-                 $tv2_dbuser,
-                 $tv2_dbpass,
-                 $tv2_dbname);
-*/
 
   // days
   $sql_query_s = 'SELECT rsstool_dl_date FROM rsstool_table WHERE 1';

@@ -49,8 +49,11 @@ sql_stresc ($s)
 function
 sql_open ($host, $user, $password, $database, $memcache_expire = 0)
 {
-  if (!is_null ($this->conn))
-    mysql_close ($this->conn);
+  if ($this->conn)
+    {
+      mysql_close ($this->conn);
+      $this->conn = NULL;
+    }
 
   $this->host = $host;
   $this->user = $user;
@@ -74,14 +77,12 @@ sql_read ($debug = 0)
 {
   $a = Array ();
 
-  if (!isset ($this->res))
-    return NULL;
+  if ($debug == 1)
+    if ($this->res == TRUE)
+      echo 'result is TRUE but no resource';
 
-  if (is_null ($this->res))
-    return NULL;
-
-  if ($this->res == FALSE)
-    return NULL;
+  if (gettype ($this->res) != 'resource') // either FALSE or just TRUE
+    return NULL;  
 
 //  while ($row = mysql_fetch_array ($this->res, MYSQL_BOTH))
   while ($row = mysql_fetch_array ($this->res))
@@ -111,10 +112,11 @@ sql_read ($debug = 0)
 function
 sql_getrow ($row, $debug = 0)
 {
-  if (is_null ($this->res))
-    return NULL;
+  if ($debug == 1)
+    if ($this->res == TRUE)
+      echo 'result is TRUE but no resource';
 
-  if ($this->res == FALSE)
+  if (gettype ($this->res) != 'resource') // either FALSE or just TRUE
     return NULL;
 
   if ($row >= mysql_num_rows ($this->res))
@@ -152,7 +154,11 @@ sql_write ($sql_query_s, $debug = 0)
         .$sql_query_s
         .'</tt><br><br>';
 
-//  mysql_free_result ($this->res);
+  if (gettype ($this->res) == 'resource')
+    {
+      mysql_free_result ($this->res);
+      $this->res = NULL;
+    }
 
   if ($this->memcache_expire > 0)
     {
@@ -162,19 +168,20 @@ sql_write ($sql_query_s, $debug = 0)
         $this->res = unserialize ($p);
     }
 
-  if ($this->res == NULL || $this->res == FALSE)
+  if ($this->res == NULL)
     {
       $this->res = mysql_query ($sql_query_s);
 
-      if ($this->memcache_expire > 0)
-        {
-          // store data in the cache
-          $this->memcache->set (md5 ($sql_query_s), serialize ($this->res), false, $this->memcache_expire)
-            or die ("memcache: failed to save data at the server");
-        }
+      if (gettype ($this->res) == 'resource') // cache resources only, not TRUE's
+        if ($this->memcache_expire > 0)
+          {
+            // store data in the cache
+            $this->memcache->set (md5 ($sql_query_s), serialize ($this->res), false, $this->memcache_expire)
+              or die ("memcache: failed to save data at the server");
+          }
     }
 
-  if ($this->res != FALSE)
+  if ($this->res != FALSE) // TRUE or resource (depending on query)
     return 1;
   return 0;
 }
@@ -183,9 +190,13 @@ sql_write ($sql_query_s, $debug = 0)
 function
 sql_close ()
 {
-//  mysql_free_result ($this->res);
+  if (gettype ($this->res) == 'resource')          
+    {
+      mysql_free_result ($this->res);    
+      $this->res = NULL;
+    }
 
-  if (!is_null ($this->conn))
+  if ($this->conn)
     {
       mysql_close ($this->conn);
       $this->conn = NULL;
@@ -205,6 +216,7 @@ sql_seek ($row)
 function
 sql_get_result ()
 {
+  // returns FALSE or TRUE or resource
   return $this->res;
 }
 

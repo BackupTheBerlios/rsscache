@@ -88,7 +88,7 @@ tv2_body ()
 
   $p .= '</div>';
 
-  $p .= '</center>';
+//  $p .= '</center>';
 
   // show page-wise navigation (top)
   if (!$v)
@@ -97,7 +97,7 @@ tv2_body ()
 //           .'<br>'
 //;
 
-      $p .= '<center>';
+//      $p .= '<center>';
 
       $s = tv2_page ($start, $num, sizeof ($d_array));
 
