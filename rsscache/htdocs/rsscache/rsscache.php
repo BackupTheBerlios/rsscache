@@ -40,7 +40,7 @@ tv2_body ()
 
   if (widget_captcha_check ())
     {
-      tv2_update_category ($v, $c);
+      tv2_sql_move ($v, $c);
       $v = NULL;
     }
 
@@ -135,7 +135,7 @@ tv2_body ()
     {
   $d = $d_array[$i];
   // output
-  $d_category = config_xml_by_category (strtolower ($d['tv2_category'])); // for logo
+  $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
 
   $p .= '<tr>';
   $p .= '<td align="right">';
@@ -317,7 +317,7 @@ if ($f == 'rss')
 //           array ('user_name', $user_name),
 //           array ('last_visit', ''),
 //           array ('latest_visit', ''),
-           array ('c', $c),    
+           array ('c', ''),
 //           array ('q', $q),
 //           array ('f', $f),
 //           array ('v', $v),

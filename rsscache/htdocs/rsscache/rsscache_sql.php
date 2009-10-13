@@ -8,8 +8,9 @@ require_once ('misc/sql.php');
 
 
 function
-tv2_update_category ($rsstool_url_crc32, $new_category)
+tv2_sql_move ($rsstool_url_crc32, $new_category)
 {
+  // move item to different category
   global $tv2_dbhost,
          $tv2_dbuser,
          $tv2_dbpass,
@@ -22,7 +23,32 @@ tv2_update_category ($rsstool_url_crc32, $new_category)
                  $tv2_dbpass,
                  $tv2_dbname);
 
-  $sql_query_s = 'UPDATE rsstool_table SET tv2_category = \''.$db->sql_stresc ($new_category).'\''
+  $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = \''.$db->sql_stresc ($new_category).'\''
+                .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
+
+  $db->sql_write ($sql_query_s, $debug);
+
+  $db->sql_close ();
+}
+
+
+function
+tv2_sql_restore ($rsstool_url_crc32)
+{
+  // restore original category
+  global $tv2_dbhost,
+         $tv2_dbuser,
+         $tv2_dbpass,
+         $tv2_dbname;
+  $debug = 0;
+
+  $db = new misc_sql;  
+  $db->sql_open ($tv2_dbhost,
+                 $tv2_dbuser,
+                 $tv2_dbpass,
+                 $tv2_dbname);
+
+  $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = tv2_category'
                 .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
 
   $db->sql_write ($sql_query_s, $debug);
@@ -51,14 +77,14 @@ tv2_sql_stats ($category = NULL)
 
   // videos
   // all at once
-//  $sql_query_s = 'SELECT COUNT(*) AS rows, tv2_category FROM rsstool_table WHERE 1';
+//  $sql_query_s = 'SELECT COUNT(*) AS rows, tv2_moved FROM rsstool_table WHERE 1';
 //  $sql_query_s .= ' GROUP BY tv2_category ';
 //  $sql_query_s .= ';';
 
   $sql_query_s = 'SELECT COUNT(*) FROM rsstool_table WHERE 1';
 
   if ($category)
-    $sql_query_s .= ' AND tv2_category = \''.$category.'\'';
+    $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
 
   $sql_query_s .= ';';
 
@@ -66,22 +92,31 @@ tv2_sql_stats ($category = NULL)
   $r = $db->sql_read ($debug);
 
   $stats['videos'] = (int) $r[0][0];
+/*
+  $db->sql_close ();
+  $db = new misc_sql;  
 
+  $db->sql_open ($tv2_dbhost,
+                 $tv2_dbuser,
+                 $tv2_dbpass,
+                 $tv2_dbname);
+*/
 
   // days
   $sql_query_s = 'SELECT rsstool_dl_date FROM rsstool_table WHERE 1';
 
   if ($category)
-    $sql_query_s .= ' AND tv2_category = \''.$category.'\'';
+    $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
 
   $sql_query_s .= ' ORDER BY rsstool_dl_date ASC'
                    .' LIMIT 1'
                    .';';
+
 /*
   $sql_query_s = 'SELECT rsstool_dl_date';
 
   if ($category)
-    $sql_query_s .= ' FROM ( SELECT rsstool_dl_date FROM rsstool_table WHERE ( tv2_category LIKE \''.$category.'\' ) )';
+    $sql_query_s .= ' FROM ( SELECT rsstool_dl_date FROM rsstool_table WHERE ( tv2_moved LIKE \''.$category.'\' ) )';
   else
     $sql_query_s .= ' FROM ( SELECT rsstool_dl_date FROM rsstool_table WHERE 1 )';
 
@@ -95,8 +130,7 @@ tv2_sql_stats ($category = NULL)
   $db->sql_write ($sql_query_s, $debug);
   $r = $db->sql_read ($debug);
 
-  $stats['days'] = (int) ((time () - $r[0][0]) / 86400);
-
+  $stats['days'] = (int) ((time () - (int) $r[0][0]) / 86400);
   $db->sql_close ();
 
 
@@ -350,6 +384,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                   .' rsstool_desc,'
                   .' rsstool_dl_date,'
                   .' tv2_category,'
+                  .' tv2_moved,'
                   .' tv2_duration,'
                   .' tv2_related,'
                   .' tv2_keywords'
@@ -361,7 +396,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
     {
       // category
       if ($c)
-        $sql_query_s .= ' AND ( `tv2_category` = \''.$c.'\' )';
+        $sql_query_s .= ' AND ( `tv2_moved` = \''.$c.'\' )';
 
       $whitelist = NULL;
       $blacklist = NULL;
