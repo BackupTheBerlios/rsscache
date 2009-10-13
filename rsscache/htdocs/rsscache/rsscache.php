@@ -104,7 +104,7 @@ tv2_body ()
       if ($s)
         {
           // category button
-          $p .= '&nbsp;'.tv2_button ($category);
+//          $p .= '&nbsp;'.tv2_button ($category);
 
           // left play all button
 //          $p .= '&nbsp'.tv2_play_all_button ();
@@ -115,7 +115,7 @@ tv2_body ()
       if (sizeof ($d_array) > 0)
         {
           // category button
-          $p .= '&nbsp;'.tv2_button ($category);
+//          $p .= '&nbsp;'.tv2_button ($category);
 
           // right play all button
 //        $p .= '&nbsp'.tv2_play_all_button ();
