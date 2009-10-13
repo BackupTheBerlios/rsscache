@@ -64,6 +64,7 @@ tv2_sql_stats ($category = NULL)
          $tv2_dbuser,
          $tv2_dbpass,
          $tv2_dbname;
+  global $memcache_expire;
   $debug = 0;
 
   $stats = array ('videos' => 0, 'days' => 0);
@@ -72,7 +73,8 @@ tv2_sql_stats ($category = NULL)
   $db->sql_open ($tv2_dbhost,
                  $tv2_dbuser,
                  $tv2_dbpass,
-                 $tv2_dbname);
+                 $tv2_dbname,
+                 $memcache_expire); // that's right... we cache the stats
 
 
   // videos

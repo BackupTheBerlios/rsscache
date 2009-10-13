@@ -60,13 +60,25 @@ sql_open ($host, $user, $password, $database, $memcache_expire = 0)
   $this->password = $password;
   $this->database = $database;
 
-  $this->conn = mysql_connect ($host, $user, $password) or die (mysql_error ());
+  $this->conn = mysql_connect ($host, $user, $password);
+  if ($this->conn == FALSE)
+    {
+      echo mysql_error ();
+      return;
+    }
+
   mysql_select_db ($database, $this->conn);
 
   if ($memcache_expire > 0)
     {
       $this->memcache = new Memcache;
-      $this->memcache->connect ('localhost', 11211) or die ("memcache: could not connect");
+      if ($this->memcache->connect ('localhost', 11211) != TRUE)
+        {
+          echo 'memcache: could not connect';
+          $this->memcache_expire = 0;
+          return;
+        }
+
       $this->memcache_expire = $memcache_expire;
     }
 }
@@ -75,8 +87,6 @@ sql_open ($host, $user, $password, $database, $memcache_expire = 0)
 function
 sql_read ($debug = 0)
 {
-  $a = Array ();
-
   if ($debug == 1)
     if ($this->res == TRUE)
       echo 'result is TRUE but no resource';
@@ -84,6 +94,7 @@ sql_read ($debug = 0)
   if (gettype ($this->res) != 'resource') // either FALSE or just TRUE
     return NULL;  
 
+  $a = array ();
 //  while ($row = mysql_fetch_array ($this->res, MYSQL_BOTH))
   while ($row = mysql_fetch_array ($this->res))
     $a[] = $row;
@@ -176,8 +187,7 @@ sql_write ($sql_query_s, $debug = 0)
         if ($this->memcache_expire > 0)
           {
             // store data in the cache
-            $this->memcache->set (md5 ($sql_query_s), serialize ($this->res), false, $this->memcache_expire)
-              or die ("memcache: failed to save data at the server");
+            $this->memcache->set (md5 ($sql_query_s), serialize ($this->res), false, $this->memcache_expire);
           }
     }
 

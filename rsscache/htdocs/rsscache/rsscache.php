@@ -69,9 +69,9 @@ tv2_body ()
        .'<br>'  
 ;  
 
-  $p .= '<div style="display:inline">';
-
   $p .= '<center>';
+
+  $p .= '<div style="display:inline">';
 
   // logo
   $p .= '<nobr>';
@@ -88,16 +88,12 @@ tv2_body ()
 
   $p .= '</div>';
 
-//  $p .= '</center>';
-
   // show page-wise navigation (top)
   if (!$v)
     {
-//      $p .= '<br>'
+      $p .= '<br>'
 //           .'<br>'
-//;
-
-//      $p .= '<center>';
+;
 
       $s = tv2_page ($start, $num, sizeof ($d_array));
 
@@ -123,8 +119,6 @@ tv2_body ()
       else
         $p .= '<br><br>:(';
     }
-
-//  $p .= '</center>';
 
   $p .= '<br>'
        .'<br>'
@@ -247,10 +241,6 @@ tv2_body ()
     }
   $p .= '</table>';
 
-  
-
-//  $p .= '<center>';
-
   // show page-wise navigation (bottom)
   if (!$v)
     {
@@ -266,31 +256,26 @@ tv2_body ()
 
 
 
-
 // main ()
 
-
-
-
-
-  $f = get_request_value ('f'); // function
-  $c = get_request_value ('c'); // category
-  $q = get_request_value ('q'); // search query
-  $f = get_request_value ('f'); // function
-  $v = get_request_value ('v'); // own video
-  $start = get_request_value ('start'); // offset
-  if (!($start))
-    $start = 0;
-  $num = get_request_value ('num'); // number of results
-  if (!($num))
-    $num = $tv2_results;
-//  $user_name = get_request_value ("user_name");
-//  $last_visit = get_request_value ('last_visit');
-//  $latest_visit = get_request_value ('latest_visit');
-//  if (!($latest_visit))
-//    $last_visit = $latest_visit = time ();
-//  else if ($latest_visit < time () - $tv2_isnew)
-//    $last_visit = $latest_visit;
+$f = get_request_value ('f'); // function
+$c = get_request_value ('c'); // category
+$q = get_request_value ('q'); // search query
+$f = get_request_value ('f'); // function
+$v = get_request_value ('v'); // own video
+$start = get_request_value ('start'); // offset
+if (!($start))
+  $start = 0;
+$num = get_request_value ('num'); // number of results
+if (!($num))
+  $num = $tv2_results;
+//$user_name = get_request_value ("user_name");
+//$last_visit = get_request_value ('last_visit');
+//$latest_visit = get_request_value ('latest_visit');
+//if (!($latest_visit))
+//  $last_visit = $latest_visit = time ();
+//else if ($latest_visit < time () - $tv2_isnew)
+//  $last_visit = $latest_visit;
 
 
 $config = config_xml ();
@@ -306,24 +291,24 @@ if ($f == 'rss')
 
 
 
-  // set cookies
-//  if (isset ($_GET['user_name'])) // change user_name in cookie
-//    { 
-//      $user_name = $_GET['user_name'];
-//      if (strlen (trim ($user_name)) == 0)
-//        $user_name = get_request_value ('user_name');
-//    }
-  $a = array (
-//           array ('user_name', $user_name),
-//           array ('last_visit', ''),
-//           array ('latest_visit', ''),
-           array ('c', ''),
-//           array ('q', $q),
-//           array ('f', $f),
-//           array ('v', $v),
-         );
-  for ($i = 0; isset ($a[$i]); $i++)
-    setcookie ($a[$i][0], $a[$i][1], $tv2_cookie_expire);
+// set cookies
+//if (isset ($_GET['user_name'])) // change user_name in cookie
+//  { 
+//    $user_name = $_GET['user_name'];
+//    if (strlen (trim ($user_name)) == 0)
+//      $user_name = get_request_value ('user_name');
+//  }
+$a = array (
+//         array ('user_name', $user_name),
+//         array ('last_visit', ''),
+//         array ('latest_visit', ''),
+         array ('c', ''),
+//         array ('q', $q),
+//         array ('f', $f),
+//         array ('v', $v),
+       );
+for ($i = 0; isset ($a[$i]); $i++)
+  setcookie ($a[$i][0], $a[$i][1], $tv2_cookie_expire);
 
 
 
