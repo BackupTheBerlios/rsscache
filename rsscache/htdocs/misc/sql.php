@@ -52,7 +52,7 @@ sql_open ($host, $user, $password, $database, $memcache_expire = 0)
   if ($this->conn)
     {
       mysql_close ($this->conn);
-      $this->conn = NULL;
+//      $this->conn = NULL;
     }
 
   $this->host = $host;
@@ -67,8 +67,13 @@ sql_open ($host, $user, $password, $database, $memcache_expire = 0)
       return;
     }
 
-  mysql_select_db ($database, $this->conn);
+  if (mysql_select_db ($database, $this->conn) == FALSE)
+    {
+      echo mysql_error ();
+      return;
+    }
 
+  // open memcache too
   if ($memcache_expire > 0)
     {
       $this->memcache = new Memcache;
@@ -91,11 +96,11 @@ sql_read ($debug = 0)
     if ($this->res == TRUE)
       echo 'result is TRUE but no resource';
 
-  if (gettype ($this->res) != 'resource') // either FALSE or just TRUE
+  if (!is_resource ($this->res)) // either FALSE or just TRUE
     return NULL;  
 
   $a = array ();
-//  while ($row = mysql_fetch_array ($this->res, MYSQL_BOTH))
+//  while ($row = mysql_fetch_array ($this->res, MYSQL_ASSOC)) // MYSQL_ASSOC, MYSQL_NUM, and the default value of MYSQL_BOTH
   while ($row = mysql_fetch_array ($this->res))
     $a[] = $row;
 
@@ -127,13 +132,13 @@ sql_getrow ($row, $debug = 0)
     if ($this->res == TRUE)
       echo 'result is TRUE but no resource';
 
-  if (gettype ($this->res) != 'resource') // either FALSE or just TRUE
+  if (!is_resource ($this->res)) // either FALSE or just TRUE
     return NULL;
 
-  if ($row >= mysql_num_rows ($this->res))
+  if ($row >= mysql_num_rows ($this->res) || mysql_num_rows ($this->res) == 0)
     return NULL;
 
-  if (mysql_data_seek ($this->res, $row) == false)
+  if (mysql_data_seek ($this->res, $row) == FALSE)
     return NULL;
 
 //  $this->row_pos = $row;
@@ -165,10 +170,10 @@ sql_write ($sql_query_s, $debug = 0)
         .$sql_query_s
         .'</tt><br><br>';
 
-  if (gettype ($this->res) == 'resource')
+  if (is_resource ($this->res))
     {
       mysql_free_result ($this->res);
-      $this->res = NULL;
+//      $this->res = NULL;
     }
 
   if ($this->memcache_expire > 0)
@@ -177,19 +182,17 @@ sql_write ($sql_query_s, $debug = 0)
       $p = $this->memcache->get (md5 ($sql_query_s));
       if ($p)
         $this->res = unserialize ($p);
+      return 1;
     }
 
-  if ($this->res == NULL)
-    {
-      $this->res = mysql_query ($sql_query_s);
+  $this->res = mysql_query ($sql_query_s, $this->conn);
 
-      if (gettype ($this->res) == 'resource') // cache resources only, not TRUE's
-        if ($this->memcache_expire > 0)
-          {
-            // store data in the cache
-            $this->memcache->set (md5 ($sql_query_s), serialize ($this->res), false, $this->memcache_expire);
-          }
-    }
+  if (is_resource ($this->res)) // cache resources only, not TRUE's
+    if ($this->memcache_expire > 0)
+      {
+        // store data in the cache
+        $this->memcache->set (md5 ($sql_query_s), serialize ($this->res), false, $this->memcache_expire);
+      }
 
   if ($this->res != FALSE) // TRUE or resource (depending on query)
     return 1;
@@ -200,16 +203,16 @@ sql_write ($sql_query_s, $debug = 0)
 function
 sql_close ()
 {
-  if (gettype ($this->res) == 'resource')          
+  if (is_resource ($this->res))          
     {
       mysql_free_result ($this->res);    
-      $this->res = NULL;
+//      $this->res = NULL;
     }
 
   if ($this->conn)
     {
       mysql_close ($this->conn);
-      $this->conn = NULL;
+//      $this->conn = NULL;
     }
 
 //  $this->row_pos = -1;
