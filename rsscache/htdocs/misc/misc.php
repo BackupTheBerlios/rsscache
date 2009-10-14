@@ -579,7 +579,8 @@ misc_seo_description ($html_body)
   $p = strip_tags ($html_body);
   $p = str_replace (array ('&nbsp;', '&gt;', '&lt;', '\n'), ' ', $p);
   $p = misc_get_keywords ($p, 1);
-  return '<meta name="Description" content="'.$p.'">';
+  return '<meta name="Description" content="'.$p.'">'
+        .'<meta name="keywords" content="'.$p.'">';
 }
 
 

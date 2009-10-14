@@ -73,8 +73,7 @@ tv2_sql_stats ($category = NULL)
   $db->sql_open ($tv2_dbhost,
                  $tv2_dbuser,
                  $tv2_dbpass,
-                 $tv2_dbname,
-                 $memcache_expire); // that's right... we cache the stats
+                 $tv2_dbname);
 
 
   // videos
