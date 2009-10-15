@@ -467,6 +467,8 @@ widget_video_myspace ($video_id, $width=425, $height=360)
 }
 
 
+/*
+deprecated by widget_video()
 function
 widget_audio ($audio, $start, $stream, $next_stream)
 {
@@ -485,6 +487,7 @@ widget_audio ($audio, $start, $stream, $next_stream)
 
   return $p;
 }
+*/
 
 
 function
