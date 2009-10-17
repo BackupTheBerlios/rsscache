@@ -170,7 +170,7 @@ tv2_body ()
     }
   else
     {
-      $link = tv2_link_normalize ($d['rsstool_url']); // local, static or other server?
+      $link = tv2_link_normalize (urldecode ($d['rsstool_url'])); // local, static or other server?
       $s = misc_getlink ($link, array (), false);
     }
   // link as title
