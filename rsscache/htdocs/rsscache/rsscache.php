@@ -351,7 +351,7 @@ $head = '<html>'
        .'<title>'
        .$tv2_title
        .'</title>'
-       .'<link rel="stylesheet" type="text/css" media="screen" href="/tv2.css">'
+       .'<link rel="stylesheet" type="text/css" media="screen" href="tv2.css">'
        .'<meta name="google-site-verification" content="akU6AtYoOtUZ5n8IGHTC3s5uc9AOAnPeqxkckHSi224" />'
        .misc_seo_description ($body)
        .'</head>'

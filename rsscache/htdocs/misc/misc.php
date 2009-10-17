@@ -26,6 +26,107 @@ define ('MISC_MISC_PHP', 1);
 
 
 function
+misc_browser_config ()
+{
+  define ('HAS_JS', 1); // javascript is enabled
+  define ('HAS_FLASH', 2);
+
+  // send javascript probe to browser and a refresh
+// returns flash version (number). Works on NS3+, Opera3+, IE4+ and IE5+ on Mac.
+/*
+$flash = '
+function detectingFLASH() {
+  var browser = navigator.userAgent.toLowerCase();
+  flashVersion = 0;	
+	// NS3+, Opera3+, IE5+ Mac
+	if ( navigator.plugins != null && navigator.plugins.length > 0 ) {
+		var flashPlugin = navigator.plugins['Shockwave Flash'];
+		if ( typeof flashPlugin == 'object' ) { 
+			if ( flashPlugin.description.indexOf('7.') != -1 ) flashVersion = 7;
+			else if ( flashPlugin.description.indexOf('6.') != -1 ) flashVersion = 6;
+			else if ( flashPlugin.description.indexOf('5.') != -1 ) flashVersion = 5;
+			else if ( flashPlugin.description.indexOf('4.') != -1 ) flashVersion = 4;
+			else if ( flashPlugin.description.indexOf('3.') != -1 ) flashVersion = 3;
+		}
+	} // IE4+ Win32 (VBscript)
+	else if ( browser.indexOf("msie") != -1 && parseInt(navigator.appVersion) >= 4 && browser.indexOf("win")!= -1 && browser.indexOf("16bit")== -1 ) {
+	  document.write('<scr' + 'ipt language="VBScript"\> \n');
+		document.write('on error resume next \n');
+		document.write('DIM obFlash \n');
+		document.write('SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.7") \n');
+		document.write('IF IsObject(obFlash) THEN \n');
+		document.write('flashVersion = 7 \n');
+		document.write('ELSE SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.6") END IF \n');
+		document.write('IF flashVersion < 7 and IsObject(obFlash) THEN \n');
+		document.write('flashVersion = 6 \n');
+		document.write('ELSE SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.5") END IF \n');
+		document.write('IF flashVersion < 6 and IsObject(obFlash) THEN \n');
+		document.write('flashVersion = 5 \n');
+		document.write('ELSE SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.4") END IF \n');
+		document.write('IF flashVersion < 5 and IsObject(obFlash) THEN \n');
+		document.write('flashVersion = 4 \n');
+		document.write('ELSE SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.3") END IF \n');
+		document.write('IF flashVersion < 4 and IsObject(obFlash) THEN \n');
+		document.write('flashVersion = 3 \n');
+		document.write('END IF');
+	  document.write('</scr' + 'ipt\> \n');
+  } // no Flash
+  else {
+	flashVersion = -1;
+  }
+return flashVersion;
+';
+
+
+$browser = '
+    if (document.layers) alert("Netscape 4");
+    if (document.all) alert("IE 4/5");
+    if (document.styleSheets) alert("Mozilla 1, Netscape 6, IE4, IE5, DOM 1.0");
+    if (document.getElementById) alert("Mozilla/NC 6, IE5 ,DOM 1.0");
+';
+
+// create a hidden form and submit it with javascript
+$js = '<form name="jsform" id="jsform" method="post" style="display:none">
+<input name="jstest" type="text" value="true" />
+<script language="javascript">
+document.jsform.submit();
+</script>
+</form>';
+
+if (isset($_POST['jstest']))
+  {
+    ...
+  }
+
+
+// test js (2nd way)
+
+$js2 = '<SCRIPT TYPE="text/javascript">
+location = "index.php?js=yes";
+</SCRIPT>';
+
+if (isset($_GET['js']) && $_GET['js']=='0')
+
+
+$js3 = '<noscript>
+<meta http-equiv="refresh" content="0,URL='index.php?js=0'" />
+</noscript>';
+
+
+$js = (isset($_GET['js']) && $_GET['js']=='1') ? 1 : 0;
+if (!$js)
+{
+echo '<script>
+window.location = "foo.php?js=1";
+</script>';
+}
+
+*/
+  return HAS_JS|HAS_FLASH;
+}
+
+
+function
 misc_explode_tag ($html_tag)
 {
   // returns 2d array with tag name and attributes and their values
@@ -69,6 +170,41 @@ misc_explode_tag ($html_tag)
 //  print_r ($tag);
 
   return $tag;
+}
+
+
+function
+enforce_gre ()
+{
+  $p = '';
+
+  // enforce gecko render engine (used by firefox, safari, etc.)
+  if (!stristr ($_SERVER['HTTP_USER_AGENT'], "moz"))
+    {
+      $url = 'http://www.firefox.com';
+
+      // redirect using js
+//      $p .= '<script type="text/javascript"><!--'."\n"
+//           .'location.href="'.$url.'"'."\n"
+//           .'//--></script>'."\n";
+
+      $refresh = 1;
+      $p .= '<meta name="refresh" content="refresh: '.$refresh.'; url="'.$url.'">';
+
+      $p .= '<span style="font-family: arial,sans-serif;">'
+           .'<table border="0" cellpadding="0" cellspacing="0" width="80%" height="100">'
+           .'<tr>'
+           .'<td border="0" cellpadding="0" cellspacing="0" bgcolor="#ffff80" align="center">'
+           .'<font size="-1" face="arial" color="#000000">Your browser is not supported here. Redirecting...</font>'
+           .'</td>'
+           .'</tr>'
+           .'</table>'
+           .'</span>';
+
+      echo $p;
+
+      exit;
+    }
 }
 
 

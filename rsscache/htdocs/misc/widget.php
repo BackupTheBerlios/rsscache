@@ -26,6 +26,27 @@ include_once ('misc/misc.php');
 
 
 function
+widget_new_window ()
+{
+  $p = '';
+  $p .= "<a href=\"javascript:js_window_open ('ripalot.php',
+                                    'mywindow',
+                                    'width=450,'
+                                   +'height=450,'
+                                   +'resizable=no,'
+                                   +'scrollbars=no,'
+                                   +'toolbar=no,'
+                                   +'location=no,'
+                                   +'directories=no,'
+                                   +'status=no,'
+                                   +'menubar=no,'
+                                   +'copyhistory=no');\">Start</a>";
+  echo $p;
+}
+
+
+
+function
 widget_captcha ($captcha_path)
 {
   global $tv2_root;
@@ -461,7 +482,40 @@ widget_video_myspace ($video_id, $width=425, $height=360)
       .' allowFullScreen="true"'
       .' type="application/x-shockwave-flash"'
       .' wmode="transparent"></embed>'
-      .'</object>';
+      .'</object>'
+;
+  return $p;
+}
+
+
+function
+widget_video_yahoo ($video_id, $width=512, $height=322)
+{
+// vid id
+//http://espanol.video.yahoo.com/watch/5410123/14251443
+//  $video_id = 'k4H0eU9uhV7waa1XXp';
+  $video_id = '6773592';
+  $video_vid = '6773592';
+  $url = 'http://mediaservices.myspace.com/services/media/embed.aspx/m='.$video_id.',t=1,mt=video';
+
+  $p = ''
+//      .'<div>'
+      .'<object width="'.$width.'" height="'.$height.'">'
+      .'<param name="movie" value="http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.46" />'
+      .'<param name="allowFullScreen" value="true" />'
+      .'<param name="AllowScriptAccess" VALUE="always" />'
+      .'<param name="bgcolor" value="#000000" />'
+      .'<param name="flashVars"'
+          .' value="id='.$id.'&vid='.$vid.'&lang=es-mx&intl=e1&thumbUrl=http%3A//l.yimg.com/a/p/i/bcst/videosearch/9707/88446579.jpeg&embed=1" />'
+      .'<embed src="http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.46" type="application/x-shockwave-flash" width="'.$width.'" height="'.$height.'" allowFullScreen="true" AllowScriptAccess="always" bgcolor="#000000"'
+      .' flashVars="id='.$id.'&vid='.$vid.'&lang=es-mx&intl=e1&thumbUrl=http%3A//l.yimg.com/a/p/i/bcst/videosearch/9707/88446579.jpeg&embed=1" >'
+      .'</embed>'
+      .'</object>'
+//      .'<br />'
+//      .'<a href="http://espanol.video.yahoo.com/watch/5410123/14251443">Entrevista com Bruce Lee 1971 (legendado)</a>'
+//      .' en '
+//      .'<a href="http://espanol.video.yahoo.com" >Yahoo! Video</a>'
+//      .'</div>'
 ;
   return $p;
 }
