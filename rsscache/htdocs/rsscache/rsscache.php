@@ -264,6 +264,7 @@ $c = get_request_value ('c'); // category
 $q = get_request_value ('q'); // search query
 $f = get_request_value ('f'); // function
 $v = get_request_value ('v'); // own video
+$captcha = get_request_value ('captcha'); // is request with captcha
 $start = get_request_value ('start'); // offset
 if (!($start))
   $start = 0;
