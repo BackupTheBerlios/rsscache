@@ -36,13 +36,14 @@ tv2_body ()
          $tv2_videos_s,
          $tv2_cookie_expire;
   global $config;
-  global $f, $c, $q, $v, $start, $num;
+  global $f, $c, $q, $v, $start, $num, $captcha;
 
-  if (widget_captcha_check ())
-    {
-      tv2_sql_move ($v, $c);
-      $v = NULL;
-    }
+  if ($captcha)
+    if (widget_captcha_check () || islocalhost ())
+      {
+        tv2_sql_move ($v, $c);
+        $v = NULL;
+      }
 
   // use SQL
   if ($v)

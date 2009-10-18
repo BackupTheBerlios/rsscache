@@ -354,7 +354,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
          $tv2_dbname,
          $tv2_isnew,
          $tv2_root;
-  $debug = 1;
+  $debug = 0;
 
   $db = new misc_sql;
   $db->sql_open ($tv2_dbhost,
