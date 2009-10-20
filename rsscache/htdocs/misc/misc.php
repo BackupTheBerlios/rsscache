@@ -26,7 +26,7 @@ define ('MISC_MISC_PHP', 1);
 
 
 function
-misc_browser_config ()
+misc_get_browser_config ()
 {
   define ('HAS_JS', 1); // javascript is enabled
   define ('HAS_FLASH', 2);
