@@ -190,9 +190,55 @@ tv2_sql_normalize ($db, $dest, $c)
 }
 
 
+
 function
-tv2_sql_match_normalize ($q)
+tv2_sql_query2boolean_escape_func ($s)
 {
+  if (strlen (trim ($s, ' +-')) < 4)
+    return false;
+
+  for ($i = 0; $s[$i]; $i++)
+    if (!isalnum ($s[$i]) && !in_array ($s[$i], array ('-', '+', /* '(', ')', '"' */)))
+      return false;
+ 
+  return true;
+}
+  
+
+function
+tv2_sql_query2boolean_escape ($s)
+{
+  $a = explode (' ', strtolower ($s));
+  for ($i = 0; isset ($a[$i]); $i++)
+    $a[$i] = trim ($a[$i]);
+  // TODO: more sensitivity instead of array_filter()
+  $a = array_filter ($a, 'tv2_sql_query2boolean_escape_func');
+  $a = array_merge (array_unique ($a));
+  
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($a);
+
+  $s = implode (' ', $a);
+  $s = trim ($s);
+
+  return $s;
+}
+
+
+function
+tv2_sql_query2boolean ($q)
+{
+  /*
+    parses google style search query into
+      boolean full-text search query
+
+    IMPORTANT: replaces mysql_real_escape_string()
+  */
+
+  global $tv2_debug_sql;
+  $debug = $tv2_debug_sql;
+
   /*
     google style
 
@@ -205,141 +251,58 @@ tv2_sql_match_normalize ($q)
 
     2) http://www.google.com/search?q=test1+test2+test5+OR+test6+%22test3++%22+%22test4++%22+-test7+-test8
   */
+
+  $p = str_ireplace (' OR ', ' ', $q);
+  $p = str_ireplace ('\\', '', $p); // unescape query
+  $p = tv2_sql_query2boolean_escape ($p); 
   $match = $p;
+
+  // DEBUG
+  if ($debug)
+    echo '<pre><tt>'
+        .'query: "'.$q.'"'."\n"
+//        .sprint_r ($a)."\n"
+        .'match: \''.$match.'\''."\n";
+
   return $match;
 }
 
 
 function
-tv2_sql_match_func ($db, $q, $whitelist, $blacklist)
+tv2_sql_match_func ($db, $q, $filter)
 {
-  $separator = ',';
-
-  $p = '';
-
   if ($q)
-    {
-      if ($f == 'related')
-        {
-          $s = str_replace (' ', '%', trim ($q));
-          $p .= ' AND ('
-               .' tv2_related LIKE \'%'.$s.'%\''
-               .' )'
-;
-          return $p;
-        }
-    }
+    if ($f == 'related')
+      {
+        $s = str_replace (' ', '%', trim ($db->sql_stresc ($q)));
+        return ' AND ( tv2_related LIKE \'%'.$s.'%\' )';
+      }
 
-  // whitelist
-  if ($whitelist)
-    {
-      $a = explode ($separator, $whitelist);
-      $a = array_merge (array_unique ($a)); // remove dupes
-      if ($a[0])
-        {
-          $p .= ' AND (';
-          for ($i = 0; isset ($a[$i]); $i++)
-            $p .= ($i > 0 ? ' OR' : '')
-                 .' tv2_keywords LIKE \'%'.$a[$i].'%\''
-;
-          $p .= ' )';
-        }
-    }
-
-  // blacklist
-  if ($blacklist)
-    {
-      $a = explode ($separator, $blacklist);
-      $a = array_merge (array_unique ($a)); // remove dupes
-      if ($a[0])
-        {
-          $p .= ' AND (';
-          for ($i = 0; isset ($a[$i]); $i++)
-            $p .= ($i > 0 ? ' AND' : '')
-                 .' tv2_keywords NOT LIKE \'%'.$a[$i].'%\''   
-;
-          $p .= ' )';
-        }
-    }
+  // filter
+  if ($filter)
+    $s .= $filter.' '; // boolean full-text search query
 
   // query
   if ($q)
-    {
-      $p .= ' AND (';
-      $a = explode ($separator, $q);
-      for ($i = 0; isset ($a[$i]); $i++)
-        {
-          $s = str_replace (' ', '%', trim ($a[$i]));
-          $p .= ($i > 0 ? ' OR' : '')
-               .' ( tv2_keywords LIKE \'%'.$s.'%\' )'
-;
-        }
-      $p .= ' )';
-    } // query
+    $s .= tv2_sql_query2boolean ($q);
 
-  return $p;
-}
+  $s = trim ($s);
 
-
-/*
-function
-tv2_sql_match_func ($db, $q, $whitelist, $blacklist)
-{
-  $separator = ',';
+  if (!strlen ($s))
+    return '';
 
   $p = '';
-
-  if ($q)
-    {
-      if ($f == 'related')
-        {
-          $s = str_replace (' ', '%', trim ($db->sql_stresc ($q)));
-          $p .= ' AND ( tv2_related LIKE \'%'.$s.'%\' )';
-          return $p;
-        }
-    }
 
   $p .= ' AND MATCH ('
        .' tv2_keywords'
-       .' ) AGAINST (\'';
-
-  // whitelist
-  if ($whitelist)
-    {
-      $a = explode ($separator, $db->sql_stresc ($whitelist));
-      for ($i = 0; $a[$i]; $i++)
-        $a[$i] = trim ($a[$i]);
-      $a = array_merge (array_unique ($a)); // remove dupes
-      $p .= ' +'.implode (' +', $a).' ';
-    }
-
-  // blacklist
-  if ($blacklist)
-    {
-      $a = explode ($separator, $db->sql_stresc ($blacklist));
-      for ($i = 0; $a[$i]; $i++)
-        $a[$i] = trim ($a[$i]);
-      $a = array_merge (array_unique ($a)); // remove dupes
-      $p .= ' -'.implode (' -', $a).' ';
-    }
-
-  // query
-  if ($q)
-    {
-      $a = explode ($separator, $db->sql_stresc ($q));
-      for ($i = 0; $a[$i]; $i++)
-        $a[$i] = trim ($a[$i]);
-      $a = array_merge (array_unique ($a)); // remove dupes
-      $p .= ' +'.implode (' +', $a).' ';
-    }
-
-  $p .= ' \''
+       .' ) AGAINST (\''
+       .$s
+       .'\''
        .' IN BOOLEAN MODE'
        .' )';
 
   return $p;
 }
-*/
 
 
 function
@@ -351,7 +314,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
          $tv2_dbname,
          $tv2_isnew,
          $tv2_root;
-  $debug = 0;
+  global $tv2_debug_sql;
+  $debug = $tv2_debug_sql;
 
   $db = new misc_sql;
   $db->sql_open ($tv2_dbhost,
@@ -359,8 +323,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                  $tv2_dbpass,
                  $tv2_dbname);
 
+  $q = get_request_value ('q'); // we ignore the arg and make sure we get an unescaped one
   $c = $db->sql_stresc ($c);
-  $q = $db->sql_stresc ($q);
   $v = $db->sql_stresc ($v);
   $start = $db->sql_stresc ($start);
   $num = $db->sql_stresc ($num);
@@ -387,25 +351,18 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
       if ($c)
         $sql_query_s .= ' AND ( `tv2_moved` = \''.$c.'\' )';
 
-      $whitelist = NULL;
-      $blacklist = NULL;
+      $filter = NULL;
       if ($c)
         {
           $category = config_xml_by_category ($c);
 
           if ($category)
-            {
-              if ($category->blacklist)
-                if (strlen ($category->blacklist))
-                  $blacklist = $category->blacklist;
-
-              if ($category->whitelist)
-                if (strlen ($category->whitelist))
-                  $whitelist = $category->whitelist;
-            }
+            if ($category->filter)
+              if (strlen ($category->filter))
+                $filter = $category->filter;
         }
 
-      $sql_query_s .= tv2_sql_match_func ($db, $q, $whitelist, $blacklist);
+      $sql_query_s .= tv2_sql_match_func ($db, $q, $filter);
 
       // functions
       if ($f == 'new')

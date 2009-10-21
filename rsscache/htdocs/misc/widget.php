@@ -531,12 +531,11 @@ widget_video_yahoo ($video_id, $width=512, $height=322)
 }
 
 
-/*
-deprecated by widget_video()
 function
-widget_audio ($audio, $start, $stream, $next_stream)
+widget_audio ($audio_url, $start = 0, $stream = 0, $next_stream = NULL)
 {
-  $url = 'misc/widget_audio.swf?url='.$audio.'&start='.$start.'&stream='.$stream.'&next='.$next_stream;
+  $url = 'misc/widget_audio.swf?url='.$audio_url.'&start='.$start.'&stream='.$stream
+        .($next_stream ? '&next='.$next_stream : '');
 
   $p = ''
       .'<object>'
@@ -551,7 +550,6 @@ widget_audio ($audio, $start, $stream, $next_stream)
 
   return $p;
 }
-*/
 
 
 function
@@ -603,7 +601,7 @@ widget_media ($media_url, $width = NULL, $height = NULL)
   else if ($demux == 4) // flv or mp4
     return widget_video ($p, NULL, $width, $height);
   else if ($demux == 5) // mp3
-    return widget_video_video ($media_url, 0, 0);  
+    return widget_audio ($media_url);  
 
   return '';
 }
