@@ -271,13 +271,6 @@ tv2_sql_query2boolean ($q)
 function
 tv2_sql_match_func ($db, $q, $filter)
 {
-  if ($q)
-    if ($f == 'related')
-      {
-        $s = str_replace (' ', '%', trim ($db->sql_stresc ($q)));
-        return ' AND ( tv2_related LIKE \'%'.$s.'%\' )';
-      }
-
   // filter
   if ($filter)
     $s .= $filter.' '; // boolean full-text search query
@@ -362,7 +355,13 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                 $filter = $category->filter;
         }
 
-      $sql_query_s .= tv2_sql_match_func ($db, $q, $filter);
+     if ($q && $f == 'related')
+         {
+           $s = str_replace (' ', '%', trim ($db->sql_stresc ($q)));
+           $sql_query_s .= ' AND ( tv2_related LIKE \'%'.$s.'%\' )';
+         }
+      else
+        $sql_query_s .= tv2_sql_match_func ($db, $q, $filter);
 
       // functions
       if ($f == 'new')
