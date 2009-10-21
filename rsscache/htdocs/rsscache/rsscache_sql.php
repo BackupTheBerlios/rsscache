@@ -195,6 +195,7 @@ function
 tv2_sql_query2boolean_escape_func ($s)
 {
   if (strlen (trim ($s, ' +-')) < 4)
+//  if (strlen (trim ($s)) < 4)
     return false;
 
   for ($i = 0; $s[$i]; $i++)
@@ -287,7 +288,7 @@ tv2_sql_match_func ($db, $q, $filter)
   $p = '';
 
   $p .= ' AND MATCH ('
-       .' tv2_keywords'
+       .' tv2_related, tv2_keywords'
        .' ) AGAINST (\''
        .$s
        .'\''
