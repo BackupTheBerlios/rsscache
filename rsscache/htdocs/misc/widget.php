@@ -193,6 +193,7 @@ widget_index_tree ($name, $path, $mime_type, $flags)
 */
 
 
+/*
 function
 widget_index_func ($b)
 {
@@ -293,11 +294,16 @@ widget_index ($dir, $recursive, $suffix, $index_func)
 
   return $index_func ? $index_func ($b) : widget_index_func ($b);
 }
+*/
 
 
 function
-widget_video ($video_url, $preview_image = NULL, $width = 400, $height = 300, $fgcolor = '#ffffff', $bgcolor = '#000000', $bgcolor2 = '#444444', $bgcolor3 = '#ff0000')
+widget_video ($video_url, $preview_image = NULL, $width = 400, $height = 300)
 {
+  $fgcolor = '#ffffff';
+  $bgcolor = '#000000';
+  $bgcolor2 = '#444444';
+  $bgcolor3 = '#ff0000';
   $url = $video_url;
 
   $p = '<script type="text/javascript" src="misc/flowplayer-3.1.4.min.js"></script>'
@@ -366,9 +372,13 @@ widget_video ($video_url, $preview_image = NULL, $width = 400, $height = 300, $f
 
 
 function
-widget_video_youtube ($video_id, $width=425, $height=344, $fgcolor="#ffffff", $bgcolor="#000000", $bgcolor2="#444444", $bgcolor3="#ff0000")
+widget_video_youtube ($video_id, $width=425, $height=344)
 {
 // &loop=1&autoplay=1
+  $fgcolor="#ffffff";
+  $bgcolor="#000000";
+  $bgcolor2="#444444";
+  $bgcolor3="#ff0000";
 
   $url = 'http://www.youtube.com/v/'
         .$video_id
@@ -542,6 +552,61 @@ widget_audio ($audio, $start, $stream, $next_stream)
   return $p;
 }
 */
+
+
+function
+widget_media_demux ($media_url)
+{
+  if (strstr ($media_url, '.youtube.com'))
+    return 1;
+  else if (strstr ($media_url, '.dailymotion.'))
+    return 2;
+  else if (strstr ($media_url, '.xfire.com'))
+    return 3;
+  else if (strstr ($media_url, 'http://') && in_array (strtolower (get_suffix ($media_url)), array ('.flv', '.mp4')))
+    return 4; // flv or mp4
+  else if (strstr ($media_url, 'http://') && strtolower (get_suffix ($media_url)) == '.mp3')
+    return 5; // mp3
+
+  return 0;
+}
+
+
+function
+widget_media ($media_url, $width = NULL, $height = NULL)
+{
+  $demux = widget_media_demux ($media_url);
+  $p = $media_url;
+
+  if ($demux == 1) // youtube
+    {
+      if (strstr ($p, '?v='))   
+        $p = substr ($p, strpos ($p, '?v=') + 3);
+      else
+        $p = substr ($p, strpos ($p, 'watch') + 12);
+
+      return widget_video_youtube ($p, $width, $height);
+    }
+  else if ($demux == 2) // dailymotion
+    {
+      $p = substr ($p, strpos ($p, '/video/') + 7);
+      $p = substr ($p, 0, strpos ($p, 'from') - 3);
+
+      return widget_video_dailymotion ($p, $width, $height);   
+    }
+  else if ($demux == 3) // xfire
+    {
+      $p = substr ($p, strpos ($p, '/video/') + 7, -1);
+
+      return widget_video_xfire ($p, $width, $height);
+    }
+  else if ($demux == 4) // flv or mp4
+    return widget_video ($p, NULL, $width, $height);
+  else if ($demux == 5) // mp3
+    return widget_video_video ($media_url, 0, 0);  
+
+  return '';
+}
 
 
 function

@@ -168,20 +168,17 @@ tv2_sql_normalize ($db, $dest, $c)
         $dest[$i]['tv2_local_url'] = str_replace ($tv2_link, '', $dest[$i]['rsstool_url']);
 
       // demux
-      $dest[$i]['tv2_demux'] = 0;
-      if (strstr ($dest[$i]['rsstool_url'], 'www.youtube.com'))
-        $dest[$i]['tv2_demux'] = 1;
-      else if (strstr ($dest[$i]['rsstool_url'], '.dailymotion.'))
-        $dest[$i]['tv2_demux'] = 2;
-      else if (strstr ($dest[$i]['rsstool_url'], 'www.xfire.com'))
-        $dest[$i]['tv2_demux'] = 3;
-      else if ($dest[$i]['tv2_local_url'])
+      $dest[$i]['tv2_demux'] = widget_media_demux ($dest[$i]['rsstool_url']);
+
+      // is local media?
+      if ($dest[$i]['tv2_demux'] == 4)
+        if (strncmp ($dest[$i]['rsstool_url'], $tv2_link, strlen ($tv2_link))) // is local
         {
-          // local flv
+          // does file exist?
           $flv = str_replace ($tv2_link, $tv2_root.'/', $dest[$i]['rsstool_url']);
-          $flv = set_suffix ($flv, '.flv');
-          if (file_exists ($flv))
-            $dest[$i]['tv2_demux'] = 4;
+//          $flv = set_suffix ($flv, '.flv');
+          if (!file_exists ($flv))
+            $dest[$i]['tv2_demux'] = 0;
         }
 
       // strip tags from the desc
