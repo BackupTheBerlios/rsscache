@@ -131,11 +131,22 @@ tv2_sql_stats ($category = NULL)
 
 
 function
-tv2_sql_normalize ($db, $dest, $c)
+tv2_sql_normalize ($db, $dest, $c, $f)
 {
   global $tv2_root,
          $tv2_link;
   $debug = 0;
+
+/*
+  if ($f = 'related')
+    {
+      // make array unique
+      for ($i = 0; isset ($dest[$i]); $i++)
+        if (isset ($dest[$i + 1]))
+          while ($dest[$i]['rsstool_title'] == $dest[$i + 1]['rsstool_title'])
+            array_splice ($dest, $i);
+    }
+*/
 
   for ($i = 0; isset ($dest[$i]); $i++)
     {
@@ -392,7 +403,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
 //  $d = array ();
   $d = $db->sql_read (0 /* $debug */);
 
-  $d = tv2_sql_normalize ($db, $d, $c);
+  $d = tv2_sql_normalize ($db, $d, $c, $f);
 
   // DEBUG
 //  echo '<tt><pre>';

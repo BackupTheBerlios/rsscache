@@ -60,6 +60,18 @@ tv2_body ()
 
   $p = '';
 
+  if ($category->background) // background image
+    {
+      $p .= '<style type="text/css">'."\n"
+           .'body {'
+           .'background-image:url(\''.$category->background.'\');'
+           .'background-attachment:fixed;'
+           .'background-repeat:no-repeat;'
+           .'background-position:left center;}'
+           ."\n"
+           .'</style>';
+    }
+
   // flash carousel with icons
 //  $p .= widget_carousel ('carousel_xml.php', '100%', 150);
 
@@ -164,17 +176,8 @@ tv2_body ()
     $p .= '<img src="images/new.png" border="0" alt="New!"> ';
 
   // link
-  if ($d['tv2_demux'] > 0)
-    {
-      $s = '&seo='.str_replace (' ', '_', tv2_keywords ($d));
-      $s = misc_getlink ('', array ('v' => $d['rsstool_url_crc32']), true).$s;
-    }
-  else
-    {
-      $link = tv2_link_normalize (urldecode ($d['rsstool_url'])); // local, static or other server?
-      $s = misc_getlink ($link, array (), false);
-    }
-  // link as title
+  $s = tv2_link ($d);
+  // link as title  
   $p .= '<b><a href="'.$s.'" title="'.$d['rsstool_title'].'">'.str_shorten ($d['rsstool_title'], 64).'</a></b>';
 
   // duration
