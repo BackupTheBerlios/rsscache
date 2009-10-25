@@ -26,16 +26,16 @@ define ('MISC_SQL_PHP', 1);
 
 class misc_sql
 {
-var $host = NULL;
-var $user = NULL;
-var $password = NULL;
-var $database = NULL;
-var $conn = NULL;
-var $res = NULL;
-
-var $memcache_expire = 0; // 0 == off
-var $memcache = NULL;
-//var $row_pos = -1;
+protected $host = NULL;
+protected $user = NULL;
+protected $password = NULL;
+protected $database = NULL;
+protected $conn = NULL; // connection
+//protected $assoc = 0; // last fetch was assoc
+public $res = NULL; // resource
+protected $unbuffered = 0; // last query was unbuffered
+protected $memcache_expire = 0; // 0 == off
+protected $memcache = NULL;
 
 
 function
@@ -43,6 +43,13 @@ sql_stresc ($s)
 {
 //  return mysql_escape_string ($s); // deprecated
   return mysql_real_escape_string ($s, $this->conn);
+}
+
+
+function
+stresc ($s)
+{
+  return $this->stresc ($s);
 }
 
 
@@ -90,7 +97,7 @@ sql_open ($host, $user, $password, $database, $memcache_expire = 0)
 
 
 function
-sql_read ($debug = 0)
+sql_read ($assoc = 0, $debug = 0)
 {
   if ($debug == 1)
     if ($this->res == TRUE)
@@ -100,9 +107,18 @@ sql_read ($debug = 0)
     return NULL;  
 
   $a = array ();
-//  while ($row = mysql_fetch_array ($this->res, MYSQL_ASSOC)) // MYSQL_ASSOC, MYSQL_NUM, and the default value of MYSQL_BOTH
-  while ($row = mysql_fetch_array ($this->res))
-    $a[] = $row;
+  if ($assoc)
+    {
+      while ($row = mysql_fetch_array ($this->res, MYSQL_ASSOC)) // MYSQL_ASSOC, MYSQL_NUM, MYSQL_BOTH
+        $a[] = $row;
+//      $this->assoc = 1;
+    }
+  else
+    {
+      while ($row = mysql_fetch_array ($this->res)) // MYSQL_BOTH
+        $a[] = $row;
+//      $this->assoc = 0;
+    }
 
   if ($debug == 1)
     {
@@ -110,11 +126,7 @@ sql_read ($debug = 0)
       $i_max = sizeof ($a);
       for ($i = 0; $i < $i_max; $i++)
         {
-          $j_max = sizeof ($a[$i]);
-          for ($j = 0; $j < $j_max; $j++)
-            $p .= $a[$i][$j]
-                 .' ';
-
+          $p .= implode (' ', $a[$i]);
           $p .= '</tt><br>';
         }
 
@@ -126,7 +138,7 @@ sql_read ($debug = 0)
 
 
 function
-sql_getrow ($row, $debug = 0)
+sql_getrow ($row, $assoc = 0, $debug = 0)
 {
   if ($debug == 1)
     if ($this->res == TRUE)
@@ -135,24 +147,34 @@ sql_getrow ($row, $debug = 0)
   if (!is_resource ($this->res)) // either FALSE or just TRUE
     return NULL;
 
-  if ($row >= mysql_num_rows ($this->res) || mysql_num_rows ($this->res) == 0)
+  if ($this->unbuffered)
+    {
+      // DEBUG
+      echo '<tt>ERROR: mysql_num_rows() and mysql_data_seek() after mysql_unbuffered_query()<br>';
+    }
+
+  $num_rows = mysql_num_rows ($this->res);
+  if ($row >= $num_rows || $num_rows == 0)
     return NULL;
 
   if (mysql_data_seek ($this->res, $row) == FALSE)
     return NULL;
 
-//  $this->row_pos = $row;
-
-  $a = mysql_fetch_row ($this->res);
+  if ($assoc)
+    {
+      $a = mysql_fetch_array ($this->res, MYSQL_ASSOC); // MYSQL_ASSOC, MYSQL_NUM, MYSQL_BOTH
+//      $this->assoc = 1;
+    }
+  else
+    {
+      $a = mysql_fetch_array ($this->res); // MYSQL_BOTH
+//      $this->assoc = 0;
+    }
 
   if ($debug == 1)
     {
       $p = '<tt>';
-      $i_max = sizeof ($a);
-      for ($i = 0; $i < $i_max; $i++)
-        $p .= $a[$i]
-           .' ';
-
+      $p .= implode (' ', $a);
       $p .= '</tt><br>';
 
       echo $p;
@@ -163,7 +185,7 @@ sql_getrow ($row, $debug = 0)
 
 
 function
-sql_write ($sql_query_s, $debug = 0)
+sql_write ($sql_query_s, $unbuffered = 0, $debug = 0)
 {
   if ($debug == 1)
     echo '<br><br><tt>'
@@ -185,7 +207,16 @@ sql_write ($sql_query_s, $debug = 0)
       return 1;
     }
 
-  $this->res = mysql_query ($sql_query_s, $this->conn);
+  if ($unbuffered)
+    {
+      $this->res = mysql_unbuffered_query ($sql_query_s, $this->conn);
+      $this->unbuffered = 1;
+    }
+  else
+    {
+      $this->res = mysql_query ($sql_query_s, $this->conn);
+      $this->unbuffered = 0;
+    }
 
   if (is_resource ($this->res)) // cache resources only, not TRUE's
     if ($this->memcache_expire > 0)
@@ -214,14 +245,17 @@ sql_close ()
       mysql_close ($this->conn);
 //      $this->conn = NULL;
     }
-
-//  $this->row_pos = -1;
 }
 
 
 function
 sql_seek ($row)
 {
+  if ($this->unbuffered)
+    {
+      // DEBUG
+      echo '<tt>ERROR: mysql_data_seek() after mysql_unbuffered_query()<br>';
+    }
   return mysql_data_seek ($this->res, $row);
 }
 
@@ -237,6 +271,11 @@ sql_get_result ()
 function
 sql_get_rows ()
 {
+  if ($this->unbuffered)
+    {
+      // DEBUG
+      echo '<tt>ERROR: mysql_num_rows() after mysql_unbuffered_query()<br>';
+    }
   return mysql_num_rows ($this->res);
 }
 

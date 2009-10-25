@@ -438,7 +438,7 @@ misc_get_keywords_alnum ($s)
     return false;
 
   for ($i = 0; $s[$i]; $i++)
-    if (!isalnum ($s[$i]))
+    if (!isalnum ($s[$i]) && $s[$i] != '_' && $s[$i] != '.')
       return false;
 
   return true;
@@ -452,7 +452,7 @@ misc_get_keywords_alpha ($s)
     return false;
 
   for ($i = 0; $s[$i]; $i++)
-    if (!isalpha ($s[$i]))
+    if (!isalpha ($s[$i]) && $s[$i] != '_' && $s[$i] != '.')
       return false;
 
   return true;
@@ -463,12 +463,12 @@ function
 misc_get_keywords ($s, $flag = 0) // default = isalnum
 {
   for ($i = 0; $s[$i]; $i++)
-    if (ispunct ($s[$i]))
+    if (ispunct ($s[$i]) && $s[$i] != '_' && $s[$i] != '.')
       $s[$i] = ' ';
 
   $a = explode (' ', strtolower ($s));
   for ($i = 0; isset ($a[$i]); $i++)
-    $a[$i] = trim ($a[$i]);
+    $a[$i] = trim ($a[$i], ' .');
   // TODO: more sensitivity instead of array_filter()
   $a = array_filter ($a, (!$flag ? 'misc_get_keywords_alnum' : 'misc_get_keywords_alpha'));
   $a = array_merge (array_unique ($a));

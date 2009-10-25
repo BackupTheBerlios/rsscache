@@ -150,7 +150,6 @@ tv2_link_normalize ($link)
   global $tv2_root,
          $tv2_link,
          $tv2_link_static;
-
   $p = $link; // $d['rsstool_url']
 
   if (strncmp ($p, $tv2_link, strlen ($tv2_link)) || // extern link
@@ -158,10 +157,10 @@ tv2_link_normalize ($link)
     return $link;
 
   $p = str_replace ($tv2_link, $tv2_root, $link); // file on local server?
-  if (!file_exists ($p))
-    return str_replace ($tv2_link, $tv2_link_static, $link); // has to be on static server then
+  if (file_exists ($p))
+    return $link;
 
-  return $link;
+  return str_replace ($tv2_link, $tv2_link_static, $link); // has to be on static server then
 }
 
 

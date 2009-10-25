@@ -26,7 +26,41 @@ tv2_sql_move ($rsstool_url_crc32, $new_category)
   $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = \''.$db->sql_stresc ($new_category).'\''
                 .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
 
-  $db->sql_write ($sql_query_s, $debug);
+  $db->sql_write ($sql_query_s, 0, $debug);
+
+  $db->sql_close ();
+}
+
+
+function
+tv2_sql_vote ($rsstool_url_crc32, $new_score)
+{
+  global $tv2_dbhost,
+         $tv2_dbuser,
+         $tv2_dbpass,
+         $tv2_dbname;
+  $debug = 0;
+
+  $db = new misc_sql;  
+  $db->sql_open ($tv2_dbhost,
+                 $tv2_dbuser, 
+                 $tv2_dbpass, 
+                 $tv2_dbname);
+
+  $sql_query_s = 'SELECT tv2_votes,tv2_score FROM rsstool_table'
+                .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
+  $db->sql_write ($p, 0, $debug);
+  $r = $db->sql_read (1, $debug);
+
+  if ($new_score > 0)
+    $new_score = ($r[0]['tv2_votes'] * $r[0]['tv2_score'] + $new_score) / ($r[0]['tv2_votes'] + 1);
+  else
+    $new_score = $r[0]['tv2_score'];
+
+  $sql_query_s = 'UPDATE rsstool_table SET tv2_votes = '.($r[0]['tv2_votes'] + 1).',tv2_score = '.$new_score
+                .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
+
+  $db->sql_write ($p, 1, $debug);
 
   $db->sql_close ();
 }
@@ -51,7 +85,7 @@ tv2_sql_restore ($rsstool_url_crc32)
   $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = tv2_category'
                 .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
 
-  $db->sql_write ($sql_query_s, $debug);
+  $db->sql_write ($sql_query_s, 0, $debug);
 
   $db->sql_close ();
 }
@@ -89,8 +123,8 @@ tv2_sql_stats ($category = NULL)
 
   $sql_query_s .= ';';
 
-  $db->sql_write ($sql_query_s, $debug);
-  $r = $db->sql_read ($debug);
+  $db->sql_write ($sql_query_s, 0, $debug);
+  $r = $db->sql_read (0, $debug);
 
   $stats['videos'] = (int) $r[0][0];
 
@@ -119,8 +153,8 @@ tv2_sql_stats ($category = NULL)
                    .';';
 */
 
-  $db->sql_write ($sql_query_s, $debug);
-  $r = $db->sql_read ($debug);
+  $db->sql_write ($sql_query_s, 0, $debug);
+  $r = $db->sql_read (0, $debug);
 
   $stats['days'] = (int) ((time () - (int) $r[0][0]) / 86400);
   $db->sql_close ();
@@ -195,6 +229,7 @@ tv2_sql_normalize ($db, $dest, $c, $f)
       // strip tags from the desc
 //      $dest[$i]['rsstool_desc'] = strip_tags ($dest[$i]['rsstool_desc'], '<img><br><br/><br />');
       $dest[$i]['rsstool_desc'] = strip_tags ($dest[$i]['rsstool_desc']);
+
     }
 
   return $dest;
@@ -345,7 +380,9 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                   .' tv2_moved,'
                   .' tv2_duration,'
                   .' tv2_related,'
-                  .' tv2_keywords'
+                  .' tv2_keywords,'
+                  .' tv2_votes,'
+                  .' tv2_score'
                   .' FROM rsstool_table WHERE 1';
 
   if ($v) // direct
@@ -399,9 +436,9 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
       $sql_query_s .= ' LIMIT '.$start.','.$num;
     }
 
-  $db->sql_write ($sql_query_s, $debug);
+  $db->sql_write ($sql_query_s, 1, $debug);
 //  $d = array ();
-  $d = $db->sql_read (0 /* $debug */);
+  $d = $db->sql_read (1, 0 /* $debug */);
 
   $d = tv2_sql_normalize ($db, $d, $c, $f);
 
