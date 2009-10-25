@@ -462,6 +462,11 @@ misc_get_keywords_alpha ($s)
 function
 misc_get_keywords ($s, $flag = 0) // default = isalnum
 {
+  $s = strreplace (array ('. ', ',', ';', '!', '?', '"'), ' ', $s);
+  $s = strreplace ('  ', ' ', $s);
+  $s = strreplace ('  ', ' ', $s);
+  $s = strreplace ('  ', ' ', $s);
+
   for ($i = 0; $s[$i]; $i++)
     if (ispunct ($s[$i]) && $s[$i] != '_' && $s[$i] != '.')
       $s[$i] = ' ';
