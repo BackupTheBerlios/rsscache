@@ -462,10 +462,10 @@ misc_get_keywords_alpha ($s)
 function
 misc_get_keywords ($s, $flag = 0) // default = isalnum
 {
-  $s = strreplace (array ('. ', ',', ';', '!', '?', '"'), ' ', $s);
-  $s = strreplace ('  ', ' ', $s);
-  $s = strreplace ('  ', ' ', $s);
-  $s = strreplace ('  ', ' ', $s);
+  $s = str_replace (array ('. ', ',', ';', '!', '?', '"'), ' ', $s);
+  $s = str_replace ('  ', ' ', $s);
+  $s = str_replace ('  ', ' ', $s);
+  $s = str_replace ('  ', ' ', $s);
 
   for ($i = 0; $s[$i]; $i++)
     if (ispunct ($s[$i]) && $s[$i] != '_' && $s[$i] != '.')
@@ -486,6 +486,18 @@ misc_get_keywords ($s, $flag = 0) // default = isalnum
   $s = trim ($s);
 
   return $s;
+}
+
+
+function
+misc_get_keywords_html ($s, $flag = 0) // default = isalnum
+{
+  // so one keyword does not get glued to another because of strip_tags()
+  $s = str_replace ('>', '> ', $s);
+  $s = str_replace ('  ', ' ', $s);
+  $s = strip_tags ($s);
+
+  return misc_get_keywords ($s, $flag);
 }
 
 
@@ -721,6 +733,39 @@ get_request_value ($name)
 
 
 function
+set_request_query ($params = array(), $use_existing_arguments = false)
+{
+  if ($use_existing_arguments)
+    $params = $_GET + $params;
+
+  if (!$params)
+    return '';
+
+//  $params_array = array();
+//  for ($i = 0; isset ($params[$i]); $i++)
+//    $params_array[] = key ($params[$i]).'='.$params[$i];
+  foreach ($params as $key=>$value)
+    if (gettype ($value) == 'array')
+      {
+        // handle array data properly
+        foreach($value as $val)
+          $params_array[] = $key.'[]='.urlencode($val);
+      }
+    else
+      $params_array[] = $key.'='.urlencode ($value);
+
+  return '?'.implode ('&amp;',$params_array);
+} 
+
+
+function
+misc_getlink ($params = array(), $use_existing_arguments = false)
+{
+  return set_request_query ($params, $use_existing_arguments);
+}
+
+
+function
 misc_seo_description ($html_body)
 {
   // generate meta tag from the body
@@ -757,51 +802,6 @@ misc_head_tags ($icon, $refresh = 0, $charset = 'UTF-8')
 }
 
 
-/*
-  Create a link by joining the given URL and the parameters given as the second argument.
-  Arguments :  $url - The base url.
-                 $params - An array containing all the parameters and their values.
-                 $use_existing_arguments - Use the parameters that are present in the current page
-  Return : The new url.
-  Example : 
-             misc_getlink('http://www.google.com/search',array('q'=>'binny','hello'=>'world','results'=>10));
-                     will return
-             http://www.google.com/search?q=binny&amp;hello=world&amp;results=10
-*/
-function
-misc_getlink ($url, $params = array(), $use_existing_arguments = false)
-{
-  if ($use_existing_arguments)
-    $params += $_GET;
-
-  if (!$params)
-    return $url;
-
-  $link = $url;
-  if (strpos ($link, '?') === false)
-    $link .= '?'; // if there is no '?' add one at the end
-  else if (!preg_match ('/(\?|\&(amp;)?)$/', $link))
-    $link .= '&amp;'; //If there is no '&' at the END, add one.
-    
-  $params_array = array();
-  foreach ($params as $key=>$value)
-    if (gettype ($value) == 'array')
-      {
-        // handle array data properly
-        foreach($value as $val)
-          $params_array[] = $key
-                           .'[]='
-                           .urlencode($val);
-      }
-    else
-      $params_array[] = $key
-                       .'='
-                       .urlencode ($value);
-
-  $link .= implode ('&amp;',$params_array);
-    
-  return $link;
-} 
 
 
 }

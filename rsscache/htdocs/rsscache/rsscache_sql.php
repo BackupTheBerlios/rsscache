@@ -204,9 +204,9 @@ tv2_sql_normalize ($db, $dest, $c, $f)
 
       // HACK: for development
 //      $dest[$i]['tv2_related'] = misc_get_keywords ($dest[$i]['rsstool_title'], 1); // isalpha
-//      $dest[$i]['tv2_keywords'] = misc_get_keywords ($dest[$i]['rsstool_title']
-//                                                    .' '
-//                                                    .strip_tags ($dest[$i]['rsstool_desc']), 0); // isalnum
+//      $dest[$i]['tv2_keywords'] = misc_get_keywords_html ($dest[$i]['rsstool_title']
+//                                                         .' '
+//                                                         .$dest[$i]['rsstool_desc'], 0); // isalnum
 
       // local url
       if (strstr ($dest[$i]['rsstool_url'], $tv2_link))
@@ -334,7 +334,7 @@ tv2_sql_match_func ($db, $q, $filter)
   $p = '';
 
   $p .= ' AND MATCH ('
-       .' tv2_related, tv2_keywords'
+       .' tv2_keywords'
        .' ) AGAINST (\''
        .$s
        .'\''
