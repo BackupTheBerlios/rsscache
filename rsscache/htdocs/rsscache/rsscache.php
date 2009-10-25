@@ -264,6 +264,18 @@ tv2_body ()
 
 $f = get_request_value ('f'); // function
 $c = get_request_value ('c'); // category
+/*
+if (!($c))
+  {
+    // get category cookie
+    $c_cookie = get_cookie ('c');
+    $c_date = substr ($c_cookie, 0, strpos ($c_cookie, '_'));
+    if ($c_date > 0 && $c_date < time () - 10)
+      $c = substr ($c_cookie, strpos ($c_cookie, '_') + 1);
+    // DEBUG
+//    echo $c_cookie.' '.$c_date.'_'.$c;
+  }
+*/
 $q = get_request_value ('q'); // search query
 $f = get_request_value ('f'); // function
 $v = get_request_value ('v'); // own video
@@ -296,6 +308,7 @@ if ($f == 'rss')
 
 
 
+
 // set cookies
 //if (isset ($_GET['user_name'])) // change user_name in cookie
 //  { 
@@ -307,14 +320,13 @@ $a = array (
 //         array ('user_name', $user_name),
 //         array ('last_visit', ''),
 //         array ('latest_visit', ''),
-         array ('c', ''),
+         array ('c', time().'_'.$c),
 //         array ('q', $q),
 //         array ('f', $f),
 //         array ('v', $v),
        );
 for ($i = 0; isset ($a[$i]); $i++)
   setcookie ($a[$i][0], $a[$i][1], $tv2_cookie_expire);
-
 
 
 

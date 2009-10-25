@@ -690,6 +690,19 @@ misc_exec ($cmdline, $debug)
 
 
 function
+get_cookie ($name)
+{
+  if (isset ($_REQUEST[$name]))
+    return $_REQUEST[$name];
+
+  if (isset ($_COOKIE[$name]))
+    return $_COOKIE[$name];
+
+  return NULL;
+}
+
+
+function
 get_request_value ($name)
 {
   if (isset ($_POST[$name]))
@@ -697,12 +710,6 @@ get_request_value ($name)
 
   if (isset ($_GET[$name]))
     return $_GET[$name];
-
-  if (isset ($_REQUEST[$name]))
-    return $_REQUEST[$name];
-
-  if (isset ($_COOKIE[$name]))
-    return $_COOKIE[$name];
 
   return NULL;
 }
