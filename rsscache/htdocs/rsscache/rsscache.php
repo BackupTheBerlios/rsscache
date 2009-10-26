@@ -223,7 +223,6 @@ tv2_body ()
       $p .= '<br><nobr>';
       $p .= tv2_move_form ($d);
       $p .= '</nobr>';
-
     }
 
   if ($v)
@@ -233,7 +232,7 @@ tv2_body ()
     {
       if ($d_category->voteable == 1)
         {
-          $p .= '<nobr>';
+          $p .= '&nbsp;&nbsp;<nobr>';
           $p .= tv2_vote_show ($d);
           $p .= '</nobr>';
         }
