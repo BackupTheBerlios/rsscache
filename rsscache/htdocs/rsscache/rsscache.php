@@ -218,12 +218,25 @@ tv2_body ()
   $p .= tv2_direct_link ($d);
   $p .= '</nobr>';
 
-
   if ($d_category->movable == 1)
     {
       $p .= '<br><nobr>';
       $p .= tv2_move_form ($d);
       $p .= '</nobr>';
+
+    }
+
+  if ($v)
+    {
+    }
+  else
+    {
+      if ($d_category->voteable == 1)
+        {
+          $p .= '<nobr>';
+          $p .= tv2_vote_show ($d);
+          $p .= '</nobr>';
+        }
     }
 
   $p .= '<div style="color:#bbb;">';
@@ -232,11 +245,14 @@ tv2_body ()
 
   if ($v)
     {
-//      $p .= '<br>';
       $p .= tv2_prev_video_button ($d);
       $p .= tv2_next_video_button ($d);
-      $p .= '&nbsp;&nbsp;&nbsp;';
-      $p .= tv2_vote ($d);
+
+      if ($d_category->voteable == 1)   
+        { 
+          $p .= '&nbsp;&nbsp;&nbsp;';
+          $p .= tv2_vote ($d);
+        }
     }
 
   $p .= '</td>';
