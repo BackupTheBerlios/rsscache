@@ -429,6 +429,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
       // sort
       if ($f == 'related') // we sort related by title for playlist
         $sql_query_s .= ' ORDER BY rsstool_title ASC';
+      else if ($f == 'score')
+        $sql_query_s .= ' ORDER BY tv2_score ASC';
       else
         $sql_query_s .= ' ORDER BY rsstool_dl_date DESC';
 
