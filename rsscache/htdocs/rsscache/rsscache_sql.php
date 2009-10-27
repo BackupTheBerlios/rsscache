@@ -109,7 +109,6 @@ tv2_sql_stats ($category = NULL)
                  $tv2_dbpass,
                  $tv2_dbname);
 
-
   // videos
   // all at once
 //  $sql_query_s = 'SELECT COUNT(*) AS rows, tv2_moved FROM rsstool_table WHERE 1';
@@ -324,7 +323,7 @@ tv2_sql_match_func ($db, $q, $filter)
 
   // query
   if ($q)
-    $s .= tv2_sql_query2boolean ($q);
+    $s .= '+('.tv2_sql_query2boolean ($q).')';
 
   $s = trim ($s);
 

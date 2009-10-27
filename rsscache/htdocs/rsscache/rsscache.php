@@ -112,9 +112,6 @@ tv2_body ()
 
       if ($s)
         {
-          // category button
-//          $p .= '&nbsp;'.tv2_button ($category);
-
           // left play all button
 //          $p .= '&nbsp'.tv2_play_all_button ();
           $p .= $s;
@@ -123,9 +120,6 @@ tv2_body ()
 
       if (sizeof ($d_array) > 0)
         {
-          // category button
-//          $p .= '&nbsp;'.tv2_button ($category);
-
           // right play all button
 //        $p .= '&nbsp'.tv2_play_all_button ();
         }
@@ -143,7 +137,6 @@ tv2_body ()
   $d = $d_array[$i];
   // output
   $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
-
   $p .= '<tr>';
   $p .= '<td align="right">';
 
@@ -227,6 +220,7 @@ tv2_body ()
 
   if ($v)
     {
+      $p .= '<br>';
       $p .= tv2_prev_video_button ($d);
       $p .= tv2_next_video_button ($d);
 
