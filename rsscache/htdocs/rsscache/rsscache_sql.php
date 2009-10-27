@@ -201,6 +201,9 @@ tv2_sql_normalize ($db, $dest, $c, $f)
           $dest[$i]['rsstool_url'] = str_replace ('&feature=youtube_gdata', '', $dest[$i]['rsstool_url']);
         }
 
+      $dest[$i]['tv2_category'] = trim ($dest[$i]['tv2_category']);
+      $dest[$i]['tv2_moved'] = trim ($dest[$i]['tv2_moved']);
+
       // HACK: for development
 //      $dest[$i]['tv2_related'] = misc_get_keywords ($dest[$i]['rsstool_title'], 1); // isalpha
 //      $dest[$i]['tv2_keywords'] = misc_get_keywords_html ($dest[$i]['rsstool_title']

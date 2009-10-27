@@ -136,7 +136,7 @@ tv2_body ()
     {
   $d = $d_array[$i];
   // output
-  $d_category = config_xml_by_category (strtolower (trim ($d['tv2_moved']))); // for logo
+  $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
   $p .= '<tr>';
   $p .= '<td align="right">';
 
@@ -160,7 +160,7 @@ tv2_body ()
   $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
 
   $p .= '</td>';
-  $p .= '<td valign="bottom">';
+  $p .= '<td>';
 
   $p .= '<nobr>';
 
