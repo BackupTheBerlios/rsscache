@@ -499,6 +499,24 @@ widget_video_myspace ($video_id, $width=425, $height=360)
 
 
 function
+widget_video_veoh ($video_id, $width=410, $height=341)
+{
+//<object width="410" height="341" id="veohFlashPlayer" name="veohFlashPlayer"><param name="movie" value="http://www.veoh.com/static/swf/webplayer/WebPlayer.swf?version=AFrontend.5.4.3.1014&permalinkId=v16689158ZThcRkXC&player=videodetailsembedded&videoAutoPlay=0&id=anonymous"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.veoh.com/static/swf/webplayer/WebPlayer.swf?version=AFrontend.5.4.3.1014&permalinkId=v16689158ZThcRkXC&player=videodetailsembedded&videoAutoPlay=0&id=anonymous" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="410" height="341" id="veohFlashPlayerEmbed" name="veohFlashPlayerEmbed"></embed></object><br /><font size="1">Watch <a href="http://www.veoh.com/browse/videos/category/gaming/watch/v16689158ZThcRkXC">Amiga Longplay [035] Hook.avi</a> in <a href="http://www.veoh.com/browse/videos/category/gaming">Gaming</a>&nbsp;&nbsp;|&nbsp;&nbsp;View More <a href="http://www.veoh.com">Free Videos Online at Veoh.com</a></font>  $video_id = '6773592';
+  $url = 'http://www.veoh.com/static/swf/webplayer/WebPlayer.swf?version=AFrontend.5.4.3.1014&permalinkId=v16689158ZThcRkXC&player=videodetailsembedded&videoAutoPlay=0&id=anonymous';
+
+  $p = ''
+      .'<object width="'.$width.'" height="'.$height.'" id="veohFlashPlayer" name="veohFlashPlayer">'
+      .'<param name="movie" value="'.$url.'"></param>'
+      .'<param name="allowFullScreen" value="true"></param>'
+      .'<param name="allowscriptaccess" value="always"></param>'
+      .'<embed src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="'.$width.'" height="'.$height.'" id="veohFlashPlayerEmbed" name="veohFlashPlayerEmbed"></embed>'
+      .'</object>'
+;
+  return $p;
+}
+
+
+function
 widget_video_yahoo ($video_id, $width=512, $height=322)
 {
 // vid id
@@ -565,6 +583,8 @@ widget_media_demux ($media_url)
     return 4; // flv or mp4
   else if (strstr ($media_url, 'http://') && strtolower (get_suffix ($media_url)) == '.mp3')
     return 5; // mp3
+  else if (strstr ($media_url, '.veoh.com'))
+    return 6;
 
   return 0;
 }
@@ -602,6 +622,8 @@ widget_media ($media_url, $width = NULL, $height = NULL)
     return widget_video ($p, NULL, $width, $height);
   else if ($demux == 5) // mp3
     return widget_audio ($media_url);  
+  else if ($demux == 6)
+    return widget_video_veoh ($p, $width, $height);
 
   return '';
 }
