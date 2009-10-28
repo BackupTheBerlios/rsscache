@@ -733,35 +733,35 @@ get_request_value ($name)
 
 
 function
-set_request_query ($params = array(), $use_existing_arguments = false)
+set_request_query ($args = array(), $use_existing_arguments = false)
 {
   if ($use_existing_arguments)
-    $params = $_GET + $params;
+    $a = array_merge ($_GET, $args); // $args overwrites $_GET
+  else
+    $a = $args;
 
-  if (!$params)
+  if (!sizeof ($a))
     return '';
 
-//  $params_array = array();
-//  for ($i = 0; isset ($params[$i]); $i++)
-//    $params_array[] = key ($params[$i]).'='.$params[$i];
-  foreach ($params as $key=>$value)
+  $b = array();
+  foreach ($a as $key=>$value)
     if (gettype ($value) == 'array')
       {
         // handle array data properly
         foreach($value as $val)
-          $params_array[] = $key.'[]='.urlencode($val);
+          $b[] = $key.'[]='.urlencode($val);
       }
     else
-      $params_array[] = $key.'='.urlencode ($value);
+      $b[] = $key.'='.urlencode ($value);
 
-  return '?'.implode ('&amp;',$params_array);
+  return '?'.implode ('&amp;',$b);
 } 
 
 
 function
-misc_getlink ($params = array(), $use_existing_arguments = false)
+misc_getlink ($args = array(), $use_existing_arguments = false)
 {
-  return set_request_query ($params, $use_existing_arguments);
+  return set_request_query ($args, $use_existing_arguments);
 }
 
 
