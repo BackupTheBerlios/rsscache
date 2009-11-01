@@ -40,7 +40,7 @@ tv2_body ()
 
   if ($captcha)
     if (widget_captcha_check () || islocalhost ())
-     {
+      {
         tv2_sql_move ($v, $c);
         $v = NULL;
       }

@@ -427,6 +427,10 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
         $sql_query_s .= ' AND ( 1 )';
       else if ($f == 'next')
         $sql_query_s .= ' AND ( 1 )';
+//      else if ($f == 'read')
+//        $sql_query_s .= ' AND ( 1 )';
+//      else if ($f == 'write')
+//        $sql_query_s .= ' AND ( 1 )';
 
       // sort
       if ($f == 'related') // we sort related by title for playlist

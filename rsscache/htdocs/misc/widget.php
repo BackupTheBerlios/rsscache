@@ -26,24 +26,62 @@ include_once ('misc/misc.php');
 
 
 function
-widget_new_window ()
+widget_window_open ($url, $fullscreen = 0, $window_name = '')
 {
   $p = '';
-  $p .= "<a href=\"javascript:js_window_open ('ripalot.php',
-                                    'mywindow',
-                                    'width=450,'
-                                   +'height=450,'
-                                   +'resizable=no,'
-                                   +'scrollbars=no,'
-                                   +'toolbar=no,'
-                                   +'location=no,'
-                                   +'directories=no,'
-                                   +'status=no,'
-                                   +'menubar=no,'
-                                   +'copyhistory=no');\">Start</a>";
-  echo $p;
-}
 
+  $p .= '<script type="text/javascript">'."\n";
+
+  $p .= 'function widget_window_open ()'."\n"
+       .'{'."\n";
+
+//  $p .= 'var w=screen.width;var h=screen.height;';
+
+  $p .= 'var win=';
+
+  $p .= 'window.open(\''
+       .$url
+       .'\',\''
+       .$window_name
+       .'\',\'';
+
+// https://developer.mozilla.org/en/Gecko_DOM_Reference
+  if ($fullscreen)
+    $p .= ''
+//         .'width=\'+w+\','
+//         .'height=\'+h+\','
+         .'status=no,'
+         .'toolbar=no,'
+         .'location=off,'
+         .'menubar=no,'
+         .'directories=no,'
+         .'resizable=no,'
+         .'scrollbars=no,'
+         .'copyhistory=yes'
+;
+  else
+    $p .= ''
+         .'width=400,'
+         .'height=300,'
+         .'status=no,'
+         .'toolbar=no,'
+         .'location=no,'
+         .'menubar=no,'
+         .'directories=no,'
+         .'resizable=yes,'
+         .'scrollbars=yes,'
+         .'copyhistory=yes'
+;
+  $p .= '\');'."\n";
+
+  $p .= 'win.moveTo(0,0);'."\n";
+
+  $p .= '}'."\n";
+
+  $p .= '</script>';
+
+  return $p;
+}
 
 
 function
@@ -372,7 +410,7 @@ widget_video ($video_url, $preview_image = NULL, $width = 400, $height = 300)
 
 
 function
-widget_video_youtube ($video_id, $width=425, $height=344)
+widget_video_youtube ($video_id, $width=425, $height=344, $autoplay)
 {
 // &loop=1&autoplay=1
   $fgcolor="#ffffff";
@@ -399,19 +437,21 @@ widget_video_youtube ($video_id, $width=425, $height=344)
 
   if ($width == -1 || $height == -1)
     {
-      $width = 900;
-      $height = 506;
+//      $width = 'javascript:document.write (screen.width);';
+//      $height = 'javascript:document.wrtie (screen.height);';
+      $width = 1280;
+      $height = 720;
     }
 
   $p = ''
        .'<object width="'.$width.'" height="'.$height.'">'
        .'<param name="movie" value="'.$url.'">'
        .'</param><param name="allowFullScreen" value="true"></param>'
-//       .'</param><param name="autoplay" value="true"></param>'
+       .'</param><param name="autoplay" value="true"></param>'
        .'<embed src="'
        .$url
        .'" type="application/x-shockwave-flash" allowfullscreen="true"'
-//       .' autoplay="true"'
+       .' autoplay="true"'
        .' width="'
        .$width
        .'" height="'
@@ -591,10 +631,11 @@ widget_media_demux ($media_url)
 
 
 function
-widget_media ($media_url, $width = NULL, $height = NULL)
+widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1)
 {
   $demux = widget_media_demux ($media_url);
   $p = $media_url;
+  $s = '';
 
   if ($demux == 1) // youtube
     {
@@ -603,29 +644,29 @@ widget_media ($media_url, $width = NULL, $height = NULL)
       else
         $p = substr ($p, strpos ($p, 'watch') + 12);
 
-      return widget_video_youtube ($p, $width, $height);
+      $s .= widget_video_youtube ($p, $width, $height, $autoplay);
     }
   else if ($demux == 2) // dailymotion
     {
       $p = substr ($p, strpos ($p, '/video/') + 7);
       $p = substr ($p, 0, strpos ($p, 'from') - 3);
 
-      return widget_video_dailymotion ($p, $width, $height);   
+      $s .= widget_video_dailymotion ($p, $width, $height);   
     }
   else if ($demux == 3) // xfire
     {
       $p = substr ($p, strpos ($p, '/video/') + 7, -1);
 
-      return widget_video_xfire ($p, $width, $height);
+      $s .= widget_video_xfire ($p, $width, $height);
     }
   else if ($demux == 4) // flv or mp4
-    return widget_video ($p, NULL, $width, $height);
+    $s .= widget_video ($p, NULL, $width, $height);
   else if ($demux == 5) // mp3
-    return widget_audio ($media_url);  
+    $s .= widget_audio ($media_url);  
   else if ($demux == 6)
-    return widget_video_veoh ($p, $width, $height);
+    $s .= widget_video_veoh ($p, $width, $height);
 
-  return '';
+  return $s;
 }
 
 

@@ -680,7 +680,7 @@ vname (&$var, $scope=false, $prefix='unique', $suffix='value')
 
 
 function
-misc_exec ($cmdline, $debug)
+misc_exec ($cmdline, $debug = 0)
 {
   if ($debug)
     echo $cmdline.'\n';
@@ -709,8 +709,8 @@ misc_exec ($cmdline, $debug)
 function
 get_cookie ($name)
 {
-  if (isset ($_REQUEST[$name]))
-    return $_REQUEST[$name];
+//  if (isset ($_REQUEST[$name]))
+//    return $_REQUEST[$name];
 
   if (isset ($_COOKIE[$name]))
     return $_COOKIE[$name];
@@ -754,7 +754,7 @@ set_request_query ($args = array(), $use_existing_arguments = false)
     else
       $b[] = $key.'='.urlencode ($value);
 
-  return '?'.implode ('&amp;',$b);
+  return '?'.implode ('&',$b);
 } 
 
 
@@ -785,7 +785,9 @@ misc_head_tags ($icon, $refresh = 0, $charset = 'UTF-8')
   $p .= '<meta name="Content-Type" content="text/html; charset='.$charset.'">';
 
   if ($refresh > 0)
-    $p .= '<meta name="refresh" content="refresh: '.$refresh.'; url='.$_SERVER['REQUEST_URI'].'">';
+//    header ('location:'.$_SERVER['REQUEST_URI']);
+    header ('refresh: '.$refresh.'; url='.$_SERVER['REQUEST_URI']);
+//    $p .= '<meta http-equiv="refresh" content="'.$refresh.'; URL='.$_SERVER['REQUEST_URI'].'">';
 
 /*
     <meta http-equiv="imagetoolbar" content="no">
