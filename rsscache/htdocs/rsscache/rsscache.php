@@ -270,6 +270,7 @@ tv2_body ()
 
 // main ()
 
+
 $f = get_request_value ('f'); // function
 if ($f == 'read' ||
     $f == 'write')
@@ -285,6 +286,14 @@ if ($f == 'read' ||
     header ('location:'.get_cookie ('rw'));
     exit;
   }
+/*
+if ($f == 'fullscreen')
+  {
+    $a = misc_get_browser_config ();
+    setcookie ('w', $a['w'], $tv2_cookie_expire);
+    setcookie ('h', $a['h'], $tv2_cookie_expire);
+  }
+*/
 $c = get_request_value ('c'); // category
 $q = get_request_value ('q'); // search query
 $v = get_request_value ('v'); // own video

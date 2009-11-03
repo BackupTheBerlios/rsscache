@@ -28,11 +28,60 @@ define ('MISC_MISC_PHP', 1);
 function
 misc_get_browser_config ()
 {
-  define ('HAS_JS', 1); // javascript is enabled
-  define ('HAS_FLASH', 2);
+  // get the settings of the browser and stores them in cookie
+  if (isset ($_GET['config']))
+    {
+      $a = array('js' => $_GET['js'],
+//                 'flash' => $_GET['flash'], 
+                 'w' => $_GET['w'], 
+                 'h' => $_GET['h'],
+        );
+
+      // DEBUG
+//      echo '<pre><tt>';
+//      print_r ($a);
+
+      // TODO: store in cookie
+
+      return $a;
+    }
+
+
+  $p = '';
 
   // send javascript probe to browser and a refresh
-// returns flash version (number). Works on NS3+, Opera3+, IE4+ and IE5+ on Mac.
+  $p .= '<script language="javascript">'."\n"
+//       .'var w = window.width;'."\n"
+//       .'var h = window.height;'."\n"
+       .'var w = screen.width;'."\n"
+       .'var h = screen.height;'."\n"
+       .'if (self.innerWidth != undefined)'."\n"
+       .'  {'."\n"
+       .'    w = self.innerWidth; h = self.innerHeight;'."\n"
+       .'  }'."\n"
+       .'else'."\n"
+       .'  {'."\n"
+       .'    var d = document.documentElement;'."\n"
+       .'    if (d)'."\n"
+       .'      {'."\n"
+       .'        w = d.clientWidth; h = d.clientHeight;'."\n"
+       .'      }'."\n"
+       .'  }'."\n"
+//       .'document.write (w+" "+h);'."\n"
+       .'document.write (\'<meta http-equiv="refresh" content="0,URL=?config=1'
+       .'&js=1'
+//       .'&flash=0'
+       .'&w=\'+w+\''
+       .'&h=\'+h+\''
+       .'">\');'."\n"
+       .'</script>'
+       .'<noscript>'
+       .'<meta http-equiv="refresh" content="0,URL=?config=1&js=0">'
+       .'</noscript>'
+;
+
+  echo $p;
+
 /*
 $flash = '
 function detectingFLASH() {
@@ -76,53 +125,7 @@ function detectingFLASH() {
   }
 return flashVersion;
 ';
-
-
-$browser = '
-    if (document.layers) alert("Netscape 4");
-    if (document.all) alert("IE 4/5");
-    if (document.styleSheets) alert("Mozilla 1, Netscape 6, IE4, IE5, DOM 1.0");
-    if (document.getElementById) alert("Mozilla/NC 6, IE5 ,DOM 1.0");
-';
-
-// create a hidden form and submit it with javascript
-$js = '<form name="jsform" id="jsform" method="post" style="display:none">
-<input name="jstest" type="text" value="true" />
-<script language="javascript">
-document.jsform.submit();
-</script>
-</form>';
-
-if (isset($_POST['jstest']))
-  {
-    ...
-  }
-
-
-// test js (2nd way)
-
-$js2 = '<SCRIPT TYPE="text/javascript">
-location = "index.php?js=yes";
-</SCRIPT>';
-
-if (isset($_GET['js']) && $_GET['js']=='0')
-
-
-$js3 = '<noscript>
-<meta http-equiv="refresh" content="0,URL='index.php?js=0'" />
-</noscript>';
-
-
-$js = (isset($_GET['js']) && $_GET['js']=='1') ? 1 : 0;
-if (!$js)
-{
-echo '<script>
-window.location = "foo.php?js=1";
-</script>';
-}
-
 */
-  return HAS_JS|HAS_FLASH;
 }
 
 

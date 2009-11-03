@@ -336,6 +336,47 @@ widget_index ($dir, $recursive, $suffix, $index_func)
 
 
 function
+widget_video_js ()
+{
+  // javascript:getinnerwidth() and javascript:getinnerheight()
+
+  $p = '<script language="javascript">'."\n"
+      .'function getinnerwidth ()'."\n"
+      .'  {'."\n"
+      .'    var w = screen.width;'."\n"
+      .'    if (self.innerWidth != undefined)'."\n"
+      .'      w = self.innerWidth;'."\n"
+      .'    else'."\n"
+      .'      {'."\n"
+      .'        var d = document.documentElement;'."\n"
+      .'        if (d)'."\n"
+      .'          w = d.clientWidth;'."\n"
+      .'      }'."\n"
+      .'    return w;'."\n"
+      .'  }'."\n"
+      ."\n\n"
+      .'function getinnerheight ()'."\n"
+      .'  {'."\n"
+      .'    var h = screen.height;'."\n"
+      .'    if (self.innerWidth != undefined)'."\n"
+      .'        h = self.innerHeight;'."\n"
+      .'    else'."\n"
+      .'      {'."\n"
+      .'        var d = document.documentElement;'."\n"
+      .'        if (d)'."\n"
+      .'          h = d.clientHeight;'."\n"
+      .'      }'."\n"
+      .'    return h;'."\n"
+      .'  }'."\n"
+      ."\n\n"
+//       .'document.write (getinnerwidth ()+\' \'+getinnerheight ());'."\n"
+      .'</script>';
+
+  return $p;
+}
+
+
+function
 widget_video ($video_url, $preview_image = NULL, $width = 400, $height = 300)
 {
   $fgcolor = '#ffffff';
@@ -437,27 +478,48 @@ widget_video_youtube ($video_id, $width=425, $height=344, $autoplay)
 
   if ($width == -1 || $height == -1)
     {
-//      $width = 'javascript:document.write (screen.width);';
-//      $height = 'javascript:document.wrtie (screen.height);';
-      $width = 1280;
-      $height = 720;
+      $p .= ''
+           .widget_video_js()
+           .'<script language="javascript">'."\n"
+           .'document.write (\''
+           .'<object'
+           .' width="\'+(getinnerwidth () - 30)+\'"'
+           .' height="\'+(getinnerheight () - 35)+\'"'
+           .'>'
+           .'<param name="movie" value="'.$url.'">'
+           .'</param><param name="allowFullScreen" value="true"></param>'
+           .'</param><param name="autoplay" value="true"></param>'
+           .'<embed src="'
+           .$url
+           .'" type="application/x-shockwave-flash" allowfullscreen="true"'
+           .' autoplay="true"'
+           .' width="\'+(getinnerwidth () - 30)+\'"'
+           .' height="\'+(getinnerheight () - 35)+\'"'
+           .'></embed>'
+           .'</object>'
+          .'\');'
+          .'</script>'
+;
     }
-
-  $p = ''
-       .'<object width="'.$width.'" height="'.$height.'">'
-       .'<param name="movie" value="'.$url.'">'
-       .'</param><param name="allowFullScreen" value="true"></param>'
-       .'</param><param name="autoplay" value="true"></param>'
-       .'<embed src="'
-       .$url
-       .'" type="application/x-shockwave-flash" allowfullscreen="true"'
-       .' autoplay="true"'
-       .' width="'
-       .$width
-       .'" height="'
-       .$height
-       .'"></embed>'
-       .'</object>';
+  else
+    {
+      $p = ''
+           .'<object'
+           .' width="'.$width.'"'
+           .' height="'.$height.'"'
+           .'>'
+           .'<param name="movie" value="'.$url.'">'
+           .'</param><param name="allowFullScreen" value="true"></param>'
+           .'</param><param name="autoplay" value="true"></param>'
+           .'<embed src="'
+           .$url
+           .'" type="application/x-shockwave-flash" allowfullscreen="true"'
+           .' autoplay="true"'
+           .' width="'.$width.'"'
+           .' height="'.$height.'"'
+           .'></embed>'
+           .'</object>';
+    }
 
   return $p;
 }
