@@ -55,24 +55,34 @@ tv2_body ()
 //  echo '<pre><tt>';
 //  print_r ($d_array);
 
-  if ($v && $f == 'fullscreen')
-    return tv2_player ($d_array[0]);
-
   // category
   $category = config_xml_by_category (strtolower ($c));
 
   $p = '';
 
-  if ($category->background) // background image
+  if ($category->background || $f == 'fullscreen') // background image and fullscreen
     {
       $p .= '<style type="text/css">'."\n"
-           .'body {'
-           .'background-image:url(\''.$category->background.'\');'
-           .'background-attachment:fixed;'
-           .'background-repeat:no-repeat;'
-           .'background-position:left center;}'
-           ."\n"
+           .'body {';
+
+      if ($category->background)
+        $p .= 'background-image:url(\''.$category->background.'\');'
+             .'background-attachment:fixed;'
+             .'background-repeat:no-repeat;'
+             .'background-position:left center;';
+
+      if ($f == 'fullscreen')
+        $p .= 'background-color:#000;';
+
+      $p .= "}\n"
            .'</style>';
+    }
+
+  // just fullscreen
+  if ($v && $f == 'fullscreen')
+    {
+      $p .= tv2_player ($d_array[0]);
+      return $p;
     }
 
   // flash carousel with icons
