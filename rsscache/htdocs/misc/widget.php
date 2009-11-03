@@ -50,6 +50,7 @@ widget_window_open ($url, $fullscreen = 0, $window_name = '')
     $p .= ''
 //         .'width=\'+w+\','
 //         .'height=\'+h+\','
+         .'fullscreen=yes,'
          .'status=no,'
          .'toolbar=no,'
          .'location=off,'
@@ -74,7 +75,19 @@ widget_window_open ($url, $fullscreen = 0, $window_name = '')
 ;
   $p .= '\');'."\n";
 
-  $p .= 'win.moveTo(0,0);'."\n";
+  $p .= 'win.moveTo(0,0);'."\n"
+/*
+       .'if (document.all)'."\n"
+       .'  top.window.resizeTo(screen.availWidth, screen.availHeight);'."\n"
+       ."\n"
+       .'else if (document.layers || document.getElementById)'."\n"
+       .'  if (top.window.outerHeight < screen.availHeight || top.window.outerWidth < screen.availWidth)'."\n"
+       .'    {'."\n"
+       .'      top.window.outerHeight = screen.availHeight;'."\n"
+       .'      top.window.outerWidth = screen.availWidth;'."\n"
+       .'    }'."\n"
+*/
+;
 
   $p .= '}'."\n";
 
