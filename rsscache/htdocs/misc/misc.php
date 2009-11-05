@@ -50,7 +50,7 @@ misc_get_browser_config ()
   $p = '';
 
   // send javascript probe to browser and a refresh
-  $p .= '<script language="javascript">'."\n"
+  $p .= '<script type="text/javascript">'."\n"
 //       .'var w = window.width;'."\n"
 //       .'var h = window.height;'."\n"
        .'var w = screen.width;'."\n"

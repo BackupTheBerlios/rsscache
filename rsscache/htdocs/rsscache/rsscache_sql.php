@@ -378,6 +378,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                   .' rsstool_title,'
                   .' rsstool_desc,'
                   .' rsstool_dl_date,'
+                  .' rsstool_date,'
                   .' tv2_category,'
                   .' tv2_moved,'
                   .' tv2_duration,'
@@ -416,7 +417,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
 
       // functions
       if ($f == 'new')
-        $sql_query_s .= ' AND ( rsstool_dl_date > '.(time () - $tv2_isnew).' )';
+//        $sql_query_s .= ' AND ( rsstool_dl_date > '.(time () - $tv2_isnew).' )';
+        $sql_query_s .= ' AND ( rsstool_date > '.(time () - $tv2_isnew).' )';
       else if ($f == '0_5min')
         $sql_query_s .= ' AND ( tv2_duration > 0 && tv2_duration < 301 )';
       else if ($f == '5_10min')
@@ -438,7 +440,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
       else if ($f == 'score')
         $sql_query_s .= ' ORDER BY tv2_score ASC';
       else
-        $sql_query_s .= ' ORDER BY rsstool_dl_date DESC';
+//        $sql_query_s .= ' ORDER BY rsstool_dl_date DESC';
+        $sql_query_s .= ' ORDER BY rsstool_date DESC';
 
       // limit
       $sql_query_s .= ' LIMIT '.$start.','.$num;

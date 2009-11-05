@@ -98,6 +98,569 @@ widget_window_open ($url, $fullscreen = 0, $window_name = '')
 
 
 function
+widget_carousel ($xmlfile, $width=200, $height=150)
+{
+  $p = ''
+      .'<span class="carousel_container">'
+      .'<span id="carousel1">'
+      .'</span>'
+      .'</span>'
+      .'<script type="text/javascript" src="misc/swfobject.js"></script>'
+      .'<script type="text/javascript">'."\n"
+      .'swfobject.embedSWF ('."\n"
+      .'  "misc/carousel.swf",'."\n"
+      .'  "carousel1",'."\n"
+      .'  "'.$width.'", "'.$height.'",'."\n"
+      .'  "9.0.0",'."\n"
+      .'  false,'."\n"
+      .'  {'."\n"
+      .'    xmlfile:"'.$xmlfile.'",'."\n"
+      .'    loaderColor:"0xffffff",'."\n"
+      .'    messages:"  ::  ::  ::  "'."\n"
+      .'  },'."\n"
+      .'  {bgcolor: "#ffffff"});'."\n"
+      .'</script>';
+
+  echo $p;
+}
+
+
+function
+widget_video_js ()
+{
+  // javascript:getinnerwidth() and javascript:getinnerheight()
+
+  $p = '<script type="text/javascript">'."\n"
+      .'function getinnerwidth ()'."\n"
+      .'  {'."\n"
+      .'    var w = screen.width;'."\n"
+      .'    if (self.innerWidth != undefined)'."\n"
+      .'      w = self.innerWidth;'."\n"
+      .'    else'."\n"
+      .'      {'."\n"
+      .'        var d = document.documentElement;'."\n"
+      .'        if (d)'."\n"
+      .'          w = d.clientWidth;'."\n"
+      .'      }'."\n"
+      .'    return w;'."\n"
+      .'  }'."\n"
+      ."\n\n"
+      .'function getinnerheight ()'."\n"
+      .'  {'."\n"
+      .'    var h = screen.height;'."\n"
+      .'    if (self.innerWidth != undefined)'."\n"
+      .'        h = self.innerHeight;'."\n"
+      .'    else'."\n"
+      .'      {'."\n"
+      .'        var d = document.documentElement;'."\n"
+      .'        if (d)'."\n"
+      .'          h = d.clientHeight;'."\n"
+      .'      }'."\n"
+      .'    return h;'."\n"
+      .'  }'."\n"
+      ."\n\n"
+//       .'document.write (getinnerwidth ()+\' \'+getinnerheight ());'."\n"
+      .'</script>';
+
+  return $p;
+}
+
+
+function
+widget_video ($video_url, $width = 400, $height = 300, $preview_image = NULL)
+{
+  $fgcolor = '#ffffff';
+  $bgcolor = '#000000';
+  $bgcolor2 = '#444444';
+  $bgcolor3 = '#ff0000';
+  $url = $video_url;
+
+  $p = '<script type="text/javascript" src="misc/flowplayer-3.1.4.min.js"></script>'
+      .'<a href="'.$url.'" id="player"></a>'
+      .'<script><!--'."\n"
+      .'flowplayer('."\n"
+      .'  "player",'."\n"
+      .'  {'."\n"
+      .'    src: "misc/flowplayer-3.1.4.swf",'."\n"
+      .'    width:'.$width.','."\n"
+      .'    height:'.$height."\n"
+      .'  },'."\n"
+      .'  {'."\n"
+      .'    canvas: {backgroundColor: "'.$bgcolor.'"'."\n"
+      .'  },'."\n"
+      .'  plugins:'."\n"
+      .'    {'."\n"
+      .'      controls:'."\n"
+      .'        {'."\n"
+      .'          buttonOverColor: "'.$bgcolor2.'",'."\n"
+      .'          timeColor: "'.$fgcolor.'",'."\n"
+      .'          sliderColor: "'.$bgcolor2.'",'."\n"
+      .'          buttonColor: "'.$bgcolor.'",'."\n"
+      .'          bufferColor: "'.$bgcolor3.'",'."\n"
+      .'          progressColor: "'.$bgcolor2.'",'."\n"
+      .'          durationColor: "'.$fgcolor.'",'."\n"
+      .'          progressGradient: "none",'."\n"
+      .'          sliderGradient: "none",'."\n"
+      .'          borderRadius: "0px",'."\n"
+      .'          backgroundColor: "'.$bgcolor.'",'."\n"
+      .'          backgroundGradient: "none",'."\n"
+      .'          bufferGradient: "none",'."\n"
+      .'          opacity:1.0'."\n"
+      .'        }'."\n"
+      .'    }'."\n"
+      .'});'."\n"
+      .'//-->'
+      .'</script>';
+
+//  return $p;
+
+  if ($preview_image)
+    $url = '&image='.$preview_image;
+
+  $p = ''
+//      .'<script type="text/javascript" src="misc/swfobject.js"></script>'
+//      .'<script type="text/javascript">'."\n"
+//      .'swfobject.registerObject("player","9.0.98","misc/expressInstall.swf");'."\n"
+//      .'</script>'
+      .'<object id="player" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" name="player" width="'.$width.'" height="'.$height.'">'
+      .'<param name="movie" value="misc/player.swf" />'
+      .'<param name="allowfullscreen" value="true" />' 
+      .'<param name="allowscriptaccess" value="always" />' 
+      .'<param name="flashvars" value="file='.$url.'" />'
+      .'<object type="application/x-shockwave-flash" data="misc/player.swf" width="'.$width.'" height="'.$height.'">'
+      .'<param name="movie" value="misc/player.swf" />'
+      .'<param name="allowfullscreen" value="true" />'
+      .'<param name="allowscriptaccess" value="always" />'
+      .'<param name="flashvars" value="file='.$url.'" />'
+//      .<p><a href="http://get.adobe.com/flashplayer">Get Flash</a> to see this player.</p>'
+      .'</object>'
+      .'</object>';
+
+  return $p;
+}
+
+
+function
+widget_video_youtube ($video_id, $width=425, $height=344, $autoplay = 1)
+{
+// &loop=1&autoplay=1
+  $fgcolor="#ffffff";
+  $bgcolor="#000000";
+  $bgcolor2="#444444";
+  $bgcolor3="#ff0000";
+
+  $url = 'http://www.youtube.com/v/'
+        .$video_id
+       .'&fs=1'             // allow fullscreen
+       . (
+          ($width == -1 || $height == -1) ?
+          '&ap=%2526fmt%3D22' : // embed stereo, 1280 x 720 resolution
+          '&ap=%2526fmt%3D18' // embed stereo, 480 x 270 resolution (original: 425x344)
+        )
+       .'&showsearch=0'     // no search
+       .'&rel=0'            // no related
+       .($autoplay ? '&autoplay=1' : '')
+//       .'#t=03m22s'         // skip to
+//       .'&start=30'         // skip to (2)
+//       .'&loop=1'  
+//       .'&color1=0x000000'
+//       .'&color2=0x000000'
+;
+
+  if ($width == -1 || $height == -1)
+    {
+      $p .= ''
+           .widget_video_js()
+           .'<script type="text/javascript">'."\n"
+           .'document.write (\''
+           .'<object'
+           .' width="\'+(getinnerwidth () - 30)+\'"'
+           .' height="\'+(getinnerheight () - 35)+\'"'
+           .'>'
+           .'<param name="movie" value="'.$url.'">'
+           .'</param><param name="allowFullScreen" value="true"></param>'
+           .'</param><param name="autoplay" value="true"></param>'
+           .'<embed src="'
+           .$url
+           .'" type="application/x-shockwave-flash" allowfullscreen="true"'
+           .' autoplay="true"'
+           .' width="\'+(getinnerwidth () - 30)+\'"'
+           .' height="\'+(getinnerheight () - 35)+\'"'
+           .'></embed>'
+           .'</object>'
+          .'\');'
+          .'</script>'
+;
+    }
+  else
+    {
+      $p = ''
+           .'<object'
+           .' width="'.$width.'"'
+           .' height="'.$height.'"'
+           .'>'
+           .'<param name="movie" value="'.$url.'">'
+           .'</param><param name="allowFullScreen" value="true"></param>'
+           .'</param><param name="autoplay" value="true"></param>'
+           .'<embed src="'
+           .$url
+           .'" type="application/x-shockwave-flash" allowfullscreen="true"'
+           .($autoplay ? ' autoplay="1"' : '')
+           .' width="'.$width.'"'
+           .' height="'.$height.'"'
+           .'></embed>'
+           .'</object>';
+    }
+
+  return $p;
+}
+
+
+function
+widget_video_dailymotion ($video_id, $width=420, $height=336)
+{
+//  $video_id = 'k4H0eU9uhV7waa1XXp';
+  $url = 'http://www.dailymotion.com/swf/'.$video_id.'&related=1';
+
+  // original: 420x336
+  $p = ''
+      .'<object width="'.$width.'" height="'.$height.'">'
+      .'<param name="movie" value="'.$url.'"></param>'
+      .'<param name="allowFullScreen" value="true"></param>'
+      .'<param name="allowScriptAccess" value="always"></param>'
+      .'<embed src="'
+      .$url
+      .'" type="application/x-shockwave-flash" width="'
+      .$width
+      .'" height="'
+      .$height
+      .'" allowFullScreen="true" allowScriptAccess="always"></embed>'
+      .'</object>'
+;
+  return $p;
+}
+
+
+function
+widget_video_xfire ($video_id, $width=425, $height=279)
+{
+//  $video_id = '1';
+  $url = 'http://media.xfire.com/swf/embedplayer.swf';
+
+  // original: 425x279
+  $p = ''
+      .'<object width="'.$width.'" height="'.$height.'">'
+      .'<embed src="'.$url.'"'
+      .' type="application/x-shockwave-flash" allowscriptaccess="always"'
+      .' allowfullscreen="true" width="'
+      .$width
+      .'" height="'
+      .$height
+      .'" flashvars="videoid='
+      .$video_id
+      .'">'
+      .'</embed>'
+      .'</object>'
+;
+  return $p;
+}
+
+
+function
+widget_video_myspace ($video_id, $width=425, $height=360)
+{
+//  $video_id = 'k4H0eU9uhV7waa1XXp';
+  $video_id = '6773592';
+  $url = 'http://mediaservices.myspace.com/services/media/embed.aspx/m='.$video_id.',t=1,mt=video';
+
+  // original: 425x360
+  $p = ''
+      .'<object width="'.$width.'" height="'.$height.'">'
+      .'<param name="allowFullScreen" value="true"/>'
+      .'<param name="wmode" value="transparent"/>'
+      .'<param name="movie" value="'.$url.'"/>'
+      .'<embed'
+      .' src="'.$url.'"'
+      .' width="'.$width.'"'
+      .' height="'.$height.'"'
+      .' allowFullScreen="true"'
+      .' type="application/x-shockwave-flash"'
+      .' wmode="transparent"></embed>'
+      .'</object>'
+;
+  return $p;
+}
+
+
+function
+widget_video_veoh ($video_id, $width=410, $height=341)
+{
+  $url = 'http://www.veoh.com/static/swf/webplayer/WebPlayer.swf?version=AFrontend.5.4.3.1014&permalinkId='
+         .$video_id
+         .'&player=videodetailsembedded&videoAutoPlay=0&id=anonymous';
+
+  // original: 410x341
+  $p = ''
+      .'<object width="'.$width.'" height="'.$height.'" id="veohFlashPlayer" name="veohFlashPlayer">'
+      .'<param name="movie" value="'.$url.'"></param>'
+      .'<param name="allowFullScreen" value="true"></param>'
+      .'<param name="allowscriptaccess" value="always"></param>'
+      .'<embed src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="'.$width.'" height="'.$height.'" id="veohFlashPlayerEmbed" name="veohFlashPlayerEmbed"></embed>'
+      .'</object>'
+;
+  return $p;
+}
+
+
+function
+widget_video_yahoo ($video_id, $width=512, $height=322)
+{
+// vid id
+//http://espanol.video.yahoo.com/watch/5410123/14251443
+//  $video_id = 'k4H0eU9uhV7waa1XXp';
+  $video_id = '6773592';
+  $video_vid = '6773592';
+  $url = 'http://mediaservices.myspace.com/services/media/embed.aspx/m='.$video_id.',t=1,mt=video';
+
+  $p = ''
+      .'<object width="'.$width.'" height="'.$height.'">'
+      .'<param name="movie" value="http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.46" />'
+      .'<param name="allowFullScreen" value="true" />'
+      .'<param name="AllowScriptAccess" VALUE="always" />'
+      .'<param name="bgcolor" value="#000000" />'
+      .'<param name="flashVars"'
+          .' value="id='.$id.'&vid='.$vid.'&lang=es-mx&intl=e1&thumbUrl=http%3A//l.yimg.com/a/p/i/bcst/videosearch/9707/88446579.jpeg&embed=1" />'
+      .'<embed src="http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.46" type="application/x-shockwave-flash" width="'.$width.'" height="'.$height.'" allowFullScreen="true" AllowScriptAccess="always" bgcolor="#000000"'
+      .' flashVars="id='.$id.'&vid='.$vid.'&lang=es-mx&intl=e1&thumbUrl=http%3A//l.yimg.com/a/p/i/bcst/videosearch/9707/88446579.jpeg&embed=1" >'
+      .'</embed>'
+      .'</object>'
+;
+  return $p;
+}
+
+
+function
+widget_audio ($audio_url, $start = 0, $stream = 0, $next_stream = NULL)
+{
+  $url = 'misc/widget_audio.swf?url='.$audio_url.'&start='.$start.'&stream='.$stream
+        .($next_stream ? '&next='.$next_stream : '');
+
+  $p = ''
+      .'<object>'
+      .'<embed'
+      .' src="'.$url.'"'
+      .' type="application/x-shockwave-flash"'
+      .' width="1"'
+      .' height="1"'
+//      .' pluginspace="http://www.macromedia.com/go/flashplayer/"'
+      .'></embed>'
+      .'</object>';
+
+  return $p;
+}
+
+
+function
+widget_media_demux ($media_url)
+{
+  if (strstr ($media_url, '.youtube.com'))
+    return 1;
+  else if (strstr ($media_url, '.dailymotion.'))
+    return 2;
+  else if (strstr ($media_url, '.xfire.com'))
+    return 3;
+  else if (strstr ($media_url, 'http://') && in_array (strtolower (get_suffix ($media_url)), array ('.flv', '.mp4')))
+    return 4; // flv or mp4
+  else if (strstr ($media_url, 'http://') && strtolower (get_suffix ($media_url)) == '.mp3')
+    return 5; // mp3
+  else if (strstr ($media_url, '.veoh.com'))
+    return 6;
+
+  return 0;
+}
+
+
+function
+widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1)
+{
+  $demux = widget_media_demux ($media_url);
+  $p = $media_url;
+  $s = '';
+
+  if ($demux == 1) // youtube
+    {
+      if (strstr ($p, '?v='))   
+        $p = substr ($p, strpos ($p, '?v=') + 3);
+      else
+        $p = substr ($p, strpos ($p, 'watch') + 12);
+
+      $s .= widget_video_youtube ($p, $width, $height, $autoplay);
+    }
+  else if ($demux == 2) // dailymotion
+    {
+      $p = substr ($p, strpos ($p, '/video/') + 7);
+      $p = substr ($p, 0, strpos ($p, 'from') - 3);
+
+      $s .= widget_video_dailymotion ($p, $width, $height);   
+    }
+  else if ($demux == 3) // xfire
+    {
+      $p = substr ($p, strpos ($p, '/video/') + 7, -1);
+
+      $s .= widget_video_xfire ($p, $width, $height);
+    }
+  else if ($demux == 4) // flv or mp4
+    $s .= widget_video ($p, $width, $height, NULL);
+  else if ($demux == 5) // mp3
+    $s .= widget_audio ($p);
+  else if ($demux == 6)
+    {
+      // http://www.veoh.com/videos/v6387308sYb9NxBJ
+      $p = substr ($p, strpos ($p, '/videos/') + 8);
+      $s .= widget_video_veoh ($p, $width, $height);
+    }
+
+  return $s;
+}
+
+
+function
+widget_trace ($ip)
+{
+// shows google maps by ip(geoip?), country, city, or long/lat
+//http://maps.google.com/?ie=UTF8&ll=37.0625,-95.677068&spn=31.013085,55.634766&t=h&z=4
+}
+
+
+/*
+  In PHP versions earlier than 4.1.0, $HTTP_POST_FILES should be used instead
+  of $_FILES. Use phpversion() for version information.
+
+  $_FILES['userfile']['name']
+    The original name of the file on the client machine. 
+  $_FILES['userfile']['type']
+    The mime type of the file, if the browser
+    provided this information. An example would be "image/gif". This mime
+    type is however not checked on the PHP side and therefore don't take its
+    value for granted.
+  $_FILES['userfile']['size']
+    The size, in bytes, of the uploaded file. 
+  $_FILES['userfile']['tmp_name']
+    The temporary filename of the file in which the uploaded file was stored on the server. 
+  $_FILES['userfile']['error']
+    The error code associated with this file upload. This element was added in PHP 4.2.0 
+
+  UPLOAD_ERR_OK          0; There is no error, the file uploaded with success. 
+  UPLOAD_ERR_INI_SIZE    1; The uploaded file exceeds the upload_max_filesize directive in php.ini. 
+  UPLOAD_ERR_FORM_SIZE   2; The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form. 
+  UPLOAD_ERR_PARTIAL     3; The uploaded file was only partially uploaded. 
+  UPLOAD_ERR_NO_FILE     4; No file was uploaded. 
+  UPLOAD_ERR_NO_TMP_DIR  6; Missing a temporary folder. Introduced in PHP 4.3.10 and PHP 5.0.3. 
+  UPLOAD_ERR_CANT_WRITE  7; Failed to write file to disk. Introduced in PHP 5.1.0. 
+  UPLOAD_ERR_EXTENSION   8; File upload stopped by extension. Introduced in PHP 5.2.0. 
+
+  related php.ini settings
+    if (post_max_size > upload_max_filesize) in php.ini
+      otherwise you will not be able to report the correct error in case of a
+      too big upload ! Also check the max-execution-time (upload-time could be
+      added to execution-time)
+
+    if (post >post_max_size) in php.ini
+      $_FILES and $_POST will return empty
+
+  The data encoding type, enctype, MUST be specified as enctype="multipart/form-data"
+  MAX_FILE_SIZE must precede the file input field
+  Name of input element determines name in $_FILES array
+*/
+function
+widget_upload ($upload_path, $max_file_size, $mime_type, $submit_button_html, $uploaded_html)
+{
+  $debug = 0;
+  $p = '';
+
+  if (!$_FILES)
+    return '<form action="'
+      .$_SERVER['PHP_SELF']
+      .'" method="POST" enctype="multipart/form-data"'
+//      .' style="margin:0;"'
+      .' style="display:inline;"'
+      .'>'
+      .'<input type="hidden" name="MAX_FILE_SIZE" value="'
+      .$max_file_size
+      .'">'
+      .'<input type="file"'
+      .' name="widget_upload"'
+//      .' title="'
+//      .$tooltip
+//      .'"'
+      .($max_file_size ? ' maxlength="'.$max_file_size.'"' : '')
+      .($mime_type ? ' accept="'.$mime_type.'"' : '')
+      .'>'
+      .($submit_button_html ? $submit_button_html :
+       '<input type="submit" name="widget_upload" value="Upload"'
+//      .' tooltip="'
+//      .$tooltip
+//      .'"'
+)
+      .'>'
+      .'</form>'
+;
+
+  if ($debug)
+    {
+      $p .= '<pre><tt>'
+           .sprint_r ($_FILES);
+    }
+
+  $d = $upload_path.'/'
+//      .str_replace (' ', '_', basename($_FILES['widget_upload']['name']));
+      .basename($_FILES['widget_upload']['name']);
+
+  if (file_exists ($d))
+    $p .= 'ERROR: file already exists';
+  else if (move_uploaded_file ($_FILES['widget_upload']['tmp_name'], $d) == FALSE)
+    $p .= 'ERROR: move_uploaded_file() failed';
+
+  $s = Array (
+           UPLOAD_ERR_OK =>         'OK',
+           UPLOAD_ERR_INI_SIZE =>   'The uploaded file exceeds the upload_max_filesize directive ('
+                                   .ini_get ('upload_max_filesize')
+                                   .') in php.ini',
+           UPLOAD_ERR_FORM_SIZE =>  'The uploaded file exceeds the MAX_FILE_SIZE directive ('
+                                   .$max_file_size
+                                   .') that was specified in the HTML form',
+           UPLOAD_ERR_PARTIAL =>    'The uploaded file was only partially uploaded',
+           UPLOAD_ERR_NO_FILE =>    'No file was uploaded',
+           UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
+//           UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+//           UPLOAD_ERR_EXTENSION =>  'File upload stopped by extension'
+         );
+
+  if (!empty ($_FILES['widget_upload']) &&
+      $_FILES['widget_upload']['error'] == UPLOAD_ERR_OK)
+    {
+      $p .= $uploaded_html;
+    }
+  else
+    {
+      $e = $s[$_FILES['widget_upload']['error']];
+      if (!$e)
+        $e .= 'An unknown error occured';
+      $p .= 'ERROR: '.$e;
+    }
+
+  if ($debug)
+    {
+      $p .= '<pre><tt>'
+           .sprint_r ($s)
+           .sprint_r ($_FILES);
+    }
+
+  return $p;
+}
+
+
+function
 widget_captcha ($captcha_path)
 {
   global $tv2_root;
@@ -145,6 +708,7 @@ widget_captcha_check ()
 }
 
 
+/*
 function
 widget_table ($title_array, $content_array)
 {
@@ -175,6 +739,7 @@ widget_table ($title_array, $content_array)
 
   return $p;
 }
+*/
 
 
 /*
@@ -348,567 +913,6 @@ widget_index ($dir, $recursive, $suffix, $index_func)
 */
 
 
-function
-widget_video_js ()
-{
-  // javascript:getinnerwidth() and javascript:getinnerheight()
-
-  $p = '<script language="javascript">'."\n"
-      .'function getinnerwidth ()'."\n"
-      .'  {'."\n"
-      .'    var w = screen.width;'."\n"
-      .'    if (self.innerWidth != undefined)'."\n"
-      .'      w = self.innerWidth;'."\n"
-      .'    else'."\n"
-      .'      {'."\n"
-      .'        var d = document.documentElement;'."\n"
-      .'        if (d)'."\n"
-      .'          w = d.clientWidth;'."\n"
-      .'      }'."\n"
-      .'    return w;'."\n"
-      .'  }'."\n"
-      ."\n\n"
-      .'function getinnerheight ()'."\n"
-      .'  {'."\n"
-      .'    var h = screen.height;'."\n"
-      .'    if (self.innerWidth != undefined)'."\n"
-      .'        h = self.innerHeight;'."\n"
-      .'    else'."\n"
-      .'      {'."\n"
-      .'        var d = document.documentElement;'."\n"
-      .'        if (d)'."\n"
-      .'          h = d.clientHeight;'."\n"
-      .'      }'."\n"
-      .'    return h;'."\n"
-      .'  }'."\n"
-      ."\n\n"
-//       .'document.write (getinnerwidth ()+\' \'+getinnerheight ());'."\n"
-      .'</script>';
-
-  return $p;
-}
-
-
-function
-widget_video ($video_url, $preview_image = NULL, $width = 400, $height = 300)
-{
-  $fgcolor = '#ffffff';
-  $bgcolor = '#000000';
-  $bgcolor2 = '#444444';
-  $bgcolor3 = '#ff0000';
-  $url = $video_url;
-
-  $p = '<script type="text/javascript" src="misc/flowplayer-3.1.4.min.js"></script>'
-      .'<a href="'.$url.'" id="player"></a>'
-      .'<script><!--'."\n"
-      .'flowplayer('."\n"
-      .'  "player",'."\n"
-      .'  {'."\n"
-      .'    src: "misc/flowplayer-3.1.4.swf",'."\n"
-      .'    width:'.$width.','."\n"
-      .'    height:'.$height."\n"
-      .'  },'."\n"
-      .'  {'."\n"
-      .'    canvas: {backgroundColor: "'.$bgcolor.'"'."\n"
-      .'  },'."\n"
-      .'  plugins:'."\n"
-      .'    {'."\n"
-      .'      controls:'."\n"
-      .'        {'."\n"
-      .'          buttonOverColor: "'.$bgcolor2.'",'."\n"
-      .'          timeColor: "'.$fgcolor.'",'."\n"
-      .'          sliderColor: "'.$bgcolor2.'",'."\n"
-      .'          buttonColor: "'.$bgcolor.'",'."\n"
-      .'          bufferColor: "'.$bgcolor3.'",'."\n"
-      .'          progressColor: "'.$bgcolor2.'",'."\n"
-      .'          durationColor: "'.$fgcolor.'",'."\n"
-      .'          progressGradient: "none",'."\n"
-      .'          sliderGradient: "none",'."\n"
-      .'          borderRadius: "0px",'."\n"
-      .'          backgroundColor: "'.$bgcolor.'",'."\n"
-      .'          backgroundGradient: "none",'."\n"
-      .'          bufferGradient: "none",'."\n"
-      .'          opacity:1.0'."\n"
-      .'        }'."\n"
-      .'    }'."\n"
-      .'});'."\n"
-      .'//-->'
-      .'</script>';
-
-//  return $p;
-
-  if ($preview_image)
-    $url = '&image='.$preview_image;
-
-  $p = ''
-//      .'<script type="text/javascript" src="misc/swfobject.js"></script>'
-//      .'<script type="text/javascript">'."\n"
-//      .'swfobject.registerObject("player","9.0.98","misc/expressInstall.swf");'."\n"
-//      .'</script>'
-      .'<object id="player" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" name="player" width="'.$width.'" height="'.$height.'">'
-      .'<param name="movie" value="misc/player.swf" />'
-      .'<param name="allowfullscreen" value="true" />' 
-      .'<param name="allowscriptaccess" value="always" />' 
-      .'<param name="flashvars" value="file='.$url.'" />'
-      .'<object type="application/x-shockwave-flash" data="misc/player.swf" width="'.$width.'" height="'.$height.'">'
-      .'<param name="movie" value="misc/player.swf" />'
-      .'<param name="allowfullscreen" value="true" />'
-      .'<param name="allowscriptaccess" value="always" />'
-      .'<param name="flashvars" value="file='.$url.'" />'
-//      .<p><a href="http://get.adobe.com/flashplayer">Get Flash</a> to see this player.</p>'
-      .'</object>'
-      .'</object>';
-
-  return $p;
-}
-
-
-function
-widget_video_youtube ($video_id, $width=425, $height=344, $autoplay)
-{
-// &loop=1&autoplay=1
-  $fgcolor="#ffffff";
-  $bgcolor="#000000";
-  $bgcolor2="#444444";
-  $bgcolor3="#ff0000";
-
-  $url = 'http://www.youtube.com/v/'
-        .$video_id
-       .'&fs=1'             // allow fullscreen
-       . (
-          ($width == -1 || $height == -1) ?
-          '&ap=%2526fmt%3D22' : // embed stereo, 1280 x 720 resolution
-          '&ap=%2526fmt%3D18' // embed stereo, 480 x 270 resolution (original: 425x344)
-        )
-       .'&showsearch=0'     // no search
-       .'&rel=0'            // no related
-//       .'#t=03m22s'         // skip to
-//       .'&start=30'         // skip to (2)
-//       .'&loop=1'  
-//       .'&color1=0x000000'
-//       .'&color2=0x000000'
-;
-
-  if ($width == -1 || $height == -1)
-    {
-      $p .= ''
-           .widget_video_js()
-           .'<script language="javascript">'."\n"
-           .'document.write (\''
-           .'<object'
-           .' width="\'+(getinnerwidth () - 30)+\'"'
-           .' height="\'+(getinnerheight () - 35)+\'"'
-           .'>'
-           .'<param name="movie" value="'.$url.'">'
-           .'</param><param name="allowFullScreen" value="true"></param>'
-           .'</param><param name="autoplay" value="true"></param>'
-           .'<embed src="'
-           .$url
-           .'" type="application/x-shockwave-flash" allowfullscreen="true"'
-           .' autoplay="true"'
-           .' width="\'+(getinnerwidth () - 30)+\'"'
-           .' height="\'+(getinnerheight () - 35)+\'"'
-           .'></embed>'
-           .'</object>'
-          .'\');'
-          .'</script>'
-;
-    }
-  else
-    {
-      $p = ''
-           .'<object'
-           .' width="'.$width.'"'
-           .' height="'.$height.'"'
-           .'>'
-           .'<param name="movie" value="'.$url.'">'
-           .'</param><param name="allowFullScreen" value="true"></param>'
-           .'</param><param name="autoplay" value="true"></param>'
-           .'<embed src="'
-           .$url
-           .'" type="application/x-shockwave-flash" allowfullscreen="true"'
-           .' autoplay="true"'
-           .' width="'.$width.'"'
-           .' height="'.$height.'"'
-           .'></embed>'
-           .'</object>';
-    }
-
-  return $p;
-}
-
-
-function
-widget_video_dailymotion ($video_id, $width=420, $height=336)
-{
-//  $video_id = 'k4H0eU9uhV7waa1XXp';
-  $url = 'http://www.dailymotion.com/swf/'.$video_id.'&related=1';
-
-  // original: 420x336
-  $p = ''
-      .'<object width="'.$width.'" height="'.$height.'">'
-      .'<param name="movie" value="'.$url.'"></param>'
-      .'<param name="allowFullScreen" value="true"></param>'
-      .'<param name="allowScriptAccess" value="always"></param>'
-      .'<embed src="'
-      .$url
-      .'" type="application/x-shockwave-flash" width="'
-      .$width
-      .'" height="'
-      .$height
-      .'" allowFullScreen="true" allowScriptAccess="always"></embed>'
-      .'</object>'
-;
-  return $p;
-}
-
-
-function
-widget_video_xfire ($video_id, $width=425, $height=279)
-{
-//  $video_id = '1';
-  $url = 'http://media.xfire.com/swf/embedplayer.swf';
-
-  // original: 425x279
-  $p = ''
-      .'<object width="'.$width.'" height="'.$height.'">'
-      .'<embed src="'.$url.'"'
-      .' type="application/x-shockwave-flash" allowscriptaccess="always"'
-      .' allowfullscreen="true" width="'
-      .$width
-      .'" height="'
-      .$height
-      .'" flashvars="videoid='
-      .$video_id
-      .'">'
-      .'</embed>'
-      .'</object>'
-;
-  return $p;
-}
-
-
-function
-widget_video_myspace ($video_id, $width=425, $height=360)
-{
-//  $video_id = 'k4H0eU9uhV7waa1XXp';
-  $video_id = '6773592';
-  $url = 'http://mediaservices.myspace.com/services/media/embed.aspx/m='.$video_id.',t=1,mt=video';
-
-  $p = ''
-      .'<object width="'.$width.'" height="'.$height.'">'
-      .'<param name="allowFullScreen" value="true"/>'
-      .'<param name="wmode" value="transparent"/>'
-      .'<param name="movie" value="'.$url.'"/>'
-      .'<embed'
-      .' src="'.$url.'"'
-      .' width="'.$width.'"'
-      .' height="'.$height.'"'
-      .' allowFullScreen="true"'
-      .' type="application/x-shockwave-flash"'
-      .' wmode="transparent"></embed>'
-      .'</object>'
-;
-  return $p;
-}
-
-
-function
-widget_video_veoh ($video_id, $width=410, $height=341)
-{
-//<object width="410" height="341" id="veohFlashPlayer" name="veohFlashPlayer"><param name="movie" value="http://www.veoh.com/static/swf/webplayer/WebPlayer.swf?version=AFrontend.5.4.3.1014&permalinkId=v16689158ZThcRkXC&player=videodetailsembedded&videoAutoPlay=0&id=anonymous"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.veoh.com/static/swf/webplayer/WebPlayer.swf?version=AFrontend.5.4.3.1014&permalinkId=v16689158ZThcRkXC&player=videodetailsembedded&videoAutoPlay=0&id=anonymous" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="410" height="341" id="veohFlashPlayerEmbed" name="veohFlashPlayerEmbed"></embed></object><br /><font size="1">Watch <a href="http://www.veoh.com/browse/videos/category/gaming/watch/v16689158ZThcRkXC">Amiga Longplay [035] Hook.avi</a> in <a href="http://www.veoh.com/browse/videos/category/gaming">Gaming</a>&nbsp;&nbsp;|&nbsp;&nbsp;View More <a href="http://www.veoh.com">Free Videos Online at Veoh.com</a></font>  $video_id = '6773592';
-  $url = 'http://www.veoh.com/static/swf/webplayer/WebPlayer.swf?version=AFrontend.5.4.3.1014&permalinkId=v16689158ZThcRkXC&player=videodetailsembedded&videoAutoPlay=0&id=anonymous';
-
-  $p = ''
-      .'<object width="'.$width.'" height="'.$height.'" id="veohFlashPlayer" name="veohFlashPlayer">'
-      .'<param name="movie" value="'.$url.'"></param>'
-      .'<param name="allowFullScreen" value="true"></param>'
-      .'<param name="allowscriptaccess" value="always"></param>'
-      .'<embed src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="'.$width.'" height="'.$height.'" id="veohFlashPlayerEmbed" name="veohFlashPlayerEmbed"></embed>'
-      .'</object>'
-;
-  return $p;
-}
-
-
-function
-widget_video_yahoo ($video_id, $width=512, $height=322)
-{
-// vid id
-//http://espanol.video.yahoo.com/watch/5410123/14251443
-//  $video_id = 'k4H0eU9uhV7waa1XXp';
-  $video_id = '6773592';
-  $video_vid = '6773592';
-  $url = 'http://mediaservices.myspace.com/services/media/embed.aspx/m='.$video_id.',t=1,mt=video';
-
-  $p = ''
-//      .'<div>'
-      .'<object width="'.$width.'" height="'.$height.'">'
-      .'<param name="movie" value="http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.46" />'
-      .'<param name="allowFullScreen" value="true" />'
-      .'<param name="AllowScriptAccess" VALUE="always" />'
-      .'<param name="bgcolor" value="#000000" />'
-      .'<param name="flashVars"'
-          .' value="id='.$id.'&vid='.$vid.'&lang=es-mx&intl=e1&thumbUrl=http%3A//l.yimg.com/a/p/i/bcst/videosearch/9707/88446579.jpeg&embed=1" />'
-      .'<embed src="http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.46" type="application/x-shockwave-flash" width="'.$width.'" height="'.$height.'" allowFullScreen="true" AllowScriptAccess="always" bgcolor="#000000"'
-      .' flashVars="id='.$id.'&vid='.$vid.'&lang=es-mx&intl=e1&thumbUrl=http%3A//l.yimg.com/a/p/i/bcst/videosearch/9707/88446579.jpeg&embed=1" >'
-      .'</embed>'
-      .'</object>'
-//      .'<br />'
-//      .'<a href="http://espanol.video.yahoo.com/watch/5410123/14251443">Entrevista com Bruce Lee 1971 (legendado)</a>'
-//      .' en '
-//      .'<a href="http://espanol.video.yahoo.com" >Yahoo! Video</a>'
-//      .'</div>'
-;
-  return $p;
-}
-
-
-function
-widget_audio ($audio_url, $start = 0, $stream = 0, $next_stream = NULL)
-{
-  $url = 'misc/widget_audio.swf?url='.$audio_url.'&start='.$start.'&stream='.$stream
-        .($next_stream ? '&next='.$next_stream : '');
-
-  $p = ''
-      .'<object>'
-      .'<embed'
-      .' src="'.$url.'"'
-      .' type="application/x-shockwave-flash"'
-      .' width="1"'
-      .' height="1"'
-//      .' pluginspace="http://www.macromedia.com/go/flashplayer/"'
-      .'></embed>'
-      .'</object>';
-
-  return $p;
-}
-
-
-function
-widget_media_demux ($media_url)
-{
-  if (strstr ($media_url, '.youtube.com'))
-    return 1;
-  else if (strstr ($media_url, '.dailymotion.'))
-    return 2;
-  else if (strstr ($media_url, '.xfire.com'))
-    return 3;
-  else if (strstr ($media_url, 'http://') && in_array (strtolower (get_suffix ($media_url)), array ('.flv', '.mp4')))
-    return 4; // flv or mp4
-  else if (strstr ($media_url, 'http://') && strtolower (get_suffix ($media_url)) == '.mp3')
-    return 5; // mp3
-  else if (strstr ($media_url, '.veoh.com'))
-    return 6;
-
-  return 0;
-}
-
-
-function
-widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1)
-{
-  $demux = widget_media_demux ($media_url);
-  $p = $media_url;
-  $s = '';
-
-  if ($demux == 1) // youtube
-    {
-      if (strstr ($p, '?v='))   
-        $p = substr ($p, strpos ($p, '?v=') + 3);
-      else
-        $p = substr ($p, strpos ($p, 'watch') + 12);
-
-      $s .= widget_video_youtube ($p, $width, $height, $autoplay);
-    }
-  else if ($demux == 2) // dailymotion
-    {
-      $p = substr ($p, strpos ($p, '/video/') + 7);
-      $p = substr ($p, 0, strpos ($p, 'from') - 3);
-
-      $s .= widget_video_dailymotion ($p, $width, $height);   
-    }
-  else if ($demux == 3) // xfire
-    {
-      $p = substr ($p, strpos ($p, '/video/') + 7, -1);
-
-      $s .= widget_video_xfire ($p, $width, $height);
-    }
-  else if ($demux == 4) // flv or mp4
-    $s .= widget_video ($p, NULL, $width, $height);
-  else if ($demux == 5) // mp3
-    $s .= widget_audio ($media_url);  
-  else if ($demux == 6)
-    $s .= widget_video_veoh ($p, $width, $height);
-
-  return $s;
-}
-
-
-function
-widget_trace ($ip)
-{
-// shows google maps by ip(geoip?), country, city, or long/lat
-//http://maps.google.com/?ie=UTF8&ll=37.0625,-95.677068&spn=31.013085,55.634766&t=h&z=4
-}
-
-
-/*
-  In PHP versions earlier than 4.1.0, $HTTP_POST_FILES should be used instead
-  of $_FILES. Use phpversion() for version information.
-
-  $_FILES['userfile']['name']
-    The original name of the file on the client machine. 
-  $_FILES['userfile']['type']
-    The mime type of the file, if the browser
-    provided this information. An example would be "image/gif". This mime
-    type is however not checked on the PHP side and therefore don't take its
-    value for granted.
-  $_FILES['userfile']['size']
-    The size, in bytes, of the uploaded file. 
-  $_FILES['userfile']['tmp_name']
-    The temporary filename of the file in which the uploaded file was stored on the server. 
-  $_FILES['userfile']['error']
-    The error code associated with this file upload. This element was added in PHP 4.2.0 
-
-  UPLOAD_ERR_OK          0; There is no error, the file uploaded with success. 
-  UPLOAD_ERR_INI_SIZE    1; The uploaded file exceeds the upload_max_filesize directive in php.ini. 
-  UPLOAD_ERR_FORM_SIZE   2; The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form. 
-  UPLOAD_ERR_PARTIAL     3; The uploaded file was only partially uploaded. 
-  UPLOAD_ERR_NO_FILE     4; No file was uploaded. 
-  UPLOAD_ERR_NO_TMP_DIR  6; Missing a temporary folder. Introduced in PHP 4.3.10 and PHP 5.0.3. 
-  UPLOAD_ERR_CANT_WRITE  7; Failed to write file to disk. Introduced in PHP 5.1.0. 
-  UPLOAD_ERR_EXTENSION   8; File upload stopped by extension. Introduced in PHP 5.2.0. 
-
-  related php.ini settings
-    if (post_max_size > upload_max_filesize) in php.ini
-      otherwise you will not be able to report the correct error in case of a
-      too big upload ! Also check the max-execution-time (upload-time could be
-      added to execution-time)
-
-    if (post >post_max_size) in php.ini
-      $_FILES and $_POST will return empty
-
-  The data encoding type, enctype, MUST be specified as enctype="multipart/form-data"
-  MAX_FILE_SIZE must precede the file input field
-  Name of input element determines name in $_FILES array
-*/
-function
-widget_upload ($upload_path, $max_file_size, $mime_type, $submit_button_html, $uploaded_html)
-{
-  $debug = 0;
-  $p = '';
-
-  if (!$_FILES)
-    return '<form action="'
-      .$_SERVER['PHP_SELF']
-      .'" method="POST" enctype="multipart/form-data"'
-//      .' style="margin:0;"'
-      .' style="display:inline;"'
-      .'>'
-      .'<input type="hidden" name="MAX_FILE_SIZE" value="'
-      .$max_file_size
-      .'">'
-      .'<input type="file"'
-      .' name="widget_upload"'
-//      .' title="'
-//      .$tooltip
-//      .'"'
-      .($max_file_size ? ' maxlength="'.$max_file_size.'"' : '')
-      .($mime_type ? ' accept="'.$mime_type.'"' : '')
-      .'>'
-      .($submit_button_html ? $submit_button_html :
-       '<input type="submit" name="widget_upload" value="Upload"'
-//      .' tooltip="'
-//      .$tooltip
-//      .'"'
-)
-      .'>'
-      .'</form>'
-;
-
-  if ($debug)
-    {
-      $p .= '<pre><tt>'
-           .sprint_r ($_FILES);
-    }
-
-  $d = $upload_path.'/'
-//      .str_replace (' ', '_', basename($_FILES['widget_upload']['name']));
-      .basename($_FILES['widget_upload']['name']);
-
-  if (file_exists ($d))
-    $p .= 'ERROR: file already exists';
-  else if (move_uploaded_file ($_FILES['widget_upload']['tmp_name'], $d) == FALSE)
-    $p .= 'ERROR: move_uploaded_file() failed';
-
-  $s = Array (
-           UPLOAD_ERR_OK =>         'OK',
-           UPLOAD_ERR_INI_SIZE =>   'The uploaded file exceeds the upload_max_filesize directive ('
-                                   .ini_get ('upload_max_filesize')
-                                   .') in php.ini',
-           UPLOAD_ERR_FORM_SIZE =>  'The uploaded file exceeds the MAX_FILE_SIZE directive ('
-                                   .$max_file_size
-                                   .') that was specified in the HTML form',
-           UPLOAD_ERR_PARTIAL =>    'The uploaded file was only partially uploaded',
-           UPLOAD_ERR_NO_FILE =>    'No file was uploaded',
-           UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
-//           UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
-//           UPLOAD_ERR_EXTENSION =>  'File upload stopped by extension'
-         );
-
-  if (!empty ($_FILES['widget_upload']) &&
-      $_FILES['widget_upload']['error'] == UPLOAD_ERR_OK)
-    {
-      $p .= $uploaded_html;
-    }
-  else
-    {
-      $e = $s[$_FILES['widget_upload']['error']];
-      if (!$e)
-        $e .= 'An unknown error occured';
-      $p .= 'ERROR: '.$e;
-    }
-
-  if ($debug)
-    {
-      $p .= '<pre><tt>'
-           .sprint_r ($s)
-           .sprint_r ($_FILES);
-    }
-
-  return $p;
-}
-
-
-function
-widget_carousel ($xmlfile, $width=200, $height=150)
-{
-  $p = ''
-      .'<span class="carousel_container">'
-      .'<span id="carousel1">'
-      .'</span>'
-      .'</span>'
-      .'<script type="text/javascript" src="misc/swfobject.js"></script>'
-      .'<script type="text/javascript">'."\n"
-      .'swfobject.embedSWF ('."\n"
-      .'  "misc/carousel.swf",'."\n"
-      .'  "carousel1",'."\n"
-      .'  "'.$width.'", "'.$height.'",'."\n"
-      .'  "9.0.0",'."\n"
-      .'  false,'."\n"
-      .'  {'."\n"
-      .'    xmlfile:"'.$xmlfile.'",'."\n"
-      .'    loaderColor:"0xffffff",'."\n"
-      .'    messages:"  ::  ::  ::  "'."\n"
-      .'  },'."\n"
-      .'  {bgcolor: "#ffffff"});'."\n"
-      .'</script>';
-
-  echo $p;
-}
-
-
 // widget_relate() flags
 //define ('WIDGET_RELATE_BOOKMARK',    1<<6);  // browser bookmark
 //define ('WIDGET_RELATE_STARTPAGE',   1<<7);  // use as start page
@@ -1037,120 +1041,120 @@ widget_relate ($title, $url, $rss_feed_url, $vertical, $flags)
   // social bookmarks
   if ($flags & WIDGET_RELATE_SBOOKMARKS)
     {
-      $a = Array (
-//        Array ('30 Day Tags',		'widget_relate_30_day_tags.png', NULL, NULL),
-//        Array ('AddToAny',		'widget_relate_addtoany.png', NULL, NULL),
-//        Array ('Ask',			'widget_relate_ask.png', NULL, NULL),
-//        Array ('BM Access',		'widget_relate_bm_access.png', NULL, NULL),
-        Array ('Backflip',		'widget_relate_backflip.png', 'http://www.backflip.com/add_page_pop.ihtml?url=', '&title='),
-//        Array ('BlinkBits',		'widget_relate_blinkbits.png', 'http://www.blinkbits.com/bookmarklets/save.php?v=1&source_url=', '&title='),
-        Array ('BlinkBits',		'widget_relate_blinkbits.png', 'http://www.blinkbits.com/bookmarklets/save.php?v=1&source_image_url=&rss_feed_url=&rss_feed_url=&rss2member=&body=&source_url=', '&title='),
-        Array ('Blinklist',		'widget_relate_blinklist.png', 'http://www.blinklist.com/index.php?Action=Blink/addblink.php&Description=&Tag=&Url=', '&Title='),
-//        Array ('Bloglines',		'widget_relate_bloglines.png', NULL, NULL),
-        Array ('BlogMarks',		'widget_relate_blogmarks.png', 'http://blogmarks.net/my/new.php?mini=1&simple=1&url=', '&content=&public-tags=&title='),
-//        Array ('BlogMarks',		'widget_relate_blogmarks.png', 'http://blogmarks.net/my/new.php?mini=1&simple=1&url=', '&title='),
-        Array ('Blogmemes',		'widget_relate_blogmemes.png', 'http://www.blogmemes.net/post.php?url=', '&title='),
-//        Array ('Blue Dot',		'widget_relate_blue_dot.png', NULL, NULL),
-        Array ('Buddymarks',		'widget_relate_buddymarks.png', 'http://buddymarks.com/s_add_bookmark.php?bookmark_url=', '&bookmark_title='),
-//        Array ('CiteULike',		'widget_relate_citeulike.png', NULL, NULL),
-        Array ('Complore',		'widget_relate_complore.png', 'http://complore.com/?q=node/add/flexinode-5&url=', '&title='),
-//        Array ('Connotea',		'widget_relate_connotea.png', NULL, NULL),
-        Array ('Del.icio.us',		'widget_relate_del.icio.us.png', 'http://del.icio.us/post?v=2&url=', '&notes=&tags=&title='),
-//        Array ('Del.icio.us',		'widget_relate_del.icio.us.png', 'http://del.icio.us/post?v=2&url=', '&title='),
-//        Array ('Del.icio.us',		'widget_relate_del.icio.us.png', 'http://del.icio.us/post?url=', '&title='),
-        Array ('De.lirio.us',		'widget_relate_de.lirio.us.png', 'http://de.lirio.us/bookmarks/sbmtool?action=add&address=', '&title='),
-        Array ('Digg',			'widget_relate_digg.png', 'http://digg.com/submit?phase=2&url=', '&bodytext=&tags=&title='),
-//        Array ('Digg',		'widget_relate_digg.png', 'http://digg.com/submit?phase=2&url=', '&title='),
-        Array ('Diigo',			'widget_relate_diigo.png', 'http://www.diigo.com/post?url=', '&tag=&comments=&title='),
-//        Array ('Dogear',		'widget_relate_dogear.png', NULL, NULL),
-//        Array ('Dotnetkicks',		'widget_relate_dotnetkicks.png', 'http://www.dotnetkicks.com/kick/?url=', '&title='),
-//        Array ('Dude, Check This Out',	'widget_relate_dude_check_this_out.png', NULL, NULL),
-//        Array ('Dzone',		'widget_relate_dzone.png', NULL, NULL),
-//        Array ('Eigology',		'widget_relate_eigology.png', NULL, NULL),
-        Array ('Fark',			'widget_relate_fark.png', 'http://cgi.fark.com/cgi/fark/edit.pl?new_url=', '&title='),
-//        Array ('Favoor',		'widget_relate_favoor.png', NULL, NULL),
-//        Array ('FeedMeLinks',		'widget_relate_feedmelinks.png', NULL, NULL),
-//        Array ('Feedmarker',		'widget_relate_feedmarker.png', NULL, NULL),
-        Array ('Folkd',			'widget_relate_folkd.png', 'http://www.folkd.com/submit/', NULL),
-//        Array ('Freshmeat',		'widget_relate_freshmeat.png', NULL, NULL)
-        Array ('Furl',			'widget_relate_furl.png', 'http://www.furl.net/storeIt.jsp?u=', '&keywords=&t='),
-//        Array ('Furl',		'widget_relate_furl.png', 'http://www.furl.net/storeIt.jsp?u=', '&t='),
-//        Array ('Furl',		'widget_relate_furl.png', 'http://www.furl.net/store?s=f&to=0&u=', '&ti='),
-//        Array ('Givealink',		'widget_relate_givealink.png', NULL, NULL),
-        Array ('Google',		'widget_relate_google.png', 'http://www.google.com/bookmarks/mark?op=add&hl=en&bkmk=', '&annotation=&labels=&title='),
-//        Array ('Google',		'widget_relate_google.png', 'http://www.google.com/bookmarks/mark?op=add&bkmk=', '&title='),
-//        Array ('Humdigg',		'widget_relate_humdigg.png', NULL, NULL),
-//        Array ('HLOM (Hyperlinkomatic)',		'widget_relate_hlom.png', NULL, NULL),
-//        Array ('I89.us',		'widget_relate_i89.us.png', NULL, NULL),
-        Array ('Icio',			'widget_relate_icio.png', 'http://www.icio.de/add.php?url=', NULL),
-//        Array ('Igooi',		'widget_relate_igooi.png', NULL, NULL),
-//        Array ('Jots',		'widget_relate_jots.png', NULL, NULL),
-//        Array ('Link Filter',		'widget_relate_link_filter.png', NULL, NULL),
-//        Array ('Linkagogo',		'widget_relate_linkagogo.png', NULL, NULL),
-        Array ('Linkarena',		'widget_relate_linkarena.png', 'http://linkarena.com/bookmarks/addlink/?url=', '&desc=&tags=&title='),
-//        Array ('Linkatopia',		'widget_relate_linkatopia.png', NULL, NULL),
-//        Array ('Linklog',		'widget_relate_linklog.png', NULL, NULL),
-//        Array ('Linkroll',		'widget_relate_linkroll.png', NULL, NULL),
-//        Array ('Listable',		'widget_relate_listable.png', NULL, NULL),
-//        Array ('Live',		'widget_relate_live.png', 'https://favorites.live.com/quickadd.aspx?marklet=1&mkt=en-us&url=', '&title='),
-//        Array ('Lookmarks',		'widget_relate_lookmarks.png', NULL, NULL),
-        Array ('Ma.Gnolia',		'widget_relate_ma.gnolia.png', 'http://ma.gnolia.com/bookmarklet/add?url=', '&description=&tags=&title='),
-//        Array ('Ma.Gnolia',		'widget_relate_ma.gnolia.png', 'http://ma.gnolia.com/bookmarklet/add?url=', '&title='),
-//        Array ('Maple',		'widget_relate_maple.png', NULL, NULL),
-//        Array ('MrWong',		'widget_relate_mrwong.png', NULL, NULL),
-//        Array ('Mylinkvault',		'widget_relate_mylinkvault.png', NULL, NULL),
-        Array ('Netscape',		'widget_relate_netscape.png', 'http://www.netscape.com/submit/?U=', '&T='),
-        Array ('NetVouz',		'widget_relate_netvouz.png', 'http://netvouz.com/action/submitBookmark?url=', '&popup=yes&description=&tags=&title='),
-//        Array ('NetVouz',		'widget_relate_netvouz.png', 'http://netvouz.com/action/submitBookmark?url=', '&title='),
-        Array ('Newsvine',		'widget_relate_newsvine.png', 'http://www.newsvine.com/_tools/seed&save?u=', '&h='),
-//        Array ('Newsvine',		'widget_relate_newsvine.png', 'http://www.newsvine.com/_wine/save?popoff=1&u=', '&tags=&blurb='),
-//        Array ('Nextaris',		'widget_relate_nextaris.png', NULL, NULL),
-//        Array ('Nowpublic',		'widget_relate_nowpublic.png', NULL, NULL),
-//        Array ('Oneview',		'widget_relate_oneview.png', 'http://beta.oneview.de:80/quickadd/neu/addBookmark.jsf?URL=', '&title='),
-//        Array ('Onlywire',		'widget_relate_onlywire.png', NULL, NULL),
-//        Array ('Pligg',		'widget_relate_pligg.png', NULL, NULL),
-//        Array ('Portachi',		'widget_relate_portachi.png', NULL, NULL),
-//        Array ('Protopage',		'widget_relate_protopage.png', NULL, NULL),
-        Array ('RawSugar',		'widget_relate_rawsugar.png', 'http://www.rawsugar.com/pages/tagger.faces?turl=', '&tttl='),
-        Array ('Reddit',		'widget_relate_reddit.png', 'http://reddit.com/submit?url=', '&title='),
-//        Array ('Rojo',		'widget_relate_rojo.png', NULL, NULL),
-        Array ('Scuttle',		'widget_relate_scuttle.png', 'http://www.scuttle.org/bookmarks.php/maxpower?action=add&address=', '&description='),
-//        Array ('Searchles',		'widget_relate_searchles.png', NULL, NULL),
-        Array ('Shadows',		'widget_relate_shadows.png', 'http://www.shadows.com/features/tcr.htm?url=', '&title='),
-//        Array ('Shadows',		'widget_relate_shadows.png', 'http://www.shadows.com/bookmark/saveLink.rails?page=', '&title='),
-//        Array ('Shoutwire',		'widget_relate_shoutwire.png', NULL, NULL),
-        Array ('Simpy',			'widget_relate_simpy.png', 'http://simpy.com/simpy/LinkAdd.do?href=', '&tags=&note=&title='),
-//        Array ('Simpy',		'widget_relate_simpy.png', 'http://simpy.com/simpy/LinkAdd.do?href=', '&title='),
-        Array ('Slashdot',		'widget_relate_slashdot.png', 'http://slashdot.org/bookmark.pl?url=', '&title='),
-        Array ('Smarking',		'widget_relate_smarking.png', 'http://smarking.com/editbookmark/?url=', '&tags=&description='),
-//        Array ('Spurl',		'widget_relate_spurl.png', 'http://www.spurl.net/spurl.php?url=', '&title='),
-        Array ('Spurl',			'widget_relate_spurl.png', 'http://www.spurl.net/spurl.php?v=3&tags=&url=', '&title='),
-//        Array ('Spurl',		'widget_relate_.png', 'http://www.spurl.net/spurl.php?v=3&url=', '&title='),
-//        Array ('Squidoo',		'widget_relate_squidoo.png', NULL, NULL),
-        Array ('StumbleUpon',		'widget_relate_stumbleupon.png', 'http://www.stumbleupon.com/submit?url=', '&title='),
-//        Array ('Tabmarks',		'widget_relate_tabmarks.png', NULL, NULL),
-//        Array ('Taggle',		'widget_relate_taggle.png', NULL, NULL),
-//        Array ('Tag Hop',		'widget_relate_taghop.png', NULL, NULL),
-//        Array ('Taggly',		'widget_relate_taggly.png', NULL, NULL),
-//        Array ('Tagtooga',		'widget_relate_tagtooga.png', NULL, NULL),
-//        Array ('TailRank',		'widget_relate_tailrank.png', NULL, NULL),
-        Array ('Technorati',		'widget_relate_technorati.png', 'http://technorati.com/faves?tag=&add=', NULL),
-//        Array ('Technorati',		'widget_relate_technorati.png', 'http://technorati.com/faves?add=', '&title='),
-//        Array ('Tutorialism',		'widget_relate_tutorialism.png', NULL, NULL),
-//        Array ('Unalog',		'widget_relate_unalog.png', NULL, NULL),
-//        Array ('Wapher',		'widget_relate_wapher.png', NULL, NULL),
-        Array ('Webnews',		'widget_relate_webnews.png', 'http://www.webnews.de/einstellen?url=', '&title='),
-//        Array ('Whitesoap',		'widget_relate_whitesoap.png', NULL, NULL),
-//        Array ('Wink',		'widget_relate_wink.png', NULL, NULL),
-//        Array ('WireFan',		'widget_relate_wirefan.png', NULL, NULL),
-        Array ('Wists',			'widget_relate_wists.png', 'http://wists.com/r.php?c=&r=', '&title='),
-//        Array ('Wists',		'widget_relate_wists.png', 'http://www.wists.com/?action=add&url=', '&title='),
-        Array ('Yahoo',			'widget_relate_yahoo.png', 'http://myweb2.search.yahoo.com/myresults/bookmarklet?u=', '&d=&tag=&t='),
-//        Array ('Yahoo',		'widget_relate_yahoo.png', 'http://myweb2.search.yahoo.com/myresults/bookmarklet?u=', '&t='),
-//        Array ('Yahoo',		'widget_relate_yahoo.png', 'http://myweb.yahoo.com/myresults/bookmarklet?u=', '&t='),
-        Array ('Yigg',			'widget_relate_yigg.png', 'http://yigg.de/neu?exturl=', NULL),
-//        Array ('Zumaa',		'widget_relate_zumaa.png', NULL, NULL),
-//        Array ('Zurpy',		'widget_relate_zurpy.png', NULL, NULL),
+      $a = array (
+//        array ('30 Day Tags',		'30_day_tags.png', NULL, NULL),
+//        array ('AddToAny',		'addtoany.png', NULL, NULL),
+//        array ('Ask',			'ask.png', NULL, NULL),
+//        array ('BM Access',		'bm_access.png', NULL, NULL),
+        array ('Backflip',		'backflip.png', 'http://www.backflip.com/add_page_pop.ihtml?url=', '&title='),
+//        array ('BlinkBits',		'blinkbits.png', 'http://www.blinkbits.com/bookmarklets/save.php?v=1&source_url=', '&title='),
+        array ('BlinkBits',		'blinkbits.png', 'http://www.blinkbits.com/bookmarklets/save.php?v=1&source_image_url=&rss_feed_url=&rss_feed_url=&rss2member=&body=&source_url=', '&title='),
+        array ('Blinklist',		'blinklist.png', 'http://www.blinklist.com/index.php?Action=Blink/addblink.php&Description=&Tag=&Url=', '&Title='),
+//        array ('Bloglines',		'bloglines.png', NULL, NULL),
+        array ('BlogMarks',		'blogmarks.png', 'http://blogmarks.net/my/new.php?mini=1&simple=1&url=', '&content=&public-tags=&title='),
+//        array ('BlogMarks',		'blogmarks.png', 'http://blogmarks.net/my/new.php?mini=1&simple=1&url=', '&title='),
+        array ('Blogmemes',		'blogmemes.png', 'http://www.blogmemes.net/post.php?url=', '&title='),
+//        array ('Blue Dot',		'blue_dot.png', NULL, NULL),
+        array ('Buddymarks',		'buddymarks.png', 'http://buddymarks.com/s_add_bookmark.php?bookmark_url=', '&bookmark_title='),
+//        array ('CiteULike',		'citeulike.png', NULL, NULL),
+        array ('Complore',		'complore.png', 'http://complore.com/?q=node/add/flexinode-5&url=', '&title='),
+//        array ('Connotea',		'connotea.png', NULL, NULL),
+        array ('Del.icio.us',		'del.icio.us.png', 'http://del.icio.us/post?v=2&url=', '&notes=&tags=&title='),
+//        array ('Del.icio.us',		'del.icio.us.png', 'http://del.icio.us/post?v=2&url=', '&title='),
+//        array ('Del.icio.us',		'del.icio.us.png', 'http://del.icio.us/post?url=', '&title='),
+        array ('De.lirio.us',		'de.lirio.us.png', 'http://de.lirio.us/bookmarks/sbmtool?action=add&address=', '&title='),
+        array ('Digg',			'digg.png', 'http://digg.com/submit?phase=2&url=', '&bodytext=&tags=&title='),
+//        array ('Digg',		'digg.png', 'http://digg.com/submit?phase=2&url=', '&title='),
+        array ('Diigo',			'diigo.png', 'http://www.diigo.com/post?url=', '&tag=&comments=&title='),
+//        array ('Dogear',		'dogear.png', NULL, NULL),
+//        array ('Dotnetkicks',		'dotnetkicks.png', 'http://www.dotnetkicks.com/kick/?url=', '&title='),
+//        array ('Dude, Check This Out',	'dude_check_this_out.png', NULL, NULL),
+//        array ('Dzone',		'dzone.png', NULL, NULL),
+//        array ('Eigology',		'eigology.png', NULL, NULL),
+        array ('Fark',			'fark.png', 'http://cgi.fark.com/cgi/fark/edit.pl?new_url=', '&title='),
+//        array ('Favoor',		'favoor.png', NULL, NULL),
+//        array ('FeedMeLinks',		'feedmelinks.png', NULL, NULL),
+//        array ('Feedmarker',		'feedmarker.png', NULL, NULL),
+        array ('Folkd',			'folkd.png', 'http://www.folkd.com/submit/', NULL),
+//        array ('Freshmeat',		'freshmeat.png', NULL, NULL)
+        array ('Furl',			'furl.png', 'http://www.furl.net/storeIt.jsp?u=', '&keywords=&t='),
+//        array ('Furl',		'furl.png', 'http://www.furl.net/storeIt.jsp?u=', '&t='),
+//        array ('Furl',		'furl.png', 'http://www.furl.net/store?s=f&to=0&u=', '&ti='),
+//        array ('Givealink',		'givealink.png', NULL, NULL),
+        array ('Google',		'google.png', 'http://www.google.com/bookmarks/mark?op=add&hl=en&bkmk=', '&annotation=&labels=&title='),
+//        array ('Google',		'google.png', 'http://www.google.com/bookmarks/mark?op=add&bkmk=', '&title='),
+//        array ('Humdigg',		'humdigg.png', NULL, NULL),
+//        array ('HLOM (Hyperlinkomatic)',		'hlom.png', NULL, NULL),
+//        array ('I89.us',		'i89.us.png', NULL, NULL),
+        array ('Icio',			'icio.png', 'http://www.icio.de/add.php?url=', NULL),
+//        array ('Igooi',		'igooi.png', NULL, NULL),
+//        array ('Jots',		'jots.png', NULL, NULL),
+//        array ('Link Filter',		'link_filter.png', NULL, NULL),
+//        array ('Linkagogo',		'linkagogo.png', NULL, NULL),
+        array ('Linkarena',		'linkarena.png', 'http://linkarena.com/bookmarks/addlink/?url=', '&desc=&tags=&title='),
+//        array ('Linkatopia',		'linkatopia.png', NULL, NULL),
+//        array ('Linklog',		'linklog.png', NULL, NULL),
+//        array ('Linkroll',		'linkroll.png', NULL, NULL),
+//        array ('Listable',		'listable.png', NULL, NULL),
+//        array ('Live',		'live.png', 'https://favorites.live.com/quickadd.aspx?marklet=1&mkt=en-us&url=', '&title='),
+//        array ('Lookmarks',		'lookmarks.png', NULL, NULL),
+        array ('Ma.Gnolia',		'ma.gnolia.png', 'http://ma.gnolia.com/bookmarklet/add?url=', '&description=&tags=&title='),
+//        array ('Ma.Gnolia',		'ma.gnolia.png', 'http://ma.gnolia.com/bookmarklet/add?url=', '&title='),
+//        array ('Maple',		'maple.png', NULL, NULL),
+//        array ('MrWong',		'mrwong.png', NULL, NULL),
+//        array ('Mylinkvault',		'mylinkvault.png', NULL, NULL),
+        array ('Netscape',		'netscape.png', 'http://www.netscape.com/submit/?U=', '&T='),
+        array ('NetVouz',		'netvouz.png', 'http://netvouz.com/action/submitBookmark?url=', '&popup=yes&description=&tags=&title='),
+//        array ('NetVouz',		'netvouz.png', 'http://netvouz.com/action/submitBookmark?url=', '&title='),
+        array ('Newsvine',		'newsvine.png', 'http://www.newsvine.com/_tools/seed&save?u=', '&h='),
+//        array ('Newsvine',		'newsvine.png', 'http://www.newsvine.com/_wine/save?popoff=1&u=', '&tags=&blurb='),
+//        array ('Nextaris',		'nextaris.png', NULL, NULL),
+//        array ('Nowpublic',		'nowpublic.png', NULL, NULL),
+//        array ('Oneview',		'oneview.png', 'http://beta.oneview.de:80/quickadd/neu/addBookmark.jsf?URL=', '&title='),
+//        array ('Onlywire',		'onlywire.png', NULL, NULL),
+//        array ('Pligg',		'pligg.png', NULL, NULL),
+//        array ('Portachi',		'portachi.png', NULL, NULL),
+//        array ('Protopage',		'protopage.png', NULL, NULL),
+        array ('RawSugar',		'rawsugar.png', 'http://www.rawsugar.com/pages/tagger.faces?turl=', '&tttl='),
+        array ('Reddit',		'reddit.png', 'http://reddit.com/submit?url=', '&title='),
+//        array ('Rojo',		'rojo.png', NULL, NULL),
+        array ('Scuttle',		'scuttle.png', 'http://www.scuttle.org/bookmarks.php/maxpower?action=add&address=', '&description='),
+//        array ('Searchles',		'searchles.png', NULL, NULL),
+        array ('Shadows',		'shadows.png', 'http://www.shadows.com/features/tcr.htm?url=', '&title='),
+//        array ('Shadows',		'shadows.png', 'http://www.shadows.com/bookmark/saveLink.rails?page=', '&title='),
+//        array ('Shoutwire',		'shoutwire.png', NULL, NULL),
+        array ('Simpy',			'simpy.png', 'http://simpy.com/simpy/LinkAdd.do?href=', '&tags=&note=&title='),
+//        array ('Simpy',		'simpy.png', 'http://simpy.com/simpy/LinkAdd.do?href=', '&title='),
+        array ('Slashdot',		'slashdot.png', 'http://slashdot.org/bookmark.pl?url=', '&title='),
+        array ('Smarking',		'smarking.png', 'http://smarking.com/editbookmark/?url=', '&tags=&description='),
+//        array ('Spurl',		'spurl.png', 'http://www.spurl.net/spurl.php?url=', '&title='),
+        array ('Spurl',			'spurl.png', 'http://www.spurl.net/spurl.php?v=3&tags=&url=', '&title='),
+//        array ('Spurl',		'.png', 'http://www.spurl.net/spurl.php?v=3&url=', '&title='),
+//        array ('Squidoo',		'squidoo.png', NULL, NULL),
+        array ('StumbleUpon',		'stumbleupon.png', 'http://www.stumbleupon.com/submit?url=', '&title='),
+//        array ('Tabmarks',		'tabmarks.png', NULL, NULL),
+//        array ('Taggle',		'taggle.png', NULL, NULL),
+//        array ('Tag Hop',		'taghop.png', NULL, NULL),
+//        array ('Taggly',		'taggly.png', NULL, NULL),
+//        array ('Tagtooga',		'tagtooga.png', NULL, NULL),
+//        array ('TailRank',		'tailrank.png', NULL, NULL),
+        array ('Technorati',		'technorati.png', 'http://technorati.com/faves?tag=&add=', NULL),
+//        array ('Technorati',		'technorati.png', 'http://technorati.com/faves?add=', '&title='),
+//        array ('Tutorialism',		'tutorialism.png', NULL, NULL),
+//        array ('Unalog',		'unalog.png', NULL, NULL),
+//        array ('Wapher',		'wapher.png', NULL, NULL),
+        array ('Webnews',		'webnews.png', 'http://www.webnews.de/einstellen?url=', '&title='),
+//        array ('Whitesoap',		'whitesoap.png', NULL, NULL),
+//        array ('Wink',		'wink.png', NULL, NULL),
+//        array ('WireFan',		'wirefan.png', NULL, NULL),
+        array ('Wists',			'wists.png', 'http://wists.com/r.php?c=&r=', '&title='),
+//        array ('Wists',		'wists.png', 'http://www.wists.com/?action=add&url=', '&title='),
+        array ('Yahoo',			'yahoo.png', 'http://myweb2.search.yahoo.com/myresults/bookmarklet?u=', '&d=&tag=&t='),
+//        array ('Yahoo',		'yahoo.png', 'http://myweb2.search.yahoo.com/myresults/bookmarklet?u=', '&t='),
+//        array ('Yahoo',		'yahoo.png', 'http://myweb.yahoo.com/myresults/bookmarklet?u=', '&t='),
+        array ('Yigg',			'yigg.png', 'http://yigg.de/neu?exturl=', NULL),
+//        array ('Zumaa',		'zumaa.png', NULL, NULL),
+//        array ('Zurpy',		'zurpy.png', NULL, NULL),
       );
 
       $i_max = sizeof ($a);
@@ -1164,7 +1168,7 @@ widget_relate ($title, $url, $rss_feed_url, $vertical, $flags)
              .'" title="Add to '
              .$a[$i][0]
              .'">'
-             .'<img src="images/'
+             .'<img src="images/widget_relate_'
              .$a[$i][1]
              .'" border="0"></a>';
 
@@ -1180,10 +1184,10 @@ function
 widget_panel ($url_array, $img_array, $w, $h, $tooltip)
 {
 ?>
-<script language="JavaScript">
+<script type="text/javascript">
 <!--
 
-//var test_array = new Array  (<?php
+//var test_array = new array  (<?php
 
 $p = "";
 $i_max = sizeof ($img_array);  
@@ -1205,7 +1209,7 @@ var img_n = <?php echo sizeof ($img_array); ?>;
 function
 js_panel_get_img_array ()
 {
-  var img = new Array (<?php
+  var img = new array (<?php
 
 $p = '';
 $i_max = sizeof ($img_array);
@@ -1345,21 +1349,21 @@ function
 widget_adsense2 ($client, $w, $h, $border_color, $flags)
 {
   // sizes in w and h
-  $size = Array (
-      728 = 90,
-      468 = 60,
-      728 = 90,
-      468 = 60,
-      234 = 60,
-      120 = 600,
-      160 = 600,
-      120 = 240,
-      336 = 280,
-      300 = 250,
-      250 = 250,
-      200 = 200,
-      180 = 150,
-      125 = 125
+  $size = array (
+      728 => 90,
+      468 => 60,
+      728 => 90,
+      468 => 60,
+      234 => 60,
+      120 => 600,
+      160 => 600,
+      120 => 240,
+      336 => 280,
+      300 => 250,
+      250 => 250,
+      200 => 200,
+      180 => 150,
+      125 => 125
     );
 
   return "<script type=\"text/javascript\"><!--\n"

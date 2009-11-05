@@ -1,404 +1,150 @@
-<?
-if (!defined ('TV2_PHP'))
-{
-define ('TV2_PHP', 1);
-//phpinfo();
+#!/usr/bin/php-cgi -q
+<?php
 //error_reporting(E_ALL | E_STRICT);
-//require_once ('default.php');
-require_once ('config.php');
-require_once ('misc/misc.php');
-//require_once ('misc/widget.php');
-require_once ('tv2_output.php');
-require_once ('tv2_misc.php');
+require_once ('../htdocs/config.php');
+require_once ('../htdocs/misc/misc.php');
+require_once ('../htdocs/misc/sql.php');
 
 
-//$t_ms = time_ms ();
+if ($argc < 3)
+  {
+    echo 'USAGE: tv2.php CONFIG_XML CATEGORY ORIGINAL_RSS RSSTOOL_SQL RSSTOOL_RSS'."\n\n";
+    exit;
+  }
 
+
+$config = simplexml_load_file ($argv[1]);
+$tv2_category = $argv[2];
+
+// enhance quality and reduce db size by using the filter in this stage
+//   (one should not rely on the search engine of the RSS feed source for quality)
+$filter = $config->category[$tv2_category]->filter;
+
+//$rss_orig = file_get_contents ($argv[3]);
+$sql_array = file ($argv[4], FILE_SKIP_EMPTY_LINES|FILE_TEXT);
+$rss = simplexml_load_file ($argv[5]);
+// DEBUG
+//print_r ($rss);
+//exit;
+   
 
 function
-tv2_body ()
+get_youtube_thumbnail ($rsstool_url)
 {
-  global $tv2_isnew,
-         $tv2_videos_s,
-         $tv2_player_w,
-         $tv2_player_h,
-         $tv2_related_s;
-
-  global $tv2_root,
-         $tv2_link,
-         $tv2_link_static,
-         $tv2_results,
-         $tv2_isnew,
-         $tv2_body_tag,
-         $tv2_table_tag,
-         $tv2_logo,
-         $tv2_search_s,
-         $tv2_videos_s,
-         $tv2_cookie_expire;
-  global $config;
-  global $f, $c, $q, $v, $start, $num, $captcha;
-
-  if ($captcha)
-    if (widget_captcha_check () || islocalhost ())
-      {
-        tv2_sql_move ($v, $c);
-        $v = NULL;
-      }
-
-  // use SQL
-  if ($v)
-    $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
-  else
-    $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
+  global $tv2_root;
+  global $thumbnails_path;
 
   // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($d_array);
+//  echo $rsstool_url."\n";
 
-  // category
-  $category = config_xml_by_category (strtolower ($c));
-
-  $p = '';
-
-  if ($category->background || $f == 'fullscreen') // background image and fullscreen
+  $p = urldecode ($rsstool_url);
+  $start = strpos ($p, 'watch?v=');
+  if ($start)
+    $start += 8;
+  $p = substr ($p, $start);
+  if (strpos ($p, '&'))
     {
-      $p .= '<style type="text/css">'."\n"
-           .'body {';
-
-      if ($category->background)
-        $p .= 'background-image:url(\''.$category->background.'\');'
-             .'background-attachment:fixed;'
-             .'background-repeat:no-repeat;'
-             .'background-position:left center;';
-
-      if ($f == 'fullscreen')
-        $p .= 'background-color:#000;';
-
-      $p .= "}\n"
-           .'</style>';
+      $len = strpos ($p, '&');
+      $s = substr ($p, 0, $len);
     }
+  else $s = $p;
 
-  // just fullscreen
-  if ($v && $f == 'fullscreen')
+  // DEBUG
+//  echo $s."\n";
+
+  if (!($s[0]))
+    return;
+
+  for ($i = 0; $i < 4; $i++)
     {
-      $p .= tv2_player ($d_array[0]);
-      return $p;
-    }
+      // download thumbnail
+      $url = 'http://i.ytimg.com/vi/'.$s.'/'.$i.'.jpg';
 
-  // flash carousel with icons
-//  $p .= widget_carousel ('carousel_xml.php', '100%', 150);
+      $filename = $s.'_'.$i.'.jpg';
+      $path = $tv2_root.'/thumbnails/youtube/'.$filename;
 
-  // icons
-  $p .= tv2_button_array ($config, '%s ', 0, sizeof ($config->category));
+      // DEBUG
+//      echo $url."\n";
 
-  $p .= '<br>'  
-       .'<br>'  
-;  
-
-  $p .= '<center>';
-
-  $p .= '<div style="display:inline">';
-
-  // logo
-  $p .= '<nobr>';
-  $p .= tv2_logo ();
-  $p .= '</nobr>';
-
-  // search
-  $p .= '&nbsp;<nobr>';
-  $p .= tv2_search_form ();
-  $p .= '</nobr>';
-
-  // stats and version
-  $p .= '<br>'.tv2_stats ();
-
-  $p .= '</div>';
-
-  // show page-wise navigation (top)
-  if (!$v)
-    {
-      $p .= '<br>'
-//           .'<br>'
-;
-      $p .= tv2_page ($start, $num, sizeof ($d_array));
-    }
-
-  if (sizeof ($d_array) == 0)
-    $p .= '<br><br>:(';
-
-  $p .= '<br>'
-       .'<br>'
-;
-
-  $p .= $tv2_table_tag;
-  for ($i = 0; isset ($d_array[$i]); $i++)
-    {
-  $d = $d_array[$i];
-  // output
-  $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
-  $p .= '<tr>';
-  $p .= '<td align="right">';
-
-  // embed player
-  if ($v)
-    {
-      $p .= tv2_player ($d);
-      $p .= '</td>';
-      $p .= '<td>';
-    }
-  else if ($f == 'related') // we sort related by title for playlist
-    {
-    }
-  else
-    $p .= tv2_time_count ($d);
-
-  // logo
-  $p .= '<nobr>&nbsp;'.tv2_button ($d_category).'&nbsp;</nobr><br>';
-
-  // tv2_include_logo ()
-  $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
-
-  $p .= '</td>';
-  $p .= '<td>';
-
-  $p .= '<nobr>';
-
-  // is new?
-  if (time () - $d['rsstool_dl_date'] < $tv2_isnew)
-    $p .= '<img src="images/new.png" border="0" alt="New!"> ';
-
-  // link
-  $s = tv2_link ($d);
-  // link as title  
-  $p .= '<b><a href="'.$s.'" title="'.$d['rsstool_title'].'">'.str_shorten ($d['rsstool_title'], 64).'</a></b>';
-
-  // duration
-  $p .= tv2_duration ($d);
-
-//  $p .= '&nbsp;';
-
-  // player button (embed)
-  $p .= tv2_player_button ($d);
-
-  $p .= '&nbsp;';
-
-  // related
-  $p .= tv2_related_button ($d);
-
-  // HACK: fix height
-  $p .= '<img src="images/trans.png" height="32" width="1">';
-
-  $p .= '</nobr>';
-
-  if ($v)
-    {
-      $p .= '<div style="width:400px;">';
-      $p .= tv2_thumbnail ($d, 128);
-    }
-  else
-    {
-      $p .= '<div style="width:600px;">';
-      $p .= tv2_thumbnail ($d, 196);
-    }
-
-  $p .= '<br>';
-
-  // description
-  $p .= tv2_include ($d);
-
-//  $p .= '<br>';
-
-  // direct link
-  $p .= ' <nobr>';
-  $p .= tv2_direct_link ($d);
-  $p .= '</nobr>';
-
-  if ($d_category->movable == 1)
-    {
-      $p .= '<br><nobr>';
-      $p .= tv2_move_form ($d);
-      $p .= '</nobr>';
-    }
-
-  if ($v)
-    {
-      $p .= '<br>';
-      $p .= tv2_prev_video_button ($d);
-      $p .= tv2_next_video_button ($d);
-
-      if ($d_category->voteable == 1)   
-        { 
-          $p .= '&nbsp;&nbsp;&nbsp;<nobr>';
-          $p .= tv2_vote ($d);
-          $p .= '</nobr>';
-        }
-    }
-  else
-    {
-      if ($d_category->voteable == 1)
+      if (file_exists ($path)) // do not overwrite existing files
         {
-          $p .= '&nbsp;&nbsp;&nbsp;<nobr>';
-          $p .= tv2_vote_show ($d);
-          $p .= '</nobr>';
+          echo 'WARNING: file '.$path.' exists, skipping'."\n";
+          return;
+        }
+      else echo $path."\n";
+
+      misc_download ($url, $path);
+//      echo 'wget -nc "'.$url.'" -O "'.$filename.'"'."\n"; // -N?
+//      echo 'rm "'.$filename.'"'."\n"; // remove old thumbs
+    }
+}
+
+
+$db = new misc_sql;   
+$db->sql_open ($tv2_dbhost, $tv2_dbuser, $tv2_dbpass, $tv2_dbname);
+
+
+for ($i = 0; $sql_array[$i]; $i++)
+{
+  $sql_query_s = $sql_array[$i];
+
+//  $sql_query_s = str_replace ('INSERT IGNORE INTO', 'INSERT INTO', $sql_query_s);
+//  $sql_query_s = str_replace ('rsstool_table', 'quakeunity', $sql_query_s);
+
+  if (!strncmp ($sql_query_s, '-- UPDATE', 9))
+    {
+      // activate UPDATE (fixes old broken inserts on dupes)
+//      $sql_query_s = str_replace ('-- UPDATE rsstool_table', 'UPDATE rsstool_table', $sql_query_s);
+    }
+  else if (strstr ($sql_query_s, '`rsstool_desc`') &&
+           strstr ($sql_query_s, '\');'))
+    {
+      for ($j = 0; isset ($rss->channel->item[$j]); $j++)
+        {
+          $item = $rss->channel->item[$j];
+
+          if (strstr ($sql_query_s, (string) $item->link))
+            {
+              // get the keywords
+              $tv2_related = misc_get_keywords ($item->title, 1); // isalpha
+              $tv2_keywords = misc_get_keywords_html ($item->title.' '.$item->description, 0); // isalnum
+              $tv2_duration = $item->media_duration;
+
+              // extend the rsstool_table with tv2 columns
+              $p = str_replace ('`rsstool_media_duration`',
+                                '`rsstool_media_duration`, `tv2_category`, `tv2_moved`, `tv2_duration`, `tv2_related`, `tv2_keywords`',
+                                $sql_query_s);
+              $sql_query_s = str_replace ('\');',
+                                '\', \''
+                               .$tv2_category
+                               .'\', \''
+                               .$tv2_category
+                               .'\', '
+                               .$tv2_duration
+                               .', \''
+                               .$db->sql_stresc ($tv2_related)
+                               .'\', \''
+                               .$db->sql_stresc ($tv2_keywords)
+                               .'\');',
+                                $p);
+
+              // get thumbnails
+              if (strstr ($rss->channel->item[$j]->link, '.youtube.'))
+                get_youtube_thumbnail ($rss->channel->item[$j]->link);
+
+              break;
+            }
         }
     }
 
-  $p .= '<div style="color:#bbb;">';
-  $p .= tv2_keywords ($d);
-  $p .= '</div>';
-
-  $p .= '</td>';
-  $p .= '</tr>';
-
-    }
-  $p .= '</table>';
-
-  // show page-wise navigation (bottom)
-  if (!$v)
-    {
-      $s = tv2_page ($start, $num, sizeof ($d_array));
-      if ($s)
-        $p .= '<br>'.$s;
-    }
-
-  $p .= '</center>';
-
-  return $p;
+  $db->sql_write ($sql_query_s, 0, 0);
 }
 
-
-
-// main ()
-
-
-$f = get_request_value ('f'); // function
-if ($f == 'read' ||
-    $f == 'write')
-  {
-    if ($f == 'write')
-      {
-        // set cookie
-        setcookie ('rw', $_SERVER['HTTP_REFERER'], $tv2_cookie_expire);
-      }
-
-    // redirect
-//    header ('refresh: 0; url='.get_cookie ('rw'));
-    header ('location:'.get_cookie ('rw'));
-    exit;
-  }
-/*
-if ($f == 'fullscreen')
-  {
-    $a = misc_get_browser_config ();
-    setcookie ('w', $a['w'], $tv2_cookie_expire);
-    setcookie ('h', $a['h'], $tv2_cookie_expire);
-  }
-*/
-$c = get_request_value ('c'); // category
-$q = get_request_value ('q'); // search query
-$v = get_request_value ('v'); // own video
-$captcha = get_request_value ('captcha'); // is request with captcha
-$start = get_request_value ('start'); // offset
-if (!($start))
-  $start = 0;
-$num = get_request_value ('num'); // number of results
-if (!($num))
-  $num = $tv2_results;
-
-
-$config = config_xml ();
-
-
-// RSS only
-if ($f == 'rss')
-  {
-    $d = tv2_sql ($c, $q, $f, NULL, $start, $num);
-    tv2_rss ($d);
-    exit;
-  }
+$db->sql_close ();
 
 
 
-
-
-
-
-
-if ($memcache_expire > 0)
-  {
-    $memcache = new Memcache;
-    if ($memcache->connect ('localhost', 11211) == TRUE)
-      {
-        // data from the cache
-        $p = $memcache->get (md5 ($_SERVER['QUERY_STRING']));
-
-        if ($p != FALSE)
-          {
-            $p = unserialize ($p);
-
-            // DEBUG
-//            echo 'cached';
-
-            echo $p;
-
-            exit;
-          }
-      }
-  }
-
-
-$tv2_captcha = widget_captcha ('images/captcha/');
-
-
-  // admin
-//if (islocalhost ())
-//  $body = tv2_body (1);
-//else
-  $body = tv2_body ();
-
-$head = '<html>'
-       .'<head>'
-       .'<title>'
-       .$tv2_title
-       .'</title>'
-       .'<link rel="stylesheet" type="text/css" media="screen" href="tv2.css">'
-       .'<meta name="google-site-verification" content="akU6AtYoOtUZ5n8IGHTC3s5uc9AOAnPeqxkckHSi224" />'
-       .misc_seo_description ($body)
-;
-
-
-$head .= '</head>'
-        .$tv2_body_tag
-;
-
-
-$end = '';
-
-if ($f != 'fullscreen')
-  $end .= ''
-         .'<br>'
-         .tv2_include_end ();
-
-$end .= '</body>'
-       .'</html>';
-
-
-// the _only_ echo
-$p = $head.$body.$end;
-
-if ($use_gzip == 1)
-  echo_gzip ($p);
-else echo $p;
-
-// use memcache
-if ($memcache_expire > 0)
-  {
-    $memcache->set (md5 ($_SERVER['QUERY_STRING']), serialize ($p), 0, $memcache_expire);
-  }
-
-
-
-}
+exit;
 
 
 ?>
