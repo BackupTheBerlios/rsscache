@@ -164,7 +164,7 @@ tv2_body ()
   $p .= '<nobr>';
 
   // is new?
-  if (time () - $d['rsstool_dl_date'] < $tv2_isnew)
+  if (time () - $d['rsstool_date'] < $tv2_isnew)
     $p .= '<img src="images/new.png" border="0" alt="New!"> ';
 
   // link
