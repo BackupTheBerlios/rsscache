@@ -34,7 +34,8 @@ tv2_body ()
          $tv2_logo,
          $tv2_search_s,
          $tv2_videos_s,
-         $tv2_cookie_expire;
+         $tv2_cookie_expire,
+         $tv2_use_dl_date;
   global $config;
   global $f, $c, $q, $v, $start, $num, $captcha;
 
@@ -164,7 +165,7 @@ tv2_body ()
   $p .= '<nobr>';
 
   // is new?
-  if (time () - $d['rsstool_date'] < $tv2_isnew)
+  if (time () - $d[$tv2_use_dl_date ? 'rsstool_dl_date': 'rsstool_date'] < $tv2_isnew)
     $p .= '<img src="images/new.png" border="0" alt="New!"> ';
 
   // link

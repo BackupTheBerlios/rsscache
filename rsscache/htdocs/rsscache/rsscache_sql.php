@@ -167,7 +167,8 @@ function
 tv2_sql_normalize ($db, $dest, $c, $f)
 {
   global $tv2_root,
-         $tv2_link;
+         $tv2_link,
+         $tv2_usr_dl_date;
   $debug = 0;
 
 /*
@@ -195,6 +196,11 @@ tv2_sql_normalize ($db, $dest, $c, $f)
           $len = strrpos ($dest[$i]['rsstool_desc'], '<div ');
           if ($len)
             $dest[$i]['rsstool_desc'] = substr ($dest[$i]['rsstool_desc'], $offset, $len);
+
+          // date
+          if ($tv2_usr_dl_date == 1)
+            $d['rsstool_date'] = $d['rsstool_dl_date'];
+            
         }
       else if (strstr ($dest[$i]['rsstool_url'], 'www.youtube.com'))
         {
@@ -355,7 +361,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
          $tv2_dbpass, 
          $tv2_dbname,
          $tv2_isnew,
-         $tv2_root;
+         $tv2_root,
+         $tv2_use_dl_date;
   global $tv2_debug_sql;
   $debug = $tv2_debug_sql;
 
@@ -417,8 +424,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
 
       // functions
       if ($f == 'new')
-//        $sql_query_s .= ' AND ( rsstool_dl_date > '.(time () - $tv2_isnew).' )';
-        $sql_query_s .= ' AND ( rsstool_date > '.(time () - $tv2_isnew).' )';
+        $sql_query_s .= ' AND ( '.($tv2_use_dl_date ? 'rsstool_dl_date' : 'rsstool_date').' > '.(time () - $tv2_isnew).' )';
       else if ($f == '0_5min')
         $sql_query_s .= ' AND ( tv2_duration > 0 && tv2_duration < 301 )';
       else if ($f == '5_10min')
@@ -440,8 +446,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
       else if ($f == 'score')
         $sql_query_s .= ' ORDER BY tv2_score ASC';
       else
-//        $sql_query_s .= ' ORDER BY rsstool_dl_date DESC';
-        $sql_query_s .= ' ORDER BY rsstool_date DESC';
+        $sql_query_s .= ' ORDER BY '.($tv2_use_dl_date ? 'rsstool_dl_date' : 'rsstool_date').' DESC';
 
       // limit
       $sql_query_s .= ' LIMIT '.$start.','.$num;
