@@ -48,6 +48,7 @@ $tv2_dbname = 'jack';
 $tv2_dbuser = 'jack';
 $tv2_dbpass = 'poopoo';
 $tv2_dbhost = 'localhost';
+$tv2_use_dl_date = 0; // show and sort items by date of RSS download? (default: 0)
 
 
 
