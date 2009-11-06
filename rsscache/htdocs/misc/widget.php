@@ -37,7 +37,7 @@ widget_window_open ($url, $fullscreen = 0, $window_name = '')
 
 //  $p .= 'var w=screen.width;var h=screen.height;';
 
-  $p .= 'var win=';
+//  $p .= 'var win=';
 
   $p .= 'window.open(\''
        .$url
@@ -46,19 +46,23 @@ widget_window_open ($url, $fullscreen = 0, $window_name = '')
        .'\',\'';
 
 // https://developer.mozilla.org/en/Gecko_DOM_Reference
+// https://developer.mozilla.org/en/DOM/window.open
   if ($fullscreen)
     $p .= ''
+         .'top=0,'
+         .'left=0,'
 //         .'width=\'+w+\','
 //         .'height=\'+h+\','
-         .'fullscreen=yes,'
-         .'status=no,'
-         .'toolbar=no,'
-         .'location=off,'
-         .'menubar=no,'
-         .'directories=no,'
-         .'resizable=no,'
-         .'scrollbars=no,'
-         .'copyhistory=yes'
+         .'fullscreen,'
+//         .'menubars,'
+         .'status=0,'
+//         .'toolbar,'
+         .'location=0,'
+//         .'menubar=no,'
+//         .'directories=no,'
+//         .'resizable=no,'
+//         .'scrollbars=no,'
+//         .'copyhistory'
 ;
   else
     $p .= ''
@@ -73,20 +77,27 @@ widget_window_open ($url, $fullscreen = 0, $window_name = '')
          .'scrollbars=yes,'
          .'copyhistory=yes'
 ;
-  $p .= '\');'."\n";
+  $p .= '\').focus();'."\n";
 
-  $p .= 'win.moveTo(0,0);'."\n"
-/*
+//  $p .= 'window.opener = top;'."\n"; // this will close opener in ie only (not Firefox)
+
+  if ($fullscreen)
+  $p .= 'window.moveTo(0,0);'."\n"
+       ."\n"
+       .'// changing bar states on the existing window)'."\n"
+//       .'netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserWrite");'."\n"
+       .'window.locationbar.visible=0;'."\n"
+       .'window.statusbar.visible=0;'."\n"
+       ."\n"
        .'if (document.all)'."\n"
-       .'  top.window.resizeTo(screen.availWidth, screen.availHeight);'."\n"
+       .'  window.resizeTo(screen.width, screen.height);'."\n"
        ."\n"
        .'else if (document.layers || document.getElementById)'."\n"
-       .'  if (top.window.outerHeight < screen.availHeight || top.window.outerWidth < screen.availWidth)'."\n"
+       .'  if (window.outerHeight < screen.height || window.outerWidth < screen.width)'."\n"
        .'    {'."\n"
-       .'      top.window.outerHeight = screen.availHeight;'."\n"
-       .'      top.window.outerWidth = screen.availWidth;'."\n"
+       .'      window.outerHeight = screen.height;'."\n"
+       .'      window.outerWidth = screen.width;'."\n"
        .'    }'."\n"
-*/
 ;
 
   $p .= '}'."\n";
@@ -241,6 +252,82 @@ widget_video ($video_url, $width = 400, $height = 300, $preview_image = NULL)
 
 
 function
+widget_video_youtube_playlist ($playlist_array, $width=425, $height=344, $autoplay = 1)
+{
+  $p = '';
+
+  if ($width == -1 || $height == -1)
+    {
+      $width = '(getinnerwidth () - 30)';
+      $height = '(getinnerheight () - 35)';
+      $p .= widget_video_js();
+    }
+
+  $p .= '<script src="http://www.google.com/jsapi"></script>'
+
+.'<script>
+google.load ("swfobject", "2.1");
+</script>'
+//      .'<script type="text/javascript" src="misc/swfobject.js"></script>'
+
+.'<script type="text/javascript">
+
+
+function play ()
+{
+  ytplayer = document.getElementById ("widget_video_playall2");
+
+  if (ytplayer.getPlayerState () == 1)
+    return;
+
+  if (typeof this.pos == \'undefined\')
+    this.pos = 0;
+
+  a = new Array (';
+
+  for ($i = 0; isset ($playlist_array[$i]); $i++)
+    $p .= ($i > 0 ? ",\n" : '').'"'.$playlist_array[$i].'"';
+
+  $p .= '  );
+
+  if (this.pos == a.length)
+    this.pos = 0;
+
+  ytplayer.loadVideoById (a[this.pos++], 0);
+  ytplayer.playVideo ();
+}
+
+
+function playall ()
+{
+//  ytplayer = document.getElementById ("widget_video_playall2");
+
+//  if (ytplayer) 
+    setInterval (play, 2000);
+}
+
+
+var params = { allowScriptAccess: "always" };
+var atts = { id: "widget_video_playall2" };
+swfobject.embedSWF("http://www.youtube.com/apiplayer?enablejsapi=1&playerapiid=ytplayer&autoplay=1", 
+                   "widget_video_playall", '.$width.', '.$height.', "8", null, null, params, atts);
+//swfobject.embedSWF("http://www.youtube.com/v/590LV50yUN4?enablejsapi=1&playerapiid=ytplayer&autoplay=1&showsearch=0&rel=0",
+//                   "widget_video_playall", '.$width.', '.$height.', "8", null, null, params, atts);
+
+
+</script>
+<div id="widget_video_playall"></div><br>
+<a href="javascript:void(0);" onclick="javascript:playall()">Play</a>';
+
+  return $p;
+}
+
+
+//$a = array ("NyhL2ZxFs7o", "590LV50yUN4");
+//echo widget_video_youtube_playlist ($a);
+
+
+function
 widget_video_youtube ($video_id, $width=425, $height=344, $autoplay = 1)
 {
 // &loop=1&autoplay=1
@@ -269,8 +356,9 @@ widget_video_youtube ($video_id, $width=425, $height=344, $autoplay = 1)
 
   if ($width == -1 || $height == -1)
     {
+      $p .= widget_video_js();
+
       $p .= ''
-           .widget_video_js()
            .'<script type="text/javascript">'."\n"
            .'document.write (\''
            .'<object'
@@ -494,7 +582,7 @@ widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1)
       else
         $p = substr ($p, strpos ($p, 'watch') + 12);
 
-      $s .= widget_video_youtube ($p, $width, $height, $autoplay);
+      $s .= widget_video_youtube_playlist (array ($p), $width, $height, $autoplay);
     }
   else if ($demux == 2) // dailymotion
     {
