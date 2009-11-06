@@ -377,7 +377,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                   .' rsstool_url_crc32,'
                   .' rsstool_title,'
                   .' rsstool_desc,'
-//                  .' rsstool_dl_date,'
+                  .' rsstool_dl_date,'
                   .' rsstool_date,'
                   .' tv2_category,'
                   .' tv2_moved,'
