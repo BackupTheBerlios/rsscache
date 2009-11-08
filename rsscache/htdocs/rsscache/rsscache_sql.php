@@ -164,77 +164,57 @@ tv2_sql_stats ($category = NULL)
 
 
 function
-tv2_sql_normalize ($db, $dest, $c, $f)
+tv2_sql_normalize ($db, $d, $c, $f)
 {
   global $tv2_root,
          $tv2_link;
   $debug = 0;
 
-/*
+  // make array contents unique by their title
   if ($f = 'related')
-    {
-      // make array unique
-      for ($i = 0; isset ($dest[$i]); $i++)
-        if (isset ($dest[$i + 1]))
-          while ($dest[$i]['rsstool_title'] == $dest[$i + 1]['rsstool_title'])
-            array_splice ($dest, $i);
-    }
-*/
+    for ($i = 0; isset ($d[$i]) && isset ($d[$i + 1]); $i++)
+      if ($d[$i]['rsstool_title'] == $d[$i + 1]['rsstool_title'])
+        {
+          $d = array_splice ($d, $i);
+          $i = 0; // lets start from the beginning again
+        }
 
-  for ($i = 0; isset ($dest[$i]); $i++)
+  for ($i = 0; isset ($d[$i]); $i++)
     {
-      if (strstr ($dest[$i]['rsstool_url'], 'www.google.com'))
+      // HACK: fix garbage coming from the database
+      if (strstr ($d[$i]['rsstool_url'], 'www.google.com'))
         {
           // remove eventual google redirect
-          $offset = strpos ($dest[$i]['rsstool_url'], '?q=') + 3;
-          $len = strpos ($dest[$i]['rsstool_url'], '&source=') - $offset;
-          $dest[$i]['rsstool_url'] = substr ($dest[$i]['rsstool_url'], $offset, $len);
+          $offset = strpos ($d[$i]['rsstool_url'], '?q=') + 3;
+          $len = strpos ($d[$i]['rsstool_url'], '&source=') - $offset;
+          $d[$i]['rsstool_url'] = substr ($d[$i]['rsstool_url'], $offset, $len);
 
           // desc
           $offset = 0;
-          $len = strrpos ($dest[$i]['rsstool_desc'], '<div ');
+          $len = strrpos ($d[$i]['rsstool_desc'], '<div ');
           if ($len)
-            $dest[$i]['rsstool_desc'] = substr ($dest[$i]['rsstool_desc'], $offset, $len);
+            $d[$i]['rsstool_desc'] = substr ($d[$i]['rsstool_desc'], $offset, $len);
         }
-      else if (strstr ($dest[$i]['rsstool_url'], 'www.youtube.com'))
+      else if (strstr ($d[$i]['rsstool_url'], 'www.youtube.com'))
         {
-          $dest[$i]['rsstool_url'] = str_replace ('&feature=youtube_gdata', '', $dest[$i]['rsstool_url']);
+          $d[$i]['rsstool_url'] = str_replace ('&feature=youtube_gdata', '', $d[$i]['rsstool_url']);
         }
 
-      $dest[$i]['tv2_category'] = trim ($dest[$i]['tv2_category']);
-      $dest[$i]['tv2_moved'] = trim ($dest[$i]['tv2_moved']);
-
-      // HACK: for development
-//      $dest[$i]['tv2_related'] = misc_get_keywords ($dest[$i]['rsstool_title'], 1); // isalpha
-//      $dest[$i]['tv2_keywords'] = misc_get_keywords_html ($dest[$i]['rsstool_title']
-//                                                         .' '
-//                                                         .$dest[$i]['rsstool_desc'], 0); // isalnum
-
-      // local url
-      if (strstr ($dest[$i]['rsstool_url'], $tv2_link))
-        $dest[$i]['tv2_local_url'] = str_replace ($tv2_link, '', $dest[$i]['rsstool_url']);
+      // HACK: fix
+      $d[$i]['tv2_category'] = trim ($d[$i]['tv2_category']);
+      $d[$i]['tv2_moved'] = trim ($d[$i]['tv2_moved']);
 
       // demux
-      $dest[$i]['tv2_demux'] = widget_media_demux ($dest[$i]['rsstool_url']);
+      $d[$i]['tv2_demux'] = widget_media_demux ($d[$i]['rsstool_url']);
 
-      // is local media?
-      if ($dest[$i]['tv2_demux'] == 4)
-        if (strncmp ($dest[$i]['rsstool_url'], $tv2_link, strlen ($tv2_link))) // is local
-        {
-          // does file exist?
-          $flv = str_replace ($tv2_link, $tv2_root.'/', $dest[$i]['rsstool_url']);
-//          $flv = set_suffix ($flv, '.flv');
-          if (!file_exists ($flv))
-            $dest[$i]['tv2_demux'] = 0;
-        }
+      // strip any tags from the desc
+      $d[$i]['rsstool_desc'] = strip_tags ($d[$i]['rsstool_desc']);
 
-      // strip tags from the desc
-//      $dest[$i]['rsstool_desc'] = strip_tags ($dest[$i]['rsstool_desc'], '<img><br><br/><br />');
-      $dest[$i]['rsstool_desc'] = strip_tags ($dest[$i]['rsstool_desc']);
-
+      // TODO: search highlights
+//      $d[$i]['highlight'] = array ();
     }
 
-  return $dest;
+  return $d;
 }
 
 
@@ -424,14 +404,16 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
         $sql_query_s .= ' AND ( tv2_duration > 300 && tv2_duration < 601 )';
       else if ($f == '10_min')
         $sql_query_s .= ' AND ( tv2_duration > 600 )';
-//      else if ($f == 'prev')
-//        $sql_query_s .= ' AND ( 1 )';
-//      else if ($f == 'next')
-//        $sql_query_s .= ' AND ( 1 )';
-//      else if ($f == 'read')
-//        $sql_query_s .= ' AND ( 1 )';
-//      else if ($f == 'write')
-//        $sql_query_s .= ' AND ( 1 )';
+/*
+      else if ($f == 'prev')
+        $sql_query_s .= ' AND ( 1 )';
+      else if ($f == 'next')
+        $sql_query_s .= ' AND ( 1 )';
+      else if ($f == 'read')
+        $sql_query_s .= ' AND ( 1 )';
+      else if ($f == 'write')
+        $sql_query_s .= ' AND ( 1 )';
+*/
 
       // sort
       if ($f == 'related') // we sort related by title for playlist
@@ -448,7 +430,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
     }
 
   $db->sql_write ($sql_query_s, 1, $debug);
-//  $d = array ();
+
   $d = $db->sql_read (1, 0 /* $debug */);
 
   $d = tv2_sql_normalize ($db, $d, $c, $f);

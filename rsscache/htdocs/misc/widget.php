@@ -178,7 +178,7 @@ widget_video_js ()
 
 
 function
-widget_video ($video_url, $width = 400, $height = 300, $preview_image = NULL)
+widget_video_flowplayer ($video_url, $width = 400, $height = 300, $preview_image = NULL)
 {
   $fgcolor = '#ffffff';
   $bgcolor = '#000000';
@@ -223,7 +223,14 @@ widget_video ($video_url, $width = 400, $height = 300, $preview_image = NULL)
       .'//-->'
       .'</script>';
 
-//  return $p;
+  return $p;
+}
+
+
+function
+widget_video_jwplayer ($video_url, $width = 400, $height = 300, $preview_image = NULL)
+{
+  $url = $video_url;
 
   if ($preview_image)
     $url = '&image='.$preview_image;
@@ -249,6 +256,45 @@ widget_video ($video_url, $width = 400, $height = 300, $preview_image = NULL)
 
   return $p;
 }
+
+
+function
+widget_audio_jwplayer ($audio_url, $start = 0, $stream = 0, $next_stream = NULL)
+{
+  $url = 'misc/widget_audio.swf?url='.$audio_url.'&start='.$start.'&stream='.$stream
+        .($next_stream ? '&next='.$next_stream : '');
+
+  $p = ''
+      .'<object>'
+      .'<embed'
+      .' src="'.$url.'"'
+      .' type="application/x-shockwave-flash"'
+      .' width="1"'
+      .' height="1"'
+//      .' pluginspace="http://www.macromedia.com/go/flashplayer/"'
+      .'></embed>'
+      .'</object>';
+
+  return $p;
+}
+
+
+/*
+<script type="text/javascript" src="http://www.youtubereloaded.com/embed/swfobject.js"></script>
+<div id="YouTubeReloadedPlayer">This div will be replaced</div>
+
+<script type="text/javascript">
+var s1 = new SWFObject('http://www.youtubereloaded.com/embed/player.swf','ply','470','470','9','#');
+s1.addParam('allowfullscreen','true');
+s1.addParam('allowscriptaccess','always');
+s1.addParam('wmode','opaque');
+s1.addParam('flashvars','file=http%3A%2F%2Fgdata.youtube.com%2Ffeeds%2Fapi%2Fvideos%3Fvq%3Dquake+arena%26max-results%3D10&playlist=bottom&frontcolor=cccccc&lightcolor=66cc00&skin=http://www.youtubereloaded.com/embed/skin1.swf&backcolor=111111&playlistsize=200&autostart=true');
+s1.write('YouTubeReloadedPlayer');
+</script>
+
+echo urldecode ('http%3A%2F%2Fgdata.youtube.com%2Ffeeds%2Fapi%2Fvideos%3Fvq%3Dquake+arena%26max-results%3D10&playlist=bottom&frontcolor=cccccc&lightcolor=66cc00&skin=http://www.youtubereloaded.com/embed/skin1.swf&backcolor=111111&playlistsize=200&autostart=true');
+
+*/
 
 
 function
@@ -323,19 +369,9 @@ swfobject.embedSWF("http://www.youtube.com/apiplayer?enablejsapi=1&playerapiid=y
 }
 
 
-//$a = array ("NyhL2ZxFs7o", "590LV50yUN4");
-//echo widget_video_youtube_playlist ($a);
-
-
 function
 widget_video_youtube ($video_id, $width=425, $height=344, $autoplay = 1)
 {
-// &loop=1&autoplay=1
-  $fgcolor="#ffffff";
-  $bgcolor="#000000";
-  $bgcolor2="#444444";
-  $bgcolor3="#ff0000";
-
   $url = 'http://www.youtube.com/v/'
         .$video_id
        .'&fs=1'             // allow fullscreen
@@ -354,6 +390,42 @@ widget_video_youtube ($video_id, $width=425, $height=344, $autoplay = 1)
 //       .'&color2=0x000000'
 ;
 
+  $p = '';
+  $s = '<object';
+  if ($width == -1 || $height == -1)
+    {
+      $s .= ' width="\'+(getinnerwidth () - 30)+\'"'
+           .' height="\'+(getinnerheight () - 35)+\'"';
+    }
+  else
+    {
+      $s .= ' width="'.$width.'"'
+           .' height="'.$height.'"';
+    }
+
+  $s .= '>'
+       .'<param name="movie" value="'.$url.'">'
+       .'</param><param name="allowFullScreen" value="true"></param>'
+       .'</param><param name="autoplay" value="true"></param>'
+       .'<embed src="'
+       .$url
+       .'" type="application/x-shockwave-flash" allowfullscreen="true"'
+       .($autoplay ? ' autoplay="true"' : '');
+
+  if ($width == -1 || $height == -1)
+    {
+      $s .= ' width="\'+(getinnerwidth () - 30)+\'"'
+           .' height="\'+(getinnerheight () - 35)+\'"';
+    }
+  else
+    {
+      $s .= ' width="'.$width.'"'  
+           .' height="'.$height.'"';
+    }
+
+  $s .= '></embed>'
+       .'</object>';
+
   if ($width == -1 || $height == -1)
     {
       $p .= widget_video_js();
@@ -361,27 +433,16 @@ widget_video_youtube ($video_id, $width=425, $height=344, $autoplay = 1)
       $p .= ''
            .'<script type="text/javascript">'."\n"
            .'document.write (\''
-           .'<object'
-           .' width="\'+(getinnerwidth () - 30)+\'"'
-           .' height="\'+(getinnerheight () - 35)+\'"'
-           .'>'
-           .'<param name="movie" value="'.$url.'">'
-           .'</param><param name="allowFullScreen" value="true"></param>'
-           .'</param><param name="autoplay" value="true"></param>'
-           .'<embed src="'
-           .$url
-           .'" type="application/x-shockwave-flash" allowfullscreen="true"'
-           .' autoplay="true"'
-           .' width="\'+(getinnerwidth () - 30)+\'"'
-           .' height="\'+(getinnerheight () - 35)+\'"'
-           .'></embed>'
-           .'</object>'
-          .'\');'
-          .'</script>'
+           .$s;
+
+      $p .= '\');'
+           .'</script>'
 ;
     }
-  else
-    {
+  else $p = $s;
+
+
+/*
       $p = ''
            .'<object'
            .' width="'.$width.'"'
@@ -393,12 +454,12 @@ widget_video_youtube ($video_id, $width=425, $height=344, $autoplay = 1)
            .'<embed src="'
            .$url
            .'" type="application/x-shockwave-flash" allowfullscreen="true"'
-           .($autoplay ? ' autoplay="1"' : '')
+           .($autoplay ? ' autoplay="true"' : '')
            .' width="'.$width.'"'
            .' height="'.$height.'"'
            .'></embed>'
            .'</object>';
-    }
+*/
 
   return $p;
 }
@@ -528,27 +589,6 @@ widget_video_yahoo ($video_id, $width=512, $height=322)
 
 
 function
-widget_audio ($audio_url, $start = 0, $stream = 0, $next_stream = NULL)
-{
-  $url = 'misc/widget_audio.swf?url='.$audio_url.'&start='.$start.'&stream='.$stream
-        .($next_stream ? '&next='.$next_stream : '');
-
-  $p = ''
-      .'<object>'
-      .'<embed'
-      .' src="'.$url.'"'
-      .' type="application/x-shockwave-flash"'
-      .' width="1"'
-      .' height="1"'
-//      .' pluginspace="http://www.macromedia.com/go/flashplayer/"'
-      .'></embed>'
-      .'</object>';
-
-  return $p;
-}
-
-
-function
 widget_media_demux ($media_url)
 {
   if (strstr ($media_url, '.youtube.com'))
@@ -598,9 +638,9 @@ widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1)
       $s .= widget_video_xfire ($p, $width, $height);
     }
   else if ($demux == 4) // flv or mp4
-    $s .= widget_video ($p, $width, $height, NULL);
+    $s .= widget_video_jwplayer ($p, $width, $height, NULL);
   else if ($demux == 5) // mp3
-    $s .= widget_audio ($p);
+    $s .= widget_audio_jwplayer ($p);
   else if ($demux == 6)
     {
       // http://www.veoh.com/videos/v6387308sYb9NxBJ
