@@ -17,15 +17,18 @@ config_xml_normalize ($config)
   $config->days = $stats['days'];
 
   for ($i = 0; $config->category[$i]; $i++)
-    for ($j = 0; $config->category[$i]->query[$j]; $j++)
-//      if ($config->category[$i]->query[$j]->name)
-        if ($config->category[$i]->query[$j]->name == 'c')
+    if ($config->category[$i]->query)
+      {
+        $a = array();
+        parse_str ($config->category[$i]->query, &$a);
+        if (isset ($a['c']))
           {
             $stats = tv2_sql_stats ($config->category[$i]->name);
 
             $config->category[$i]->videos = $stats['videos'];
             $config->category[$i]->days = $stats['days'];
           }
+      }
 
   return $config;
 }
