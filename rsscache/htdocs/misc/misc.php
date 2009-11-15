@@ -26,6 +26,15 @@ define ('MISC_MISC_PHP', 1);
 
 
 function
+misc_url_exists ($url)
+{
+  if (file_get_contents ($url, FALSE, NULL, 0, 0) === false)
+    return false;
+  return true;
+}
+
+
+function
 misc_get_browser_config ()
 {
   // get the settings of the browser and stores them in cookie
@@ -736,7 +745,7 @@ get_request_value ($name)
 
 
 function
-set_request_query ($args = array(), $use_existing_arguments = false)
+http_build_query2 ($args = array(), $use_existing_arguments = false)
 {
   if ($use_existing_arguments)
     $a = array_merge ($_GET, $args); // $args overwrites $_GET
@@ -746,6 +755,8 @@ set_request_query ($args = array(), $use_existing_arguments = false)
   if (!sizeof ($a))
     return '';
 
+  return http_build_query ($a);
+/*
   $b = array();
   foreach ($a as $key=>$value)
     if (gettype ($value) == 'array')
@@ -758,13 +769,14 @@ set_request_query ($args = array(), $use_existing_arguments = false)
       $b[] = $key.'='.urlencode ($value);
 
   return '?'.implode ('&',$b);
+*/
 } 
 
 
 function
 misc_getlink ($args = array(), $use_existing_arguments = false)
 {
-  return set_request_query ($args, $use_existing_arguments);
+  return '?'.http_build_query2 ($args, $use_existing_arguments);
 }
 
 

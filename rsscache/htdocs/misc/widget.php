@@ -280,6 +280,58 @@ widget_audio_jwplayer ($audio_url, $start = 0, $stream = 0, $next_stream = NULL)
 
 
 /*
+function
+widget_video_youtube_download_quality ($video_id)
+{
+  $page = file_get_contents('http://www.youtube.com/get_video_info?&video_id='.$video_id);
+  preg_match('/token=(.*?)&thumbnail_url=/', $page, $token);
+
+// DEBUG
+//print_r ($token)."\n\n";
+
+  $token = urldecode ($token[1]);
+  $url_array = array ('http://youtube.com/get_video?video_id='.$video_id.'&fmt=35',
+                      'http://youtube.com/get_video?video_id='.$video_id.'&fmt=22',
+                      'http://youtube.com/get_video?video_id='.$video_id.'&fmt=18',
+                      'http://youtube.com/get_video?video_id='.$video_id);
+  for ($i = 0; isset ($url_array[$i]); $i++)
+    {
+      $url_array[$i] .= '&t='.$token;
+
+      if (misc_url_exists ($url_array[$i]) === true)
+        {
+          $h = get_headers ($url_array[$i]);
+
+          // DEBUG
+          print_r ($h)."\n\n";
+
+          return $h[19];
+        }
+    }
+}
+*/
+
+
+function
+widget_video_youtube_download ($video_id)
+{
+//  $page = file_get_contents('http://www.youtube.com/get_video_info?&video_id='.$video_id);
+  $page = file_get_contents('http://www.youtube.com/get_video_info?&video_id='.$video_id.'&fmt=18');
+  $a = array ();
+  parse_str ($page, &$a);
+
+  // DEBUG
+//  print_r ($a);
+
+  $url = urldecode ($a['fmt_url_map']);
+  $url = substr ($url, strrpos ($url, 'http://'));
+  $a['video_url'] = $url;
+
+  return $a['video_url'];
+}
+
+
+/*
 <script type="text/javascript" src="http://www.youtubereloaded.com/embed/swfobject.js"></script>
 <div id="YouTubeReloadedPlayer">This div will be replaced</div>
 
