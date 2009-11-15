@@ -171,7 +171,7 @@ tv2_sql_normalize ($db, $d, $c, $f)
   $debug = 0;
 
   // make array contents unique by their title
-  if ($f = 'related')
+  if ($f == 'related')
     for ($i = 0; isset ($d[$i]) && isset ($d[$i + 1]); $i++)
       while (trim ($d[$i]['rsstool_title']) == trim ($d[$i + 1]['rsstool_title']))
         $d = array_splice ($d, $i + 1, 1);
@@ -335,6 +335,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
          $tv2_root;
   global $tv2_debug_sql;
   $debug = $tv2_debug_sql;
+//  $debug = 1;
 
   $db = new misc_sql;
   $db->sql_open ($tv2_dbhost,
@@ -348,8 +349,10 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
   $start = $db->sql_stresc ($start);
   $num = $db->sql_stresc ($num);
 
-//  $sql_query_s = 'SELECT * FROM rsstool_table WHERE 1';
-  $sql_query_s = 'SELECT'
+  $sql_query_s = '';
+//  $sql_query_s .= 'EXPLAIN ';
+//  $sql_query_s .= 'SELECT * FROM rsstool_table WHERE 1';
+  $sql_query_s .= 'SELECT'
                   .' rsstool_url,'
                   .' rsstool_url_crc32,'
                   .' rsstool_title,'
@@ -359,20 +362,25 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                   .' tv2_category,'
                   .' tv2_moved,'
                   .' tv2_duration,'
-                  .' tv2_related,'
                   .' tv2_keywords,'
                   .' tv2_votes,'
                   .' tv2_score'
-                  .' FROM rsstool_table WHERE 1';
+                  .' FROM rsstool_table';
 
   if ($v) // direct
-    $sql_query_s .= ' AND ( rsstool_url_crc32 = '.$v.' )';
+    {
+      $sql_query_s .= ' WHERE ( rsstool_url_crc32 = '.$v.' )';
+      $sql_query_s .= ' LIMIT 1';
+    }
   else
     {
+      $sql_query_s .= ' WHERE 1';
+
       // category
       if ($c)
         $sql_query_s .= ' AND ( `tv2_moved` = \''.$c.'\' )';
 
+      // filter
       $filter = NULL;
       if ($c)
         {
@@ -384,13 +392,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                 $filter = $category->filter;
         }
 
-     if ($q && $f == 'related')
-         {
-           $s = str_replace (' ', '%', trim ($db->sql_stresc ($q)));
-           $sql_query_s .= ' AND ( tv2_related LIKE \'%'.$s.'%\' )';
-         }
-      else
-        $sql_query_s .= tv2_sql_match_func ($db, $q, $filter);
+      $sql_query_s .= tv2_sql_match_func ($db, $q, $filter);
 
       // functions
       if ($f == 'new')
@@ -401,16 +403,6 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
         $sql_query_s .= ' AND ( tv2_duration > 300 && tv2_duration < 601 )';
       else if ($f == '10_min')
         $sql_query_s .= ' AND ( tv2_duration > 600 )';
-/*
-      else if ($f == 'prev')
-        $sql_query_s .= ' AND ( 1 )';
-      else if ($f == 'next')
-        $sql_query_s .= ' AND ( 1 )';
-      else if ($f == 'read')
-        $sql_query_s .= ' AND ( 1 )';
-      else if ($f == 'write')
-        $sql_query_s .= ' AND ( 1 )';
-*/
 
       // sort
       if ($f == 'related') // we sort related by title for playlist

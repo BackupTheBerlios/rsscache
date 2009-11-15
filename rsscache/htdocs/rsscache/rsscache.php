@@ -272,12 +272,35 @@ tv2_body ()
 
 
 $f = get_request_value ('f'); // function
+$c = get_request_value ('c'); // category
+$q = get_request_value ('q'); // search query
+$v = get_request_value ('v'); // own video
+$captcha = get_request_value ('captcha'); // is request with captcha
+$start = get_request_value ('start'); // offset
+if (!($start))
+  $start = 0;
+$num = get_request_value ('num'); // number of results
+if (!($num))
+  $num = $tv2_results;
+
+
 if ($f == 'read' ||
     $f == 'write')
   {
     if ($f == 'write')
       {
         // set cookie
+/*
+        $a = array ('c' => $c,
+                    'q' => $q,
+                    'f' => $f,
+                    'v' => $v,
+                    'start' => $start,
+                    'num' => $num
+);
+
+        setcookie ('rw', misc_getlink ($a, false), $tv2_cookie_expire);
+*/
         setcookie ('rw', $_SERVER['HTTP_REFERER'], $tv2_cookie_expire);
       }
 
@@ -294,16 +317,6 @@ if ($f == 'fullscreen')
     setcookie ('h', $a['h'], $tv2_cookie_expire);
   }
 */
-$c = get_request_value ('c'); // category
-$q = get_request_value ('q'); // search query
-$v = get_request_value ('v'); // own video
-$captcha = get_request_value ('captcha'); // is request with captcha
-$start = get_request_value ('start'); // offset
-if (!($start))
-  $start = 0;
-$num = get_request_value ('num'); // number of results
-if (!($num))
-  $num = $tv2_results;
 
 
 $config = config_xml ();
