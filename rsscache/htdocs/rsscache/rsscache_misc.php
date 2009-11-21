@@ -130,7 +130,10 @@ tv2_rss ($d_array)
     {
       $rss_title_array[$i] = $d_array[$i]['rsstool_title'];
 //      $rss_link_array[$i] = $d_array[$i]['rsstool_url'];
-      $rss_link_array[$i] = $tv2_link.tv2_link ($d_array[$i]);
+      if (substr (tv2_link ($d_array[$i]), 0, 7) == 'http://')
+        $rss_link_array[$i] = tv2_link ($d_array[$i]);
+      else
+        $rss_link_array[$i] = $tv2_link.tv2_link ($d_array[$i]);
       $rss_desc_array[$i] = $d_array[$i]['rsstool_desc'];
     }
 

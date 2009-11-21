@@ -89,7 +89,8 @@ tv2_body ()
 //  $p .= widget_carousel ('carousel_xml.php', '100%', 150);
 
   // icons
-  $p .= tv2_button_array ($config, '%s ', 0, sizeof ($config->category));
+  if ($f != 'mirror')
+    $p .= tv2_button_array ($config, '%s ', 0, sizeof ($config->category));
 
   $p .= '<br>'  
        .'<br>'  
@@ -104,18 +105,21 @@ tv2_body ()
   $p .= tv2_logo ();
   $p .= '</nobr>';
 
-  // search
-  $p .= '&nbsp;<nobr>';
-  $p .= tv2_search_form ();
-  $p .= '</nobr>';
-
-  // stats and version
-  $p .= '<br>'.tv2_stats ();
+  if ($f != 'mirror')
+    {
+      // search
+      $p .= '&nbsp;<nobr>';
+      $p .= tv2_search_form ();
+      $p .= '</nobr>';
+    
+      // stats and version
+      $p .= '<br>'.tv2_stats ();
+    }
 
   $p .= '</div>';
 
   // show page-wise navigation (top)
-  if (!$v)
+  if (!$v && $f != 'mirror')
     {
       $p .= '<br>'
 //           .'<br>'
@@ -149,7 +153,7 @@ tv2_body ()
   else if ($f == 'related') // we sort related by title for playlist
     {
     }
-  else
+  else if ($f != 'mirror')
     $p .= tv2_time_count ($d);
 
   // logo
@@ -164,7 +168,7 @@ tv2_body ()
   $p .= '<nobr>';
 
   // is new?
-  if (time () - $d[$f == 'new' ? 'rsstool_dl_date' : 'rsstool_date'] < $tv2_isnew)
+  if (time () - $d[$f == 'new' ? 'rsstool_dl_date' : 'rsstool_date'] < $tv2_isnew && $f != 'mirror')
     $p .= '<img src="images/new.png" border="0" alt="New!"> ';
 
   // link
@@ -178,12 +182,14 @@ tv2_body ()
 //  $p .= '&nbsp;';
 
   // player button (embed)
-  $p .= tv2_player_button ($d);
+  if ($f != 'mirror')
+    $p .= tv2_player_button ($d);
 
   $p .= '&nbsp;';
 
   // related
-  $p .= tv2_related_button ($d);
+  if ($f != 'mirror')
+    $p .= tv2_related_button ($d);
 
   // HACK: fix height
   $p .= '<img src="images/trans.png" height="32" width="1">';
@@ -213,7 +219,7 @@ tv2_body ()
   $p .= tv2_direct_link ($d);
   $p .= '</nobr>';
 
-  if ($d_category->movable == 1)
+  if ($d_category->movable == 1 && $f != 'mirror')
     {
       $p .= '<br><nobr>';
       $p .= tv2_move_form ($d);
@@ -254,7 +260,7 @@ tv2_body ()
   $p .= '</table>';
 
   // show page-wise navigation (bottom)
-  if (!$v)
+  if (!$v && $f != 'mirror')
     {
       $s = tv2_page ($start, $num, sizeof ($d_array));
       if ($s)
@@ -331,7 +337,10 @@ if ($f == 'rss')
   }
 
 
-
+if ($f == 'mirror')
+  {
+    // make static (index.html)
+  }
 
 
 
@@ -378,6 +387,8 @@ $head = '<html>'
        .'<meta name="google-site-verification" content="akU6AtYoOtUZ5n8IGHTC3s5uc9AOAnPeqxkckHSi224" />'
        .misc_seo_description ($body)
 ;
+
+$head .= misc_head_tags ($tv2_icon, 0, $tv2_charset);
 
 
 $head .= '</head>'

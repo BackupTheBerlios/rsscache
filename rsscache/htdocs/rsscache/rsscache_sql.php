@@ -192,6 +192,13 @@ tv2_sql_normalize ($db, $d, $c, $f)
           if ($len)
             $d[$i]['rsstool_desc'] = substr ($d[$i]['rsstool_desc'], $offset, $len);
         }
+      else if (strstr ($d[$i]['rsstool_url'], 'news.google.com'))
+        {
+          // remove eventual google redirect
+          $offset = strpos ($d[$i]['rsstool_url'], '&url=') + 5;
+          $len = strpos ($d[$i]['rsstool_url'], '&usg=') - $offset;
+          $d[$i]['rsstool_url'] = substr ($d[$i]['rsstool_url'], $offset, $len);
+        }
       else if (strstr ($d[$i]['rsstool_url'], 'www.youtube.com'))
         {
           $d[$i]['rsstool_url'] = str_replace ('&feature=youtube_gdata', '', $d[$i]['rsstool_url']);
@@ -205,7 +212,11 @@ tv2_sql_normalize ($db, $d, $c, $f)
       $d[$i]['tv2_demux'] = widget_media_demux ($d[$i]['rsstool_url']);
 
       // strip any tags from the desc
-      $d[$i]['rsstool_desc'] = strip_tags ($d[$i]['rsstool_desc']);
+      $p = $d[$i]['rsstool_desc'];
+      $p = str_replace ('>', '> ', $p);
+      $p = strip_tags ($p);
+      $p = str_replace (array ('  ', '  ', '  ', '  ', '  '), ' ', $p);
+      $d[$i]['rsstool_desc'] = $p;
 
       // TODO: search highlights
 //      $d[$i]['highlight'] = array ();

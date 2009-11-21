@@ -475,9 +475,7 @@ function
 misc_get_keywords ($s, $flag = 0) // default = isalnum
 {
   $s = str_replace (array ('. ', ',', ';', '!', '?', '"'), ' ', $s);
-  $s = str_replace ('  ', ' ', $s);
-  $s = str_replace ('  ', ' ', $s);
-  $s = str_replace ('  ', ' ', $s);
+  $s = str_replace (array ('  ', '  ', '  ', '  ', '  '), ' ', $s);
 
   for ($i = 0; $s[$i]; $i++)
     if (ispunct ($s[$i]) && $s[$i] != '_' && $s[$i] != '.')
@@ -506,7 +504,7 @@ misc_get_keywords_html ($s, $flag = 0) // default = isalnum
 {
   // so one keyword does not get glued to another because of strip_tags()
   $s = str_replace ('>', '> ', $s);
-  $s = str_replace ('  ', ' ', $s);
+  $s = str_replace (array ('  ', '  ', '  ', '  ', '  '), ' ', $s);
   $s = strip_tags ($s);
 
   return misc_get_keywords ($s, $flag);
@@ -785,7 +783,7 @@ misc_seo_description ($html_body)
 {
   // generate meta tag from the body
   $p = strip_tags ($html_body);
-  $p = str_replace (array ('&nbsp;', '&gt;', '&lt;', '\n'), ' ', $p);
+  $p = str_replace (array ('&nbsp;', '&gt;', '&lt;', "\n"), ' ', $p);
   $p = misc_get_keywords ($p, 1);
   return '<meta name="Description" content="'.$p.'">'
         .'<meta name="keywords" content="'.$p.'">';
@@ -797,7 +795,8 @@ misc_head_tags ($icon, $refresh = 0, $charset = 'UTF-8')
 {
   $p = '';
 
-  $p .= '<meta name="Content-Type" content="text/html; charset='.$charset.'">';
+  $p .= '<meta http-equiv="Content-Type" content="text/html;charset='.$charset.'">';
+//  $p .= '<meta name="Content-Type" content="text/html; charset='.$charset.'">';
 
   if ($refresh > 0)
 //    header ('location:'.$_SERVER['REQUEST_URI']);

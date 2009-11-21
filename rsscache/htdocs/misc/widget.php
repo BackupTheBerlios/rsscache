@@ -26,6 +26,19 @@ include_once ('misc/misc.php');
 
 
 function
+widget_onhover_link ($url, $name, $image1, $image2)
+{
+  $p = '';
+  $p .= '<a href="'.$url.'"'
+       .' onmouseover="document.'.$name.'.src='.$image1.'"'
+       .' onmouseout="document.'.$name.'.src='.$image2.'"'
+       .'><img src="'.$image1.'" border="0" name="'.$name.'"></a>';
+
+  return $p;
+}
+
+
+function
 widget_window_open ($url, $fullscreen = 0, $window_name = '')
 {
   $p = '';
