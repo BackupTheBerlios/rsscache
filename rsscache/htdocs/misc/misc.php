@@ -693,7 +693,7 @@ function
 misc_exec ($cmdline, $debug = 0)
 {
   if ($debug)
-    echo $cmdline.'\n';
+    echo $cmdline."\n";
 
   if ($debug < 2)
     {
@@ -703,11 +703,11 @@ misc_exec ($cmdline, $debug = 0)
 
       $p = '';
       if ($debug)
-        $p = $res.'\n';
+        $p = $res."\n";
 
       $i_max = sizeof ($a);
       for ($i = 0; $i < $i_max; $i++)
-        $p .= $a[$i].'\n';
+        $p .= $a[$i]."\n";
 
       return $p;
     }
