@@ -203,6 +203,10 @@ tv2_sql_normalize ($db, $d, $c, $f)
         {
           $d[$i]['rsstool_url'] = str_replace ('&feature=youtube_gdata', '', $d[$i]['rsstool_url']);
         }
+      if (strstr ($d[$i]['rsstool_url'], '.xvideos.com'))
+        {
+          $d[$i]['rsstool_desc'] = '';
+        }
 
       // HACK: fix
       $d[$i]['tv2_category'] = trim ($d[$i]['tv2_category']);
@@ -426,7 +430,10 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
         $sql_query_s .= ' ORDER BY rsstool_date DESC';
 
       // limit
-      $sql_query_s .= ' LIMIT '.$start.','.$num;
+      if ($f == 'cloud')
+        $sql_query_s .= ' LIMIT '.$start.',100';
+      else
+        $sql_query_s .= ' LIMIT '.$start.','.$num;
     }
 
   $db->sql_write ($sql_query_s, 1, $debug);

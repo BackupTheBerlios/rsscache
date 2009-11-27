@@ -32,6 +32,7 @@ tv2_body ()
          $tv2_body_tag,
          $tv2_table_tag,
          $tv2_logo,
+         $tv2_title,
          $tv2_search_s,
          $tv2_videos_s,
          $tv2_cookie_expire;
@@ -79,10 +80,17 @@ tv2_body ()
     }
 
   // just fullscreen
-  if ($v && $f == 'fullscreen')
+  if ($v)
     {
-      $p .= tv2_player ($d_array[0]);
-      return $p;
+      if (strlen ($tv2_title))
+        $tv2_title .= ' - ';
+      $tv2_title .= $d_array[0]['rsstool_title'];
+
+      if ($f == 'fullscreen')
+        {
+          $p .= tv2_player ($d_array[0]);
+          return $p;
+        }
     }
 
   // flash carousel with icons
@@ -133,6 +141,14 @@ tv2_body ()
   $p .= '<br>'
        .'<br>'
 ;
+
+  if ($f == 'cloud')
+    {
+      $p .= 'cloud';
+      $p .= '</center>';
+
+      return $p;
+    }
 
   $p .= $tv2_table_tag;
   for ($i = 0; isset ($d_array[$i]); $i++)

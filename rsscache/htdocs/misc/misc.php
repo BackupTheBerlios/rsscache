@@ -840,8 +840,192 @@ misc_head_tags ($icon, $refresh = 0, $charset = 'UTF-8')
 }
 
 
+/*
+  split html into an array with content separated by tags
+    returns an array
+
+  $a['start']      // [...<head>]
+  $a['head']       // <head>[...]</head>
+  $a['between']    // [</head>...<body>]
+  $a['body']       // <body>[...]</body>
+  $a['end']        // [</body>...]EOF
+*/
+function
+split_html_content ($html)
+{
+  $p = strtolower ($html);
+
+  // split int head, body (and the rest)
+  $head_start = strpos ($p, '<head');
+  $head_start += strpos (substr ($p, $head_start), '>') + 1;
+  $head_len = strpos ($p, '</head>') - $head_start;
+
+  $body_start = strpos ($p, '<body');
+  $body_start += strpos (substr ($p, $body_start), '>') + 1;
+  $body_len = strpos ($p, '</body>') - $body_start;
+
+  $start = substr ($html, 0, $head_start);
+  $head = substr ($html, $head_start, $head_len);
+  $between = substr ($html, $head_start + $head_len, $body_start - ($head_start + $head_len));
+
+  $body = substr ($html, $body_start, $body_len);
+
+  $end = substr ($html, $body_start + $body_len);
+
+  $a = array ();
+
+  $a['start'] = $start;
+  $a['head'] = $head;
+  $a['between'] = $between;
+  $a['body'] = $body;
+  $a['end'] = $end;
+
+  // DEBUG
+//print_r ($a);
+
+  return $a;
+}
+
+
+define ('ALLOW_DEF', ''
+       .'<a></a>'
+       .'<br>'
+
+       .'<font></font>'
+       .'<form></form>'
+
+       .'<img>'
+       .'<input>'
+
+       .'<option></option>'
+
+       .'<pre></pre>'
+
+       .'<select></select>'
+
+       .'<table></table>'
+       .'<td></td>'
+       .'<textarea></textarea>'
+       .'<tr></tr>'
+       .'<tt></tt>'
+);
+
+
+function
+embed_other_page ($url, $form_action = '', $form_method = 'GET', $allow = ALLOW_DEF)
+{
+  $html = '';
+
+  $html = file_get_contents ($url);
+  // extract head (JS, CSS, etc.) and body
+  $a = split_html_content ($html);
+  $html = ''.$a['body'];
+
+  // normalize, remove unwanted tags
+  $html = strip_tags ($html, $allow);
+
+  // rewrite form action and method
+  // TODO: repeat
+  $html_tag = substr ($html, strpos ($html, '<form '));
+  $html_tag = substr ($html_tag, 0, strpos ($html_tag, '>') + 1);
+  $p = misc_gettag ($html_tag, array ('action' => $form_action, 'method' => $form_method), false);
+  $html = str_ireplace ($html_tag, $p, $html);
+
+  if ($form_method == 'POST')
+    {
+      // replace GET links with POST forms if necessary
+      // TODO: repeat
+      $html_tag = substr ($html, strpos ($html, '<a '));
+      $html_tag = substr ($html_tag, 0, strpos ($html_tag, '</a>') + 1);
+
+      // TODO: transform a link into a button in a post form
+//      $p = a_href_to_post_form ($html_tag);
+      $html = str_ireplace ($html_tag, $p, $html);
+    }
+
+  // HACK: fix absolute links again                     
+//  $html = str_ireplace ($url.'http://', 'http://', $html);
+
+  return $html;
+}
+
+
+function
+embed_other_page_js ($url)
+{
+  $p = '';
+
+  $p .= '<script type="text/javascript">
+';
+
+//  $p .= 'document.include = function (url) { document.write (\'<script type="text/javascript" src="\'+url+\'"></scr\'+\'ipt>\'); }';
+
+  $p .= '// new prototype defintion
+document.include = function (url)
+{
+  if (typeof (url) == \'undefined\')
+    return false;
+
+  var p, rnd;
+  if (document.all) // IE: create an ActiveX Object instance
+    p = new ActiveXObject(\'Microsoft.XMLHTTP\');
+  else // mozilla: create an instance of XMLHttpRequest
+    p = new XMLHttpRequest ();
+
+  // prevent browsers from caching the included page by appending a random number
+  rnd = Math.random ().toString ().substring (2);
+  url = url.indexOf (\'?\') > -1 ? url+\'&rnd=\'+rnd : url+\'?rnd=\'+rnd;
+
+  // open the url and write out the response
+  p.open (\'GET\', url, false);
+  p.send (null);
+
+  document.write (p.responseText);
+}
+</script>
+<script>
+document.include (\''.$url.'\');
+</script>';
+
+  return $p;
+}
+
+
+function
+random_user_agent ()
+{
+  $ua = array('Mozilla','Opera','Microsoft Internet Explorer','ia_archiver');   
+  $op = array('Windows','Windows XP','Linux','Windows NT','Windows 2000','OSX');
+  $agent  = $ua[rand(0,3)].'/'.rand(1,8).'.'.rand(0,9).' ('.$op[rand(0,5)].' '.rand(1,7).'.'.rand(0,9).'; en-US;)';
+  return $agent;
+}
+
+
+function
+tor_wrapper ($url, $tor_ip = '127.0.0.1', $tor_port = 8118, $timeout = 300)
+{
+  $agent = random_user_agent ();
+
+  $ack = curl_init();
+  curl_setopt ($ack, CURLOPT_PROXY, $tor_ip.':'.$tor_port);
+  curl_setopt ($ack, CURLOPT_URL, $url);
+  curl_setopt ($ack, CURLOPT_HEADER, 1);
+  curl_setopt ($ack, CURLOPT_USERAGENT, $agent);
+  curl_setopt ($ack, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt ($ack, CURLOPT_FOLLOWLOCATION, 1);
+  curl_setopt ($ack, CURLOPT_TIMEOUT, $timeout);
+  curl_setopt ($ack, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+
+  $syn = curl_exec ($ack);
+//  $info = curl_getinfo($ack);
+  curl_close ($ack);
+//  $info['http_code'];
+
+  return $syn;
+}
 
 
 }
+
 
 ?>

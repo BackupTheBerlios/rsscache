@@ -556,6 +556,50 @@ widget_video_dailymotion ($video_id, $width=420, $height=336)
 
 
 function
+widget_video_xvideos ($video_id, $width=510, $height=400)
+{
+  // original: 510x400
+  $p = '<object width="'.$width.'" height="'.$height.'" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"'
+      .' codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" >'
+      .'<param name="quality" value="high" />'
+      .'<param name="bgcolor" value="#000000" />'
+      .'<param name="allowScriptAccess" value="always" />'
+      .'<param name="movie" value="http://static.xvideos.com/swf/flv_player_site_v4.swf" />'
+      .'<param name="allowFullScreen" value="true" />'
+      .'<param name="flashvars" value="id_video='.$video_id.'" />'
+      .'<embed src="http://static.xvideos.com/swf/flv_player_site_v4.swf"'
+      .' allowscriptaccess="always" width="'.$width.'" height="'.$height.'"'
+      .' menu="false" quality="high" bgcolor="#000000" allowfullscreen="true"'
+      .' flashvars="id_video='.$video_id.'"'
+      .' type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />'
+      .'</object>';
+
+  return $p;
+}
+
+
+function
+widget_video_xxxbunker ($video_id, $width=550, $height=400)
+{
+  // original: 550x400
+  $p = '<object width="'.$width.'" height="'.$height.'">'
+      .'<param name="movie" value="http://xxxbunker.com/flash/player.swf"></param>'
+      .'<param name="wmode" value="transparent"></param>'
+      .'<param name="allowfullscreen" value="true"></param>'
+      .'<param name="allowscriptaccess" value="always"></param>'
+      .'<param name="flashvars" value="config=http%3A%2F%2Fxxxbunker.com%2FplayerConfig.php%3Fvideoid%3D'.$video_id.'%26autoplay%3Dfalse"></param>'
+      .'<embed src="http://xxxbunker.com/flash/player.swf"'
+      .' type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" wmode="transparent"'
+      .' width="'.$width.'" height="'.$height.'"'
+      .' flashvars="config=http%3A%2F%2Fxxxbunker.com%2FplayerConfig.php%3Fvideoid%3D'.$video_id.'%26autoplay%3Dfalse">'
+      .'</embed>'
+      .'</object>';
+
+  return $p;
+}
+
+
+function
 widget_video_xfire ($video_id, $width=425, $height=279)
 {
 //  $video_id = '1';
@@ -668,6 +712,10 @@ widget_media_demux ($media_url)
     return 5; // mp3
   else if (strstr ($media_url, '.veoh.com'))
     return 6;
+  else if (strstr ($media_url, 'xvideos.com'))
+    return 7;
+//  else if (strstr ($media_url, 'xxxbunker.com'))
+//    return 8;
 
   return 0;
 }
@@ -711,6 +759,21 @@ widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1)
       // http://www.veoh.com/videos/v6387308sYb9NxBJ
       $p = substr ($p, strpos ($p, '/videos/') + 8);
       $s .= widget_video_veoh ($p, $width, $height);
+    }
+  else if ($demux == 7)
+    {
+//http://www.xvideos.com/video266837/dia_zerva_jordan_and_kenzi_marie
+      $p = substr ($p, strpos ($p, '/video') + 6);
+      $p = substr ($p, 0, strpos ($p, '/'));        
+
+      $s .= widget_video_xvideos ($p, $width, $height);
+    }
+  else if ($demux == 8)
+    {
+//http://xxxbunker.com/1209498
+      $p = substr ($p, strpos ($p, 'xxxbunker.com/') + 14);
+
+      $s .= widget_video_xxxbunker ($p, $width, $height);
     }
 
   return $s;
@@ -874,11 +937,11 @@ widget_captcha ($captcha_path)
   $r = rand (0, sizeof ($a) - 1);
 
   $captcha_md5 = set_suffix ($a[$r], '');
-
+  $widget_captcha_key = md5 ($captcha_md5.$_SERVER['REMOTE_ADDR']); // key
   $img = $captcha_path.'/'.$captcha_md5.'.jpg'; // image name is md5 of the captcha in the image
 
   $p = '';
-  $p .= '<input type="hidden" name="widget_captcha_key" value="'.$captcha_md5.'">';
+  $p .= '<input type="hidden" name="widget_captcha_key" value="'.$widget_captcha_key.'">';
   $p .= '<img src="'.$img.'" border="0" title="enter this CAPTCHA in the field to the right">';
   $p .= '<input type="text" size="3" maxsize="3" name="widget_captcha" title="enter the CAPTCHA you see left from here">';
 
@@ -893,9 +956,9 @@ widget_captcha_check ()
   $widget_captcha_key = get_request_value ('widget_captcha_key');
 
   // DEBUG
-//  echo md5 ($widget_captcha).' == '.$widget_captcha_key.'<br>';
+//  echo md5 (md5 ($widget_captcha).$_SERVER["REMOTE_ADDR"]).' == '.$widget_captcha_key.'<br>';
 
-  if (md5 ($widget_captcha) == $widget_captcha_key)
+  if (md5 (md5 ($widget_captcha).$_SERVER["REMOTE_ADDR"]) == $widget_captcha_key)
     return TRUE;
   return FALSE;
 }
