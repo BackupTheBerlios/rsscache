@@ -31,6 +31,7 @@ tv2_body ()
          $tv2_isnew,
          $tv2_body_tag,
          $tv2_table_tag,
+         $tv2_download_video,
          $tv2_logo,
          $tv2_title,
          $tv2_search_s,
@@ -233,6 +234,8 @@ tv2_body ()
   // direct link
   $p .= ' <nobr>';
   $p .= tv2_direct_link ($d);
+  if ($tv2_download_video == 1)
+    $p .= tv2_download_video ($d);
   $p .= '</nobr>';
 
   if ($d_category->movable == 1 && $f != 'mirror')

@@ -326,10 +326,19 @@ widget_video_youtube_download_quality ($video_id)
 
 
 function
-widget_video_youtube_download ($video_id)
+widget_video_youtube_download_single ($video_id, $fmt = 18)
 {
+  // normalize
+  if (strpos ($video_id, '?v='))
+    $video_id = substr ($video_id, strpos ($video_id, '?v=') + 3);
+  if (strpos ($video_id, '&'))
+    $video_id = substr ($video_id, 0, strpos ($video_id, '&'));
+
+  // DEBUG
+//  echo $video_id;
+
 //  $page = file_get_contents('http://www.youtube.com/get_video_info?&video_id='.$video_id);
-  $page = file_get_contents('http://www.youtube.com/get_video_info?&video_id='.$video_id.'&fmt=18');
+  $page = file_get_contents('http://www.youtube.com/get_video_info?&video_id='.$video_id.'&fmt='.$fmt);
   $a = array ();
   parse_str ($page, &$a);
 
@@ -341,6 +350,28 @@ widget_video_youtube_download ($video_id)
   $a['video_url'] = $url;
 
   return $a['video_url'];
+}
+
+
+function
+widget_video_youtube_download ($video_id, $fmt = 18)
+{
+  $a = array ();
+
+  if (strstr ($video_id, '?v='))
+    $a[0] = widget_video_youtube_download_single ($video_id, $fmt);
+  else if (strstr ($video_id, 'http://')) // RSS feed
+    {
+      $b = simplexml_load_file ($video_id, $fmt);
+      // DEBUG
+//      print_r ($b);
+      for ($i = 0; isset ($b->channel->item[$i]); $i++)
+         $a[$i] = widget_video_youtube_download_single ($b->channel->item[$i]->link)."\n";
+    }
+  else
+    $a[0] = widget_video_youtube_download_single ($video_id, $fmt);
+
+  return $a;
 }
 
 
