@@ -369,7 +369,7 @@ scandir4 ($path, $sort)
 function
 misc_download ($url, $path)
 {
-  if (!($img = file_get_contents ($url, FILE_BINARY)))
+  if (!($img = file_get_contents ($url)))
     return;
 
   if (!($out = fopen ($path, 'wb')))
@@ -561,11 +561,13 @@ str_shorten ($s, $limit)
 }
 
 
+/*
 function
 short_name ($s, $limit)
 {
   return str_shorten ($s, $limit);
 }
+*/
 
 
 function
@@ -689,6 +691,7 @@ video_search ($search)
 }
 
 
+/*
 function
 vname (&$var, $scope=false, $prefix='unique', $suffix='value')
 {
@@ -701,7 +704,7 @@ vname (&$var, $scope=false, $prefix='unique', $suffix='value')
   $var = $new = $prefix.rand().$suffix;
   $vname = FALSE;
 
-  foreach($vals as $key => $val)
+  foreach ($vals as $key => $val)
     if($val === $new)
       $vname = $key;
 
@@ -709,19 +712,22 @@ vname (&$var, $scope=false, $prefix='unique', $suffix='value')
 
   return $vname;
 }
+*/
 
 
 function
 misc_exec ($cmdline, $debug = 0)
 {
   if ($debug)
-    echo $cmdline."\n";
+    echo 'cmdline: '.$cmdline."\n"
+        .'escaped: '.escapeshellcmd ($cmdline)." (not used)\n"
+;
 
   if ($debug < 2)
     {
       $a = array();
 
-      exec (escapeshellcmd ($cmdline), $a, $res);
+      exec ($cmdline, $a, $res);
 
       $p = '';
       if ($debug)
@@ -1022,6 +1028,83 @@ tor_wrapper ($url, $tor_ip = '127.0.0.1', $tor_port = 8118, $timeout = 300)
 //  $info['http_code'];
 
   return $syn;
+}
+
+
+function
+misc_youtube_download_single ($video_id, $debug = 0)
+{
+  // normalize
+  if (strpos ($video_id, '?v='))
+    $video_id = substr ($video_id, strpos ($video_id, '?v=') + 3);
+  if (strpos ($video_id, '&'))
+    $video_id = substr ($video_id, 0, strpos ($video_id, '&'));
+
+  // DEBUG
+//  echo $video_id;
+
+  $url = 'http://www.youtube.com/get_video_info?&video_id='.$video_id;
+
+/*
+  if (misc_url_exists ($url) === true)
+    {
+      $h = get_headers ($url);
+
+      // DEBUG
+//      print_r ($h);
+
+      return $h[19];
+    }
+*/
+
+  $page = file_get_contents ($url);
+  $a = array ();
+  parse_str ($page, &$a);
+
+  // DEBUG
+  if ($debug == 1)
+    {
+      echo '<pre><tt>';
+      print_r ($a);
+      echo '</tt></pre>';
+    }
+
+  $b = explode (',', $a['fmt_url_map']);
+  // DEBUG
+  if ($debug == 1)
+    {
+      echo '<pre><tt>';
+      print_r ($b);
+      echo '</tt></pre>';
+    }
+
+  $url = urldecode ($b[0]);
+  $url = substr ($url, strrpos ($url, 'http://'));
+  $a['video_url'] = $url;
+
+  return $a['video_url'];
+}
+
+
+function
+misc_youtube_download ($video_id, $debug = 0)
+{
+  $a = array ();
+
+  if (strstr ($video_id, '?v='))
+    $a[0] = misc_youtube_download_single ($video_id, $debug);
+  else if (strstr ($video_id, 'http://')) // RSS feed
+    {
+      $b = simplexml_load_file ($video_id);
+      // DEBUG
+//      print_r ($b);
+      for ($i = 0; isset ($b->channel->item[$i]); $i++)
+         $a[$i] = misc_youtube_download_single ($b->channel->item[$i]->link, $debug);
+    }
+  else
+    $a[0] = misc_youtube_download_single ($video_id, $debug);
+
+  return $a;
 }
 
 
