@@ -26,171 +26,6 @@ include_once ('misc/misc.php');
 
 
 function
-widget_onhover_link ($url, $name, $image1, $image2)
-{
-  $p = '';
-  $p .= '<a href="'.$url.'"'
-       .' onmouseover="document.'.$name.'.src='.$image1.'"'
-       .' onmouseout="document.'.$name.'.src='.$image2.'"'
-       .'><img src="'.$image1.'" border="0" name="'.$name.'"></a>';
-
-  return $p;
-}
-
-
-function
-widget_window_open ($url, $fullscreen = 0, $window_name = '')
-{
-  $p = '';
-
-  $p .= '<script type="text/javascript">'."\n";
-
-  $p .= 'function widget_window_open ()'."\n"
-       .'{'."\n";
-
-//  $p .= 'var w=screen.width;var h=screen.height;';
-
-//  $p .= 'var win=';
-
-  $p .= 'window.open(\''
-       .$url
-       .'\',\''
-       .$window_name
-       .'\',\'';
-
-// https://developer.mozilla.org/en/Gecko_DOM_Reference
-// https://developer.mozilla.org/en/DOM/window.open
-  if ($fullscreen)
-    $p .= ''
-         .'top=0,'
-         .'left=0,'
-//         .'width=\'+w+\','
-//         .'height=\'+h+\','
-         .'fullscreen,'
-//         .'menubars,'
-         .'status=0,'
-//         .'toolbar,'
-         .'location=0,'
-//         .'menubar=no,'
-//         .'directories=no,'
-//         .'resizable=no,'
-//         .'scrollbars=no,'
-//         .'copyhistory'
-;
-  else
-    $p .= ''
-         .'width=400,'
-         .'height=300,'
-         .'status=no,'
-         .'toolbar=no,'
-         .'location=no,'
-         .'menubar=no,'
-         .'directories=no,'
-         .'resizable=yes,'
-         .'scrollbars=yes,'
-         .'copyhistory=yes'
-;
-  $p .= '\').focus();'."\n";
-
-//  $p .= 'window.opener = top;'."\n"; // this will close opener in ie only (not Firefox)
-
-  if ($fullscreen)
-  $p .= 'window.moveTo(0,0);'."\n"
-       ."\n"
-       .'// changing bar states on the existing window)'."\n"
-//       .'netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserWrite");'."\n"
-       .'window.locationbar.visible=0;'."\n"
-       .'window.statusbar.visible=0;'."\n"
-       ."\n"
-       .'if (document.all)'."\n"
-       .'  window.resizeTo(screen.width, screen.height);'."\n"
-       ."\n"
-       .'else if (document.layers || document.getElementById)'."\n"
-       .'  if (window.outerHeight < screen.height || window.outerWidth < screen.width)'."\n"
-       .'    {'."\n"
-       .'      window.outerHeight = screen.height;'."\n"
-       .'      window.outerWidth = screen.width;'."\n"
-       .'    }'."\n"
-;
-
-  $p .= '}'."\n";
-
-  $p .= '</script>';
-
-  return $p;
-}
-
-
-function
-widget_carousel ($xmlfile, $width=200, $height=150)
-{
-  $p = ''
-      .'<span class="carousel_container">'
-      .'<span id="carousel1">'
-      .'</span>'
-      .'</span>'
-      .'<script type="text/javascript" src="misc/swfobject.js"></script>'
-      .'<script type="text/javascript">'."\n"
-      .'swfobject.embedSWF ('."\n"
-      .'  "misc/carousel.swf",'."\n"
-      .'  "carousel1",'."\n"
-      .'  "'.$width.'", "'.$height.'",'."\n"
-      .'  "9.0.0",'."\n"
-      .'  false,'."\n"
-      .'  {'."\n"
-      .'    xmlfile:"'.$xmlfile.'",'."\n"
-      .'    loaderColor:"0xffffff",'."\n"
-      .'    messages:"  ::  ::  ::  "'."\n"
-      .'  },'."\n"
-      .'  {bgcolor: "#ffffff"});'."\n"
-      .'</script>';
-
-  echo $p;
-}
-
-
-function
-widget_video_js ()
-{
-  // javascript:getinnerwidth() and javascript:getinnerheight()
-
-  $p = '<script type="text/javascript">'."\n"
-      .'function getinnerwidth ()'."\n"
-      .'  {'."\n"
-      .'    var w = screen.width;'."\n"
-      .'    if (self.innerWidth != undefined)'."\n"
-      .'      w = self.innerWidth;'."\n"
-      .'    else'."\n"
-      .'      {'."\n"
-      .'        var d = document.documentElement;'."\n"
-      .'        if (d)'."\n"
-      .'          w = d.clientWidth;'."\n"
-      .'      }'."\n"
-      .'    return w;'."\n"
-      .'  }'."\n"
-      ."\n\n"
-      .'function getinnerheight ()'."\n"
-      .'  {'."\n"
-      .'    var h = screen.height;'."\n"
-      .'    if (self.innerWidth != undefined)'."\n"
-      .'        h = self.innerHeight;'."\n"
-      .'    else'."\n"
-      .'      {'."\n"
-      .'        var d = document.documentElement;'."\n"
-      .'        if (d)'."\n"
-      .'          h = d.clientHeight;'."\n"
-      .'      }'."\n"
-      .'    return h;'."\n"
-      .'  }'."\n"
-      ."\n\n"
-//       .'document.write (getinnerwidth ()+\' \'+getinnerheight ());'."\n"
-      .'</script>';
-
-  return $p;
-}
-
-
-function
 widget_video_flowplayer ($video_url, $width = 400, $height = 300, $preview_image = NULL)
 {
   $fgcolor = '#ffffff';
@@ -288,39 +123,51 @@ widget_audio_jwplayer ($audio_url, $start = 0, $stream = 0, $next_stream = NULL)
       .'></embed>'
       .'</object>';
 
+/*
+else if (isset($_GET['mp3']))
+  {
+    $mp3_width = "150";				// Set the width of your FLV Player
+    $mp3_height = "120";			// Set the total height of your FLV Player
+    $mp3_dispheight = "100";		// Set the display height (above the control bar) of your FLV Player
+    
+    $mp3_bgcolor = "000000";		// Set the background color
+    $mp3_lightcolor = "CC9900";		// Set the light color
+    $mp3_backcolor = "000000";		// Set the back color
+    $mp3_frontcolor = "CCCCCC";		// Set the front color
+    
+    $mp3_site = "";
+    $mp3_file = "block_playlist.xml";	// Set the file location of the MP3 or XML file (XML must be in the "player" directory)	
+    $mp3_auto = "true";				// Set the FLV player to automatically start when the page loads
+    $mp3_shuffle = "true";			// Set the playlist to shuffle the songs
+    $mp3_digits = "false";			// Turn on/off the elapsed time digits
+    $mp3_repeat = "true";			// Set the music to auto repeat
+    $mp3_showeq = "true";			// Display faux equalizers (if your display height is high enough)
+    $mp3_showfs = "false";			// Display the Full Screen button
+    $mp3_showthumbs = "false";		// Display the thumbnail from the RSS <image> tag in the playlist
+    
+    $p .= '<object type="application/x-shockwave-flash" data="'.$mp3_site.'player/mediaplayer.swf" height="'.$mp3_height.'" width="'.$mp3_width.'">
+    	<param name="movie" value="'.$mp3_site.'player/mediaplayer.swf" />
+    	<param name="allowScriptAccess" value="never" />
+    	<param name="allowNetworking" value="internal" />
+    	<param name="wmode" value="transparent" />
+    	<param name="bgcolor" value="#FFFFFF" />
+    	<param name="flashvars" value="file='.$mp3_file.'&autostart='.$mp3_auto.'&shuffle='.$mp3_shuffle.'&showdigits='.$mp3_digits.'&showeq='.$mp3_showeq.'&showfsbutton='.$mp3_showfs.'&displayheight='.$mp3_dispheight.'&repeat='.$mp3_repeat.'&thumbsinplaylist='.$mp3_showthumbs.'&lightcolor=0x'.$mp3_lightcolor.'&backcolor=0x'.$mp3_backcolor.'&frontcolor=0x'.$mp3_frontcolor.'&bufferlength=10" />
+    	<embed allowScriptAccess="never" allowNetworking="internal" enableJavaScript="false" 
+    	src="'.$mp3_site.'player/mediaplayer.swf" wmode="transparent" width="'.$mp3_width.'" height="'.$mp3_height.'" bgcolor="#'.$mp3_bgcolor.'" 
+    	type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" 
+    	flashvars="file='.$mp3_file.'&autostart='.$mp3_auto.'&shuffle='.$mp3_shuffle.'&showdigits='.$mp3_digits.'&showeq='.$mp3_showeq.'&showfsbutton='.$mp3_showfs.'&displayheight='.$mp3_dispheight.'&repeat='.$mp3_repeat.'&thumbsinplaylist='.$mp3_showthumbs.'&lightcolor=0x'.$mp3_lightcolor.'&backcolor=0x'.$mp3_backcolor.'&frontcolor=0x'.$mp3_frontcolor.'&bufferlength=10" />
+    	</embed></object>';
+  }
+*/
+
   return $p;
 }
 
 
-/*
-<script type="text/javascript" src="http://www.youtubereloaded.com/embed/swfobject.js"></script>
-<div id="YouTubeReloadedPlayer">This div will be replaced</div>
-
-<script type="text/javascript">
-var s1 = new SWFObject('http://www.youtubereloaded.com/embed/player.swf','ply','470','470','9','#');
-s1.addParam('allowfullscreen','true');
-s1.addParam('allowscriptaccess','always');
-s1.addParam('wmode','opaque');
-s1.addParam('flashvars','file=http%3A%2F%2Fgdata.youtube.com%2Ffeeds%2Fapi%2Fvideos%3Fvq%3Dquake+arena%26max-results%3D10&playlist=bottom&frontcolor=cccccc&lightcolor=66cc00&skin=http://www.youtubereloaded.com/embed/skin1.swf&backcolor=111111&playlistsize=200&autostart=true');
-s1.write('YouTubeReloadedPlayer');
-</script>
-
-echo urldecode ('http%3A%2F%2Fgdata.youtube.com%2Ffeeds%2Fapi%2Fvideos%3Fvq%3Dquake+arena%26max-results%3D10&playlist=bottom&frontcolor=cccccc&lightcolor=66cc00&skin=http://www.youtubereloaded.com/embed/skin1.swf&backcolor=111111&playlistsize=200&autostart=true');
-
-*/
-
-
 function
-widget_video_youtube_playlist ($playlist_array, $width=425, $height=344, $autoplay = 1)
+widget_video_youtube_array ($video_id_array, $width = 425, $height = 344, $autoplay = 1)
 {
   $p = '';
-
-  if ($width == -1 || $height == -1)
-    {
-      $width = '(getinnerwidth () - 30)';
-      $height = '(getinnerheight () - 35)';
-      $p .= widget_video_js();
-    }
 
   $p .= '<script src="http://www.google.com/jsapi"></script>'
 
@@ -344,8 +191,8 @@ function play ()
 
   a = new Array (';
 
-  for ($i = 0; isset ($playlist_array[$i]); $i++)
-    $p .= ($i > 0 ? ",\n" : '').'"'.$playlist_array[$i].'"';
+  for ($i = 0; isset ($video_id_array[$i]); $i++)
+    $p .= ($i > 0 ? ",\n" : '').'"'.$video_id_array[$i].'"';
 
   $p .= '  );
 
@@ -383,96 +230,34 @@ swfobject.embedSWF("http://www.youtube.com/apiplayer?enablejsapi=1&playerapiid=y
 
 
 function
-widget_video_youtube ($video_id, $width=425, $height=344, $autoplay = 1)
+widget_video_youtube ($video_id, $width = 425, $height = 344, $autoplay = 1, $hq = 1, $loop = 0)
 {
   $url = 'http://www.youtube.com/v/'
         .$video_id
        .'&fs=1'             // allow fullscreen
-       . (
-          ($width == -1 || $height == -1) ?
-          '&ap=%2526fmt%3D22' : // embed stereo, 1280 x 720 resolution
-          '&ap=%2526fmt%3D18' // embed stereo, 480 x 270 resolution (original: 425x344)
-        )
+       .'&ap=%2526fmt%3D'.($hq ? 18 : 5) // high(er) quality?
        .'&showsearch=0'     // no search
        .'&rel=0'            // no related
        .($autoplay ? '&autoplay=1' : '')
-//       .'#t=03m22s'         // skip to
-//       .'&start=30'         // skip to (2)
-//       .'&loop=1'  
+       .($loop ? '&loop=1' : '')
 //       .'&color1=0x000000'
 //       .'&color2=0x000000'
+//       .'#t=03m22s'         // skip to
+//       .'&start=30'         // skip to (2)
 ;
 
-  $p = '';
-  $s = '<object';
-  if ($width == -1 || $height == -1)
-    {
-      $s .= ' width="\'+(getinnerwidth () - 30)+\'"'
-           .' height="\'+(getinnerheight () - 35)+\'"';
-    }
-  else
-    {
-      $s .= ' width="'.$width.'"'
-           .' height="'.$height.'"';
-    }
-
-  $s .= '>'
-       .'<param name="movie" value="'.$url.'">'
-       .'</param><param name="allowFullScreen" value="true"></param>'
-       .'</param><param name="autoplay" value="true"></param>'
-       .'<embed src="'
-       .$url
-       .'" type="application/x-shockwave-flash" allowfullscreen="true"'
-       .($autoplay ? ' autoplay="true"' : '');
-
-  if ($width == -1 || $height == -1)
-    {
-      $s .= ' width="\'+(getinnerwidth () - 30)+\'"'
-           .' height="\'+(getinnerheight () - 35)+\'"';
-    }
-  else
-    {
-      $s .= ' width="'.$width.'"'  
-           .' height="'.$height.'"';
-    }
-
-  $s .= '></embed>'
-       .'</object>';
-
-  if ($width == -1 || $height == -1)
-    {
-      $p .= widget_video_js();
-
-      $p .= ''
-           .'<script type="text/javascript">'."\n"
-           .'document.write (\''
-           .$s;
-
-      $p .= '\');'
-           .'</script>'
-;
-    }
-  else $p = $s;
-
-
-/*
-      $p = ''
-           .'<object'
-           .' width="'.$width.'"'
-           .' height="'.$height.'"'
-           .'>'
-           .'<param name="movie" value="'.$url.'">'
-           .'</param><param name="allowFullScreen" value="true"></param>'
-           .'</param><param name="autoplay" value="true"></param>'
-           .'<embed src="'
-           .$url
-           .'" type="application/x-shockwave-flash" allowfullscreen="true"'
-           .($autoplay ? ' autoplay="true"' : '')
-           .' width="'.$width.'"'
-           .' height="'.$height.'"'
-           .'></embed>'
-           .'</object>';
-*/
+  $p = ''
+      .'<object width="'.$width.'" height="'.$height.'">'
+      .'<param name="movie" value="'.$url.'">'
+      .'</param><param name="allowFullScreen" value="true"></param>'
+      .'</param><param name="autoplay" value="true"></param>'
+      .'<embed src="'.$url.'"'
+      .' type="application/x-shockwave-flash"'
+      .' allowfullscreen="true"'
+      .($autoplay ? ' autoplay="true"' : '')
+      .' width="'.$width.'" height="'.$height.'"'
+      .'></embed>'
+      .'</object>';
 
   return $p;
 }
@@ -484,7 +269,6 @@ widget_video_dailymotion ($video_id, $width=420, $height=336)
 //  $video_id = 'k4H0eU9uhV7waa1XXp';
   $url = 'http://www.dailymotion.com/swf/'.$video_id.'&related=1';
 
-  // original: 420x336
   $p = ''
       .'<object width="'.$width.'" height="'.$height.'">'
       .'<param name="movie" value="'.$url.'"></param>'
@@ -506,7 +290,7 @@ widget_video_dailymotion ($video_id, $width=420, $height=336)
 function
 widget_video_xvideos ($video_id, $width=510, $height=400)
 {
-  // original: 510x400
+
   $p = '<object width="'.$width.'" height="'.$height.'" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"'
       .' codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" >'
       .'<param name="quality" value="high" />'
@@ -529,20 +313,23 @@ widget_video_xvideos ($video_id, $width=510, $height=400)
 function
 widget_video_xxxbunker ($video_id, $width=550, $height=400)
 {
-  // original: 550x400
+  $url = 'http://xxxbunker.com/playerConfig.php?videoid='.$video_id.'&autoplay=false';
+  $url = urlencode ($url);
+
   $p = '<object width="'.$width.'" height="'.$height.'">'
       .'<param name="movie" value="http://xxxbunker.com/flash/player.swf"></param>'
       .'<param name="wmode" value="transparent"></param>'
       .'<param name="allowfullscreen" value="true"></param>'
       .'<param name="allowscriptaccess" value="always"></param>'
-      .'<param name="flashvars" value="config=http%3A%2F%2Fxxxbunker.com%2FplayerConfig.php%3Fvideoid%3D'.$video_id.'%26autoplay%3Dfalse"></param>'
+      .'<param name="flashvars" value="config='.$url.'">'
+      .'</param>'
       .'<embed src="http://xxxbunker.com/flash/player.swf"'
       .' type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" wmode="transparent"'
       .' width="'.$width.'" height="'.$height.'"'
-      .' flashvars="config=http%3A%2F%2Fxxxbunker.com%2FplayerConfig.php%3Fvideoid%3D'.$video_id.'%26autoplay%3Dfalse">'
+      .' flashvars="config='.$url.'">'
       .'</embed>'
-      .'</object>';
-
+      .'</object>'
+;
   return $p;
 }
 
@@ -553,18 +340,13 @@ widget_video_xfire ($video_id, $width=425, $height=279)
 //  $video_id = '1';
   $url = 'http://media.xfire.com/swf/embedplayer.swf';
 
-  // original: 425x279
   $p = ''
       .'<object width="'.$width.'" height="'.$height.'">'
       .'<embed src="'.$url.'"'
       .' type="application/x-shockwave-flash" allowscriptaccess="always"'
-      .' allowfullscreen="true" width="'
-      .$width
-      .'" height="'
-      .$height
-      .'" flashvars="videoid='
-      .$video_id
-      .'">'
+      .' allowfullscreen="true"'
+      .' width="'.$width.'" height="'.$height.'"'
+      .' flashvars="videoid='.$video_id.'">'
       .'</embed>'
       .'</object>'
 ;
@@ -579,7 +361,6 @@ widget_video_myspace ($video_id, $width=425, $height=360)
   $video_id = '6773592';
   $url = 'http://mediaservices.myspace.com/services/media/embed.aspx/m='.$video_id.',t=1,mt=video';
 
-  // original: 425x360
   $p = ''
       .'<object width="'.$width.'" height="'.$height.'">'
       .'<param name="allowFullScreen" value="true"/>'
@@ -605,19 +386,37 @@ widget_video_veoh ($video_id, $width=410, $height=341)
          .$video_id
          .'&player=videodetailsembedded&videoAutoPlay=0&id=anonymous';
 
-  // original: 410x341
   $p = ''
       .'<object width="'.$width.'" height="'.$height.'" id="veohFlashPlayer" name="veohFlashPlayer">'
       .'<param name="movie" value="'.$url.'"></param>'
       .'<param name="allowFullScreen" value="true"></param>'
       .'<param name="allowscriptaccess" value="always"></param>'
-      .'<embed src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="'.$width.'" height="'.$height.'" id="veohFlashPlayerEmbed" name="veohFlashPlayerEmbed"></embed>'
+      .'<embed src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="'.$width.'" height="'.$height.'" id="veohFlashPlayerEmbed" name="veohFlashPlayerEmbed">'
+      .'</embed>'
       .'</object>'
 ;
   return $p;
 }
 
 
+function
+widget_video_google ($video_id, $width=400, $height=326)
+{
+  $url = 'http://video.google.com/googleplayer.swf?docid='.$video_id.'&fs=true';
+
+  // original: 400x326
+  $p .= '<embed id="VideoPlayback" src="'.$url.'"'
+       .' style="width:'.$width.'px;height:'.$height.'px"'
+       .' allowFullScreen="true"'
+       .' allowScriptAccess="always"'
+       .' type="application/x-shockwave-flash">'
+       .'</embed>'
+;
+  return $p;
+}
+
+
+/*
 function
 widget_video_yahoo ($video_id, $width=512, $height=322)
 {
@@ -643,6 +442,7 @@ widget_video_yahoo ($video_id, $width=512, $height=322)
 ;
   return $p;
 }
+*/
 
 
 function
@@ -664,17 +464,84 @@ widget_media_demux ($media_url)
     return 7;
 //  else if (strstr ($media_url, 'xxxbunker.com'))
 //    return 8;
+//  else if (strstr ($media_url, 'video.google'))
+//    return 9;
 
   return 0;
 }
 
 
 function
-widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1)
+widget_media_fullscreen_js ()
+{
+  // javascript:getinnerwidth() and javascript:getinnerheight()
+
+  $p = '<script type="text/javascript">'."\n"
+      .'function getinnerwidth ()'."\n"
+      .'  {'."\n"
+      .'    var w = screen.width;'."\n"
+      .'    if (self.innerWidth != undefined)'."\n"
+      .'      w = self.innerWidth;'."\n"
+      .'    else'."\n"
+      .'      {'."\n"
+      .'        var d = document.documentElement;'."\n"
+      .'        if (d)'."\n"
+      .'          w = d.clientWidth;'."\n"
+      .'      }'."\n"
+      .'    return w;'."\n"
+      .'  }'."\n"
+      ."\n\n"
+      .'function getinnerheight ()'."\n"
+      .'  {'."\n"
+      .'    var h = screen.height;'."\n"
+      .'    if (self.innerWidth != undefined)'."\n"
+      .'        h = self.innerHeight;'."\n"
+      .'    else'."\n"
+      .'      {'."\n"
+      .'        var d = document.documentElement;'."\n"
+      .'        if (d)'."\n"
+      .'          h = d.clientHeight;'."\n"
+      .'      }'."\n"
+      .'    return h;'."\n"
+      .'  }'."\n"
+      ."\n\n"
+//      .'document.write (getinnerwidth ()+\' \'+getinnerheight ());'."\n"
+      .'</script>';
+
+  return $p;
+}
+
+
+function
+widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1, $hq = 1, $loop = 0)
 {
   $demux = widget_media_demux ($media_url);
   $p = $media_url;
   $s = '';
+
+  if (is_array ($p))
+    {
+      if ($demux == 1)
+        return widget_video_youtube_array ($p, $width, $height, $autoplay);
+      else
+        return '';
+    }
+
+  // javascript wrapper for fullscreen
+  $fullscreen = 0;
+  if ($width == -1 || $height == -1)
+    {   
+      $fullscreen = 1;
+
+      $width = '\'+(getinnerwidth () - 30)+\'';
+      $height = '\'+(getinnerheight () - 35)+\'';
+
+      $s .= widget_media_fullscreen_js ();
+      $s .= ''
+           .'<script type="text/javascript">'."\n"
+           .'document.write (\'';
+    } 
+
 
   if ($demux == 1) // youtube
     {
@@ -682,8 +549,8 @@ widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1)
         $p = substr ($p, strpos ($p, '?v=') + 3);
       else
         $p = substr ($p, strpos ($p, 'watch') + 12);
-
-      $s .= widget_video_youtube_playlist (array ($p), $width, $height, $autoplay);
+      
+      $s .= widget_video_youtube ($p, $width, $height, $autoplay, $hq, $loop);
     }
   else if ($demux == 2) // dailymotion
     {
@@ -723,8 +590,155 @@ widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1)
 
       $s .= widget_video_xxxbunker ($p, $width, $height);
     }
+  else if ($demux == 9)
+    {
+      $p = substr ($p, 0);
+
+      $s .= widget_video_google ($p, $width, $height);
+    }
+
+
+ if ($fullscreen)
+    {   
+      $s .= '\');'
+           ."\n\n"
+           .'</script>'
+;
+    }
+
 
   return $s;
+}
+
+
+function
+widget_media_playlist ($media_url, $width = NULL, $height = NULL, $autoplay = 1, $hq = 1, $loop = 0)
+{
+  return '';
+}
+
+
+function
+widget_onhover_link ($url, $name, $image1, $image2)
+{
+  $p = '';
+  $p .= '<a href="'.$url.'"'
+       .' onmouseover="document.'.$name.'.src='.$image1.'"'
+       .' onmouseout="document.'.$name.'.src='.$image2.'"'
+       .'><img src="'.$image1.'" border="0" name="'.$name.'"></a>';
+
+  return $p;
+}
+
+
+function
+widget_window_open ($url, $fullscreen = 0, $window_name = '')
+{
+  $p = '';
+
+  $p .= '<script type="text/javascript">'."\n";
+
+  $p .= 'function widget_window_open ()'."\n"
+       .'{'."\n";
+
+//  $p .= 'var w=screen.width;var h=screen.height;';
+
+//  $p .= 'var win=';
+
+  $p .= 'window.open(\''
+       .$url
+       .'\',\''
+       .str_replace ("'", "\'", $window_name)
+       .'\',\'';
+
+// https://developer.mozilla.org/en/Gecko_DOM_Reference
+// https://developer.mozilla.org/en/DOM/window.open
+  if ($fullscreen)
+    $p .= ''
+         .'top=0'
+         .',left=0'
+//         .',width=\'+w+\''
+//         .',height=\'+h+\''
+         .',fullscreen'
+//         .',menubars'
+         .',status=0'
+//         .',toolbar'
+         .',location=0'
+//         .',menubar=no'
+//         .',directories=no'
+//         .',resizable=no'
+//         .',scrollbars=no'
+//         .',copyhistory'
+;
+  else
+    $p .= ''
+         .'width=400'
+         .',height=300'
+         .',status=no'
+         .',toolbar=no'
+         .',location=no'
+         .',menubar=no'
+         .',directories=no'
+         .',resizable=yes'
+         .',scrollbars=yes'
+         .',copyhistory=yes'
+;
+  $p .= '\').focus();'."\n";
+
+//  $p .= 'window.opener = top;'."\n"; // this will close opener in ie only (not Firefox)
+
+  if ($fullscreen)
+  $p .= 'window.moveTo(0,0);'."\n"
+       ."\n"
+       .'// changing bar states on the existing window)'."\n"
+//       .'netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserWrite");'."\n"
+       .'window.locationbar.visible=0;'."\n"
+       .'window.statusbar.visible=0;'."\n"
+       ."\n"
+       .'if (document.all)'."\n"
+       .'  window.resizeTo(screen.width, screen.height);'."\n"
+       ."\n"
+       .'else if (document.layers || document.getElementById)'."\n"
+       .'  if (window.outerHeight < screen.height || window.outerWidth < screen.width)'."\n"
+       .'    {'."\n"
+       .'      window.outerHeight = screen.height;'."\n"
+       .'      window.outerWidth = screen.width;'."\n"
+       .'    }'."\n"
+;
+
+  $p .= '}'."\n";
+
+  $p .= '</script>';
+
+  return $p;
+}
+
+
+function
+widget_carousel ($xmlfile, $width=200, $height=150)
+{
+  $p = ''
+      .'<span class="carousel_container">'
+      .'<span id="carousel1">'
+      .'</span>'
+      .'</span>'
+      .'<script type="text/javascript" src="misc/swfobject.js"></script>'
+      .'<script type="text/javascript">'."\n"
+      .'swfobject.embedSWF ('."\n"
+      .'  "misc/carousel.swf",'."\n"
+      .'  "carousel1",'."\n"
+      .'  "'.$width.'", "'.$height.'",'."\n"
+      .'  "9.0.0",'."\n"
+      .'  false,'."\n"
+      .'  {'."\n"
+      .'    xmlfile:"'.$xmlfile.'",'."\n"
+      .'    loaderColor:"0xffffff",'."\n"
+      .'    messages:"  ::  ::  ::  "'."\n"
+      .'  },'."\n"
+      .'  {bgcolor: "#ffffff"});'."\n"
+      .'</script>';
+
+  echo $p;
 }
 
 

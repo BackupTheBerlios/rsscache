@@ -720,7 +720,7 @@ misc_exec ($cmdline, $debug = 0)
 {
   if ($debug)
     echo 'cmdline: '.$cmdline."\n"
-        .'escaped: '.escapeshellcmd ($cmdline)." (not used)\n"
+        .'escaped: '.escapeshellcmd ($cmdline).' (not used)'."\n"
 ;
 
   if ($debug < 2)
@@ -782,20 +782,6 @@ http_build_query2 ($args = array(), $use_existing_arguments = false)
     return '';
 
   return http_build_query ($a);
-/*
-  $b = array();
-  foreach ($a as $key=>$value)
-    if (gettype ($value) == 'array')
-      {
-        // handle array data properly
-        foreach($value as $val)
-          $b[] = $key.'[]='.urlencode($val);
-      }
-    else
-      $b[] = $key.'='.urlencode ($value);
-
-  return '?'.implode ('&',$b);
-*/
 } 
 
 
@@ -1061,7 +1047,6 @@ misc_youtube_download_single ($video_id, $debug = 0)
   $a = array ();
   parse_str ($page, &$a);
 
-  // DEBUG
   if ($debug == 1)
     {
       echo '<pre><tt>';
@@ -1070,7 +1055,7 @@ misc_youtube_download_single ($video_id, $debug = 0)
     }
 
   $b = explode (',', $a['fmt_url_map']);
-  // DEBUG
+
   if ($debug == 1)
     {
       echo '<pre><tt>';
@@ -1078,11 +1063,13 @@ misc_youtube_download_single ($video_id, $debug = 0)
       echo '</tt></pre>';
     }
 
+  $a = array_merge ($a, $b);
+
   $url = urldecode ($b[0]);
   $url = substr ($url, strrpos ($url, 'http://'));
   $a['video_url'] = $url;
 
-  return $a['video_url'];
+  return $a;
 }
 
 
@@ -1096,8 +1083,14 @@ misc_youtube_download ($video_id, $debug = 0)
   else if (strstr ($video_id, 'http://')) // RSS feed
     {
       $b = simplexml_load_file ($video_id);
-      // DEBUG
-//      print_r ($b);
+
+      if ($debug == 1)
+        {
+          echo '<pre><tt>';
+          print_r ($b);
+          echo '</tt></pre>';
+        }
+
       for ($i = 0; isset ($b->channel->item[$i]); $i++)
          $a[$i] = misc_youtube_download_single ($b->channel->item[$i]->link, $debug);
     }

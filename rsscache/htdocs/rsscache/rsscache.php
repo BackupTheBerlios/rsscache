@@ -38,7 +38,7 @@ tv2_body ()
          $tv2_videos_s,
          $tv2_cookie_expire;
   global $config;
-  global $f, $c, $q, $v, $start, $num, $captcha;
+  global $embed, $f, $c, $q, $v, $start, $num, $captcha;
 
   if ($captcha)
     if (widget_captcha_check () || islocalhost ())
@@ -105,6 +105,10 @@ tv2_body ()
        .'<br>'  
 ;  
 
+  // embed another page
+  if ($embed)
+    return $p.tv2_embed ();
+
   $p .= '<center>';
 
   $p .= '<div style="display:inline">';
@@ -127,6 +131,18 @@ tv2_body ()
 
   $p .= '</div>';
 
+  // show stats of RSS downloads
+  if ($f == 'stats')
+    {
+      $p .= '<br>'
+           .'<br>'
+;
+      $p .= 'stats';
+      $p .= '</center>';
+
+      return $p;
+    }
+
   // show page-wise navigation (top)
   if (!$v && $f != 'mirror')
     {
@@ -143,6 +159,7 @@ tv2_body ()
        .'<br>'
 ;
 
+  // show as cloud
   if ($f == 'cloud')
     {
       $p .= 'cloud';
@@ -296,6 +313,7 @@ tv2_body ()
 // main ()
 
 
+$embed = get_request_value ('embed'); // embed other page
 $f = get_request_value ('f'); // function
 $c = get_request_value ('c'); // category
 $q = get_request_value ('q'); // search query
