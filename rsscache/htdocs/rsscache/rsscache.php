@@ -329,7 +329,12 @@ if (!($start))
   $start = 0;
 $num = get_request_value ('num'); // number of results
 if (!($num))
-  $num = $tv2_results;
+  {
+    if ($f == 'cloud')
+      $num = ($tv2_cloud_results > 0) ? $tv2_cloud_results : 200;
+    else
+      $num = $tv2_results;
+  }
 
 
 if ($f == 'read' ||

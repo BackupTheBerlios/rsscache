@@ -432,10 +432,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
         $sql_query_s .= ' ORDER BY rsstool_date DESC';
 
       // limit
-      if ($f == 'cloud')
-        $sql_query_s .= ' LIMIT '.$start.','.(($tv2_cloud_size > 0) ? $tv2_cloud_size : 200);
-      else
-        $sql_query_s .= ' LIMIT '.$start.','.$num;
+      $sql_query_s .= ' LIMIT '.$start.','.$num;
     }
 
   $db->sql_write ($sql_query_s, 1, $debug);

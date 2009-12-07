@@ -33,15 +33,16 @@ $tv2_link_static = 'http://allowdl.com/pwnoogle/'; // static content
 $tv2_cookie_expire = time() + 3600 * 24 * 180; // 6 months
 // DEBUG (show the SQL query)
 $tv2_debug_sql = 0;
+$tv2_isnew = 3600 * 6; // how long new files are marked as new  
+$tv2_results = 10; // results per page
+$tv2_cloud_results = 500;  // number of tumbnails shown in cloud
+$tv2_download_video = 0; // show link for downloading videos
 
 
 // player settings
 $tv2_player_w = 400; // max. width
 $tv2_player_h = 300; // max. height
 //$tv2_player_w = -1; $tv2_player_h = -1; // fullscreen
-$tv2_download_video = 0; // show link for downloading videos
-$tv2_isnew = 3600 * 6; // how long new files are marked as new
-$tv2_results = 10; // results per page
 
 
 // database settings
