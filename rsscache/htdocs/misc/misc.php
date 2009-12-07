@@ -444,9 +444,9 @@ islocalhost ()
 
 
 function
-misc_get_keywords_alnum ($s)
+misc_get_keywords_alnum ($s, $keyword_size = 3)
 {
-  if (strlen (trim ($s)) < 4)
+  if (strlen (trim ($s)) < $keyword_size)
     return false;
 
   for ($i = 0; $s[$i]; $i++)
@@ -458,9 +458,9 @@ misc_get_keywords_alnum ($s)
 
 
 function
-misc_get_keywords_alpha ($s)
+misc_get_keywords_alpha ($s, $keyword_size = 3)
 {
-  if (strlen (trim ($s)) < 4)
+  if (strlen (trim ($s)) < $keyword_size)
     return false;
 
   for ($i = 0; $s[$i]; $i++)
