@@ -418,6 +418,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
         $sql_query_s .= ' AND ( tv2_duration > 300 && tv2_duration < 601 )';
       else if ($f == '10_min')
         $sql_query_s .= ' AND ( tv2_duration > 600 )';
+      else if ($f == 'cloud')
+        $sql_query_s .= ' AND ( rsstool_url LIKE \'%youtube%\' )'; // TODO: thumbnails of all videos
 
       // sort
       if ($f == 'related') // we sort related by title for playlist
@@ -431,7 +433,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
 
       // limit
       if ($f == 'cloud')
-        $sql_query_s .= ' LIMIT '.$start.',100';
+        $sql_query_s .= ' LIMIT '.$start.','.(($tv2_cloud_size > 0) ? $tv2_cloud_size : 200);
       else
         $sql_query_s .= ' LIMIT '.$start.','.$num;
     }

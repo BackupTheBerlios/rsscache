@@ -290,7 +290,6 @@ widget_video_dailymotion ($video_id, $width=420, $height=336)
 function
 widget_video_xvideos ($video_id, $width=510, $height=400)
 {
-
   $p = '<object width="'.$width.'" height="'.$height.'" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"'
       .' codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" >'
       .'<param name="quality" value="high" />'
@@ -310,6 +309,7 @@ widget_video_xvideos ($video_id, $width=510, $height=400)
 }
 
 
+/*
 function
 widget_video_xxxbunker ($video_id, $width=550, $height=400)
 {
@@ -328,6 +328,24 @@ widget_video_xxxbunker ($video_id, $width=550, $height=400)
       .' width="'.$width.'" height="'.$height.'"'
       .' flashvars="config='.$url.'">'
       .'</embed>'
+      .'</object>'
+;
+  return $p;
+}
+*/
+
+
+function
+widget_video_tnaflix ($video_id, $width=650, $height=515)
+{
+  $url = 'config=embedding_feed.php?viewkey='.$video_id;
+
+  $p = '<object type="application/x-shockwave-flash" data="http://www.tnaflix.com/embedding_player/player_v0.2.1.swf"'
+      .' width="'.$width.'" height="'.$height.'">'
+      .'<param name="allowFullScreen" value="true" />'
+      .'<param name="allowScriptAccess" value="always" />'
+      .'<param name="movie" value="http://www.tnaflix.com//embedding_player/player_v0.2.1.swf" />'
+      .'<param name="FlashVars" value="'.$url.'"/>'
       .'</object>'
 ;
   return $p;
@@ -466,6 +484,8 @@ widget_media_demux ($media_url)
 //    return 8;
 //  else if (strstr ($media_url, 'video.google'))
 //    return 9;
+  else if (strstr ($media_url, 'tnaflix.com'))
+    return 10;
 
   return 0;
 }
@@ -549,6 +569,7 @@ widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1, $hq = 1,
         $p = substr ($p, strpos ($p, '?v=') + 3);
       else
         $p = substr ($p, strpos ($p, 'watch') + 12);
+      $p = str_replace ('&feature=youtube_gdata', '', $p);
       
       $s .= widget_video_youtube ($p, $width, $height, $autoplay, $hq, $loop);
     }
@@ -595,6 +616,13 @@ widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1, $hq = 1,
       $p = substr ($p, 0);
 
       $s .= widget_video_google ($p, $width, $height);
+    }
+  else if ($demux == 10)
+    {
+//http://www.tnaflix.com/view_video.php?viewkey=e6f818fd95b6313e2c28
+      $p = substr ($p, strpos ($p, 'viewkey=') + 8);
+
+      $s .= widget_video_tnaflix ($p, $width, $height);
     }
 
 

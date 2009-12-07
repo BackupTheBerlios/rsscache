@@ -162,7 +162,12 @@ tv2_body ()
   // show as cloud
   if ($f == 'cloud')
     {
-      $p .= 'cloud';
+      for ($i = 0; isset ($d_array[$i]); $i++)
+        {
+          $d = $d_array[$i];
+          $p .= tv2_thumbnail ($d, 120, 1).' ';
+        }
+
       $p .= '</center>';
 
       return $p;
@@ -211,7 +216,7 @@ tv2_body ()
   $p .= '<b><a href="'.$s.'" title="'.$d['rsstool_title'].'">'.str_shorten ($d['rsstool_title'], 64).'</a></b>';
 
   // duration
-  $p .= tv2_duration ($d);
+  $p .= ' '.tv2_duration ($d);
 
 //  $p .= '&nbsp;';
 
@@ -233,12 +238,12 @@ tv2_body ()
   if ($v)
     {
       $p .= '<div style="width:400px;">';
-      $p .= tv2_thumbnail ($d, 128);
+      $p .= tv2_thumbnail ($d);
     }
   else
     {
       $p .= '<div style="width:600px;">';
-      $p .= tv2_thumbnail ($d, 196);
+      $p .= tv2_thumbnail ($d, 240);
     }
 
   $p .= '<br>';
