@@ -137,7 +137,7 @@ tv2_body ()
       $p .= '<br>'
            .'<br>'
 ;
-      $p .= 'stats';
+      $p .= tv2_f_stats ();
       $p .= '</center>';
 
       return $p;
@@ -399,7 +399,7 @@ if ($memcache_expire > 0)
     if ($memcache->connect ('localhost', 11211) == TRUE)
       {
         // data from the cache
-        $p = $memcache->get (md5 ($_SERVER['QUERY_STRING']));
+        $p = $memcache->get (md5 ($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']));
 
         if ($p != FALSE)
           {
@@ -464,7 +464,7 @@ else echo $p;
 // use memcache
 if ($memcache_expire > 0)
   {
-    $memcache->set (md5 ($_SERVER['QUERY_STRING']), serialize ($p), 0, $memcache_expire);
+    $memcache->set (md5 ($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']), serialize ($p), 0, $memcache_expire);
   }
 
 

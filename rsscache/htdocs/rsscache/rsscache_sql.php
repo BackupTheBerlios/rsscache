@@ -100,8 +100,9 @@ tv2_sql_stats ($category = NULL)
          $tv2_dbname;
   global $memcache_expire;
   $debug = 0;
+  $f = get_request_value ('f');
 
-  $stats = array ('videos' => 0, 'days' => 0);
+  $stats = array ('videos' => 0, 'videos_today' => 0, 'videos_7_days' => 0, 'videos_30_days' => 0, 'days' => 0);
 
   $db = new misc_sql;  
   $db->sql_open ($tv2_dbhost,
@@ -109,17 +110,11 @@ tv2_sql_stats ($category = NULL)
                  $tv2_dbpass,
                  $tv2_dbname);
 
-  // videos
-  // all at once
-//  $sql_query_s = 'SELECT COUNT(*) AS rows, tv2_moved FROM rsstool_table WHERE 1';
-//  $sql_query_s .= ' GROUP BY tv2_category ';
-//  $sql_query_s .= ';';
-
+  // downloaded items since...
+  // ...always
   $sql_query_s = 'SELECT COUNT(*) FROM rsstool_table WHERE 1';
-
   if ($category)
     $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
-
   $sql_query_s .= ';';
 
   $db->sql_write ($sql_query_s, 0, $debug);
@@ -127,37 +122,58 @@ tv2_sql_stats ($category = NULL)
 
   $stats['videos'] = (int) $r[0][0];
 
-  // days
-  $sql_query_s = 'SELECT rsstool_dl_date FROM rsstool_table WHERE 1';
+  if ($f == 'stats')
+    {
+      // ...today
+      $sql_query_s = 'SELECT COUNT(*) FROM rsstool_table WHERE rsstool_dl_date > '.mktime (0, 0, 0);
+      if ($category)
+        $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
+      $sql_query_s .= ';';
 
+      $db->sql_write ($sql_query_s, 0, $debug);
+      $r = $db->sql_read (0, $debug);
+
+      $stats['videos_today'] = (int) $r[0][0];
+
+
+      // ...last 7 days
+      $sql_query_s = 'SELECT COUNT(*) FROM rsstool_table WHERE rsstool_dl_date > '.mktime (0, 0, 0, date ('n'), date ('j') - 7);
+      if ($category)
+        $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
+      $sql_query_s .= ';';
+
+      $db->sql_write ($sql_query_s, 0, $debug);
+      $r = $db->sql_read (0, $debug);
+
+      $stats['videos_7_days'] = (int) $r[0][0]; 
+
+
+      // ...last 30 days
+      $sql_query_s = 'SELECT COUNT(*) FROM rsstool_table WHERE rsstool_dl_date > '.mktime (0, 0, 0, date ('n'), date ('j') - 30);
+      if ($category)
+        $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
+      $sql_query_s .= ';';
+
+      $db->sql_write ($sql_query_s, 0, $debug);
+      $r = $db->sql_read (0, $debug);
+
+      $stats['videos_30_days'] = (int) $r[0][0];
+    }
+
+  // total items downloaded...
+  $sql_query_s = 'SELECT rsstool_dl_date FROM rsstool_table WHERE 1';
   if ($category)
     $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
-
   $sql_query_s .= ' ORDER BY rsstool_dl_date ASC'
                    .' LIMIT 1'
                    .';';
-
-/*
-  $sql_query_s = 'SELECT rsstool_dl_date';
-
-  if ($category)
-    $sql_query_s .= ' FROM ( SELECT rsstool_dl_date FROM rsstool_table WHERE ( tv2_moved LIKE \''.$category.'\' ) )';
-  else
-    $sql_query_s .= ' FROM ( SELECT rsstool_dl_date FROM rsstool_table WHERE 1 )';
-
-  $sql_query_s .= ''
-                   .' WHERE 1'
-                   .' ORDER BY rsstool_dl_date ASC'
-                   .' LIMIT 1'
-                   .';';
-*/
 
   $db->sql_write ($sql_query_s, 0, $debug);
   $r = $db->sql_read (0, $debug);
 
   $stats['days'] = (int) ((time () - (int) $r[0][0]) / 86400);
-  $db->sql_close ();
 
+  $db->sql_close ();
 
   return $stats;
 }

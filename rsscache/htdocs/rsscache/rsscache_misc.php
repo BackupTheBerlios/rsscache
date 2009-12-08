@@ -14,6 +14,9 @@ config_xml_normalize ($config)
 
   // add new variables
   $config->videos = $stats['videos'];
+  $config->videos_today = $stats['videos_today'];
+  $config->videos_7_days = $stats['videos_7_days'];
+  $config->videos_30_days = $stats['videos_30_days'];
   $config->days = $stats['days'];
 
   for ($i = 0; $config->category[$i]; $i++)
@@ -26,6 +29,9 @@ config_xml_normalize ($config)
             $stats = tv2_sql_stats ($config->category[$i]->name);
 
             $config->category[$i]->videos = $stats['videos'];
+            $config->category[$i]->videos_today = $stats['videos_today'];
+            $config->category[$i]->videos_7_days = $stats['videos_7_days'];
+            $config->category[$i]->videos_30_days = $stats['videos_30_days'];
             $config->category[$i]->days = $stats['days'];
           }
       }
