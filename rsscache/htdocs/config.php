@@ -36,6 +36,7 @@ $tv2_debug_sql = 0;
 $tv2_isnew = 3600 * 6; // how long new files are marked as new  
 $tv2_results = 10; // results per page
 $tv2_cloud_results = 500;  // number of tumbnails shown in cloud
+$tv2_wall_results = 500;  // number of tumbnails shown in cloud
 $tv2_download_video = 0; // show link for downloading videos
 
 

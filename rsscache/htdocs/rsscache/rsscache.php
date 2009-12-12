@@ -173,6 +173,20 @@ tv2_body ()
       return $p;
     }
 
+  // show as wall
+  if ($f == 'wall')
+    {
+      for ($i = 0; isset ($d_array[$i]); $i++)
+        {
+          $d = $d_array[$i];
+          $p .= tv2_thumbnail ($d, 120, 1).' ';
+        }
+
+      $p .= '</center>';
+
+      return $p;
+    }
+
   $p .= $tv2_table_tag;
   for ($i = 0; isset ($d_array[$i]); $i++)
     {
@@ -332,6 +346,8 @@ if (!($num))
   {
     if ($f == 'cloud')
       $num = ($tv2_cloud_results > 0) ? $tv2_cloud_results : 200;
+    else if ($f == 'wall')
+      $num = ($tv2_wall_results > 0) ? $tv2_wall_results : 200;
     else
       $num = $tv2_results;
   }

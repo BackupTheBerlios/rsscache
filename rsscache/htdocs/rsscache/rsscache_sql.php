@@ -434,7 +434,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
         $sql_query_s .= ' AND ( tv2_duration > 300 && tv2_duration < 601 )';
       else if ($f == '10_min')
         $sql_query_s .= ' AND ( tv2_duration > 600 )';
-      else if ($f == 'cloud')
+      else if ($f == 'cloud' || $f == 'wall')
         $sql_query_s .= ' AND ( rsstool_url LIKE \'%youtube%\' )'; // TODO: thumbnails of all videos
 
       // sort
