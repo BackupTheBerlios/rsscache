@@ -48,8 +48,8 @@ $tv2_player_h = 300; // max. height
 
 // database settings
 $tv2_dbname = 'jack';
-$tv2_dbuser = 'jack';
-$tv2_dbpass = 'poopoo';
+$tv2_dbuser = 'root';
+$tv2_dbpass = 'nb';
 $tv2_dbhost = 'localhost';
 
 
