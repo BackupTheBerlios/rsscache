@@ -845,14 +845,30 @@ split_html_content ($html)
 {
   $p = strtolower ($html);
 
-  // split int head, body (and the rest)
-  $head_start = strpos ($p, '<head');
-  $head_start += strpos (substr ($p, $head_start), '>') + 1;
-  $head_len = strpos ($p, '</head>') - $head_start;
+  // split in head, body (and the rest)
+  if (strpos ($p, '<head'))
+    {
+      $head_start = strpos ($p, '<head');
+      $head_start += strpos (substr ($p, $head_start), '>') + 1;
+      $head_len = strpos ($p, '</head>') - $head_start;
+    }
+  else
+    {
+      $head_start = 0;
+      $head_len = 0;
+    }
 
-  $body_start = strpos ($p, '<body');
-  $body_start += strpos (substr ($p, $body_start), '>') + 1;
-  $body_len = strpos ($p, '</body>') - $body_start;
+  if (strpos ($p, '<body'))
+    {
+      $body_start = strpos ($p, '<body');
+      $body_start += strpos (substr ($p, $body_start), '>') + 1;
+      $body_len = strpos ($p, '</body>') - $body_start;
+    }
+  else
+    {
+      $body_start = 0;
+      $body_len = strlen ($html);
+    }
 
   $start = substr ($html, 0, $head_start);
   $head = substr ($html, $head_start, $head_len);
