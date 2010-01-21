@@ -647,6 +647,15 @@ widget_media_playlist ($media_url, $width = NULL, $height = NULL, $autoplay = 1,
 }
 
 
+function
+widget_media_info ($media_url)
+{
+// wikipedia link, cover from google/images, lyrics
+// download link for youtube videos
+  return '';
+}
+
+
 }
 
 ?>

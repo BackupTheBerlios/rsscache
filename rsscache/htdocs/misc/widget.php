@@ -25,10 +25,6 @@ define ('MISC_WIDGET_PHP', 1);
 include_once ('misc/misc.php');
 
 
-function
-widget_fontiles ($image_url, $image_width, $image_height, $text, $file_rows = 16, $file_cols = 16)
-{
-  $p = '';
 /*
   takes image with e.g. 16x16 font tiles and maps them to ascii codes
   generates CSS code to show text with it by using clip()ing
@@ -36,15 +32,50 @@ widget_fontiles ($image_url, $image_width, $image_height, $text, $file_rows = 16
 
   tile_rows, tile_cols
   16x16 are 256 characters/tiles
+
+  enclose this in a div tag to place it on the page
+    e.g. <div style="position:absolute;top:100px;left:200px;">
 */
+function
+widget_fontiles ($image_url, $image_width, $image_height, $text, $file_cols = 16, $file_rows = 16)
+{
+  $char_w = $image_width / $file_cols; 
+  $char_h = $image_height / $file_rows;
+
+  $p = '';
+  for ($i = 0; $i < strlen ($text); $i++)
+    {
+      $c = ord ($text[$i]);
+
+      $left = $c % $file_cols;
+      $left *= $char_w;
+
+      $top = (int) ($c / $file_rows);
+      $top *= $char_h;
+
+      $right = $left + $char_w;
+      $bottom = $top + $char_h;
+
+      $pos_left = $i * $char_w - $left;
+      $pos_top = 0 - $top; 
+
+      $p .= '<img src="'.$image_url.'" style="'
+           .'position:absolute;'
+           .'clip:rect('.$top.'px,'.$right.'px,'.$bottom.'px,'.$left.'px);'
+           .'top:'.$pos_top.'px;left:'.$pos_left.'px;'
+           .'width:'.$image_width.';height:'.$image_height.';'
+           .'">'."\n";
+    }
 
   return $p;
 }
 
 
 function
-widget_onhover_link ($url, $name, $image1, $image2)
+widget_onhover_link ($url, $image1, $image2)
 {
+  $name = rand (0, 99999999).crc32 ($url.$image1.$image2);
+
   $p = '';
   $p .= '<a href="'.$url.'"'
        .' onmouseover="document.'.$name.'.src='.$image1.'"'
@@ -167,10 +198,28 @@ widget_carousel ($xmlfile, $width=200, $height=150)
 
 
 function
-widget_trace ($ip)
+widget_trace ($ip, $lat, $lon)
 {
-// shows google maps by ip(geoip?), country, city, or long/lat
 //http://maps.google.com/?ie=UTF8&ll=37.0625,-95.677068&spn=31.013085,55.634766&t=h&z=4
+
+//  $lat and $lon are the center
+
+  $p = '';
+  $p .= ''
+       .'<iframe width="425" height="350"'
+       .' frameborder="0"'
+       .' scrolling="no"'
+       .' marginheight="0"'
+       .' marginwidth="0"'
+       .' src="http://www.openstreetmap.org/export/embed.html?bbox=8.670514,52.110447,8.676828,52.113362&layer=mapnik"'
+       .' style="border: 1px solid black">'
+       .'</iframe>'
+//       .'<br>'
+//       .'<small>'
+//       .'<a href="http://www.openstreetmap.org/?lat=52.1119045&lon=8.673671&zoom=17&layers=B000FTFT">View Larger Map</a>'
+//       .'</small>'
+;
+  return $p;
 }
 
 
@@ -384,32 +433,8 @@ widget_table ($title_array, $content_array)
 */
 
 
-/*
-0  	dev  	device number
-1 	ino 	inode number *
-2 	mode 	inode protection mode
-3 	nlink 	number of links
-4 	uid 	userid of owner *
-5 	gid 	groupid of owner *
-6 	rdev 	device type, if inode device
-7 	size 	size in bytes
-8 	atime 	time of last access (Unix timestamp)
-9 	mtime 	time of last modification (Unix timestamp)
-10 	ctime 	time of last inode change (Unix timestamp)
-11 	blksize 	blocksize of filesystem IO **
-12 	blocks 	number of blocks allocated **
-
-* On Windows this will always be 0.
-
-** Only valid on systems supporting the st_blksize type - other systems (e.g. Windows) return -1.
-
-In case of error, stat() returns FALSE
-*/
-
-
-/*
 function
-widget_index_sort_time ($a, $b)
+widget_indexof_sort_time ($a, $b)
 {
   if ($a[3] == $b[3])
     return 0;
@@ -417,6 +442,7 @@ widget_index_sort_time ($a, $b)
 }
 
 
+/*
 function
 widget_index_tree ($name, $path, $mime_type, $flags)
 {
@@ -451,9 +477,8 @@ widget_index_tree ($name, $path, $mime_type, $flags)
 */
 
 
-/*
 function
-widget_index_func ($b)
+widget_indexof_func ($b)
 {
 // DEBUG
 //  return '<pre><tt>'.sprint_r ($b).'</tt></pre>';  
@@ -479,6 +504,8 @@ widget_index_func ($b)
 
       $p .= '</td><td>';
 
+      date_default_timezone_set ('Europe/Berlin');
+//      $p .= date ("%a %d-%b-%y %T %Z", strtotime ($b[$i][3]));
       $p .= strftime ("%a %d-%b-%y %T %Z", $b[$i][3]);
 
       $p .= '</td><td>';
@@ -498,17 +525,8 @@ widget_index_func ($b)
 
 
 function
-widget_index ($dir, $recursive, $suffix, $index_func)
+widget_indexof ($dir, $suffix, $indexof_func)
 {
-  // TODO: make recursive work
-  $recursive = 0;
-
-  // cached
-//  static $b = array (array ());
-//  if ($b)
-//    if ($b[0])
-//      if ($b[0][0])
-//        return $b;
   $b = array (array ());
  
   $a = array ();
@@ -528,7 +546,7 @@ widget_index ($dir, $recursive, $suffix, $index_func)
       if ($basename == '.' || $basename == '..')
         continue;
 
-      if (!is_file ($path) && !($recursive && is_dir ($path)))
+      if (!is_file ($path))
         continue;
 
       if ($suffix)
@@ -537,6 +555,31 @@ widget_index ($dir, $recursive, $suffix, $index_func)
 
       $b[$j][0] = $dirname;
       $b[$j][1] = $basename;
+
+/*
+stat ()
+
+0  	dev  	device number
+1 	ino 	inode number *
+2 	mode 	inode protection mode
+3 	nlink 	number of links
+4 	uid 	userid of owner *
+5 	gid 	groupid of owner *
+6 	rdev 	device type, if inode device
+7 	size 	size in bytes
+8 	atime 	time of last access (Unix timestamp)
+9 	mtime 	time of last modification (Unix timestamp)
+10 	ctime 	time of last inode change (Unix timestamp)
+11 	blksize 	blocksize of filesystem IO **
+12 	blocks 	number of blocks allocated **
+
+* On Windows this will always be 0.
+
+** Only valid on systems supporting the st_blksize type - other systems (e.g. Windows) return -1.
+
+In case of error, stat() returns FALSE
+*/
+
 
       $s = stat ($path);
       $b[$j][2] = $s['size'];
@@ -548,11 +591,10 @@ widget_index ($dir, $recursive, $suffix, $index_func)
     }
 
   // sort by date or size or suffix
-  usort ($b, 'widget_index_sort_time');
+  usort ($b, 'widget_indexof_sort_time');
 
-  return $index_func ? $index_func ($b) : widget_index_func ($b);
+  return $indexof_func ? $indexof_func ($b) : widget_indexof_func ($b);
 }
-*/
 
 
 // widget_relate() flags

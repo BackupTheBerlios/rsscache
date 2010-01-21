@@ -53,6 +53,20 @@ $tv2_dbpass = 'poopoo';
 $tv2_dbhost = 'localhost';
 
 
+// rescue
+//$rescue_default = 'http://www.youtube.com/watch?v=MkDrWsBhFjo';
+//$rescue_default = 'http://www.youtube.com/watch?v=4Inr22ZBmdw';
+//$rescue_default = 'http://www.youtube.com/watch?v=dh3bleXWaCk';
+//$rescue_default = 'http://www.youtube.com/watch?v=rvNTrvJorbs';
+$rescue_default = 'http://www.youtube.com/watch?v=CzAYDtOD8UY';
+
+$rescue_videos_horizontal = 4;
+$rescue_w = 1024; $rescue_h = 768;
+$rescue_autoplay = 0;
+$rescue_hq = 1; // high quality
+$rescue_max_videos = 48;
+
+
 }
 
 
