@@ -23,6 +23,8 @@ if (!defined ('MISC_WIDGET_PHP'))
 {
 define ('MISC_WIDGET_PHP', 1);  
 include_once ('misc/misc.php');
+if (file_exists ('geoip/geoipcity.inc') == TRUE)
+  include_once ('geoip/geoipcity.inc'); // widget_geotrace()
 
 
 /*
@@ -198,27 +200,40 @@ widget_carousel ($xmlfile, $width=200, $height=150)
 
 
 function
-widget_trace ($ip, $lat, $lon)
+widget_geotrace ($host, $w = '100%', $h = '100%')
 {
 //http://maps.google.com/?ie=UTF8&ll=37.0625,-95.677068&spn=31.013085,55.634766&t=h&z=4
-
-//  $lat and $lon are the center
-
   $p = '';
-  $p .= ''
-       .'<iframe width="425" height="350"'
-       .' frameborder="0"'
-       .' scrolling="no"'
-       .' marginheight="0"'
-       .' marginwidth="0"'
-       .' src="http://www.openstreetmap.org/export/embed.html?bbox=8.670514,52.110447,8.676828,52.113362&layer=mapnik"'
-       .' style="border: 1px solid black">'
-       .'</iframe>'
-//       .'<br>'
-//       .'<small>'
-//       .'<a href="http://www.openstreetmap.org/?lat=52.1119045&lon=8.673671&zoom=17&layers=B000FTFT">View Larger Map</a>'
-//       .'</small>'
+
+  // GeoLiteCity
+  if (file_exists ('GeoLiteCity.dat'))
+    {
+      geoip_load_shared_mem ('GeoLiteCity.dat');
+      $gi = geoip_open ('GeoLiteCity.dat', GEOIP_SHARED_MEMORY);
+      $host = gethostbyname ($host);
+      $a = GeoIP_record_by_addr ($gi, $host);
+      geoip_close ($gi);
+
+      // DEBUG
+//      echo '<pre><tt>';
+//      print_r ($a);
+
+      $p .= ''
+           .'<iframe width="'.$w.'" height="'.$h.'"'
+           .' frameborder="0"'
+           .' scrolling="no"'
+           .' marginheight="0"'
+           .' marginwidth="0"'
+           .' src="http://www.openstreetmap.org/export/embed.html?bbox='
+             .($a->longitude - 0.005).','
+             .($a->latitude - 0.005).','
+             .($a->longitude + 0.005).','
+             .($a->latitude + 0.005).'&layer=mapnik"'
+           .'>'
+           .'</iframe>'
 ;
+    }
+
   return $p;
 }
 
@@ -1076,6 +1091,45 @@ widget_adsense2 ($client, $w, $h, $border_color, $flags)
         ."</script>\n";
 }
 */
+
+
+// originally in rss.php
+function
+rss_to_array ($tag, $array, $url)
+{
+  $doc = new DOMdocument();
+  $doc->load($url);
+
+  $rss_array = array();
+  $items = array();
+
+  foreach($doc->getElementsByTagName($tag) AS $node)
+    {
+      foreach($array AS $key => $value)
+        {
+          $items[$value] = $node->getElementsByTagName($value)->item(0)->nodeValue;
+        }
+      array_push ($rss_array, $items);
+    }
+
+  return $rss_array;
+}
+
+
+function
+widget_shoutbox ($rssfeed, $submit_shout_func)
+{
+  /*
+    display rssfeed with shouts
+    title: shout
+    link: to user profile
+    desc: user name and date
+  */
+  $rss = simplexml_load_file ($rssfeed);
+
+  // executes submit_shout_func(shout) on submit
+}
+
 
 }
 

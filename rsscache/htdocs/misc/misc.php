@@ -26,6 +26,30 @@ define ('MISC_MISC_PHP', 1);
 
 
 function
+tor_wrapper ($url, $tor_ip = '127.0.0.1', $tor_port = 8118, $timeout = 300)
+{
+  $agent = random_user_agent ();
+
+  $ack = curl_init();
+  curl_setopt ($ack, CURLOPT_PROXY, $tor_ip.':'.$tor_port);
+  curl_setopt ($ack, CURLOPT_URL, $url);
+  curl_setopt ($ack, CURLOPT_HEADER, 1);
+  curl_setopt ($ack, CURLOPT_USERAGENT, $agent);
+  curl_setopt ($ack, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt ($ack, CURLOPT_FOLLOWLOCATION, 1);
+  curl_setopt ($ack, CURLOPT_TIMEOUT, $timeout);
+  curl_setopt ($ack, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+
+  $syn = curl_exec ($ack);
+//  $info = curl_getinfo($ack);
+  curl_close ($ack);
+//  $info['http_code'];
+
+  return $syn;
+}
+
+
+function
 misc_url_exists ($url)
 {
   if (file_get_contents ($url, FALSE, NULL, 0, 0) === false)
@@ -710,6 +734,48 @@ video_search ($search)
 // youtube
 //    <feed>http://video.google.com/videosearch?q=quakeworld&amp;so=1&amp;output=rss&amp;num=1000</feed>
 //    <feed>http://gdata.youtube.com/feeds/api/videos?vq=quake1&amp;max-results=50</feed>
+}
+
+
+function
+wikipedia_search ($search)
+{
+  $url = 'http://en.wikipedia.org/w/index.php?title=Special%3ASearch&redirs=0&search='.$search.'&fulltext=Search&ns0=1';
+  return $url;
+}
+
+
+function
+lyrics_search ($search)
+{
+  $url = 'http://www.google.com/search?ie=UTF-8&oe=utf-8&q='.$search;
+  return $url;
+}
+
+
+function
+image_search ($search)
+{
+  $url = 'http://images.google.com/search?ie=UTF-8&oe=utf-8&q='.$search;             
+  return $url;
+}
+
+
+// gaming
+function
+walkthrough_search ($search)
+{
+  $url = 'http://images.google.com/search?ie=UTF-8&oe=utf-8&q=walkthrough+'.$search;
+  return $url;
+}
+
+
+// gaming
+function
+cheat_search ($search)
+{
+  $url = 'http://images.google.com/search?ie=UTF-8&oe=utf-8&q=cheat+'.$search;
+  return $url;
 }
 
 

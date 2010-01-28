@@ -130,7 +130,7 @@ rss_to_array ($tag, $array, $url)
         {
           $items[$value] = $node->getElementsByTagName($value)->item(0)->nodeValue;
         }
-      array_push($rss_array, $items);
+      array_push ($rss_array, $items);
     }
 
   return $rss_array;
