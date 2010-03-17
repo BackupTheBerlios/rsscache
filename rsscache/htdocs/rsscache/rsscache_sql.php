@@ -380,6 +380,12 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
   $start = $db->sql_stresc ($start);
   $num = $db->sql_stresc ($num);
 
+//SELECT rsstool_table.desc FROM rsstool_table WHERE rsstool_table.id = (
+// SELECT id_table.id FROM id_table LEFT_JOIN id_table ON
+// id_table.keyword_id = keywords_table_id WHERE(keywords_table.  keyword =
+// "search" OR keywords_table.keyword = "search2"));
+
+
   $sql_query_s = '';
 //  $sql_query_s .= 'EXPLAIN ';
 //  $sql_query_s .= 'SELECT * FROM rsstool_table WHERE 1';

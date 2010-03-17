@@ -74,6 +74,34 @@ widget_fontiles ($image_url, $image_width, $image_height, $text, $file_cols = 16
 
 
 function
+widget_collapse ($label, $s, $collapsed)
+{
+  $r = rand ();
+
+  $p = '';
+
+  $p .= '<script type="text/javascript">'
+       .'<!--'."\n"
+       .'function widget_collapse (obj)'."\n"
+       .'{'."\n"
+       .'  var o = document.getElementById(obj);'."\n"
+       .'  o.style.display = (o.style.display != \'none\') ? \'none\' : \'\';'."\n"
+       .'}'."\n"
+//       .'document.write (\'<a href="javascript:widget_collapse(\''.$r.'\');">'.$label.'</a>\');'."\n"
+       .'//-->'
+       .'</script>'
+       .'<a href="javascript:widget_collapse(\''.$r.'\');">'.$label.'</a>'
+       .'<div id="'.$r.'"'
+       .($collapsed ? ' style="display:none;"' : '')
+       .'>'
+       .$s
+       .'</div>';
+
+  return $p;
+}
+
+
+function
 widget_onhover_link ($url, $image1, $image2)
 {
   $name = rand (0, 99999999).crc32 ($url.$image1.$image2);
@@ -1093,6 +1121,7 @@ widget_adsense2 ($client, $w, $h, $border_color, $flags)
 */
 
 
+/*
 // originally in rss.php
 function
 rss_to_array ($tag, $array, $url)
@@ -1114,6 +1143,7 @@ rss_to_array ($tag, $array, $url)
 
   return $rss_array;
 }
+*/
 
 
 function
