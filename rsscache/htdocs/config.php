@@ -64,7 +64,10 @@ $rescue_videos_horizontal = 4;
 $rescue_w = 1024; $rescue_h = 768;
 $rescue_autoplay = 0;
 $rescue_hq = 1; // high quality
-$rescue_max_videos = 48;
+$rescue_max_videos = 64;
+$rescue_max_search_results = 32;
+// connect to sites using TOR
+$rescue_tor_enabled = 0;
 
 
 }
