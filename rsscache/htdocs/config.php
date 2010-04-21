@@ -16,7 +16,7 @@ $tv2_search_s = 'Search';
 $tv2_title = 'pwnoogle \:D/ - watch videos of games';
 $tv2_body_tag = '<body style="font-family:sans-serif;font-size:13px;opacity:1.0;">'
                .'<a href="http://pwnoogle.com">Videos</a>&nbsp;&nbsp;'
-               .'<a href="http://demos.pwnoogle.com/demos.php">Demos</a>&nbsp;&nbsp;'
+//               .'<a href="http://demos.pwnoogle.com/demos.php">Demos</a>&nbsp;&nbsp;'
                .'<a href="http://aa2map.y7.ath.cx">Map Generator</a>&nbsp;&nbsp;'
                .'<a href="http://clanarena.org">Forum @ <img src="images/ca.png" border="0" height="24"></a><br><hr>';
 $tv2_table_tag = '<table style="font-family:sans-serif;font-size:13px;opacity:1.0;" cellspacing="0" cellpadding="0" border="0">';
