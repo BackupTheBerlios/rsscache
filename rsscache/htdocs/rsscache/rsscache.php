@@ -281,7 +281,7 @@ tv2_body ()
       $p .= '</nobr>';
     }
 
-  if ($d_category->report == 1 && $f != 'mirror')
+  if ($d_category->reportable == 1 && $f != 'mirror')
     {
       $p .= '<br><nobr>';
       $p .= tv2_report_form ($d);
