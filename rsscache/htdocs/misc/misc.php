@@ -829,25 +829,22 @@ misc_exec ($cmdline, $debug = 0)
     echo 'cmdline: '.$cmdline."\n"
         .'escaped: '.escapeshellcmd ($cmdline).' (not used)'."\n"
 ;
+  if ($debug == 2)
+    return '';
 
-  if ($debug < 2)
-    {
-      $a = array();
+  $a = array();
 
-      exec ($cmdline, $a, $res);
+  exec ($cmdline, $a, $res);
 
-      $p = '';
-      if ($debug)
-        $p = $res."\n";
+  $p = '';
+  if ($debug)
+    $p = $res."\n";
 
-      $i_max = sizeof ($a);
-      for ($i = 0; $i < $i_max; $i++)
-        $p .= $a[$i]."\n";
+  $i_max = count ($a);
+  for ($i = 0; $i < $i_max; $i++)
+    $p .= $a[$i]."\n";
 
-      return $p;
-    }
-
-  return '';
+  return $p;
 }
 
 
