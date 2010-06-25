@@ -398,7 +398,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                   .' rsstool_date,'
                   .' tv2_category,'
                   .' tv2_moved,'
-                  .' tv2_duration,'
+                  .' rsstool_media_duration,'
                   .' tv2_keywords,'
                   .' tv2_votes,'
                   .' tv2_score'
@@ -435,11 +435,11 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
       if ($f == 'new')
         $sql_query_s .= ' AND ( rsstool_dl_date > '.(time () - $tv2_isnew).' )';
       else if ($f == '0_5min')
-        $sql_query_s .= ' AND ( tv2_duration > 0 && tv2_duration < 301 )';
+        $sql_query_s .= ' AND ( rsstool_media_duration > 0 && rsstool_media_duration < 301 )';
       else if ($f == '5_10min')
-        $sql_query_s .= ' AND ( tv2_duration > 300 && tv2_duration < 601 )';
+        $sql_query_s .= ' AND ( rsstool_media_duration > 300 && rsstool_media_duration < 601 )';
       else if ($f == '10_min')
-        $sql_query_s .= ' AND ( tv2_duration > 600 )';
+        $sql_query_s .= ' AND ( rsstool_media_duration > 600 )';
       else if ($f == 'cloud' || $f == 'wall')
         $sql_query_s .= ' AND ( rsstool_url LIKE \'%youtube%\' )'; // TODO: thumbnails of all videos
 
