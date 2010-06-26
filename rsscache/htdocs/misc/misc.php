@@ -823,7 +823,7 @@ vname (&$var, $scope=false, $prefix='unique', $suffix='value')
 
 
 function
-misc_exec ($cmdline, $debug = 0)
+misc_exec ($cmdline, $debug = 1)
 {
   if ($debug)
     echo 'cmdline: '.$cmdline."\n"
