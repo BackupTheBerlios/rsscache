@@ -734,134 +734,147 @@ In case of error, stat() returns FALSE
 }
 
 
-// widget_relate() flags
-//define ('WIDGET_RELATE_BOOKMARK',    1<<6);  // browser bookmark
-//define ('WIDGET_RELATE_STARTPAGE',   1<<7);  // use as start page
-//define ('WIDGET_RELATE_SEARCH',      1<<8);  // add search plugin to browser
-//define ('WIDGET_RELATE_LINKTOUS',    1<<9);  // link-to-us code for link sections of other sites
-define ('WIDGET_RELATE_TELLAFRIEND', 1<<10); // send tell-a-friend email
-define ('WIDGET_RELATE_SBOOKMARKS',  1<<11); // social bookmarks
-//define ('WIDGET_RELATE_DIGGTHIS',    1<<12);
-//define ('WIDGET_RELATE_DONATE',      1<<13); // donate button (paypal, etc..)
-//define ('WIDGET_RELATE_RSSFEED',     1<<14); // generate RSS feed
-define ('WIDGET_RELATE_ALL',
-//                                     WIDGET_RELATE_BOOKMARK|
-//                                     WIDGET_RELATE_STARTPAGE|
-//                                     WIDGET_RELATE_SEARCH|
-//                                     WIDGET_RELATE_LINKTOUS|
-                                     WIDGET_RELATE_TELLAFRIEND|
-                                     WIDGET_RELATE_SBOOKMARKS // |
-//                                     WIDGET_RELATE_DIGGTHIS|
-//                                     WIDGET_RELATE_DONATE|
-//                                     WIDGET_RELATE_RSSFEED
-);
+/*
+  PR (public relation) widgets
+
+  widget_pr_diggit()
+  widget_pr_share()
+  widget_pr_bookmark()
+  widget_pr_startpage()
+  widget_pr_rssfeed()
+  widget_pr_donate()
+  widget_pr_socialbookmark()
+*/
+function
+widget_pr_share ($title, $url)
+{
+  $title = trim ($title);
+  $url = trim ($url);
+  $p = '';
+
+  $p .= '<img src="images/widget/widget_relate_tellafriend.png" border="0">'
+       .'<a href="mailto:?body='
+       .$url
+       .'&subject='
+       .$title
+       .'"'
+       .'>Share</a>'
+;
+  return $p;
+}
+
+
+/*
+function
+widget_pr_diggit ($title, $url)
+{
+  $title = trim ($title);
+  $url = trim ($url);
+  $p = '';
+
+  // digg this button
+  $p .= '<script><!--'."\n"
+       .'digg_url = \''
+       .$url
+       .'\';'
+       .'//--></script>'
+       .'<script type="text/javascript" src="http://digg.com/api/diggthis.js"></script>'
+;
+  return $p;
+}
 
 
 function
-widget_relate ($title, $url, $rss_feed_url, $vertical, $flags)
+widget_pr_bookmark ($title, $url)
 {
-  $p = '';
-//  $p .= '<table border="0" cellpadding="0" cellspacing="0" style="background-color:#fff;">'
-//       .'<tr><td>';
-//  $p .= '<font size="-1" face="arial,sans-serif">';
-
   $title = trim ($title);
   $url = trim ($url);
-  $lf = $vertical ? '<br>' : ' ';
 
-/*
-  // digg this button
-  if ($flags & WIDGET_RELATE_DIGGTHIS)
-    $p .= '<script><!--'."\n"
-         .'digg_url = \''
-         .$url
-         .'\';'
-         .'//--></script>'
-         .'<script type="text/javascript" src="http://digg.com/api/diggthis.js"></script>'
-         .$lf;
-
-  // donate
-  if ($flags & WIDGET_RELATE_DONATE)
-    $p .= '<img class="widget_relate_img" src="images/widget/widget_relate_paypal.png" border="0">'
-         .'<a class="widget_relate_label" href="http://paypal.com">Donate</a>'
-.'<pre>* * *   D O N A T I O N S   A R E   A C C E P T E D   * * *</pre><br>'
-.'<br>'
-.'<img src="images/widget_relate_refrigator.jpg" border="0"><br>'
-.'<br>'
-.'Individuals and companies can now donate funds to support me and keep me from<br>'
-.'writing proprietary software.<br>'
-.'<br>'
-.'Thank You!<br>'
-.'<br>'
-.'<pre>* * *   D O N A T I O N S   A R E   A C C E P T E D   * * *</pre><br-->'
-.'search widget to include in other pages'
-         .$lf;
-
-  // link-to-us code for link sections of other sites
-  if ($flags & WIDGET_RELATE_LINKTOUS)
-    $p .= '<textarea title="Add this code to your blog or website">Link to us</textarea>'
-         .$lf;
-*/
-
-  if ($flags & WIDGET_RELATE_TELLAFRIEND)
-    $p .= '<img class="widget_relate_img" src="images/widget/widget_relate_tellafriend.png" border="0">'
-         .'<a class="widget_relate_label" href="mailto:?body='
-         .$url
-         .'&subject='
-         .$title
-         .'"'
-         .'>Share</a>'
-         .$lf;
-/*
   // add browser bookmark
-  if ($flags & WIDGET_RELATE_BOOKMARK)
-    $p .= '<img class="widget_relate_img" src="images/widget/widget_relate_star.png" border="0">'
-         .'<a class="widget_relate_label"'
-         .' href="javascript:js_bookmark (\''
-         .$url
-         .'\', \''
-         .$title
-         .'\');"'
-         .' border="0">Bookmark</a>'
-         .$lf;
+  $p = '';
+  $p .= '<img src="images/widget/widget_relate_star.png" border="0">'
+       .'<a href="javascript:js_bookmark (\''
+       .$url
+       .'\', \''
+       .$title
+       .'\');"'
+       .' border="0">Bookmark</a>'
+;
+  return $p;
+}
+
+
+function
+widget_pr_startpage ($title, $url)
+{
+  $title = trim ($title);
+  $url = trim ($url);
+  $p = '';
 
   // use as startpage
-  if ($flags & WIDGET_RELATE_STARTPAGE)
-    $p .= '<img class="widget_relate_img" src="images/widget/widget_relate_home.png" border="0">'
-         .'<a class="widget_relate_label"'
-         .' href="http://"'
-         .' onclick="this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'http://torrent-finder.com\');"'
-         .'>'
-         .'Make us your start page</a>'
-         .$lf;
+  $p .= '<img src="images/widget/widget_relate_home.png" border="0">'
+       .'<a href="http://"'
+       .' onclick="this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'http://torrent-finder.com\');"'
+       .'>'
+       .'Make us your start page</a>'
+;
+  return $p;
+}
 
-  // add search plugin to browser
-  if ($flags & WIDGET_RELATE_SEARCH)
-    $p .= '<img class="widget_relate_img" src="images/widget/widget_relate_search.png" border="0">'
-         .'<a class="widget_relate_label"'
-         .' href="http://'
-//         .' href=\"javascript:js_bookmark('"
-//         .$title
-//         .'\', \''
-//         .$url
-//         .'\')"'
-         .' border="0">Add search</a>'
-         .$lf;
+
+function
+widget_pr_rssfeed ($title, $url, $rss_feed_url)
+{
+  $title = trim ($title);
+  $url = trim ($url);
+  $p = '';
 
   // generate rss feed
-  if ($flags & WIDGET_RELATE_RSSFEED)
-    $p .= '<img class="widget_relate_img" src="images/widget/widget_relate_rss.png" border="0">'
-         .'<a class="widget_relate_label"'
-         .' href="'
-         .$rss_feed_url
-         .'"'
-         .' border="0">RSS feed</a>'
-         .$lf;
+  $p .= '<img src="images/widget/widget_relate_rss.png" border="0">'
+       .'<a href="'
+       .$rss_feed_url
+       .'"'
+       .' border="0">RSS feed</a>'
+;
+  return $p;
+}
+
+
+function
+widget_pr_donate ($title, $url)
+{
+  $title = trim ($title);
+  $url = trim ($url);
+  $p = '';  
+
+  // donate
+  $p .= '<img src="images/widget/widget_relate_paypal.png" border="0">'
+       .'<a href="http://paypal.com">Donate</a>'
+       .'<pre>* * *   D O N A T I O N S   A R E   A C C E P T E D   * * *</pre><br>'
+       .'<br>'
+       .'<img src="images/widget_relate_refrigator.jpg" border="0"><br>'
+       .'<br>'
+       .'Individuals and companies can now donate funds to support me and keep me from<br>'
+       .'writing proprietary software.<br>'
+       .'<br>'
+       .'Thank You!<br>'
+       .'<br>'
+       .'<pre>* * *   D O N A T I O N S   A R E   A C C E P T E D   * * *</pre><br-->'
+       .'search widget to include in other pages'
+;
+  return $p;
+}
 */
 
+
+function
+widget_pr_socialbookmark ($title, $url)
+{
+  $title = trim ($title);
+  $url = trim ($url);
+  $p = '';
+
   // social bookmarks
-  if ($flags & WIDGET_RELATE_SBOOKMARKS)
-    {
       $a = array (
         array ('Digg',			'digg.png', 'http://digg.com/submit?phase=2&url=', '&bodytext=&tags=&title='),
 //        array ('Digg',		'digg.png', 'http://digg.com/submit?phase=2&url=', '&title='),
@@ -986,32 +999,6 @@ widget_relate ($title, $url, $rss_feed_url, $vertical, $flags)
         array ('Yigg',			'yigg.png', 'http://yigg.de/neu?exturl=', NULL),
 //        array ('Zumaa',		'zumaa.png', NULL, NULL),
 //        array ('Zurpy',		'zurpy.png', NULL, NULL),
-*/
-      );
-
-      $i_max = sizeof ($a);
-      for ($i = 0; $i < $i_max; $i++)
-        $p .= '<a class="widget_relate_img" href="'
-             .$a[$i][2]
-             .urlencode ($url)
-             .($a[$i][3] ? $a[$i][3].urlencode ($title) : '')
-             .'" alt="Add to '
-             .$a[$i][0]
-             .'" title="Add to '
-             .$a[$i][0]
-             .'">'
-             .'<img src="images/widget/widget_relate_'
-             .$a[$i][1]
-             .'" border="0"></a>';
-
-      $p .= $lf;
-    }
-
-  return $p; 
-}
-
-
-/*
 <a href="javascript:bookmarksite('Bittorrent Search Engine', 'http://yotoshi.com')">Bookmark us!</a>
 
 
@@ -1076,7 +1063,43 @@ widget_relate ($title, $url, $rss_feed_url, $vertical, $flags)
 <a href="http://myweb2.search.yahoo.com/myresults/bookmarklet?t=Yotoshi%20%3A%20Bittorrent%20Search%20Engine&amp;u=http%3A%2F%2Fwww.yotoshi.com%2F" title="Bookmark To Yahoo! MyWeb">
 <a href="http://www.addtoany.com/?%20linkname=Yotoshi%20%3A%20Bittorrent%20Search%20Engine&amp;linkurl=http%3A%2F%2Fwww.yotoshi.com%2F%20&amp;type=page">
 <a href="http://www.onlywire.com/b/?u=http%3A%2F%2Fwww.yotoshi.com%2F&amp;t=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Bookmark with Onlywire">
+*/
+      );
 
+      $i_max = sizeof ($a);
+      for ($i = 0; $i < $i_max; $i++)
+        $p .= '<a href="'
+             .$a[$i][2]
+             .urlencode ($url)
+             .($a[$i][3] ? $a[$i][3].urlencode ($title) : '')
+             .'" alt="Add to '
+             .$a[$i][0]
+             .'" title="Add to '
+             .$a[$i][0]
+             .'">'
+             .'<img src="images/widget/widget_relate_'
+             .$a[$i][1]
+             .'" border="0"></a>';
+
+  return $p; 
+}
+
+
+// TODO: replace this dummy
+define ('WIDGET_RELATE_TELLAFRIEND', 0);
+define ('WIDGET_RELATE_SBOOKMARKS',  0);
+define ('WIDGET_RELATE_ALL', 0);
+function
+widget_relate ($title, $url)
+{
+  $p = '';
+  $p .= widget_pr_share ($title, $url);
+  $p .= widget_pr_socialbookmark ($title, $url);
+  return $p;
+}
+
+
+/*
 <strong>Primarily CPM Based Ad Networks</strong>
 <a href="http://www.121media.com/">121Media</a>
 <a href="http://www.247realmedia.com/">24/7 RealMedia</a> </li>
