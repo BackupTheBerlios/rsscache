@@ -65,7 +65,8 @@ $tv2_dbhost = 'localhost';
 //$rescue_default = 'http://www.youtube.com/watch?v=CzAYDtOD8UY';
 $rescue_default = 'http://www.youtube.com/watch?v=CzVsu4f4iz0';
 $rescue_videos_horizontal = 4;
-$rescue_w = 1024; $rescue_h = 768;
+$rescue_w = 1024;
+$rescue_h = 768;
 $rescue_autoplay = 0;
 $rescue_hq = 1; // high quality
 $rescue_max_videos = 64;

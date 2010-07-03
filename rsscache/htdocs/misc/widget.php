@@ -401,7 +401,7 @@ widget_geotrace ($host, $w = '100%', $h = '100%')
   Name of input element determines name in $_FILES array
 */
 function
-widget_upload ($upload_path, $max_file_size, $mime_type, $submit_button_html, $uploaded_html)
+widget_upload ($name, $upload_path, $max_file_size, $mime_type, $submit_button_html, $uploaded_html)
 {
   $debug = 0;
   $p = '';
@@ -417,7 +417,7 @@ widget_upload ($upload_path, $max_file_size, $mime_type, $submit_button_html, $u
       .$max_file_size
       .'">'
       .'<input type="file"'
-      .' name="widget_upload"'
+      .' name="'.$name.'"'
 //      .' title="'
 //      .$tooltip
 //      .'"'
@@ -425,7 +425,7 @@ widget_upload ($upload_path, $max_file_size, $mime_type, $submit_button_html, $u
       .($mime_type ? ' accept="'.$mime_type.'"' : '')
       .'>'
       .($submit_button_html ? $submit_button_html :
-       '<input type="submit" name="widget_upload" value="Upload"'
+       '<input type="submit" name="'.$name.'" value="Upload"'
 //      .' tooltip="'
 //      .$tooltip
 //      .'"'
@@ -441,12 +441,12 @@ widget_upload ($upload_path, $max_file_size, $mime_type, $submit_button_html, $u
     }
 
   $d = $upload_path.'/'
-//      .str_replace (' ', '_', basename($_FILES['widget_upload']['name']));
-      .basename($_FILES['widget_upload']['name']);
+//      .str_replace (' ', '_', basename($_FILES[''.$name.'']['name']));
+      .basename($_FILES[''.$name.'']['name']);
 
   if (file_exists ($d))
     $p .= 'ERROR: file already exists';
-  else if (move_uploaded_file ($_FILES['widget_upload']['tmp_name'], $d) == FALSE)
+  else if (move_uploaded_file ($_FILES[''.$name.'']['tmp_name'], $d) == FALSE)
     $p .= 'ERROR: move_uploaded_file() failed';
 
   $s = Array (
@@ -464,14 +464,14 @@ widget_upload ($upload_path, $max_file_size, $mime_type, $submit_button_html, $u
 //           UPLOAD_ERR_EXTENSION =>  'File upload stopped by extension'
          );
 
-  if (!empty ($_FILES['widget_upload']) &&
-      $_FILES['widget_upload']['error'] == UPLOAD_ERR_OK)
+  if (!empty ($_FILES[''.$name.'']) &&
+      $_FILES[''.$name.'']['error'] == UPLOAD_ERR_OK)
     {
       $p .= $uploaded_html;
     }
   else
     {
-      $e = $s[$_FILES['widget_upload']['error']];
+      $e = $s[$_FILES[''.$name.'']['error']];
       if (!$e)
         $e .= 'An unknown error occured';
       $p .= 'ERROR: '.$e;
