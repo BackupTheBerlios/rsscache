@@ -737,13 +737,15 @@ In case of error, stat() returns FALSE
 /*
   PR (public relation) widgets
 
-  widget_pr_diggit()
+UNUSED:  widget_pr_diggit()
   widget_pr_share()
-  widget_pr_bookmark()
-  widget_pr_startpage()
-  widget_pr_rssfeed()
-  widget_pr_donate()
-  widget_pr_socialbookmark()
+UNUSED:  widget_pr_bookmark()
+UNUSED:  widget_pr_startpage()
+UNUSED:  widget_pr_rssfeed()
+UNUSED:  widget_pr_donate()
+  widget_pr_social()
+  widget_pr_berlios ()
+  widget_pr_sf ()
 */
 function
 widget_pr_share ($title, $url)
@@ -868,7 +870,21 @@ widget_pr_donate ($title, $url)
 
 
 function
-widget_pr_socialbookmark ($title, $url)
+widget_pr_berlios ()
+{
+  return '<a href="http://developer.berlios.de"><img src="http://developer.berlios.de/bslogo.php?group_id=0" width="124" height="32" border="0" alt="BerliOS Logo" /></a><br>';
+}
+
+
+function
+widget_pr_sf ()
+{
+  return '<a href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=0" width="88" height="31" border="0" alt="SourceForge Logo"></a><br>';
+}
+
+
+function
+widget_pr_social ($title, $url)
 {
   $title = trim ($title);
   $url = trim ($url);
@@ -1085,16 +1101,12 @@ widget_pr_socialbookmark ($title, $url)
 }
 
 
-// TODO: replace this dummy
-define ('WIDGET_RELATE_TELLAFRIEND', 0);
-define ('WIDGET_RELATE_SBOOKMARKS',  0);
-define ('WIDGET_RELATE_ALL', 0);
 function
 widget_relate ($title, $url)
 {
   $p = '';
   $p .= widget_pr_share ($title, $url);
-  $p .= widget_pr_socialbookmark ($title, $url);
+  $p .= widget_pr_social ($title, $url);
   return $p;
 }
 
