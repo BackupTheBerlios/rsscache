@@ -33,7 +33,7 @@ $tv2_related_s = 'Find related '.$tv2_videos_s;
 
 $tv2_root = dirname(__FILE__).'/';
 $tv2_link = 'http://pwnoogle.com/';
-$tv2_link_static = 'http://allowdl.com/pwnoogle/'; // static content
+$tv2_link_static = 'http://174.120.2.100/pwnoogle/'; // static content
 $tv2_cookie_expire = time() + 3600 * 24 * 180; // 6 months
 // DEBUG (show the SQL query)
 $tv2_debug_sql = 0;
