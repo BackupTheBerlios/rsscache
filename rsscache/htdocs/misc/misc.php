@@ -69,6 +69,33 @@ tor_get_contents ($url, $tor_proxy_host = '127.0.0.1', $tor_proxy_port = 9050, $
 
 
 function
+misc_read_cache ($cachefile, $cache_time)
+{
+  if (file_exists($cachefile))
+    if (time() - $cache_time < filemtime ($cachefile))
+      {
+        $data = file_get_contents ($cachefile);
+        return unserialize ($data);
+      }
+  return NULL;
+}
+
+
+function
+misc_write_cache ($cachefile, $data)
+{
+  $cache = serialize ($data);
+  $fh = fopen ($cachefile, 'wb');
+  if ($fh)
+    {
+      fwrite (fh, $cache, sizeof ($cache));
+      fclose (fh);
+      touch ($cachefile, time()); // make sure it has time()
+    }
+}
+
+
+function
 misc_url_exists ($url)
 {
   if (file_get_contents ($url, FALSE, NULL, 0, 0) === false)

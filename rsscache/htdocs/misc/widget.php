@@ -27,6 +27,60 @@ if (file_exists ('geoip/geoipcity.inc') == TRUE)
   include_once ('geoip/geoipcity.inc'); // widget_geotrace()
 
 
+$widget_step_count;
+$widget_output;
+
+
+function
+widget_count_steps ()
+{
+  global $widget_step_count;
+
+  $p = '';
+  $p .= '<img src="images/'.($widget_step_count + 1).'.png" border="0">';
+  $widget_step_count++; 
+
+  return $p;
+}
+
+
+
+/*
+  $a = array (array ('value', 'label', 'logo.png'))
+*/
+function
+widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1)
+{
+  $p = '';
+  $p .= '<select name="'.$name.'"'.($active == 1 ? '' : ' disabled="disabled"').'>';
+  $sel = 0;
+  for ($i = 0; isset ($a[$i]); $i++)
+    {
+      if ($selected)
+      if (!strcasecmp ($a[$i][0], $selected) && !($sel))
+        $sel = 1;
+      $p .= '<option'
+           .($sel == 1 ? ' selected="selected"' : '')
+           .' value="'.$a[$i][0].'"'                  
+           .(
+            $a[$i][2] ?
+            ' style="background-image:url('
+           .$a[$i][2]
+           .');background-repeat:no-repeat;background-position:bottom left;padding-left:18px;"' :
+            ''
+           )
+           .'>'
+           .$a[$i][1]
+           .'</option>';
+      if ($sel == 1)
+        $sel = 2;
+    }
+  $p .= '</select>';
+
+  return $p;
+}
+
+
 /*
   takes image with e.g. 16x16 font tiles and maps them to ascii codes
   generates CSS code to show text with it by using clip()ing
@@ -80,7 +134,7 @@ widget_fontiles ($image_url, $image_width, $image_height, $text, $file_cols = 16
   <category>
     <id>qscore</id>
     <title>qscore suite</title>
-    <tooltip>generate high scores and statistics from game server logs and some other useful game server admin tools</toolti
+    <tooltip>generate high scores and statistics from game server logs and some other useful game server admin tools</tooltip>
     <src>aa2map_ascii.php</src>
     <embed>1</embed>
     <new>0</new>
@@ -88,11 +142,11 @@ widget_fontiles ($image_url, $image_width, $image_height, $text, $file_cols = 16
   </category>
 */
 function
-widget_cms ($logo, $config_xml)
+widget_cms ($logo, $config_xml, $name = 'q')
 {
   $config = simplexml_load_file ($config_xml);
 
-  $q = get_request_value ('q');
+  $q = get_request_value ($name);
 
   $p = '';
 
@@ -113,7 +167,7 @@ widget_cms ($logo, $config_xml)
       $p .= '<a href="';
 
       if ($config->category[$i]->embed == 1)
-        $p .= '?q='.$config->category[$i]->id;
+        $p .= '?'.$name.'='.$config->category[$i]->id;
       else
         $p .= $config->category[$i]->src;
 
@@ -1102,8 +1156,14 @@ widget_pr_social ($title, $url)
 
 
 function
-widget_relate ($title, $url)
+widget_relate ($title, $url = NULL)
 {
+  if (!($url))
+    {
+      $url = 'http://'.$_SERVER['HTTP_HOST'];
+      if (strncmp ($_SERVER['SCRIPT_NAME'], '/index.', 7))
+        $url .= $_SERVER['SCRIPT_NAME'];
+    }
   $p = '';
   $p .= widget_pr_share ($title, $url);
   $p .= widget_pr_social ($title, $url);
