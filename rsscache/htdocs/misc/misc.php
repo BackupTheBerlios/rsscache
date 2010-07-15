@@ -1183,6 +1183,9 @@ misc_youtube_download_single ($video_id, $use_tor = 0, $debug = 0)
       echo '</tt></pre>';
     }
 
+  if (!isset ($a['fmt_url_map']))
+    return NULL;
+
   $b = explode (',', $a['fmt_url_map']);
 
   if ($debug == 1)
@@ -1227,7 +1230,11 @@ misc_youtube_download ($video_id, $use_tor = 0, $debug = 0)
         }
 
       for ($i = 0; isset ($b->channel->item[$i]); $i++)
-         $a[$i] = misc_youtube_download_single ($b->channel->item[$i]->link, $use_tor, $debug);
+        {
+          $c = misc_youtube_download_single ($b->channel->item[$i]->link, $use_tor, $debug);
+          if ($c)
+            $a[] = $c;
+        }
     }
   else
     $a[0] = misc_youtube_download_single ($video_id, $use_tor, $debug);

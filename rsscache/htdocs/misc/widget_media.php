@@ -640,6 +640,63 @@ widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1, $hq = 1,
 }
 
 
+/*
+function
+playlist_parse_m3u ($filename)
+{
+  $fh = fopen ($filename, 'r');
+
+  if (!$fh)
+    return NULL;
+
+  $demux = 0;
+  $count = 0;
+  $a = array (array ());
+  while (($p = fgets ($fh)))
+    {
+      $p = str_replace ("\n", '', $p);
+
+      if ($p[0] != '#')
+        continue;
+
+      if (strstr ($p, '#EXTM3U'))
+        $demux = 1;
+      else if (strstr ($p, '#EXTINF:'))
+        {
+          $p = substr ($p, 8, -3);
+          $a[$count]['title'] = trim (substr ($p, strpos ($p, ',') + 1));
+          $a[$count]['link'] = str_replace ("\n", '', fgets ($fh));
+          $a[$count++]['duration'] = trim (substr ($p, 0, strpos ($p, ',')));
+        }
+      else $a[$count++]['title'] = trim ($p, ' #-');
+    }
+
+  fclose ($fh);
+
+  if ($demux == 0)
+    return NULL;
+
+  return $a;
+}
+
+
+function
+playlist_parse ($filename)
+{
+  $suffix = strtolower (get_suffix ($filename));
+  if ($suffix == '.m3u')
+    return playlist_parse_m3u ($filename);
+//  if ($suffix == '.pls')
+//    return playlist_parse_pls ($filename);
+//  if ($suffix == '.xspf')
+//    return playlist_parse_xspf ($filename); // shareable playlist format
+//  if ($suffix == '.wpl')
+//    return playlist_parse_wpl ($filename);
+  return NULL;
+}
+*/
+
+
 function
 widget_media_playlist ($media_url, $width = NULL, $height = NULL, $autoplay = 1, $hq = 1, $loop = 0)
 {

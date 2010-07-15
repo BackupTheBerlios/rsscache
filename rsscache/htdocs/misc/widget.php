@@ -44,7 +44,6 @@ widget_count_steps ()
 }
 
 
-
 /*
   $a = array (array ('value', 'label', 'logo.png'))
 */
