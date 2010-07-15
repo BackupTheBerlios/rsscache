@@ -280,6 +280,15 @@ sql_get_rows ()
 }
 
 
+function
+sql_get_table_rows ($table)
+{
+  $sql_query_s = 'SELECT COUNT(*) FROM '.$table.' WHERE 1';
+  $this->sql_write ($sql_query_s);
+  $a = $this->sql_read ();
+  return $a[0][0];
+}
+
 }
 
 
