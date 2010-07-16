@@ -27,7 +27,7 @@ $tv2_logo = '<span style="font-size:32px;font-family:sans-serif;color:#000;font-
 //           .'<br>'
 //           .'<br>'
 ;
-$tv2_videos_s = 'videos and demos';
+$tv2_videos_s = 'videos';
 $tv2_related_s = 'Find related '.$tv2_videos_s;
 
 
@@ -40,7 +40,7 @@ $tv2_debug_sql = 0;
 $tv2_isnew = 3600 * 6; // how long new files are marked as new  
 $tv2_results = 10; // results per page
 $tv2_cloud_results = 500;  // number of tumbnails shown in cloud
-$tv2_wall_results = 500;  // number of tumbnails shown in cloud
+$tv2_wall_results = 500;  // number of tumbnails shown in wall
 $tv2_download_video = 0; // show link for downloading videos
 
 
