@@ -162,7 +162,7 @@ youtube_thumbnail ($url)
   if (!strlen ($s))
     return;
 
-  for ($i = 0; $i < 4; $i++)
+  for ($i = 1; $i < 4; $i++)
     {
       // download thumbnail
       $url = 'http://i.ytimg.com/vi/'.$s.'/'.$i.'.jpg';
@@ -176,7 +176,7 @@ youtube_thumbnail ($url)
       if (file_exists ($path)) // do not overwrite existing files
         {
           echo 'WARNING: file '.$path.' exists, skipping'."\n";
-          return;
+          return -1;
         }
       else echo $path."\n";
 
@@ -184,6 +184,7 @@ youtube_thumbnail ($url)
 //      echo 'wget -nc "'.$url.'" -O "'.$filename.'"'."\n"; // -N?
 //      echo 'rm "'.$filename.'"'."\n"; // remove old thumbs
     }
+  return 0;
 }
 
 
