@@ -236,11 +236,11 @@ widget_video_youtube ($video_id, $width = 425, $height = 344, $autoplay = 1, $hq
   $url = 'http://www.youtube.com/v/'
         .$video_id
        .'&fs=1'             // allow fullscreen
-       .'&ap=%2526fmt%3D'.($hq ? 18 : 5) // high(er) quality?
+//       .'&ap=%2526fmt%3D'.($hq ? 18 : 5) // high(er) quality?
        .'&showsearch=0'     // no search
        .'&rel=0'            // no related
-       .($autoplay ? '&autoplay=1' : '')
-       .($loop ? '&loop=1' : '')
+//       .($autoplay ? '&autoplay=1' : '')
+//       .($loop ? '&loop=1' : '')
 //       .'&color1=0x000000'
 //       .'&color2=0x000000'
 //       .'#t=03m22s'         // skip to
@@ -249,11 +249,13 @@ widget_video_youtube ($video_id, $width = 425, $height = 344, $autoplay = 1, $hq
 
   $p = ''
       .'<object width="'.$width.'" height="'.$height.'">'
-      .'<param name="movie" value="'.$url.'">'
-      .'</param><param name="allowFullScreen" value="true"></param>'
-      .'</param><param name="autoplay" value="true"></param>'
+      .'<param name="movie" value="'.$url.'"></param>'
+      .'<param name="allowFullScreen" value="true"></param>'
+      .'<param name="allowscriptaccess" value="always"></param>'
+      .'<param name="autoplay" value="true"></param>'
       .'<embed src="'.$url.'"'
       .' type="application/x-shockwave-flash"'
+      .' allowscriptaccess="always"'
       .' allowfullscreen="true"'
       .($autoplay ? ' autoplay="true"' : '')
       .' width="'.$width.'" height="'.$height.'"'
