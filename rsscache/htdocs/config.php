@@ -7,7 +7,7 @@ define ('TV2_CONFIG_PHP', 1);
 // compression 1/0
 $use_gzip = 1;
 // use memcache? 0 == off
-$memcache_expire = 0;
+$memcache_expire = 600;
 
 
 // localization and style

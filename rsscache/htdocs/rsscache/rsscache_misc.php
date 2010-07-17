@@ -2,6 +2,7 @@
 if (!defined ('TV2_MISC_PHP'))
 {
 define ('TV2_MISC_PHP', 1);
+//error_reporting(E_ALL | E_STRICT);
 require_once ('config.php');
 require_once ('misc/misc.php');
 require_once ('tv2_sql.php');
@@ -69,7 +70,6 @@ if ($memcache_expire > 0)
           }
       }    
   }
-
 
   // DEBUG
 //  echo 'read config';
