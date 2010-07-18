@@ -344,7 +344,7 @@ tv2_sql_match_func ($db, $q, $filter)
   $p = '';
 
   $p .= ' AND MATCH ('
-       .' tv2_keywords'
+       .' rsstool_keywords'
        .' ) AGAINST (\''
        .$s
        .'\''
@@ -400,7 +400,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                   .' tv2_category,'
                   .' tv2_moved,'
                   .' rsstool_media_duration,'
-                  .' tv2_keywords,'
+                  .' rsstool_keywords,'
                   .' tv2_votes,'
                   .' tv2_score'
                   .' FROM rsstool_table';

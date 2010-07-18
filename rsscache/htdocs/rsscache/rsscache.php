@@ -419,7 +419,6 @@ if ($f == 'mirror')
 
 
 
-/*
 if ($memcache_expire > 0)
   {
     $memcache = new Memcache;
@@ -441,7 +440,6 @@ if ($memcache_expire > 0)
           }
       }
   }
-*/
 
 $tv2_captcha = widget_captcha ('images/captcha/');
 
@@ -488,13 +486,11 @@ if ($use_gzip == 1)
   echo_gzip ($p);
 else echo $p;
 
-/*
 // use memcache
 if ($memcache_expire > 0)
   {
     $memcache->set (md5 ($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']), serialize ($p), 0, $memcache_expire);
   }
-*/
 
 
 }
