@@ -5,9 +5,9 @@ define ('TV2_CONFIG_PHP', 1);
 
 
 // compression 1/0
-$use_gzip = 1;
+$use_gzip = 0;
 // use memcache? 0 == off
-$memcache_expire = 600;
+$memcache_expire = 0;
 
 
 // localization and style
@@ -31,12 +31,13 @@ $tv2_videos_s = 'videos';
 $tv2_related_s = 'Find related '.$tv2_videos_s;
 
 
+$tv2_enable_search = 0; // allow users to search db?
 $tv2_root = dirname(__FILE__).'/';
 $tv2_link = 'http://pwnoogle.com/';
 $tv2_link_static = 'http://174.120.2.100/pwnoogle/'; // static content
 $tv2_cookie_expire = time() + 3600 * 24 * 180; // 6 months
 // DEBUG (show the SQL query)
-$tv2_debug_sql = 0;
+$tv2_debug_sql = 1;
 $tv2_isnew = 3600 * 6; // how long new files are marked as new  
 $tv2_results = 10; // results per page
 $tv2_cloud_results = 500;  // number of tumbnails shown in cloud
@@ -54,7 +55,7 @@ $tv2_player_h = 300; // max. height
 $tv2_dbname = 'jack';
 $tv2_dbuser = 'root';
 $tv2_dbpass = 'nb423';
-$tv2_dbhost = 'localhost';
+$tv2_dbhost = '127.0.0.1';
 
 
 // rescue

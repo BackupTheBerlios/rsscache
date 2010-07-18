@@ -188,9 +188,14 @@ function
 sql_write ($sql_query_s, $unbuffered = 0, $debug = 0)
 {
   if ($debug == 1)
-    echo '<br><br><tt>'
-        .$sql_query_s
-        .'</tt><br><br>';
+    {
+//      $sql_query_s = 'explain '.$sql_query_s;
+      echo ''
+          .'<br><br><tt>'
+          .$sql_query_s
+          .'</tt><br><br>'
+;
+    }
 
   if (is_resource ($this->res))
     {

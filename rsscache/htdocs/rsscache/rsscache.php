@@ -1,4 +1,4 @@
-<?
+<?php
 if (!defined ('TV2_PHP'))
 {
 define ('TV2_PHP', 1);
@@ -36,7 +36,8 @@ tv2_body ()
          $tv2_title,
          $tv2_search_s,
          $tv2_videos_s,
-         $tv2_cookie_expire;
+         $tv2_cookie_expire,
+         $tv2_enable_search;
   global $config;
   global $embed, $f, $c, $q, $v, $start, $num, $captcha;
 
@@ -121,9 +122,12 @@ tv2_body ()
   if ($f != 'mirror')
     {
       // search
-      $p .= '&nbsp;<nobr>';
-      $p .= tv2_search_form ();
-      $p .= '</nobr>';
+      if ($tv2_enable_search)
+        {
+          $p .= '&nbsp;<nobr>';
+          $p .= tv2_search_form ();
+          $p .= '</nobr>';
+        }
     
       // stats and version
       $p .= '<br>'.tv2_stats ();

@@ -363,7 +363,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
          $tv2_dbpass, 
          $tv2_dbname,
          $tv2_isnew,
-         $tv2_root;
+         $tv2_root,
+         $tv2_enable_search;
   global $tv2_debug_sql;
   $debug = $tv2_debug_sql;
 //  $debug = 1;
@@ -429,7 +430,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                 $filter = $category->filter;
         }
 
-      $sql_query_s .= tv2_sql_match_func ($db, $q, $filter);
+      if ($tv2_enable_search)
+        $sql_query_s .= tv2_sql_match_func ($db, $q, $filter);
 
       // functions
       if ($f == 'new')
