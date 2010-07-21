@@ -52,9 +52,12 @@ $tv2_player_h = 300; // max. height
 
 
 // database settings
-$tv2_dbname = 'pwnoogle_jack';
-$tv2_dbuser = 'pwnoogle';
-$tv2_dbpass = 'hUn1WrG7';
+$tv2_dbname = 'pwnoogle';
+$tv2_dbuser = 'root';
+$tv2_dbpass = 'nb';
+//$tv2_dbname = 'pwnoogle_jack';
+//$tv2_dbuser = 'pwnoogle';
+//$tv2_dbpass = 'hUn1WrG7';
 $tv2_dbhost = '127.0.0.1';
 
 
