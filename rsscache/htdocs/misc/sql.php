@@ -54,7 +54,7 @@ stresc ($s)
 
 
 function
-sql_open ($host, $user, $password, $database, $memcache_expire = 0)
+sql_open ($host /* = 'localhost' */ , $user, $password, $database, $memcache_expire = 0)
 {
   if ($this->conn)
     {

@@ -58,7 +58,7 @@ $tv2_dbpass = 'nb';
 //$tv2_dbname = 'pwnoogle_jack';
 //$tv2_dbuser = 'pwnoogle';
 //$tv2_dbpass = 'hUn1WrG7';
-$tv2_dbhost = '127.0.0.1';
+$tv2_dbhost = 'localhost';
 
 
 // rescue

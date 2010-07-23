@@ -161,21 +161,27 @@ widget_cms ($logo, $config_xml, $name = 'q')
          .'<br>'  
          .'<br>';
 
-  for ($i = 0; $config->category[$i]; $i++)
+  for ($i = 0; isset ($config->category[$i]); $i++)
     {
-      $p .= '<a href="';
+      if ($config->category[$i]->src || $config->category[$i]->id)
+        {
+          $p .= '<a href="';
 
-      if ($config->category[$i]->embed == 1)
-        $p .= '?'.$name.'='.$config->category[$i]->id;
+          if ($config->category[$i]->embed == 1)
+            $p .= '?'.$name.'='.$config->category[$i]->id;
+          else
+            $p .= $config->category[$i]->src;
+
+          $p .= '" title="'
+               .$config->category[$i]->tooltip
+               .'">'
+               .$config->category[$i]->title
+               .'</a>';
+        }
       else
-        $p .= $config->category[$i]->src;
+        $p .= '<font size="5">'.$config->category[$i]->title.'</font>';
 
-      $p .= '" title="'
-           .$config->category[$i]->tooltip
-           .'">'
-           .$config->category[$i]->title
-           .'</a>'
-           .($config->category[$i]->new == 1 ? '<img src="images/new.png">' : '');
+      $p .= ($config->category[$i]->new == 1 ? '<img src="images/new.png">' : '');
 
       if ($q)
         $p .= '&nbsp;&nbsp;';
@@ -187,7 +193,7 @@ widget_cms ($logo, $config_xml, $name = 'q')
             $p .= '<br>';
         }
     } 
-   
+
   if ($q)
     {
       $p .= '<br>';
