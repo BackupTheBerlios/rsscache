@@ -519,7 +519,7 @@ misc_get_keywords_alnum ($s, $keyword_size = 3)
   if (strlen (trim ($s)) < $keyword_size)
     return false;
 
-  for ($i = 0; $s[$i]; $i++)
+  for ($i = 0; $i < strlen ($s); $i++)
     if (!isalnum ($s[$i]) && $s[$i] != '_' && $s[$i] != '.')
       return false;
 
@@ -533,7 +533,7 @@ misc_get_keywords_alpha ($s, $keyword_size = 3)
   if (strlen (trim ($s)) < $keyword_size)
     return false;
 
-  for ($i = 0; isset ($s[$i]); $i++)
+  for ($i = 0; $i < strlen ($s); $i++)
     if (!isalpha ($s[$i]) && $s[$i] != '_' && $s[$i] != '.')
       return false;
 
@@ -547,7 +547,11 @@ misc_get_keywords ($s, $flag = 0) // default = isalnum
   $s = str_replace (array ('. ', ',', ';', '!', '?', '"'), ' ', $s);
   $s = str_replace (array ('  ', '  ', '  ', '  ', '  '), ' ', $s);
 
+<<<<<<< misc.php
+  for ($i = 0; $i < strlen ($s); $i++)
+=======
   for ($i = 0; isset ($s[$i]); $i++)
+>>>>>>> 1.50
     if (ispunct ($s[$i]) && $s[$i] != '_' && $s[$i] != '.')
       $s[$i] = ' ';
 
