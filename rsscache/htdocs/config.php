@@ -16,8 +16,7 @@ $tv2_search_s = 'Search';
 $tv2_title = 'pwnoogle \:D/ - watch videos of games';
 $tv2_body_tag = '<body style="font-family:sans-serif;font-size:13px;opacity:1.0;">'
                .'<a href="http://pwnoogle.com">Videos</a>&nbsp;&nbsp;'
-//               .'<a href="http://demos.pwnoogle.com/demos.php">Demos</a>&nbsp;&nbsp;'
-               .'<a href="http://y6.ath.cx/aa2map">Map Generator</a>&nbsp;&nbsp;'
+               .'<a href="http://ilovefps.y7.ath.cx">Map Generator @ <img src="images/i_love_fps.png" border="0" height="24"></a>&nbsp;&nbsp;'
                .'<a href="http://clanarena.org">Forum @ <img src="images/ca.png" border="0" height="24"></a><br><hr>';
 $tv2_table_tag = '<table style="font-family:sans-serif;font-size:13px;opacity:1.0;" cellspacing="0" cellpadding="0" border="0">';
 $tv2_logo = '<span style="font-size:32px;font-family:sans-serif;color:#000;font-weight:bolder;width:100%;text-align:center">'
@@ -52,12 +51,12 @@ $tv2_player_h = 300; // max. height
 
 
 // database settings
-$tv2_dbname = 'pwnoogle';
-$tv2_dbuser = 'root';
-$tv2_dbpass = 'nb';
-//$tv2_dbname = 'pwnoogle_jack';
-//$tv2_dbuser = 'pwnoogle';
-//$tv2_dbpass = 'hUn1WrG7';
+//$tv2_dbname = 'pwnoogle';
+//$tv2_dbuser = 'root';
+//$tv2_dbpass = 'nb';
+$tv2_dbname = 'pwnoogle_jack';
+$tv2_dbuser = 'pwnoogle';
+$tv2_dbpass = 'hUn1WrG7';
 $tv2_dbhost = 'localhost';
 
 

@@ -547,11 +547,7 @@ misc_get_keywords ($s, $flag = 0) // default = isalnum
   $s = str_replace (array ('. ', ',', ';', '!', '?', '"'), ' ', $s);
   $s = str_replace (array ('  ', '  ', '  ', '  ', '  '), ' ', $s);
 
-<<<<<<< misc.php
   for ($i = 0; $i < strlen ($s); $i++)
-=======
-  for ($i = 0; isset ($s[$i]); $i++)
->>>>>>> 1.50
     if (ispunct ($s[$i]) && $s[$i] != '_' && $s[$i] != '.')
       $s[$i] = ' ';
 
