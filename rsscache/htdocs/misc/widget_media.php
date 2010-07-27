@@ -231,6 +231,32 @@ swfobject.embedSWF("http://www.youtube.com/apiplayer?enablejsapi=1&playerapiid=y
 
 
 function
+widget_video_func ($object, $param, $embed)
+{
+  $p = '';
+
+  $p .= '<object';
+  for ($i = 0; isset ($object[$i]); $i++)
+    $p .= ' '.$object[$i][0].'="'.$object[$i][1].'"';
+  $p .= '>';
+
+  for ($i = 0; isset ($param[$i]); $i++)
+    $p .= '<param name="'
+         .$param[$i][0].'" value="'.$param[$i][1].'"'
+         .'></param>';
+
+  $p .= '<embed';
+  for ($i = 0; isset ($embed[$i]); $i++)
+    $p .= ' '.$embed[$i][0].'="'.$embed[$i][1].'"';
+  $p .= '></embed>';
+
+  $p .= '<object>';
+
+  return $p;
+}
+
+
+function
 widget_video_youtube ($video_id, $width = 425, $height = 344, $autoplay = 1, $hq = 1, $loop = 0)
 {
   $url = 'http://www.youtube.com/v/'
@@ -239,7 +265,7 @@ widget_video_youtube ($video_id, $width = 425, $height = 344, $autoplay = 1, $hq
 //       .'&ap=%2526fmt%3D'.($hq ? 18 : 5) // high(er) quality?
        .'&showsearch=0'     // no search
        .'&rel=0'            // no related
-//       .($autoplay ? '&autoplay=1' : '')
+       .($autoplay ? '&autoplay=1' : '')
 //       .($loop ? '&loop=1' : '')
 //       .'&color1=0x000000'
 //       .'&color2=0x000000'
@@ -262,8 +288,30 @@ widget_video_youtube ($video_id, $width = 425, $height = 344, $autoplay = 1, $hq
       .'></embed>'
       .'</object>';
 
-  return $p;
+//  return $p;
+  $o = array (
+    array ('width', $width),
+    array ('height', $height)
+  );
+  $p = array (
+    array ('movie', $url),
+    array ('allowFullScreen', 'true'),
+    array ('allowScriptAccess', 'always'),
+    array ('autoplay', 'true'),
+  );
+  $e = array (
+    array ('src', $url),
+    array ('type', 'application/x-shockwave-flash'),
+    array ('width', $width),
+    array ('height', $height)
+    array ('autoplay', 'true'),              
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
+  );
+ 
+  return widget_video_func ($o, $p, $e);
 }
+
 
 
 function
@@ -272,6 +320,7 @@ widget_video_dailymotion ($video_id, $width=420, $height=336)
 //  $video_id = 'k4H0eU9uhV7waa1XXp';
   $url = 'http://www.dailymotion.com/swf/'.$video_id.'&related=1';
 
+/*
   $p = ''
       .'<object width="'.$width.'" height="'.$height.'">'
       .'<param name="movie" value="'.$url.'"></param>'
@@ -286,7 +335,26 @@ widget_video_dailymotion ($video_id, $width=420, $height=336)
       .'" allowFullScreen="true" allowScriptAccess="always"></embed>'
       .'</object>'
 ;
-  return $p;
+*/
+  $o = array (
+    array ('width', $width),
+    array ('height', $height)
+  );
+  $p = array (
+    array ('movie', $url),
+    array ('allowFullScreen', 'true'),
+    array ('allowScriptAccess', 'always'),
+  );
+  $e = array (
+    array ('src', $url),
+    array ('type', 'application/x-shockwave-flash'),
+    array ('width', $width),
+    array ('height', $height)
+    array ('allowFullScreen', 'true'),
+    array ('allowScriptAccess', 'always'),
+  );
+
+  return widget_video_func ($o, $p, $e);
 }
 
 
