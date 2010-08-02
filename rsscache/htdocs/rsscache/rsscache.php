@@ -274,8 +274,8 @@ tv2_body ()
   // direct link
   $p .= ' <nobr>';
   $p .= tv2_direct_link ($d);
-  if ($tv2_download_video == 1)
-    $p .= tv2_download_video ($d);
+//  if ($tv2_download_video == 1)
+//    $p .= tv2_download_video ($d);
   $p .= '</nobr>';
 
   if ($d_category->movable == 1 && $f != 'mirror')
@@ -438,6 +438,11 @@ if ($memcache_expire > 0)
 
             exit;
           }
+      }
+    else
+      {
+        echo 'ERROR: could not connect to memcached';
+        exit; 
       }
   }
 

@@ -150,7 +150,7 @@ widget_cms ($logo, $config_xml, $name = 'q')
   $p = '';
 
   if ($q)
-    $p .= '<a href="."><img src="'.$logo.'" border="0" align="middle" height="50"></a> ';
+    $p .= '<table><tr><td><a href="."><img src="'.$logo.'" border="0" align="middle" height="50"></a></td><td> ';
   else
     $p .= '<br>'
          .'<br>'
@@ -159,7 +159,8 @@ widget_cms ($logo, $config_xml, $name = 'q')
          .'<center>'
          .'<img src="'.$logo.'" border="0">'
          .'<br>'  
-         .'<br>';
+         .'<br>'
+;
 
   for ($i = 0; isset ($config->category[$i]); $i++)
     {
@@ -178,8 +179,14 @@ widget_cms ($logo, $config_xml, $name = 'q')
                .$config->category[$i]->title
                .'</a>';
         }
-      else
-        $p .= '<font size="5">'.$config->category[$i]->title.'</font>';
+      else // title (no link)
+        {
+//          if ($q)
+//            $p .= '<br><font size="3">';
+//          else
+            $p .= '<font size="5">';
+          $p .= $config->category[$i]->title.'</font>';
+        }
 
       $p .= ($config->category[$i]->new == 1 ? '<img src="images/new.png">' : '');
 
@@ -196,7 +203,8 @@ widget_cms ($logo, $config_xml, $name = 'q')
 
   if ($q)
     {
-      $p .= '<br>';
+      $p .= '</td></tr></table>';
+//      $p .= '<br>';
       $p .= '<hr>';
 
       for ($i = 0; $config->category[$i]; $i++)

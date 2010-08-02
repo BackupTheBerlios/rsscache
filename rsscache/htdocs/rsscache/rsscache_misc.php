@@ -68,7 +68,12 @@ if ($memcache_expire > 0)
 
             exit;
           }
-      }    
+      }
+    else
+      {
+        echo 'ERROR: could not connect to memcached';
+        exit;
+      }
   }
 
   // DEBUG

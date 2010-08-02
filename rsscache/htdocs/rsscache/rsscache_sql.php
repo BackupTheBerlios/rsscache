@@ -98,7 +98,7 @@ tv2_sql_stats ($category = NULL)
          $tv2_dbuser,
          $tv2_dbpass,
          $tv2_dbname;
-  global $memcache_expire;
+//  global $memcache_expire;
   $debug = 0;
   $f = get_request_value ('f');
 
@@ -171,7 +171,8 @@ tv2_sql_stats ($category = NULL)
   $db->sql_write ($sql_query_s, 0, $debug);
   $r = $db->sql_read (0, $debug);
 
-  $stats['days'] = (int) ((time () - (int) $r[0][0]) / 86400);
+  if (isset ($r[0]))
+    $stats['days'] = (int) ((time () - (int) $r[0][0]) / 86400);
 
   $db->sql_close ();
 
