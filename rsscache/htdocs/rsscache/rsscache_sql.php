@@ -98,7 +98,7 @@ tv2_sql_stats ($category = NULL)
          $tv2_dbuser,
          $tv2_dbpass,
          $tv2_dbname;
-//  global $memcache_expire;
+  global $memcache_expire;
   $debug = 0;
   $f = get_request_value ('f');
 
