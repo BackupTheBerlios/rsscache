@@ -24,7 +24,7 @@ config_xml_normalize ($config)
     if ($config->category[$i]->query)
       {
         $a = array();
-        parse_str ($config->category[$i]->query, &$a);
+        parse_str ($config->category[$i]->query, $a);
         if (isset ($a['c']))
           {
             $stats = tv2_sql_stats ($config->category[$i]->name);

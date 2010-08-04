@@ -4,7 +4,7 @@ if (!defined ('TV2_PHP'))
 define ('TV2_PHP', 1);
 //phpinfo();
 //error_reporting(E_ALL | E_STRICT);
-//require_once ('default.php');
+require_once ('default.php');
 require_once ('config.php');
 require_once ('misc/misc.php');
 //require_once ('misc/widget.php');

@@ -22,9 +22,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 if (!defined ('MISC_WIDGET_MEDIA_PHP'))
 {
 define ('MISC_WIDGET_MEDIA_PHP', 1);  
-//error_reporting(E_ALL | E_STRICT);
+error_reporting(E_ALL | E_STRICT);
 include_once ('misc/misc.php');
 include_once ('misc/widget.php');
+include_once ('misc/youtube.php');
 
 
 function
@@ -288,6 +289,8 @@ swfobject.embedSWF("http://www.youtube.com/apiplayer?enablejsapi=1&playerapiid=y
 function
 widget_video_youtube ($video_id, $width = 425, $height = 344, $autoplay = 1, $hq = 1, $loop = 0)
 {
+  $tor_enabled = 0;
+
   $url = 'http://www.youtube.com/v/'
         .$video_id
        .'&fs=1'             // allow fullscreen
@@ -322,7 +325,73 @@ widget_video_youtube ($video_id, $width = 425, $height = 344, $autoplay = 1, $hq
     array ('allowScriptAccess', 'always'),
   );
  
-  return widget_media_object_func ($o, $p, $e);
+  $s = '';
+
+  $s .= widget_media_object_func ($o, $p, $e);
+
+  $a = youtube_download ($video_id, $tor_enabled, 0);
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  echo $video_id."\n";
+//  print_r ($a); 
+
+  $j = 0;
+
+  if ($a[$j]['status'] == 'fail') // youtube fail
+    {
+      $s .= $a[$j]['errorcode'].': '.$a[$j]['reason'];
+ 
+      switch ($a[$j]['errorcode'])
+        {
+          case 150: // copyright
+            $s .= '<br>'
+                 .' Probably Naziwalled against access from your country<br>'
+                 .'Try a proxy or service that is located in the country of the possible license owner'
+;
+            break;
+
+          case 100: // removed by user
+          default:
+            break;
+        }
+    }
+  else
+    {
+      $s .= '<br>';
+
+      // download
+      $s .= '<a href="'.$a[$j]['video_url'].'">Best</a>';
+
+      for ($q = 0; isset ($a[$j][$q]); $q++)
+        {
+          $fmt = substr ($a[$j][$q], 0, strpos ($a[$j][$q], '|'));
+          $t = substr ($a[$j][$q], strpos ($a[$j][$q], '|') + 1);
+          $s .= ' <a href="'.$t.'">&fmt='.$fmt.'</a>';
+        }
+
+      // direct link
+//      $s .= ' <a href="'.$a[$j]['ad_eurl'].'">Direct</a>';
+
+      $s .= '<br>';
+
+      $s .= ''
+//           .'<div style="width:'.($width - 10).'px;">'
+           .'<input type="text"'
+           .' style="width:'.($width - 10).'px;"'
+           .' value="'
+           .$a[$j]['title']
+           .'" readonly="readonly"'
+//           .' onclick="javascript:this.execCommand(\'copy\');"'
+           .'>'
+//           .'</div>'
+;
+
+      $s .= '<br>';
+      $s .= widget_collapse ('Details', '<pre><tt>'.sprint_r ($a[$j]).'</tt></pre>', 1);
+    }
+
+  return $s;
 }
 
 
