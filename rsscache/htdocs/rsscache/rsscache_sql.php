@@ -98,7 +98,7 @@ tv2_sql_stats ($category = NULL)
          $tv2_dbuser,
          $tv2_dbpass,
          $tv2_dbname;
-  global $memcache_expire;
+//  global $memcache_expire;
   $debug = 0;
   $f = get_request_value ('f');
 
@@ -255,7 +255,7 @@ tv2_sql_query2boolean_escape_func ($s)
 //  if (strlen (trim ($s)) < 4)
     return false;
 
-  for ($i = 0; $s[$i]; $i++)
+  for ($i = 0; $i < strlen ($s); $i++)
     if (!isalnum ($s[$i]) && !in_array ($s[$i], array ('-', '+', /* '(', ')', '"' */)))
       return false;
  
@@ -329,6 +329,8 @@ tv2_sql_query2boolean ($q)
 function
 tv2_sql_match_func ($db, $q, $filter)
 {
+  $s = '';
+
   // filter
   if ($filter)
     $s .= $filter.' '; // boolean full-text search query
