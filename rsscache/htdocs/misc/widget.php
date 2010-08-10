@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 if (!defined ('MISC_WIDGET_PHP'))
 {
 define ('MISC_WIDGET_PHP', 1);  
+//error_reporting(E_ALL | E_STRICT);
 include_once ('misc/misc.php');
 if (file_exists ('geoip/geoipcity.inc') == TRUE)
   include_once ('geoip/geoipcity.inc'); // widget_geotrace()
@@ -1337,6 +1338,54 @@ non-standard
 <a href="http://commissionmonster.com.au/">Commission Monster</a> </li>
 <a href="http://affiliatefuture.co.uk/">Affiliate Future</a>
 */
+
+
+function
+widget_test ()
+{
+//error_reporting (E_ALL|E_STRICT);
+
+$p = "widget_video(): ";
+
+$url = "http://y6.ath.cx/test/media/test.flv";
+$p .= widget_video ($url, 400, 300);
+
+$p .= "<hr>widget_upload(): ";
+
+$max_file_size = 1000000;
+$mime_type = NULL; // anything
+$p .= widget_upload ("tooltip", "/tmp", $max_file_size, $mime_type, NULL);
+
+$p .= "<hr>widget_audio(): ";
+
+$url = "media/audio.mp3";
+$start = 0;
+$stream = NULL;
+$next_stream = NULL; 
+$p .= widget_audio ($url, $start, $stream, $next_stream);
+
+$p .= "<hr>widget_trace(): ";
+
+$ip = "www.google.com";  
+$p .= widget_trace ($ip);
+
+$p .= "<hr>widget_index(): ";
+
+$dir = "media/";
+$recursive = 0;
+$p .= widget_index ($dir, $recursive);
+
+$p .= "<hr>widget_relate(): ";
+
+$relate_site_title_s = "relate_site_title";
+$relate_site_url_s = "relate_site_url";
+$p .= widget_relate ($relate_site_title_s, $relate_site_url_s, "./", 0,
+                            WIDGET_RELATE_TELLAFRIEND|
+                            WIDGET_RELATE_SBOOKMARKS|
+                            0);
+return $p;
+}
+
 
 
 }
