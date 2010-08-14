@@ -596,7 +596,7 @@ function getinnerheight ()
 
 
 function
-widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1, $hq = 1, $loop = 0)
+widget_media ($media_url, $width = NULL, $height = NULL, $download = 1, $autoplay = 1, $hq = 1, $loop = 0)
 {
   $demux = widget_media_demux ($media_url);
   $p = $media_url;
@@ -611,6 +611,14 @@ widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1, $hq = 1,
     }
 
   // javascript wrapper for fullscreen
+  $f = get_request_value ('f');
+
+  if ($f == 'fullscreen')
+    {
+//      $width = -1;
+//      $height = -1;
+    }
+
   $fullscreen = 0;
   if ($width == -1 || $height == -1)
     {   
@@ -697,6 +705,17 @@ widget_media ($media_url, $width = NULL, $height = NULL, $autoplay = 1, $hq = 1,
 ;
     }
 
+  if ($f == 'fullscreen')
+    $s .= ''
+         .'<a href="javascript:void(0);" onclick="javascript:window.close();">Close</a>';
+  else
+    $s .= ' '
+         .widget_window_open (misc_getlink (array ('f' => 'fullscreen'), true), 1, $media_url)
+//         .widget_window_open ($_SERVER['HTTP_REFERER'], 1, $media_url)
+         .'<a href="javascript:void(0);" onclick="javascript:widget_window_open();"'
+//         .' target="_blank"'
+         .'>Fullscreen</a>'
+;
 
   return $s;
 }
