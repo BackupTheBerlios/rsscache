@@ -22,7 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 if (!defined ('MISC_WIDGET_MEDIA_PHP'))
 {
 define ('MISC_WIDGET_MEDIA_PHP', 1);  
-error_reporting(E_ALL | E_STRICT);
+//error_reporting(E_ALL | E_STRICT);
 include_once ('misc/misc.php');
 include_once ('misc/widget.php');
 include_once ('misc/youtube.php');
@@ -63,160 +63,34 @@ widget_media_object_func ($object, $param, $embed)
 
 
 function
-widget_video_flowplayer ($video_url, $width = 400, $height = 300, $preview_image = NULL)
+widget_video_html5 ($video_url, $width = 400, $height = 300, $preview_image = NULL)
 {
-  $fgcolor = '#ffffff';
-  $bgcolor = '#000000';
-  $bgcolor2 = '#444444';
-  $bgcolor3 = '#ff0000';
-  $url = $video_url;
-
-  $p = '<script type="text/javascript" src="misc/flowplayer-3.1.4.min.js"></script>
-<a href="'.$url.'" id="player"></a>
-<script><!--
-flowplayer(
-  "player",
-  {
-    src: "misc/flowplayer-3.1.4.swf",
-    width:'.$width.',
-    height:'.$height.'
-  },
-  {
-    canvas: {backgroundColor: "'.$bgcolor.'"
-  },
-  plugins:
-    {
-      controls:
-        {
-          buttonOverColor: "'.$bgcolor2.'",
-          timeColor: "'.$fgcolor.'",
-          sliderColor: "'.$bgcolor2.'",
-          buttonColor: "'.$bgcolor.'",
-          bufferColor: "'.$bgcolor3.'",
-          progressColor: "'.$bgcolor2.'",
-          durationColor: "'.$fgcolor.'",
-          progressGradient: "none",
-          sliderGradient: "none",
-          borderRadius: "0px",
-          backgroundColor: "'.$bgcolor.'",
-          backgroundGradient: "none",
-          bufferGradient: "none",
-          opacity:1.0
-        }
-    }
-});
-//-->
-</script>';
-
+  $p = '';
+  $p .= '<video src="'.$video_url.'" controls="controls" width="'.$width.'" height="'.$height.'"></video>';
   return $p;
 }
 
 
 function
-widget_video_jwplayer ($video_url, $width = 400, $height = 300, $preview_image = NULL)
+widget_audio_html5 ($audio_url, $start = 0, $stream = 0, $next_stream = NULL)
 {
-  $url = $video_url;
-
-  if ($preview_image)
-    $url = '&image='.$preview_image;
-
-  $o = array (
-    array ('width', $width),
-    array ('height', $height),
-    array ('id', 'player'),
-    array ('classid', 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000'),
-    array ('name', 'player'),
-  );
-  $p = array (
-    array ('movie', 'misc/player.swf'),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
-    array ('flashvars', 'file='.$url),
-    array ('type', 'application/x-shockwave-flash'),
-  );
-  return widget_media_object_func ($o, $p, NULL);
-/*
-  $p = ''
-      .'<object id="player" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" name="player" width="'.$width.'" height="'.$height.'">'
-      .'<param name="movie" value="misc/player.swf" />'
-      .'<param name="allowfullscreen" value="true" />' 
-      .'<param name="allowscriptaccess" value="always" />' 
-      .'<param name="flashvars" value="file='.$url.'" />'
-      .'<object type="application/x-shockwave-flash" data="misc/player.swf" width="'.$width.'" height="'.$height.'">'
-      .'<param name="movie" value="misc/player.swf" />'
-      .'<param name="allowfullscreen" value="true" />'
-      .'<param name="allowscriptaccess" value="always" />'
-      .'<param name="flashvars" value="file='.$url.'" />'
-//      .<p><a href="http://get.adobe.com/flashplayer">Get Flash</a> to see this player.</p>'
-      .'</object>'
-      .'</object>';
-
+  $p = '';
+  $p .= '<audio src="'.$audio_url.'" controls="controls"></audio>';
   return $p;
-*/
 }
 
 
 function
-widget_audio_jwplayer ($audio_url, $start = 0, $stream = 0, $next_stream = NULL)
+widget_audio_youtube ()
 {
-  $url = 'misc/widget_audio.swf?url='.$audio_url
-        .'&start='.$start
-        .'&stream='.$stream
-        .($next_stream ? '&next='.$next_stream : '');
-
-  $o = array (array ());
-  $e = array (
-    array ('width', '1'),
-    array ('height', '1'),
-    array ('src', $url),
-    array ('type', 'application/x-shockwave-flash'),
-    array ('pluginspace', 'http://www.macromedia.com/go/flashplayer'),
-  );
-  return widget_media_object_func ($o, NULL, $e);
-
 /*
-  $url = $audio_url
-        .'&autostart=true'
-        .'&shuffle=true'
-        .'&showdigits=false'
-        .'&showeq=true'
-        .'&showfsbutton=false'
-        .'&displayheight=100'
-        .'&repeat=true'
-        .'&thumbsinplaylist=false'
-        .'&lightcolor=0xcc9900'
-        .'&backcolor=0x000000'
-        .'&frontcolor=0xcccccc'
-        .'&bufferlength=10';
-
-  $o = array (
-    array ('type', 'application/x-shockwave-flash'),
-    array ('data', 'misc/mediaplayer.swf'),
-    array ('width', '150'), 
-    array ('height', '120'),
-  );
-  $p = array (
-    array ('movie', 'misc/mediaplayer.swf'),
-    array ('allowNetworking', 'internal'),
-    array ('allowScriptAccess', 'always'),
-    array ('wmode', 'transparent'),
-    array ('bgcolor', '#ffffff'),       
-    array ('flashvars', 'file='.$url),
-  );
-  $e = array (
-    array ('allowScriptAccess', 'always'),
-    array ('allowNetworking', 'internal'),
-    array ('enableJavaScript', 'false'),
-    array ('src', 'misc/mediaplayer.swf'),
-    array ('wmode', 'transparent'),   
-    array ('width', '150'), 
-    array ('height', '120'),
-    array ('bgcolor', '#ffffff'),     
-    array ('type', 'application/x-shockwave-flash'),
-    array ('pluginspage', 'http://www.macromedia.com/go/getflashplayer'),
-    array ('flashvars', 'file='.$url),
-  );
-  return widget_media_object_func ($o, $p, NULL);
+<object height="344" width="425">
+<param name="movie" value="http://www.youtube.com/v/6X-RUpNaiL8&amp;hl=en_US&amp;fs=1&amp;">
+<param name="allowFullScreen" value="true">
+<param name="allowscriptaccess" value="always">
+<embed src="http://www.youtube.com/v/6X-RUpNaiL8&amp;hl=en_US&amp;fs=1&amp;" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true"
+ height="25" width="425">
+</object>
 */
 }
 
@@ -231,7 +105,6 @@ widget_video_youtube_array ($video_id_array, $width = 425, $height = 344, $autop
 .'<script>
 google.load ("swfobject", "2.1");
 </script>'
-//      .'<script type="text/javascript" src="misc/swfobject.js"></script>'
 
 .'<script type="text/javascript">
 

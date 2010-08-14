@@ -1143,6 +1143,109 @@ random_user_agent ()
 }
 
 
+/*
+function
+array2xml_func (&$xml, $a)
+{
+  foreach ($a as $name=>$value)
+    {
+      $name = ereg_replace ("^[0-9]{1,}", 'data', $name);
+      $name = str_replace ('.', '_', $name);
+ 
+      $xml .= '  <'.$name.'>';
+
+      if (is_array ($value))
+        array2xml_func ($xml, $value);
+      else
+        {
+          if ($tag == 'gq_name' || $tag == 'nick' || $tag == 'NGU')
+            $xml .= base64_encode ($value);
+          else
+            $xml .= htmlspecialchars ($value, ENT_NOQUOTES, 'UTF-8');
+        }
+
+      $xml .= '  </'.$name.'>'."\n";  
+    }
+}
+
+
+function
+array2xml ($a)
+{
+  $xml = '';
+
+  if (is_array ($a))
+    if (count ($a) > 0)
+      {
+        array2xml_func ($xml, $a);
+
+        return '<?xml version="1.0" encoding="utf-8"?>'."\n"
+              .'<root>'."\n"   
+              .$xml
+              .'</root>'."\n"
+;
+      }
+
+  return '';
+}
+
+
+function 
+xml2array_func (&$a, $xml)
+{
+  // EVIL HACK: flattening out the redundant ['data'] tags from multidimensional PHP arrays
+  for ($i = 0; $xml->data[$i]; $i++)
+    {
+      array_push ($a, (array) $xml->data[$i]);
+
+      $b = array ();
+      for ($j = 0; $j < sizeof ($a[$i]['players']->data); $j++)
+        {
+//          print_r ((array) $a[$i]['players']->data[$j]);
+          $b[$j] = (array) $a[$i]['players']->data[$j];
+        }
+      $a[$i]['players'] = $b;
+      $a[$i]['players']['nick'] = base64_decode ($a[$i]['players']['nick']);
+      $a[$i]['players']['gq_name'] = base64_decode ($a[$i]['players']['gq_name']);
+    }
+// base64_decode ()
+}
+
+
+function
+xml2array ($xml)   
+{
+  $a = array ();
+  xml2array_func ($a, $xml);
+
+  //DEBUG   
+//  echo '<pre><tt>';
+//  print_r ((array) $a);
+
+  return (array) $a;
+}
+ 
+function
+gsembed_xml ($server_xml)
+{
+//header ('Content-type: text/xml');
+header ('Content-type: application/xml');
+//header ('Content-type: text/xml-external-parsed-entity');
+//header ('Content-type: application/xml-external-parsed-entity');
+//header ('Content-type: application/xml-dtd');
+
+// DEBUG
+//echo '<tt><pre>';
+//print_r ($server_xml);
+
+
+
+echo array2xml ($server_xml);
+ 
+}
+*/
+
+
 }
 
 
