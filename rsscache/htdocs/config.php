@@ -43,6 +43,7 @@ $tv2_results = 10; // results per page
 $tv2_cloud_results = 500;  // number of tumbnails shown in cloud
 $tv2_wall_results = 500;  // number of tumbnails shown in wall
 $tv2_download_video = 0; // show link for downloading videos
+$tv2_related_search = 0; // make use of related searches (requires keywords)
 
 
 // player settings

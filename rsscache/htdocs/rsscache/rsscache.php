@@ -37,7 +37,8 @@ tv2_body ()
          $tv2_search_s,
          $tv2_videos_s,
          $tv2_cookie_expire,
-         $tv2_enable_search;
+         $tv2_enable_search,
+         $tv2_related_search;
   global $config;
   global $embed, $f, $c, $q, $v, $start, $num, $captcha;
 
@@ -207,7 +208,7 @@ tv2_body ()
       $p .= '</td>';
       $p .= '<td>';
     }
-  else if ($f == 'related') // we sort related by title for playlist
+  else if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
     {
     }
   else if ($f != 'mirror')
@@ -246,6 +247,7 @@ tv2_body ()
 
   // related
   if ($f != 'mirror')
+    if ($tv2_related_search)
     $p .= tv2_related_button ($d);
 
   // HACK: fix height

@@ -184,10 +184,12 @@ function
 tv2_sql_normalize ($db, $d, $c, $f)
 {
   global $tv2_root,
-         $tv2_link;
+         $tv2_link,
+         $tv2_related_search;
   $debug = 0;
 
   // make array contents unique by their title
+  if ($tv2_related_search)
   if ($f == 'related')
     for ($i = 0; isset ($d[$i]) && isset ($d[$i + 1]); $i++)
       while (trim ($d[$i]['rsstool_title']) == trim ($d[$i + 1]['rsstool_title']))
@@ -367,7 +369,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
          $tv2_dbname,
          $tv2_isnew,
          $tv2_root,
-         $tv2_enable_search;
+         $tv2_enable_search,
+         $tv2_related_search;
   global $tv2_debug_sql;
   $debug = $tv2_debug_sql;
 //  $debug = 1;
@@ -449,7 +452,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
         $sql_query_s .= ' AND ( rsstool_url LIKE \'%youtube%\' )'; // TODO: thumbnails of all videos
 
       // sort
-      if ($f == 'related') // we sort related by title for playlist
+      if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
         $sql_query_s .= ' ORDER BY rsstool_title ASC';
       else if ($f == 'score')
         $sql_query_s .= ' ORDER BY tv2_score ASC';
