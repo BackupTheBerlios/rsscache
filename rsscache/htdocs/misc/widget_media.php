@@ -202,20 +202,20 @@ widget_video_youtube ($video_id, $width = 425, $height = 344, $autoplay = 1, $hq
 
   $s .= widget_media_object_func ($o, $p, $e);
 
-  $a = youtube_download ($video_id, $tor_enabled, 0);
+  $yt_array = youtube_download ($video_id, $tor_enabled, 0);
 
   // DEBUG
 //  echo '<pre><tt>';
 //  echo $video_id."\n";
 //  print_r ($a); 
 
-  $j = 0;
+  $yt = $yt_array[0];
 
-  if ($a[$j]['status'] == 'fail') // youtube fail
+  if ($yt['status'] == 'fail') // youtube fail
     {
-      $s .= $a[$j]['errorcode'].': '.$a[$j]['reason'];
+      $s .= $yt['errorcode'].': '.$yt['reason'];
  
-      switch ($a[$j]['errorcode'])
+      switch ($yt['errorcode'])
         {
           case 150: // copyright
             $s .= '<br>'
@@ -231,20 +231,25 @@ widget_video_youtube ($video_id, $width = 425, $height = 344, $autoplay = 1, $hq
     }
   else
     {
+//    [fmt_list] => 35/854x480/9/0/115,34/640x360/9/0/115,18/640x360/9/0/115,5/320x240/7/0/0
+      $a = explode (',', $yt['fmt_list']);
+
       $s .= '<br>';
 
       // download
-      $s .= '<a href="'.$a[$j]['video_url'].'">Best</a>';
+      $s .= '<a href="'.$yt['video_url'].'">Best</a>';
 
-      for ($q = 0; isset ($a[$j][$q]); $q++)
+      for ($q = 0; isset ($yt[$q]); $q++)
         {
-          $fmt = substr ($a[$j][$q], 0, strpos ($a[$j][$q], '|'));
-          $t = substr ($a[$j][$q], strpos ($a[$j][$q], '|') + 1);
+          $b = explode ('/', $a[$q]);
+          $fmt = substr ($yt[$q], 0, strpos ($yt[$q], '|'));
+          $t = substr ($yt[$q], strpos ($yt[$q], '|') + 1);
           $s .= ' <a href="'.$t.'">&fmt='.$fmt.'</a>';
+          $s .= ' '.$b[1].' ('.$b[2].' '.$b[4].')';
         }
 
       // direct link
-//      $s .= ' <a href="'.$a[$j]['ad_eurl'].'">Direct</a>';
+//      $s .= ' <a href="'.$yt['ad_eurl'].'">Direct</a>';
 
       $s .= '<br>';
 
@@ -253,7 +258,7 @@ widget_video_youtube ($video_id, $width = 425, $height = 344, $autoplay = 1, $hq
            .'<input type="text"'
            .' style="width:'.($width - 10).'px;"'
            .' value="'
-           .$a[$j]['title']
+           .$yt['title']
            .'" readonly="readonly"'
 //           .' onclick="javascript:this.execCommand(\'copy\');"'
            .'>'
@@ -261,7 +266,7 @@ widget_video_youtube ($video_id, $width = 425, $height = 344, $autoplay = 1, $hq
 ;
 
       $s .= '<br>';
-      $s .= widget_collapse ('Details', '<pre><tt>'.sprint_r ($a[$j]).'</tt></pre>', 1);
+      $s .= widget_collapse ('Details', '<pre><tt>'.sprint_r ($yt).'</tt></pre>', 1);
     }
 
   return $s;

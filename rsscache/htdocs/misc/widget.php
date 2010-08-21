@@ -142,6 +142,90 @@ widget_fontiles ($image_url, $image_width, $image_height, $text, $file_cols = 16
   </category>
 */
 function
+widget_cms_func ($name, $q, $category)
+{
+  $p = '';
+
+      $p .= '<nobr>';
+      if ($category->src || $category->id)
+        {
+          $p .= '<a href="';
+
+          if ($category->embed == 1)
+            $p .= '?'.$name.'='.$category->id;
+          else
+            $p .= $category->src;
+
+          $p .= '" title="'
+               .$category->tooltip
+               .'">'
+               .$category->title
+               .'</a></nobr>';
+        }
+      else // title (no link)
+        {
+          $p .= '<font size="5">';
+          $p .= $category->title.'</font>';
+        }
+
+      $p .= ($category->new == 1 ? '<img src="images/new.png">' : '');
+      $p .= '</nobr>';
+
+      if ($q)
+        $p .= '&nbsp;&nbsp; ';
+      else if ($category->lf > 0)
+        {
+          $p .= '<br>';
+          if ($category->lf > 1)
+          for ($j = 0; $j < (int) $category->lf - 1; $j++)
+            $p .= '<br>';
+        }
+
+  return $p;
+}
+
+
+function
+widget_cms_select_func ($name, $q, $category)
+{
+  $p = '';
+
+      if ($category->src || $category->id)
+        {
+          $p .= '<option value="';
+
+          if ($category->embed == 1)
+            $p .= $category->id;
+          else
+            $p .= $category->src;
+
+          $p .= '">'
+               .$category->title
+               .'</option>';
+        }
+      else // title (no link)
+        {
+//          $p .= '<font size="5">';
+//          $p .= $category->title;
+//          $p .= '</font>';
+        }
+
+//      $p .= ($category->new == 1 ? '<img src="images/new.png">' : '');
+
+//      if ($q)
+//        $p .= '&nbsp;&nbsp; ';
+//      else 
+if ($category->lf > 0)
+        {
+          if ($category->lf > 1)
+          for ($j = 0; $j < (int) $category->lf - 1; $j++)
+            $p .= '</select><select>';
+        }
+  return $p;
+}
+
+
+function
 widget_cms ($logo, $config_xml, $name = 'q')
 {
   $config = simplexml_load_file ($config_xml);
@@ -163,51 +247,24 @@ widget_cms ($logo, $config_xml, $name = 'q')
          .'<br>'
 ;
 
+  // categories
+  $p .= '<select name="'.$name.'">';
   for ($i = 0; isset ($config->category[$i]); $i++)
     {
-      if ($config->category[$i]->src || $config->category[$i]->id)
-        {
-          $p .= '<a href="';
-
-          if ($config->category[$i]->embed == 1)
-            $p .= '?'.$name.'='.$config->category[$i]->id;
-          else
-            $p .= $config->category[$i]->src;
-
-          $p .= '" title="'
-               .$config->category[$i]->tooltip
-               .'">'
-               .$config->category[$i]->title
-               .'</a>';
-        }
-      else // title (no link)
-        {
-//          if ($q)
-//            $p .= '<br><font size="3">';
-//          else
-            $p .= '<font size="5">';
-          $p .= $config->category[$i]->title.'</font>';
-        }
-
-      $p .= ($config->category[$i]->new == 1 ? '<img src="images/new.png">' : '');
-
-      if ($q)
-        $p .= '&nbsp;&nbsp;';
-      else if ($config->category[$i]->lf > 0)
-        {
-          $p .= '<br>';
-          if ($config->category[$i]->lf > 1)
-          for ($j = 0; $j < (int) $config->category[$i]->lf - 1; $j++)
-            $p .= '<br>';
-        }
-    } 
+//      $p .= widget_cms_func ($name, $q, $config->category[$i]);
+      $p .= widget_cms_select_func ($name, $q, $config->category[$i]);
+    }
+  $p .= '</select>';
 
   if ($q)
     {
       $p .= '</td></tr></table>';
 //      $p .= '<br>';
       $p .= '<hr>';
+    }
 
+  if ($q)
+    {
       for ($i = 0; $config->category[$i]; $i++)
         if ($q == $config->category[$i]->id)
           {
