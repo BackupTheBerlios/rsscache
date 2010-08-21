@@ -15,9 +15,10 @@ $memcache_expire = 0;
 $tv2_search_s = 'Search';
 $tv2_title = 'pwnoogle \:D/ - watch videos of games';
 $tv2_body_tag = '<body style="font-family:sans-serif;font-size:13px;opacity:1.0;">'
-//               .'<a href="http://pwnoogle.com">Videos</a>&nbsp;&nbsp;'
-//               .'<a href="http://ilovefps.y7.ath.cx">Map Generator @ <img src="images/i_love_fps.png" border="0" height="24"></a>&nbsp;&nbsp;'
-               .'<a href="http://clanarena.org">Forum @ <img src="images/ca.png" border="0" height="24"></a><br><hr>';
+               .'<a href="http://demos.pwnoogle.com">Demos</a>&nbsp;&nbsp;'
+               .'<a href="http://maps.pwnoogle.com">Maps</a>&nbsp;&nbsp;'
+//               .'<a href="http://labs.pwnoogle.com">Labs @ <img src="images/i_love_fps.png" border="0" height="24"></a>&nbsp;&nbsp;'
+               .'<a href="http://clanarena.org">Forum@<img src="images/ca.png" border="0" height="16"></a><br><hr>';
 $tv2_table_tag = '<table style="font-family:sans-serif;font-size:13px;opacity:1.0;" cellspacing="0" cellpadding="0" border="0">';
 $tv2_logo = '<span style="font-size:32px;font-family:sans-serif;color:#000;font-weight:bolder;width:100%;text-align:center">'
            .'pwnoogle \:D/'
