@@ -72,7 +72,7 @@ widget_video_html5 ($video_url, $width = 400, $height = 300, $preview_image = NU
 
 
 function
-widget_audio_html5 ($audio_url, $start = 0, $stream = 0, $next_stream = NULL)
+widget_audio_html5 ($audio_url)
 {
   $p = '';
   $p .= '<audio src="'.$audio_url.'" controls="controls"></audio>';
@@ -538,10 +538,10 @@ widget_media_demux ($media_url)
     return 2;
   else if (strstr ($media_url, '.xfire.com'))
     return 3;
-  else if (strstr ($media_url, 'http://') && in_array (strtolower (get_suffix ($media_url)), array ('.flv', '.mp4')))
-    return 4; // flv or mp4
-  else if (strstr ($media_url, 'http://') && strtolower (get_suffix ($media_url)) == '.mp3')
-    return 5; // mp3
+  else if (strstr ($media_url, 'http://') && in_array (strtolower (get_suffix ($media_url)), array ('.webm', '.ogg')))
+    return 4; // <video>
+  else if (strstr ($media_url, 'http://') && strtolower (get_suffix ($media_url)) == '.wav')
+    return 5; // <audio>
   else if (strstr ($media_url, '.veoh.com'))
     return 6;
   else if (strstr ($media_url, 'xvideos.com'))
@@ -662,10 +662,10 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 1, $autopla
 
       $s .= widget_video_xfire ($p, $width, $height);
     }
-  else if ($demux == 4) // flv or mp4
-    $s .= widget_video_jwplayer ($p, $width, $height, NULL);
-  else if ($demux == 5) // mp3
-    $s .= widget_audio_jwplayer ($p);
+  else if ($demux == 4)
+    $s .= widget_video_html5 ($p, $width, $height, NULL);
+  else if ($demux == 5)
+    $s .= widget_audio_html5 ($p);
   else if ($demux == 6)
     {
       // http://www.veoh.com/videos/v6387308sYb9NxBJ
