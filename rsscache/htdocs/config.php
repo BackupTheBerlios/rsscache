@@ -14,11 +14,7 @@ $memcache_expire = 0;
 //$tv2_charset = 'utf-8';
 $tv2_search_s = 'Search';
 $tv2_title = 'pwnoogle \:D/ - watch videos of games';
-$tv2_body_tag = '<body style="font-family:sans-serif;font-size:13px;opacity:1.0;">'
-               .'<a href="http://demos.pwnoogle.com">Demos</a>&nbsp;&nbsp;'
-               .'<a href="http://maps.pwnoogle.com">Maps</a>&nbsp;&nbsp;'
-//               .'<a href="http://labs.pwnoogle.com">Labs @ <img src="images/i_love_fps.png" border="0" height="24"></a>&nbsp;&nbsp;'
-               .'<a href="http://clanarena.org">Forum@<img src="images/ca.png" border="0" height="16"></a><br><hr>';
+$tv2_body_tag = '<body style="font-family:sans-serif;font-size:13px;opacity:1.0;">';
 $tv2_table_tag = '<table style="font-family:sans-serif;font-size:13px;opacity:1.0;" cellspacing="0" cellpadding="0" border="0">';
 $tv2_logo = '<span style="font-size:32px;font-family:sans-serif;color:#000;font-weight:bolder;width:100%;text-align:center">'
            .'pwnoogle \:D/'
@@ -33,8 +29,8 @@ $tv2_related_s = 'Find related '.$tv2_videos_s;
 
 $tv2_enable_search = 0; // allow users to search db?
 $tv2_root = dirname(__FILE__).'/';
-$tv2_link = 'http://pwnoogle.com/';
-$tv2_link_static = 'http://174.120.2.100/pwnoogle/'; // static content
+$tv2_link = 'http://video.pwnoogle.com/';
+$tv2_link_static = 'http://video.pwnoogle.com/'; // static content
 $tv2_cookie_expire = time() + 3600 * 24 * 180; // 6 months
 // DEBUG (show the SQL query)
 $tv2_debug_sql = 0;
