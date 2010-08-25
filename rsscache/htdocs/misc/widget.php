@@ -204,6 +204,7 @@ define ('WIDGET_CMS_MENU', 2);
 define ('WIDGET_CMS_HLIST', 4); // default
 define ('WIDGET_CMS_HLIST_COLS', 8);
 define ('WIDGET_CMS_VLIST', 16);
+define ('WIDGET_CMS_BUTTON_ONLY', 32);
 function
 widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
 {
@@ -233,6 +234,8 @@ widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
          .'>';
 
   for ($i = 0; isset ($config->category[$i]); $i++)
+    if (!isset ($config->category[$i]->button) ||
+        (isset ($config->category[$i]->button) && $config->category[$i]->button == 1))
     {
       $category = $config->category[$i];
 
@@ -245,7 +248,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
               if ($category->embed == 1)
                 $s = $category->id;
               else
-                $s = $category->src;
+                $s = ($category->src ? $category->src : $category->query);
 
               $p .= widget_select_option ($category->logo, $s, $category->title, '', 0);
             }
@@ -271,9 +274,11 @@ widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
               if ($category->embed == 1)
                 $query .= '?'.$name.'='.$category->id;
               else
-                $query .= $category->src;
+                $query .= ($category->src ? $category->src : '?'.$category->query);
               // misc_getlink ($a, false)
-              $p .= widget_button (NULL, $query, $category->title, $category->tooltip);
+              $p .= widget_button ($category->logo ? $category->logo : NULL, $query,
+                      $category->title, $category->tooltip,
+                  $category->buttononly == 1 || $flags & WIDGET_CMS_BUTTON_ONLY ? WIDGET_BUTTON_ONLY : WIDGET_BUTTON_SMALL);
             }
         }
       else // title (no link)
@@ -290,6 +295,11 @@ widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
         $p .= '&nbsp;&nbsp; ';
       else if ($category->lf > 0)
         $p .= str_repeat ('<br>', $category->lf);
+
+      if ($category->separate == 1)
+        $p .= '<br>';
+      else if ($category->separate == 2)
+        $p .= '<hr>';
     }
 
   if ($flags & WIDGET_CMS_MENU)
@@ -300,7 +310,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
 
   if ($flags & WIDGET_CMS_HLIST)
     {
-      $p .= '<hr>';
+//      $p .= '<hr>';
 
       // content
       if ($q)

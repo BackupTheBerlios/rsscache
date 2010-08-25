@@ -30,8 +30,8 @@ $tv2_related_s = 'Find related '.$tv2_videos_s;
 
 $tv2_enable_search = 0; // allow users to search db?
 $tv2_root = dirname(__FILE__).'/';
-$tv2_link = 'http://video.pwnoogle.com/';
-$tv2_link_static = 'http://video.pwnoogle.com/'; // static content
+$tv2_link = 'http://videos.pwnoogle.com/';
+$tv2_link_static = 'http://videos.pwnoogle.com/'; // static content
 $tv2_cookie_expire = time() + 3600 * 24 * 180; // 6 months
 // DEBUG (show the SQL query)
 $tv2_debug_sql = 0;
