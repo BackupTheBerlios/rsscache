@@ -238,7 +238,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
 
       $p .= '<nobr>';
 
-      if ($category->src || $category->id)
+      if ($category->src || $category->query || $category->id)
         {   
           if ($flags & WIDGET_CMS_MENU)
             {
