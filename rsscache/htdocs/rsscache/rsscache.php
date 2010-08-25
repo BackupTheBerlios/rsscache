@@ -104,7 +104,7 @@ tv2_body ()
     $p .= tv2_button_array ($config, '%s ', 0, sizeof ($config->category));
 
   $p .= '<br>'  
-       .'<br>'  
+//       .'<br>'  
 ;  
 
   // embed another page
@@ -467,6 +467,7 @@ $head = '<html>'
 
 $head .= misc_head_tags ($tv2_icon, 0, $tv2_charset);
 
+$head .= $tv2_head_tag;
 
 $head .= '</head>'
         .$tv2_body_tag

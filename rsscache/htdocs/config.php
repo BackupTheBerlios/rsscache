@@ -14,10 +14,11 @@ $memcache_expire = 0;
 //$tv2_charset = 'utf-8';
 $tv2_search_s = 'Search';
 $tv2_title = 'pwnoogle \:D/ - watch videos of games';
+$tv2_head_tag = '<title>'.$tv2_title.'</title>';
 $tv2_body_tag = '<body style="font-family:sans-serif;font-size:13px;opacity:1.0;">';
 $tv2_table_tag = '<table style="font-family:sans-serif;font-size:13px;opacity:1.0;" cellspacing="0" cellpadding="0" border="0">';
 $tv2_logo = '<span style="font-size:32px;font-family:sans-serif;color:#000;font-weight:bolder;width:100%;text-align:center">'
-           .'pwnoogle \:D/'
+           .'pwnoogle'
 //           .' <img src="images/preview.png" border="0">'
            .'</span> '
 //           .'<br>'
@@ -64,24 +65,7 @@ else
 $tv2_dbhost = 'localhost';
 
 
-// rescue
-//$rescue_default = 'http://www.youtube.com/watch?v=MkDrWsBhFjo';
-//$rescue_default = 'http://www.youtube.com/watch?v=4Inr22ZBmdw';
-//$rescue_default = 'http://www.youtube.com/watch?v=dh3bleXWaCk';
-//$rescue_default = 'http://www.youtube.com/watch?v=rvNTrvJorbs';
-//$rescue_default = 'http://www.youtube.com/watch?v=CzAYDtOD8UY';
-$rescue_default = 'http://www.youtube.com/watch?v=CzVsu4f4iz0';
-$rescue_videos_horizontal = 4;
-$rescue_w = 1024;
-$rescue_h = 768;
-$rescue_autoplay = 0;
-$rescue_hq = 1; // high quality
-$rescue_max_videos = 64;
-$rescue_max_search_results = 32;
-// connect to sites using TOR
-$rescue_tor_enabled = 1;
-
-
+require_once ('pwnoogle_config.php');
 }
 
 

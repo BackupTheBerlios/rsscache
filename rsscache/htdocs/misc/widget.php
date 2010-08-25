@@ -46,42 +46,6 @@ widget_count_steps ()
 
 
 /*
-  $a = array (array ('value', 'label', 'logo.png'))
-*/
-function
-widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1)
-{
-  $p = '';
-  $p .= '<select name="'.$name.'"'.($active == 1 ? '' : ' disabled="disabled"').'>';
-  $sel = 0;
-  for ($i = 0; isset ($a[$i]); $i++)
-    {
-      if ($selected)
-      if (!strcasecmp ($a[$i][0], $selected) && !($sel))
-        $sel = 1;
-      $p .= '<option'
-           .($sel == 1 ? ' selected="selected"' : '')
-           .' value="'.$a[$i][0].'"'                  
-           .(
-            $a[$i][2] ?
-            ' style="background-image:url('
-           .$a[$i][2]
-           .');background-repeat:no-repeat;background-position:bottom left;padding-left:18px;"' :
-            ''
-           )
-           .'>'
-           .$a[$i][1]
-           .'</option>';
-      if ($sel == 1)
-        $sel = 2;
-    }
-  $p .= '</select>';
-
-  return $p;
-}
-
-
-/*
   takes image with e.g. 16x16 font tiles and maps them to ascii codes
   generates CSS code to show text with it by using clip()ing
   put CSS code into a span or div
@@ -127,6 +91,100 @@ widget_fontiles ($image_url, $image_width, $image_height, $text, $file_cols = 16
 }
 
 
+define ('WIDGET_BUTTON_SMALL', 1);
+define ('WIDGET_BUTTON_ONLY', 2);
+function
+widget_button ($icon, $query, $label, $tooltip, $flags = 0)
+{
+  $p = '';
+
+  $p = '<a href="'.$query.'"'
+      .' title="'.$tooltip
+      .'"'
+//      .' style="opacity:1.0;"'
+//      .' onhover="opacity:1.0;"'
+      .' alt="'.$label.'"'
+      .'>';
+
+  if ($icon)
+    {
+      if (file_exists ($icon))
+        {
+          $p .= '<img src="'.$icon.'" border="0"';
+
+          if ($flags & WIDGET_BUTTON_SMALL)
+            $p .= ' height="16"';
+          $p .= '>';
+        }
+      else $icon = NULL;
+    }
+
+  if (!$icon)
+    $p .= ''
+         .'<span style="width:32px;height:32px;font-size:16px;">'
+         .$label
+         .'</span>'
+;
+  else if (!($flags & WIDGET_BUTTON_ONLY))
+    $p .= '&nbsp;'
+         .$label
+;
+  $p .= '</a>';
+
+  return $p;
+}
+
+
+function
+widget_select_option ($icon, $value, $label, $tooltip, $selected = 0)
+{
+  $p = '';
+
+      $p .= '<option'
+           .($selected == 1 ? ' selected="selected"' : '')
+           .($tooltip ? ' title="'.$tooltip.'"' : '')
+           .' value="'.$value.'"'                  
+           .(
+            $icon ?
+            ' style="background-image:url('
+           .$icon
+           .');background-repeat:no-repeat;background-position:bottom left;padding-left:18px;"' :
+            ''
+           )
+           .'>'
+           .$label
+           .'</option>';
+
+  return $p;
+}
+
+
+/*
+  $a = array (array ('value', 'label', 'logo.png'))
+*/
+function
+widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1)
+{
+  $p = '';
+  $p .= '<select name="'.$name.'"'.($active == 1 ? '' : ' disabled="disabled"').'>';
+  $sel = 0;
+  for ($i = 0; isset ($a[$i]); $i++)
+    {
+      if ($selected)
+      if (!strcasecmp ($a[$i][0], $selected) && !($sel))
+        $sel = 1;
+
+      $p .= widget_select_option ($a[$i][2], $a[$i][0], $a[$i][1], '', $sel);
+
+      if ($sel == 1)
+        $sel = 2;
+    }
+  $p .= '</select>';
+
+  return $p;
+}
+
+
 /*
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- config for aa2map_php -->
@@ -141,26 +199,82 @@ widget_fontiles ($image_url, $image_width, $image_height, $text, $file_cols = 16
     <lf>1</lf>
   </category>
 */
+define ('WIDGET_CMS_LINK', 1); // default
+define ('WIDGET_CMS_MENU', 2);
+define ('WIDGET_CMS_HLIST', 4); // default
+define ('WIDGET_CMS_HLIST_COLS', 8);
+define ('WIDGET_CMS_VLIST', 16);
 function
-widget_cms_func ($name, $q, $category)
+widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
 {
+  $config = simplexml_load_file ($config_xml);
+
+  $q = get_request_value ($name);
+
   $p = '';
 
+  if ($flags & WIDGET_CMS_VLIST)
+    $p .= '<br>'
+         .'<br>'
+         .'<br>'
+         .'<br>'
+         .'<center>'
+         .($logo ? '<img src="'.$logo.'" border="0">' : '')
+         .'<br>'  
+         .'<br>'
+;
+  else if ($logo)
+    $p .= '<a href="."><img src="'.$logo.'" border="0" align="middle" height="50"></a> ';
+
+  // categories
+  if ($flags & WIDGET_CMS_MENU)
+    $p .= '<select name="'.$name.'"'
+//         .($active == 1 ? '' : ' disabled="disabled"')
+         .'>';
+
+  for ($i = 0; isset ($config->category[$i]); $i++)
+    {
+      $category = $config->category[$i];
+
       $p .= '<nobr>';
+
       if ($category->src || $category->id)
-        {
-          $p .= '<a href="';
+        {   
+          if ($flags & WIDGET_CMS_MENU)
+            {
+              if ($category->embed == 1)
+                $s = $category->id;
+              else
+                $s = $category->src;
 
-          if ($category->embed == 1)
-            $p .= '?'.$name.'='.$category->id;
+              $p .= widget_select_option ($category->logo, $s, $category->title, '', 0);
+            }
           else
-            $p .= $category->src;
-
-          $p .= '" title="'
-               .$category->tooltip
-               .'">'
-               .$category->title
-               .'</a></nobr>';
+            {
+/*
+              if ($flags | WIDGET_CMS_HLIST_COLS)
+                {
+                  $last = ($i > 0 ? $config->category[$i - 1]->title : '');
+                  if ($last != '')
+                    {
+                      $last = strtolower (substr ($last, 0, 1));
+                      $next = (isset ($config->category[$i + 1]) ? $config->category[$i + 1]->title : '');
+                      $next = strtolower (substr ($next, 0, 1));
+                      $curr = strtolower (substr ($category->title, 0, 1));
+                      if ($last != $curr)
+                        $p .= '<br><br>';
+                      else $p .= '<br>';
+                    }
+                }
+*/
+              $query = '';
+              if ($category->embed == 1)
+                $query .= '?'.$name.'='.$category->id;
+              else
+                $query .= $category->src;
+              // misc_getlink ($a, false)
+              $p .= widget_button (NULL, $query, $category->title, $category->tooltip);
+            }
         }
       else // title (no link)
         {
@@ -169,123 +283,45 @@ widget_cms_func ($name, $q, $category)
         }
 
       $p .= ($category->new == 1 ? '<img src="images/new.png">' : '');
+
       $p .= '</nobr>';
 
-      if ($q)
+      if ($flags & WIDGET_CMS_HLIST)
         $p .= '&nbsp;&nbsp; ';
       else if ($category->lf > 0)
-        {
-          $p .= '<br>';
-          if ($category->lf > 1)
-          for ($j = 0; $j < (int) $category->lf - 1; $j++)
-            $p .= '<br>';
-        }
-
-  return $p;
-}
-
-
-function
-widget_cms_select_func ($name, $q, $category)
-{
-  $p = '';
-
-      if ($category->src || $category->id)
-        {
-          $p .= '<option value="';
-
-          if ($category->embed == 1)
-            $p .= $category->id;
-          else
-            $p .= $category->src;
-
-          $p .= '">'
-               .$category->title
-               .'</option>';
-        }
-      else // title (no link)
-        {
-//          $p .= '<font size="5">';
-//          $p .= $category->title;
-//          $p .= '</font>';
-        }
-
-//      $p .= ($category->new == 1 ? '<img src="images/new.png">' : '');
-
-//      if ($q)
-//        $p .= '&nbsp;&nbsp; ';
-//      else 
-if ($category->lf > 0)
-        {
-          if ($category->lf > 1)
-          for ($j = 0; $j < (int) $category->lf - 1; $j++)
-            $p .= '</select><select>';
-        }
-  return $p;
-}
-
-
-function
-widget_cms ($logo, $config_xml, $name = 'q')
-{
-  $config = simplexml_load_file ($config_xml);
-
-  $q = get_request_value ($name);
-
-  $p = '';
-
-  if ($q)
-    $p .= '<table><tr><td><a href="."><img src="'.$logo.'" border="0" align="middle" height="50"></a></td><td> ';
-  else
-    $p .= '<br>'
-         .'<br>'
-         .'<br>'
-         .'<br>'
-         .'<center>'
-         .'<img src="'.$logo.'" border="0">'
-         .'<br>'  
-         .'<br>'
-;
-
-  // categories
-  $p .= '<select name="'.$name.'">';
-  for ($i = 0; isset ($config->category[$i]); $i++)
-    {
-//      $p .= widget_cms_func ($name, $q, $config->category[$i]);
-      $p .= widget_cms_select_func ($name, $q, $config->category[$i]);
+        $p .= str_repeat ('<br>', $category->lf);
     }
-  $p .= '</select>';
 
-  if ($q)
+  if ($flags & WIDGET_CMS_MENU)
+    $p .= '</select>';
+
+  if ($flags & WIDGET_CMS_VLIST)
+    $p .= '</center>';
+
+  if ($flags & WIDGET_CMS_HLIST)
     {
-      $p .= '</td></tr></table>';
-//      $p .= '<br>';
       $p .= '<hr>';
-    }
 
-  if ($q)
-    {
-      for ($i = 0; $config->category[$i]; $i++)
-        if ($q == $config->category[$i]->id)
-          {
-            if (file_exists ($config->category[$i]->src))
-              {
-//                $p .= file_get_contents ($config->category[$i]->src);
-                ob_start ();
-                require_once ($config->category[$i]->src);
-                $p .= ob_get_contents ();
-                ob_end_clean ();
-              }
-            else
-              $p .= '<iframe width="100%" height="90%" marginheight="0" marginwidth="0" frameborder="0" src="'  
-                   .$config->category[$i]->src
-                   .'"></iframe>'; 
-            break;
-          }
-    }
-  else
-    {
-      $p .= '</center>';
+      // content
+      if ($q)
+        for ($i = 0; $config->category[$i]; $i++)
+          if ($q == $config->category[$i]->id)
+            {
+              // embed from localhost
+              if (file_exists ($config->category[$i]->src))
+                {
+//                  $p .= file_get_contents ($config->category[$i]->src);
+                  ob_start ();
+                  require_once ($config->category[$i]->src);
+                  $p .= ob_get_contents ();
+                  ob_end_clean ();
+                }
+               else // iframe
+                 $p .= '<iframe width="100%" height="90%" marginheight="0" marginwidth="0" frameborder="0" src="'  
+                      .$config->category[$i]->src
+                      .'"></iframe>'; 
+                 break;
+            }
     }
 
   return $p;
