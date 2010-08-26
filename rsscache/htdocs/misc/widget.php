@@ -108,7 +108,7 @@ widget_button ($icon, $query, $label, $tooltip, $flags = 0)
 
   if ($icon)
     {
-      if (file_exists ($icon))
+//      if (file_exists ($icon))
         {
           $p .= '<img src="'.$icon.'" border="0"';
 
@@ -116,7 +116,7 @@ widget_button ($icon, $query, $label, $tooltip, $flags = 0)
             $p .= ' height="16"';
           $p .= '>';
         }
-      else $icon = NULL;
+//      else $icon = NULL;
     }
 
   if (!$icon)
