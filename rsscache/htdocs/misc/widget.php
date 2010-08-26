@@ -224,8 +224,8 @@ widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
          .'<br>'  
          .'<br>'
 ;
-  else if ($logo)
-    $p .= '<a href="."><img src="'.$logo.'" border="0" align="middle" height="50"></a> ';
+//  else if ($logo)
+//    $p .= '<a href="."><img src="'.$logo.'" border="0" align="middle" height="50"></a> ';
 
   // categories
   if ($flags & WIDGET_CMS_MENU)
@@ -314,24 +314,36 @@ widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
 
       // content
       if ($q)
-        for ($i = 0; $config->category[$i]; $i++)
-          if ($q == $config->category[$i]->id)
-            {
-              // embed from localhost
-              if (file_exists ($config->category[$i]->src))
-                {
-//                  $p .= file_get_contents ($config->category[$i]->src);
-                  ob_start ();
-                  require_once ($config->category[$i]->src);
-                  $p .= ob_get_contents ();
-                  ob_end_clean ();
-                }
-               else // iframe
-                 $p .= '<iframe width="100%" height="90%" marginheight="0" marginwidth="0" frameborder="0" src="'  
-                      .$config->category[$i]->src
-                      .'"></iframe>'; 
+        {
+          for ($i = 0; $config->category[$i]; $i++)
+            if ($q == $config->category[$i]->id)
+              {
+                // embed from localhost
+                if (file_exists ($config->category[$i]->src))
+                  {
+//                    $p .= file_get_contents ($config->category[$i]->src);
+                    ob_start ();
+                    require_once ($config->category[$i]->src);
+                    $p .= ob_get_contents ();
+                    ob_end_clean ();
+                  }
+                else // iframe
+                  {
+//$p .= '<script type="text/javascript">'."\n"
+//.'function resizeIframe(newHeight)'."\n"
+//.'{'."\n"
+//.'  document.getElementById(\'blogIframe\').style.height = parseInt(newHeight) + 10 + \'px\';'."\n"
+//.'}'."\n"
+//.'</script>';
+                    $p .= '<iframe width="100%" height="90%" marginheight="0" marginwidth="0" frameborder="0" src="'  
+                         .$config->category[$i]->src
+                         .'"></iframe>'; 
+                  }
                  break;
-            }
+              }
+        }
+      else if ($logo)
+        $p .= '<img src="'.$logo.'" border="0">';
     }
 
   return $p;
