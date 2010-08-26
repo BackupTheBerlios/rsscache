@@ -104,7 +104,7 @@ tv2_body ()
     $p .= tv2_button_array ($config, '%s ', 0, sizeof ($config->category));
 
   $p .= '<br>'  
-//       .'<br>'  
+       .'<br>'  
 ;  
 
   // embed another page
@@ -147,6 +147,16 @@ tv2_body ()
 
       return $p;
     }
+  else if ($f == 'upload')
+    {
+      $p .= '<br>'
+           .'<br>'
+;
+      $p .= tv2_f_upload ();
+      $p .= '</center>';
+
+      return $p;
+    }
 
   // show page-wise navigation (top)
   if (!$v && $f != 'mirror')
@@ -161,7 +171,7 @@ tv2_body ()
     $p .= '<br><br>:(';
 
   $p .= '<br>'
-       .'<br>'
+//       .'<br>'
 ;
 
   // show as cloud
