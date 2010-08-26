@@ -616,7 +616,7 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 1, $autopla
     }
 
   // javascript wrapper for fullscreen
-  $f = get_request_value ('f');
+//  $f = get_request_value ('f');
 
   if ($f == 'fullscreen')
     {
@@ -710,6 +710,7 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 1, $autopla
 ;
     }
 
+/*
   if ($f == 'fullscreen')
     $s .= ''
          .'<a href="javascript:void(0);" onclick="javascript:window.close();">Close</a>';
@@ -721,7 +722,7 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 1, $autopla
 //         .' target="_blank"'
          .'>Fullscreen</a>'
 ;
-
+*/
   return $s;
 }
 
