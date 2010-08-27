@@ -23,7 +23,7 @@ if (!defined ('MISC_WIDGET_PHP'))
 {
 define ('MISC_WIDGET_PHP', 1);  
 //error_reporting(E_ALL | E_STRICT);
-include_once ('misc/misc.php');
+include_once ('misc.php');
 if (file_exists ('geoip/geoipcity.inc') == TRUE)
   include_once ('geoip/geoipcity.inc'); // widget_geotrace()
 

@@ -65,7 +65,8 @@ else
 $tv2_dbhost = 'localhost';
 
 
-require_once ('pwnoogle_config.php');
+if (stristr ($_SERVER['SERVER_NAME'], 'pwnoogle.com'))
+  require_once ('pwnoogle_config.php');
 }
 
 
