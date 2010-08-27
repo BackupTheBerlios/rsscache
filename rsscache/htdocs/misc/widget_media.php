@@ -245,8 +245,7 @@ widget_video_youtube ($video_id, $width = 425, $height = 344, $autoplay = 1, $hq
           $b = explode ('/', $a[$q]);
           $fmt = substr ($yt[$q], 0, strpos ($yt[$q], '|'));
           $t = substr ($yt[$q], strpos ($yt[$q], '|') + 1);
-          $s .= ' <a href="'.$t.'">&fmt='.$fmt.'</a>';
-          $s .= ' '.$b[1].' ('.$b[2].' '.$b[4].')';
+          $s .= ' <a href="'.$t.'" title="&fmt='.$fmt.'">'.$b[1].'</a>';
         }
 
       // direct link
@@ -619,11 +618,11 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 1, $autopla
   // javascript wrapper for fullscreen
 //  $f = get_request_value ('f');
 
-  if ($f == 'fullscreen')
-    {
+//  if ($f == 'fullscreen')
+//    {
 //      $width = -1;
 //      $height = -1;
-    }
+//    }
 
   $fullscreen = 0;
   if ($width == -1 || $height == -1)
