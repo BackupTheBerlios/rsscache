@@ -66,7 +66,8 @@ function
 widget_video_html5 ($video_url, $width = 400, $height = 300, $preview_image = NULL)
 {
   $p = '';
-  $p .= '<video src="'.$video_url.'" controls="controls" width="'.$width.'" height="'.$height.'"></video>';
+  $p .= '<video src="'.$video_url.'" width="'.$width.'" height="'.$height.'" controls>'
+       .'</video>';
   return $p;
 }
 
@@ -75,7 +76,7 @@ function
 widget_audio_html5 ($audio_url)
 {
   $p = '';
-  $p .= '<audio src="'.$audio_url.'" controls="controls"></audio>';
+  $p .= '<audio src="'.$audio_url.'" controls></audio>';
   return $p;
 }
 
