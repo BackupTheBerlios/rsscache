@@ -275,10 +275,16 @@ widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
                 $query .= '?'.$name.'='.$category->id;
               else
                 $query .= ($category->src ? $category->src : '?'.$category->query);
+
               // misc_getlink ($a, false)
-              $p .= widget_button ($category->logo ? $category->logo : NULL, $query,
-                      $category->title, $category->tooltip,
-                  $category->buttononly == 1 || $flags & WIDGET_CMS_BUTTON_ONLY ? WIDGET_BUTTON_ONLY : WIDGET_BUTTON_SMALL);
+              if ($category->buttononly == 1 || $flags & WIDGET_CMS_BUTTON_ONLY)
+                $p .= widget_button ($category->logo ? $category->logo : NULL, $query,
+                                     $category->title, $category->tooltip,
+                                     WIDGET_BUTTON_ONLY)
+                     .'&nbsp;&nbsp;';
+              else
+                $p .= widget_button ($category->logo ? $category->logo : NULL, $query,
+                                     $category->title, $category->tooltip, WIDGET_BUTTON_SMALL);
             }
         }
       else // title (no link)
@@ -321,6 +327,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
                 // embed from localhost
                 if (file_exists ($config->category[$i]->src))
                   {
+                    $p .= '<br>';
 //                    $p .= file_get_contents ($config->category[$i]->src);
                     ob_start ();
                     require_once ($config->category[$i]->src);
@@ -329,6 +336,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
                   }
                 else // iframe
                   {
+                    $p .= '<br>';
 //$p .= '<script type="text/javascript">'."\n"
 //.'function resizeIframe(newHeight)'."\n"
 //.'{'."\n"
