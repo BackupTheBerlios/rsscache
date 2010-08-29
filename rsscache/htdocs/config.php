@@ -11,7 +11,8 @@ $memcache_expire = 0;
 
 
 // localization and style
-//$tv2_charset = 'utf-8';
+$tv2_charset = 'utf-8';
+$tv2_icon = 'images/icon.png';
 $tv2_search_s = 'Search';
 $tv2_title = 'pwnoogle \:D/ - watch videos of games';
 $tv2_head_tag = '<title>'.$tv2_title.'</title>';

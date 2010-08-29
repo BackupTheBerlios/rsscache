@@ -93,8 +93,9 @@ widget_fontiles ($image_url, $image_width, $image_height, $text, $file_cols = 16
 
 define ('WIDGET_BUTTON_SMALL', 1);
 define ('WIDGET_BUTTON_ONLY', 2);
+define ('WIDGET_BUTTON_STATIC', 4);
 function
-widget_button ($icon, $query, $label, $tooltip, $flags = 0)
+widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 {
   $p = '';
 
@@ -106,18 +107,30 @@ widget_button ($icon, $query, $label, $tooltip, $flags = 0)
       .' alt="'.$label.'"'
       .'>';
 
+  $s = '';
   if ($icon)
     {
 //      if (file_exists ($icon))
         {
-          $p .= '<img src="'.$icon.'" border="0"';
+          // remove missing image in IE
+          $ie_fix = '';
+          if (stristr ($_SERVER["HTTP_USER_AGENT"], 'MSIE') ||
+              stristr ($_SERVER["HTTP_USER_AGENT"], 'Windows'))
+            $ie_fix = ' onerror="this.parentNode.removeChild(this);"';
+
+          $s .= '<img src="'.$icon.'" border="0" alt=""';
 
           if ($flags & WIDGET_BUTTON_SMALL)
-            $p .= ' height="16"';
-          $p .= '>';
+            $s .= ' height="16"';
+          $s .= $ie_fix.'>';
         }
 //      else $icon = NULL;
     }
+
+  if ($flags & WIDGET_BUTTON_STATIC)
+    return ($icon ? $s : '');
+
+  $p .= $s;
 
   if (!$icon)
     $p .= ''
@@ -206,7 +219,7 @@ define ('WIDGET_CMS_HLIST_COLS', 8);
 define ('WIDGET_CMS_VLIST', 16);
 define ('WIDGET_CMS_BUTTON_ONLY', 32);
 function
-widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
+widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 {
   $config = simplexml_load_file ($config_xml);
 
@@ -280,11 +293,12 @@ widget_cms ($logo, $config_xml, $name = 'q', $flags = 13)
               if ($category->buttononly == 1 || $flags & WIDGET_CMS_BUTTON_ONLY)
                 $p .= widget_button ($category->logo ? $category->logo : NULL, $query,
                                      $category->title, $category->tooltip,
-                                     WIDGET_BUTTON_ONLY)
+                                     $link_suffix, WIDGET_BUTTON_ONLY)
                      .'&nbsp;&nbsp;';
               else
                 $p .= widget_button ($category->logo ? $category->logo : NULL, $query,
-                                     $category->title, $category->tooltip, WIDGET_BUTTON_SMALL);
+                                     $category->title, $category->tooltip,
+                                     $link_suffix, WIDGET_BUTTON_SMALL);
             }
         }
       else // title (no link)
