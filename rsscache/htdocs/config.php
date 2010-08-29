@@ -51,22 +51,22 @@ $tv2_player_h = 300; // max. height
 
 
 // database settings
-if (!stristr ($_SERVER['SERVER_NAME'], 'debian2'))
-  {
-    $tv2_dbname = 'pwnoogle';
-    $tv2_dbuser = 'root';
-    $tv2_dbpass = 'nb';
-  }
-else
+if (stristr ($_SERVER['SERVER_NAME'], 'pwnoogle.com'))
   {
     $tv2_dbname = 'pwnoogle_jack';
     $tv2_dbuser = 'pwnoogle';
     $tv2_dbpass = 'hUn1WrG7';
   }
+else
+  {
+    $tv2_dbname = 'pwnoogle';
+    $tv2_dbuser = 'root';
+    $tv2_dbpass = 'nb';
+  }
 $tv2_dbhost = 'localhost';
 
 
-if (!stristr ($_SERVER['SERVER_NAME'], 'debian2'))
+if (stristr ($_SERVER['SERVER_NAME'], 'pwnoogle.com'))
   require_once ('pwnoogle_config.php');
 }
 
