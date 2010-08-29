@@ -130,8 +130,8 @@ tv2_body ()
           $p .= '</nobr>';
         }
     
-      // stats and version
-      $p .= '<br>'.tv2_stats ();
+//      // stats and version
+//      $p .= '<br>'.tv2_stats ();
     }
 
   $p .= '</div>';
@@ -221,17 +221,26 @@ tv2_body ()
   else if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
     {
     }
-  else if ($f != 'mirror')
-    $p .= tv2_time_count ($d);
+  else
+    {
+      if ($f != 'mirror')
+        $p .= tv2_time_count ($d);
+      if ($i < 1)
+        {
+          $p .= tv2_player ($d);
+//          $p .= '</td>';
+//          $p .= '<td>';
+        }
+    }
+
+  $p .= '</td>';
+  $p .= '<td>'; 
 
   // logo
-  $p .= '<nobr>&nbsp;'.tv2_button ($d_category).'&nbsp;</nobr><br>';
+  $p .= '<nobr>&nbsp;'.tv2_button ($d_category).'&nbsp;</nobr>';
 
   // tv2_include_logo ()
   $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
-
-  $p .= '</td>';
-  $p .= '<td>';
 
   $p .= '<nobr>';
 
@@ -485,6 +494,13 @@ $head .= '</head>'
 
 
 $end = '';
+
+if ($f != 'mirror')
+  {
+    // stats and version
+    $end .= '<br><div style="width:100%;text-align:right;">'.tv2_stats ().'</div>';
+  }
+
 
 if ($f != 'fullscreen')
   $end .= ''

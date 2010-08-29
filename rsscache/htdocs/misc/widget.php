@@ -303,8 +303,9 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
         }
       else // title (no link)
         {
-          $p .= '<font size="5">';
-          $p .= $category->title.'</font>';
+//          $p .= '<font size="5">';
+          $p .= $category->title;
+//          $p .= '</font>';
         }
 
       $p .= ($category->new == 1 ? '<img src="images/new.png">' : '');
@@ -331,6 +332,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
   if ($flags & WIDGET_CMS_HLIST)
     {
 //      $p .= '<hr>';
+      $p .= '<!-- content -->';
 
       // content
       if ($q)
@@ -365,7 +367,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
               }
         }
       else if ($logo)
-        $p .= '<img src="'.$logo.'" border="0">';
+        $p .= '<br><br><img src="'.$logo.'" border="0">';
     }
 
   return $p;
