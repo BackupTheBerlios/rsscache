@@ -133,8 +133,8 @@ widget_video_html5 ($video_url, $width = 400, $height = 300, $download = 0, $aut
        .($autoplay ? ' autoplay="autoplay"' : '')
        .($loop ? ' loop="loop"' : '')
        .' preload="meta"></video>'
-//       .'<br>'
-       .'<a href="http://www.webmproject.org/users/"><img src="images/webm.png" style="background-color:ddd;" border="0"></a>'
+       .'<br>'
+       .'Video codec: <a href="http://www.webmproject.org/users/">WebM</a>'
 ;
   return $p;
 }
