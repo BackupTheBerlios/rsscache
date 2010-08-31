@@ -136,8 +136,6 @@ widget_video_html5 ($video_url, $width = 400, $height = 300, $download = 0, $aut
        .'<br>'
        .'Video codec: <a href="http://www.webmproject.org/users/">WebM</a>'
 ;
-<iframe class="youtube-player" type="text/html" width="1280" height="745" src="http://www.youtube.com/embed/A5YDsjDvB8w" frameborder="0"></iframe>
-
 
   return $p;
 }
