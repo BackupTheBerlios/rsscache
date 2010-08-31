@@ -277,11 +277,13 @@ tv2_body ()
   if ($v)
     {
       $p .= '<div style="width:400px;">';
+//      $p .= '<div>';
       $p .= tv2_thumbnail ($d);
     }
   else
     {
       $p .= '<div style="width:600px;">';
+//      $p .= '<div>'; 
       $p .= tv2_thumbnail ($d, 240);
     }
 

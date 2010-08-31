@@ -129,7 +129,7 @@ widget_video_html5 ($video_url, $width = 400, $height = 300, $download = 0, $aut
 {
   $p = '';
   $p .= '<video src="'.$video_url.'" width="'.$width.'" height="'.$height.'"'
-       .($control ? ' controls="controls"' : '')
+       .' controls="controls"'
        .($autoplay ? ' autoplay="autoplay"' : '')
        .($loop ? ' loop="loop"' : '')
        .' preload="meta"></video>'
@@ -146,7 +146,7 @@ widget_audio_html5 ($audio_url, $width, $height, $download = 0, $autoplay = 1, $
 {
   $p = '';
   $p .= '<audio src="'.$audio_url.'"'
-       .($control ? ' controls="controls"' : '')
+       .' controls="controls"'
        .($autoplay ? ' autoplay="autoplay"' : '')
        .($loop ? ' loop="loop"' : '')
        .' preload="meta"></audio>';
