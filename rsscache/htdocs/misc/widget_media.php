@@ -136,6 +136,9 @@ widget_video_html5 ($video_url, $width = 400, $height = 300, $download = 0, $aut
        .'<br>'
        .'Video codec: <a href="http://www.webmproject.org/users/">WebM</a>'
 ;
+<iframe class="youtube-player" type="text/html" width="1280" height="745" src="http://www.youtube.com/embed/A5YDsjDvB8w" frameborder="0"></iframe>
+
+
   return $p;
 }
 
@@ -183,8 +186,8 @@ widget_video_youtube ($video_url, $width = 425, $height = 344, $download = 0, $a
         .$video_url
        .'&fs=1'             // allow fullscreen
 //       .'&ap=%2526fmt%3D'.($hq ? 18 : 5) // high(er) quality?
-       .'&showsearch=0'     // search
-       .'&rel=1'            // related
+//       .'&showsearch=0'     // search
+//       .'&rel=1'            // related
        .($autoplay ? '&autoplay=1' : '')
        .($loop ? '&loop=1' : '')
 //       .'&color1=0x000000'
@@ -216,6 +219,9 @@ widget_video_youtube ($video_url, $width = 425, $height = 344, $download = 0, $a
   $s = '';
 
   $s .= widget_media_object_func ($o, $p, $e);
+
+  // iframe and hd
+  $s = '<iframe class="youtube-player" type="text/html" width="'.$width.'" height="'.$height.'" src="http://www.youtube.com/embed/'.$video_url.'" frameborder="0"></iframe>';
 
   if ($download == 0)
     return $s;
