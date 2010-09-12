@@ -26,7 +26,7 @@ define ('MISC_WIDGET_PHP', 1);
 include_once ('misc.php');
 if (file_exists ('geoip/geoipcity.inc') == TRUE)
   {
-    define ('USE_GEOIP', 1);
+    define ('USE_GEOIPCITY', 1);
     include_once ('geoip/geoipcity.inc'); // widget_geotrace()
   }
 
@@ -538,7 +538,7 @@ widget_geotrace ($host, $w = '100%', $h = '100%')
   $p = '';
 
   // GeoLiteCity
-  if (defined ('USE_GEOIP'))
+  if (defined ('USE_GEOIPCITY'))
     if (file_exists ('GeoLiteCity.dat'))
     {
       geoip_load_shared_mem ('GeoLiteCity.dat');
