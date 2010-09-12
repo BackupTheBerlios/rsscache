@@ -25,7 +25,10 @@ define ('MISC_WIDGET_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 include_once ('misc.php');
 if (file_exists ('geoip/geoipcity.inc') == TRUE)
-  include_once ('geoip/geoipcity.inc'); // widget_geotrace()
+  {
+    define ('USE_GEOIP', 1);
+    include_once ('geoip/geoipcity.inc'); // widget_geotrace()
+  }
 
 
 $widget_step_count;
@@ -535,7 +538,8 @@ widget_geotrace ($host, $w = '100%', $h = '100%')
   $p = '';
 
   // GeoLiteCity
-  if (file_exists ('GeoLiteCity.dat'))
+  if (defined ('USE_GEOIP'))
+    if (file_exists ('GeoLiteCity.dat'))
     {
       geoip_load_shared_mem ('GeoLiteCity.dat');
       $gi = geoip_open ('GeoLiteCity.dat', GEOIP_SHARED_MEMORY);
