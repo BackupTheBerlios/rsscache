@@ -31,10 +31,15 @@ if (file_exists ('geoip/geoipcity.inc') == TRUE)
   }
 
 
+/*
+CSS: canvas image
+  <img style="width:20%;clip:rect(10px 150px 150px 70px);position:absolute;" src="widget_relate_refrigator.png">
+
+*/
+
+
+//$widget_output;
 $widget_step_count;
-$widget_output;
-
-
 function
 widget_count_steps ()
 {
@@ -91,6 +96,22 @@ widget_fontiles ($image_url, $image_width, $image_height, $text, $file_cols = 16
     }
 
   return $p;
+}
+
+
+function
+widget_rdd ()
+{
+/*
+  $rrd = new rrdtool;
+
+  $p = '';
+  $p .=  $rrd->rrdtool_open ("/tmp/test.rrd");
+  $p .= $rrd->rrdtool_update (NULL, 100);
+  $p .= $rrd->rrdtool_graph ("/tmp/test.png", 3600, 640, 200);
+  $p .= '<img src="test.png">';
+  return $p;
+*/
 }
 
 
@@ -534,7 +555,36 @@ widget_carousel ($xmlfile, $width=200, $height=150)
 function
 widget_geotrace ($host, $w = '100%', $h = '100%')
 {
-//http://maps.google.com/?ie=UTF8&ll=37.0625,-95.677068&spn=31.013085,55.634766&t=h&z=4
+/*
+  http://maps.google.com/?ie=UTF8&ll=37.0625,-95.677068&spn=31.013085,55.634766&t=h&z=4
+google maps:
+<script src="http://maps.google.com/maps?file=api&amp;v=1&amp;key=ABQIAAAAlcas_tJrQ_gomLSHqBRCnBQYpFxnnyEufMyseyjz1mBk8L_GRRSQsWgBwtk2YQwlC2qH5W9s3t0xbQ" type="text/javascript">
+</script>
+<script type="text/javascript">
+//<![CDATA[
+
+function
+load ()
+{
+  if (GBrowserIsCompatible ())
+    {
+      var map = new GMap2(document.getElementById("map"));
+      map.addControl(new GSmallMapControl());
+      map.addControl(new GMapTypeControl());
+      map.setCenter(new GLatLng(37.4419, -122.1419), 5);
+    }
+}
+
+//var event = document.getElementById ("map");
+
+//event.onload=load();
+//event.onunload=GUnload();
+</script>
+<body onload="load()" onunload="GUnload()">
+<div id="map" style="width:1024px; height:768px;"></div>
+</body>
+*/
+
   $p = '';
 
   // GeoLiteCity

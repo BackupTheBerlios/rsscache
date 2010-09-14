@@ -98,6 +98,30 @@ misc_write_cache ($cachefile, $data)
 function
 misc_url_exists ($url)
 {
+/*
+  // check UDP
+  $a = explode (':', $url);
+
+  if (!($fp = fsockopen("udp://".$a[0], $a[1], $errno, $errstr, 1)))
+    return false;
+
+  socket_set_timeout ($fp, 2);
+  if (!fwrite ($fp,"\x00"))
+    return false;
+
+  $t1 = time();
+  $res = fread($fp, 1);
+  $t2 = time();
+  fclose ($fp);
+
+  if ($t2 - $t1 > 1)
+    return false;
+
+  if (!($res))
+    return false;
+
+  return true;
+*/
   if (file_get_contents ($url, FALSE, NULL, 0, 0) === false)
     return false;
   return true;
@@ -733,30 +757,6 @@ sprint_r ($var)
 }
 
 
-// turn any variable into XML string
-function
-var_xml ($v)
-{
-  ob_start ();
-
-  print_r ($v);
-//  var_dump ($v);
-
-  $p = ob_get_contents ();
-
-  ob_end_clean ();
-
-  $p = str_replace (array (' => ', 'SimpleXMLElement', 'Object'), '', $p);
-  $p = str_replace (array (']Array'), ']', $p);
-//  $p = str_replace (array ('('."\n"), '', $p);
-//  $p = str_replace ('[', '<', $p);
-//  $p = str_replace (']', '>', $p);
-  $p = '<?xml version="1.0" encoding="UTF-8"?>'.$p;
-
-  return $p;
-}
-
-
 function
 ftp_search ($search)
 {
@@ -1054,6 +1054,46 @@ define ('ALLOW_DEF', ''
 );
 
 
+/*
+<html>  
+<head>
+<script>
+
+function autoscaleiframe (f)
+{
+// scales iframe to the size of its content
+// RESTRICTIONS: iframe content must be from the *same* domain as this file
+// tested with FF and IE8
+
+//var d = f.contentDocument;
+var w = f.contentWindow;
+var width = 
+        w.document.body.scrollLeft ||
+        w.document.body.scrollWidth
+//        d.body.scrollLeft ||
+//        d.body.scrollWidth
+;
+var height =
+        w.document.body.scrollTop ||
+        w.document.body.scrollHeight
+//        d.body.scrollTop ||
+//        d.body.scrollHeight
+;
+f.style.width = parseInt(width) + 10 + 'px';
+f.style.height = parseInt(height) + 10 + 'px';
+}  
+
+</script>
+</head>
+<body>
+<iframe onload="javascript:autoscaleiframe(this);" src="test40_.html" frameborder="0" marginwidth="0" marginheight="0 scrolling="no"></iframe>
+</body>
+</html>  
+
+*/
+
+
+
 function
 widget_embed ($url_or_path_of_page)
 {
@@ -1185,53 +1225,79 @@ random_user_agent ()
 }
 
 
-/*
+// turn any variable into XML string
+function
+var_xml ($v)
+{
+  ob_start ();
+
+  print_r ($v);
+//  var_dump ($v);
+
+  $p = ob_get_contents ();
+
+  ob_end_clean ();
+
+  $p = str_replace (array (' => ', 'SimpleXMLElement', 'Object'), '', $p);
+  $p = str_replace (array (']Array'), ']', $p);
+//  $p = str_replace (array ('('."\n"), '', $p);
+//  $p = str_replace ('[', '<', $p);
+//  $p = str_replace (']', '>', $p);
+  $p = '<?xml version="1.0" encoding="UTF-8"?>'.$p;
+
+  return $p;
+}
+
+
+// XML serializer
 function
 array2xml_func (&$xml, $a)
 {
   foreach ($a as $name=>$value)
     {
-      $name = ereg_replace ("^[0-9]{1,}", 'data', $name);
+//      $name = preg_replace ("^[0-9]{1,}^", 'data', $name);
       $name = str_replace ('.', '_', $name);
  
-      $xml .= '  <'.$name.'>';
+      $xml .= '<'.$name.'>';
 
       if (is_array ($value))
         array2xml_func ($xml, $value);
       else
         {
-          if ($tag == 'gq_name' || $tag == 'nick' || $tag == 'NGU')
-            $xml .= base64_encode ($value);
-          else
+//          if ($name == 'gq_name' || $name == 'nick' || $name == 'NGU')
+//            $xml .= base64_encode ($value);
+//          else
             $xml .= htmlspecialchars ($value, ENT_NOQUOTES, 'UTF-8');
         }
 
-      $xml .= '  </'.$name.'>'."\n";  
+      $xml .= '</'.$name.'>'."\n";
     }
 }
 
 
-function
-array2xml ($a)
+function 
+array2xml ($a, $root_name = 'root')
 {
   $xml = '';
 
-  if (is_array ($a))
-    if (count ($a) > 0)
+//  if (is_array ($a))
+//    if (count ($a) > 0)
       {
         array2xml_func ($xml, $a);
-
+ 
         return '<?xml version="1.0" encoding="utf-8"?>'."\n"
-              .'<root>'."\n"   
+              .'<'.$root_name.'>'."\n"
               .$xml
-              .'</root>'."\n"
+              .'</'.$root_name.'>'."\n"
 ;
       }
 
   return '';
 }
-
-
+ 
+ 
+/*
+// XML unserializer
 function 
 xml2array_func (&$a, $xml)
 {
@@ -1244,7 +1310,7 @@ xml2array_func (&$a, $xml)
       for ($j = 0; $j < sizeof ($a[$i]['players']->data); $j++)
         {
 //          print_r ((array) $a[$i]['players']->data[$j]);
-          $b[$j] = (array) $a[$i]['players']->data[$j];
+          $b[$j] = (array) $a[$i]['players']->data[$j];   
         }
       $a[$i]['players'] = $b;
       $a[$i]['players']['nick'] = base64_decode ($a[$i]['players']['nick']);
@@ -1252,21 +1318,22 @@ xml2array_func (&$a, $xml)
     }
 // base64_decode ()
 }
-
-
+ 
+ 
 function
-xml2array ($xml)   
+xml2array ($xml)
 {
   $a = array ();
   xml2array_func ($a, $xml);
 
-  //DEBUG   
+  //DEBUG
 //  echo '<pre><tt>';
 //  print_r ((array) $a);
 
   return (array) $a;
 }
- 
+
+
 function
 gsembed_xml ($server_xml)
 {
@@ -1280,11 +1347,23 @@ header ('Content-type: application/xml');
 //echo '<tt><pre>';
 //print_r ($server_xml);
 
-
-
 echo array2xml ($server_xml);
- 
 }
+
+
+function
+array2xml_test ()
+{
+  $a = array ("test" => array ("a" => "1", "b" => "2"));
+  print_r ($a);
+  echo "array2xml(): ";
+  $xml = array2xml ($a);
+  echo $xml;
+  echo "<hr>xml2array(): ";
+  $a = xml2array ($xml);
+  print_r ($a);
+}
+
 */
 
 
