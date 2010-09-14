@@ -99,22 +99,6 @@ widget_fontiles ($image_url, $image_width, $image_height, $text, $file_cols = 16
 }
 
 
-function
-widget_rdd ()
-{
-/*
-  $rrd = new rrdtool;
-
-  $p = '';
-  $p .=  $rrd->rrdtool_open ("/tmp/test.rrd");
-  $p .= $rrd->rrdtool_update (NULL, 100);
-  $p .= $rrd->rrdtool_graph ("/tmp/test.png", 3600, 640, 200);
-  $p .= '<img src="test.png">';
-  return $p;
-*/
-}
-
-
 define ('WIDGET_BUTTON_SMALL', 1);
 define ('WIDGET_BUTTON_ONLY', 2);
 define ('WIDGET_BUTTON_STATIC', 4);
