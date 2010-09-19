@@ -29,6 +29,38 @@ include_once ('misc/youtube.php');
 
 
 function
+widget_getwh ()
+{
+  $p = '<script type="text/javascript">
+<!--
+function widget_getwh ()
+  {
+    var w = screen.width;
+    var h = screen.height;
+    if (self.innerWidth != undefined)
+      {
+        w = self.innerWidth;
+        h = self.innerHeight;
+      }
+    else
+      {
+        var d = document.documentElement;
+        if (d)
+          {
+            w = d.clientWidth;
+            h = d.clientHeight;
+          }
+      }
+    return [w, h];
+  }
+-->
+</script>';
+
+  return $p;
+}
+
+
+function
 widget_getwidth_js ()
 {
   $p = '<script type="text/javascript">
@@ -121,6 +153,147 @@ widget_media_info_func ($media_url)
 // wikipedia link, cover from google/images, lyrics
 // download link for youtube videos
   return '';
+}
+
+
+/*
+function
+widget_video_flash ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 1, $hq = 0, $loop = 0)
+{
+  $fgcolor = '#ffffff';
+  $bgcolor = '#000000';
+  $bgcolor2 = '#444444';
+  $bgcolor3 = '#ff0000';
+  $url = $video_url;
+
+  $p = '<script type="text/javascript" src="misc/flowplayer-3.1.4.min.js"></script>'
+      .'<a href="'.$url.'" id="player"></a>'
+      .'<script><!--'."\n"
+      .'flowplayer('."\n"
+      .'  "player",'."\n"
+      .'  {'."\n"
+      .'    src: "misc/flowplayer-3.1.4.swf",'."\n"
+      .'    width:'.$width.','."\n"
+      .'    height:'.$height."\n"
+      .'  },'."\n"
+      .'  {'."\n"
+      .'    canvas: {backgroundColor: "'.$bgcolor.'"'."\n"
+      .'  },'."\n"
+      .'  plugins:'."\n"
+      .'    {'."\n"
+      .'      controls:'."\n"
+      .'        {'."\n"
+      .'          buttonOverColor: "'.$bgcolor2.'",'."\n"
+      .'          timeColor: "'.$fgcolor.'",'."\n"
+      .'          sliderColor: "'.$bgcolor2.'",'."\n"
+      .'          buttonColor: "'.$bgcolor.'",'."\n"
+      .'          bufferColor: "'.$bgcolor3.'",'."\n"
+      .'          progressColor: "'.$bgcolor2.'",'."\n"
+      .'          durationColor: "'.$fgcolor.'",'."\n"
+      .'          progressGradient: "none",'."\n"
+      .'          sliderGradient: "none",'."\n"
+      .'          borderRadius: "0px",'."\n"
+      .'          backgroundColor: "'.$bgcolor.'",'."\n"
+      .'          backgroundGradient: "none",'."\n"
+      .'          bufferGradient: "none",'."\n"
+      .'          opacity:1.0'."\n"
+      .'        }'."\n"
+      .'    }'."\n"
+      .'});'."\n"
+      .'//-->'
+      .'</script>';
+
+  return $p;
+}
+*/
+
+
+function
+widget_video_flash ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 1, $hq = 0, $loop = 0)
+{
+  $url = $video_url;
+
+  if ($preview_image)
+    $url = '&image='.$preview_image;
+
+  $p = ''
+//      .'<script type="text/javascript" src="misc/swfobject.js"></script>'
+//      .'<script type="text/javascript">'."\n"
+//      .'swfobject.registerObject("player","9.0.98","misc/expressInstall.swf");'."\n"
+//      .'</script>'
+      .'<object id="player" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" name="player" width="'.$width.'" height="'.$height.'">'
+      .'<param name="movie" value="misc/player.swf" />'
+      .'<param name="allowfullscreen" value="true" />' 
+      .'<param name="allowscriptaccess" value="always" />' 
+      .'<param name="flashvars" value="file='.$url.'" />'
+      .'<object type="application/x-shockwave-flash" data="misc/player.swf" width="'.$width.'" height="'.$height.'">'
+      .'<param name="movie" value="misc/player.swf" />'
+      .'<param name="allowfullscreen" value="true" />'
+      .'<param name="allowscriptaccess" value="always" />'
+      .'<param name="flashvars" value="file='.$url.'" />'
+//      .<p><a href="http://get.adobe.com/flashplayer">Get Flash</a> to see this player.</p>'
+      .'</object>'
+      .'</object>';
+
+  return $p;
+}
+
+
+function
+widget_audio_flash ($audio_url, $width, $height, $download = 0, $autoplay = 1, $hq = 0, $loop = 0)
+{
+  $url = 'misc/widget_audio.swf?url='.$audio_url.'&start='.$start.'&stream='.$stream
+        .($next_stream ? '&next='.$next_stream : '');
+
+  $p = ''
+      .'<object>'
+      .'<embed'
+      .' src="'.$url.'"'
+      .' type="application/x-shockwave-flash"'
+      .' width="1"'
+      .' height="1"'
+//      .' pluginspace="http://www.macromedia.com/go/flashplayer/"'
+      .'></embed>'
+      .'</object>';
+
+/*
+else if (isset($_GET['mp3']))
+  {
+    $mp3_width = "150";				// Set the width of your FLV Player
+    $mp3_height = "120";			// Set the total height of your FLV Player
+    $mp3_dispheight = "100";		// Set the display height (above the control bar) of your FLV Player
+    
+    $mp3_bgcolor = "000000";		// Set the background color
+    $mp3_lightcolor = "CC9900";		// Set the light color
+    $mp3_backcolor = "000000";		// Set the back color
+    $mp3_frontcolor = "CCCCCC";		// Set the front color
+    
+    $mp3_site = "";
+    $mp3_file = "block_playlist.xml";	// Set the file location of the MP3 or XML file (XML must be in the "player" directory)	
+    $mp3_auto = "true";				// Set the FLV player to automatically start when the page loads
+    $mp3_shuffle = "true";			// Set the playlist to shuffle the songs
+    $mp3_digits = "false";			// Turn on/off the elapsed time digits
+    $mp3_repeat = "true";			// Set the music to auto repeat
+    $mp3_showeq = "true";			// Display faux equalizers (if your display height is high enough)
+    $mp3_showfs = "false";			// Display the Full Screen button
+    $mp3_showthumbs = "false";		// Display the thumbnail from the RSS <image> tag in the playlist
+    
+    $p .= '<object type="application/x-shockwave-flash" data="'.$mp3_site.'player/mediaplayer.swf" height="'.$mp3_height.'" width="'.$mp3_width.'">
+    	<param name="movie" value="'.$mp3_site.'player/mediaplayer.swf" />
+    	<param name="allowScriptAccess" value="never" />
+    	<param name="allowNetworking" value="internal" />
+    	<param name="wmode" value="transparent" />
+    	<param name="bgcolor" value="#FFFFFF" />
+    	<param name="flashvars" value="file='.$mp3_file.'&autostart='.$mp3_auto.'&shuffle='.$mp3_shuffle.'&showdigits='.$mp3_digits.'&showeq='.$mp3_showeq.'&showfsbutton='.$mp3_showfs.'&displayheight='.$mp3_dispheight.'&repeat='.$mp3_repeat.'&thumbsinplaylist='.$mp3_showthumbs.'&lightcolor=0x'.$mp3_lightcolor.'&backcolor=0x'.$mp3_backcolor.'&frontcolor=0x'.$mp3_frontcolor.'&bufferlength=10" />
+    	<embed allowScriptAccess="never" allowNetworking="internal" enableJavaScript="false" 
+    	src="'.$mp3_site.'player/mediaplayer.swf" wmode="transparent" width="'.$mp3_width.'" height="'.$mp3_height.'" bgcolor="#'.$mp3_bgcolor.'" 
+    	type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" 
+    	flashvars="file='.$mp3_file.'&autostart='.$mp3_auto.'&shuffle='.$mp3_shuffle.'&showdigits='.$mp3_digits.'&showeq='.$mp3_showeq.'&showfsbutton='.$mp3_showfs.'&displayheight='.$mp3_dispheight.'&repeat='.$mp3_repeat.'&thumbsinplaylist='.$mp3_showthumbs.'&lightcolor=0x'.$mp3_lightcolor.'&backcolor=0x'.$mp3_backcolor.'&frontcolor=0x'.$mp3_frontcolor.'&bufferlength=10" />
+    	</embed></object>';
+  }
+*/
+
+  return $p;
 }
 
 
