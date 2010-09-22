@@ -233,6 +233,9 @@ tv2_sql_normalize ($db, $d, $c, $f)
       // demux
       $d[$i]['tv2_demux'] = widget_media_demux ($d[$i]['rsstool_url']);
 
+      // keywords
+      $d[$i]['rsstool_keywords'] = misc_get_keywords ($d[$i]['rsstool_title'].' '.$d[$i]['rsstool_desc']);
+
       // strip any tags from the desc
       $p = $d[$i]['rsstool_desc'];
       $p = str_replace ('>', '> ', $p);
