@@ -297,7 +297,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
               else
                 $query .= ($category->src ? $category->src : $category->query);
 
-              if ($query[0] == '?')  // HACK: remove double ??'s
+              if (strncasecmp ($query, 'http://', 7) != 0)  // HACK: remove double ??'s
                 $query = '?'.trim ($query, '?');
 
               // misc_getlink ($a, false)
