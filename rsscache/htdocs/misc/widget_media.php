@@ -890,18 +890,18 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autopla
 //    }
 
   $fullscreen = 0;
-  if ($width == -1 || $height == -1)
+//  if ($width == -1 || $height == -1)
     {   
-      $fullscreen = 1;
+//      $fullscreen = 1;
 
       $width = '\'+(widget_getwidth () - 30)+\'';
       $height = '\'+(widget_getheight () - 35)+\'';
 
-      $s .= widget_getwidth_js ()
-           .widget_getheight_js ();
-      $s .= ''
-           .'<script type="text/javascript">'."\n"
-           .'document.write (\'';
+//      $s .= widget_getwidth_js ()
+//           .widget_getheight_js ();
+//      $s .= ''
+//           .'<script type="text/javascript">'."\n"
+//           .'document.write (\'';
     } 
 
   $a = array (
