@@ -805,8 +805,10 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autopla
 
   if ($scale)
     {
-      $width = '\'+(misc_getwh ()[0] * 0.5 - 30)+\'';
-      $height = '\'+(misc_getwh ()[1] * 0.5 - 35)+\'';
+//      $width = '\'+(misc_getwh ()[0] * 0.5 - 30)+\'';
+//      $height = '\'+(misc_getwh ()[1] * 0.5 - 35)+\'';
+      $width = '\'+(misc_getwh ()[0] * 0.4)+\'';
+      $height = '\'+((misc_getwh ()[0] * 0.4) * 3 / 4)+\'';
       $s .= ''
            .'<script type="text/javascript">'."\n"
            .'document.write (\'';
