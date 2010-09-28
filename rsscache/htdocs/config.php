@@ -48,9 +48,9 @@ $tv2_related_search = 0; // make use of related searches (requires keywords)
 
 
 // player settings
-$tv2_player_w = 400; // max. width
-$tv2_player_h = 300; // max. height
-//$tv2_player_w = -1; $tv2_player_h = -1; // fullscreen
+//$tv2_player_w = 400; // max. width
+//$tv2_player_h = 300; // max. height
+$tv2_player_w = -1; $tv2_player_h = -1; // scaled
 
 
 // database settings

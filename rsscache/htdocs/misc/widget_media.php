@@ -29,91 +29,6 @@ include_once ('misc/youtube.php');
 
 
 function
-widget_getwh ()
-{
-  $p = '<script type="text/javascript">
-<!--
-function widget_getwh ()
-  {
-    var w = screen.width;
-    var h = screen.height;
-    if (self.innerWidth != undefined)
-      {
-        w = self.innerWidth;
-        h = self.innerHeight;
-      }
-    else
-      {
-        var d = document.documentElement;
-        if (d)
-          {
-            w = d.clientWidth;
-            h = d.clientHeight;
-          }
-      }
-    return [w, h];
-  }
--->
-</script>';
-
-  return $p;
-}
-
-
-function
-widget_getwidth_js ()
-{
-  $p = '<script type="text/javascript">
-<!--
-function widget_getwidth ()
-  {
-    var w = screen.width;
-    if (self.innerWidth != undefined)
-      w = self.innerWidth;
-    else
-      {
-        var d = document.documentElement;
-        if (d)
-          w = d.clientWidth;
-      }
-    return w;
-  }
-//document.write (widget_getwidth ());
--->
-</script>';
-
-  return $p;
-}
-
-
-function
-widget_getheight_js ()
-{
-  $p = '<script type="text/javascript">
-<!--
-function widget_getheight ()
-  {
-    var h = screen.height;
-    if (self.innerWidth != undefined)
-        h = self.innerHeight;
-    else
-      {
-        var d = document.documentElement;
-        if (d)
-          h = d.clientHeight;
-      }
-    return h;
-  }
-
-//document.write (widget_getheight ());
--->
-</script>';
-
-  return $p;
-}
-
-
-function
 widget_media_object_func ($object, $param, $embed)
 {
   $p = '';
@@ -883,22 +798,15 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autopla
   // javascript wrapper for fullscreen
 //  $f = get_request_value ('f');
 
-//  if ($f == 'fullscreen')
-//    {
-//      $width = -1;
-//      $height = -1;
-//    }
-
-  $fullscreen = 0;
+  $scale = 0;
   if ($width == -1 || $height == -1)
-    {   
-      $fullscreen = 1;
+    $scale = 1;
 
-      $width = '\'+(widget_getwidth () - 30)+\'';
-      $height = '\'+(widget_getheight () - 35)+\'';
 
-      $s .= widget_getwidth_js ()
-           .widget_getheight_js ();
+  if ($scale)
+    {
+      $width = '\'+(misc_getwh ()[0] * 0.5 - 30)+\'';
+      $height = '\'+(misc_getwh ()[1] * 0.5 - 35)+\'';
       $s .= ''
            .'<script type="text/javascript">'."\n"
            .'document.write (\'';
@@ -924,26 +832,13 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autopla
         $s .= $p ($media_url, $width, $height, $download, $autoplay, $hq, $loop);
       }
 
- if ($fullscreen)
+ if ($scale)
     {   
       $s .= '\');'."\n\n"
            .'</script>'
 ;
     }
 
-/*
-  if ($f == 'fullscreen')
-    $s .= ''
-         .'<a href="javascript:void(0);" onclick="javascript:window.close();">Close</a>';
-  else
-    $s .= ' '
-         .widget_window_open (misc_getlink (array ('f' => 'fullscreen'), true), 1, $media_url)
-//         .widget_window_open ($_SERVER['HTTP_REFERER'], 1, $media_url)
-         .'<a href="javascript:void(0);" onclick="javascript:widget_window_open();"'
-//         .' target="_blank"'
-         .'>Fullscreen</a>'
-;
-*/
   return $s;
 }
 
