@@ -438,8 +438,6 @@ if ($f == 'mirror')
   }
 
 
-
-
 if ($memcache_expire > 0)
   {
     $memcache = new Memcache;
@@ -487,6 +485,19 @@ $head = '<html>'
 ;
 
 $head .= misc_head_tags ($tv2_icon, 0, $tv2_charset);
+
+if ($tv2_rss_head)
+  {
+    $a = array (
+//                'c' => $c,
+//                'q' => $q,
+                'f' => 'rss',
+//                'v' => $v,
+//                'start' => $start,
+//                'num' => $num
+);
+    $head .= '<link rel="alternate" type="application/rss+xml" title="'.$tv2_title.'" href="'.misc_getlink ($a, true).'">';
+  }
 
 $head .= $tv2_head_tag;
 

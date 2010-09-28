@@ -229,8 +229,8 @@ define ('WIDGET_CMS_BUTTON_ONLY', 32);
 function
 widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 {
-  $config = simplexml_load_file ($config_xml);
-
+  // DEBUG
+//  print_r ($config_xml);
   $q = get_request_value ($name);
 
   $p = '';
@@ -254,11 +254,11 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 //         .($active == 1 ? '' : ' disabled="disabled"')
          .'>';
 
-  for ($i = 0; isset ($config->category[$i]); $i++)
-    if (!isset ($config->category[$i]->button) ||
-        (isset ($config->category[$i]->button) && $config->category[$i]->button == 1))
+  for ($i = 0; isset ($config_xml->category[$i]); $i++)
+    if (!isset ($config_xml->category[$i]->button) ||
+        (isset ($config_xml->category[$i]->button) && $config_xml->category[$i]->button == 1))
     {
-      $category = $config->category[$i];
+      $category = $config_xml->category[$i];
 
       $p .= '<nobr>';
 
@@ -278,11 +278,11 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 /*
               if ($flags | WIDGET_CMS_HLIST_COLS)
                 {
-                  $last = ($i > 0 ? $config->category[$i - 1]->title : '');
+                  $last = ($i > 0 ? $config_xml->category[$i - 1]->title : '');
                   if ($last != '')
                     {
                       $last = strtolower (substr ($last, 0, 1));
-                      $next = (isset ($config->category[$i + 1]) ? $config->category[$i + 1]->title : '');
+                      $next = (isset ($config_xml->category[$i + 1]) ? $config_xml->category[$i + 1]->title : '');
                       $next = strtolower (substr ($next, 0, 1));
                       $curr = strtolower (substr ($category->title, 0, 1));
                       if ($last != $curr)
@@ -293,9 +293,11 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 */
               $query = '';
               if ($category->embed == 1)
-                $query .= '?'.$name.'='.$category->id;
+                $query .= $name.'='.$category->id;
               else
-                $query .= ($category->src ? $category->src : '?'.$category->query);
+                $query .= ($category->src ? $category->src : $category->query);
+
+              $query = '?'.trim ($query, '?');
 
               // misc_getlink ($a, false)
               if ($category->buttononly == 1 || $flags & WIDGET_CMS_BUTTON_ONLY)
@@ -345,16 +347,16 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
       // content
       if ($q)
         {
-          for ($i = 0; $config->category[$i]; $i++)
-            if ($q == $config->category[$i]->id)
+          for ($i = 0; $config_xml->category[$i]; $i++)
+            if ($q == $config_xml->category[$i]->id)
               {
                 // embed from localhost
-                if (file_exists ($config->category[$i]->src))
+                if (file_exists ($config_xml->category[$i]->src))
                   {
                     $p .= '<br>';
-//                    $p .= file_get_contents ($config->category[$i]->src);
+//                    $p .= file_get_contents ($config_xml->category[$i]->src);
                     ob_start ();
-                    require_once ($config->category[$i]->src);
+                    require_once ($config_xml->category[$i]->src);
                     $p .= ob_get_contents ();
                     ob_end_clean ();
                   }
@@ -368,7 +370,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 //.'}'."\n"
 //.'</script>';
                     $p .= '<iframe width="100%" height="90%" marginheight="0" marginwidth="0" frameborder="0" src="'  
-                         .$config->category[$i]->src
+                         .$config_xml->category[$i]->src
                          .'"></iframe>'; 
                   }
                  break;
@@ -380,34 +382,6 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 
   return $p;
 }  
-
-
-function
-widget_collapse ($label, $s, $collapsed)
-{
-  $r = rand ();
-
-  $p = '';
-
-  $p .= '<script type="text/javascript">'
-       .'<!--'."\n"
-       .'function widget_collapse (obj)'."\n"
-       .'{'."\n"
-       .'  var o = document.getElementById(obj);'."\n"
-       .'  o.style.display = (o.style.display != \'none\') ? \'none\' : \'\';'."\n"
-       .'}'."\n"
-//       .'document.write (\'<a href="javascript:widget_collapse(\''.$r.'\');">'.$label.'</a>\');'."\n"
-       .'//-->'
-       .'</script>'
-       .'<a href="javascript:widget_collapse(\''.$r.'\');">'.$label.'</a>'
-       .'<div id="'.$r.'"'
-       .($collapsed ? ' style="display:none;"' : '')
-       .'>'
-       .$s
-       .'</div>';
-
-  return $p;
-}
 
 
 function

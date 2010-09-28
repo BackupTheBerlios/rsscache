@@ -30,6 +30,7 @@ $tv2_related_s = 'Find related '.$tv2_videos_s;
 
 
 $tv2_enable_search = 0; // allow users to search db?
+$tv2_rss_head = 1;
 $tv2_root = dirname(__FILE__).'/';
 $tv2_link = 'http://videos.pwnoogle.com/';
 $tv2_link_static = 'http://videos.pwnoogle.com/'; // static content
