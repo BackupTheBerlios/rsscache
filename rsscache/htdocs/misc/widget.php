@@ -226,6 +226,8 @@ define ('WIDGET_CMS_HLIST', 4); // default
 define ('WIDGET_CMS_HLIST_COLS', 8);
 define ('WIDGET_CMS_VLIST', 16);
 define ('WIDGET_CMS_BUTTON_ONLY', 32);
+define ('WIDGET_CMS_BUTTON16', 64);
+define ('WIDGET_CMS_BUTTON32', 128);
 function
 widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 {
