@@ -384,6 +384,36 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 }  
 
 
+/*
+function
+widget_collapse ($label, $s, $collapsed)
+{
+  $r = rand ();
+
+  $p = '';
+
+  $p .= '<script type="text/javascript">'
+       .'<!--'."\n"
+       .'function widget_collapse (obj)'."\n"
+       .'{'."\n"
+       .'  var o = document.getElementById(obj);'."\n"
+       .'  o.style.display = (o.style.display != \'none\') ? \'none\' : \'\';'."\n"
+       .'}'."\n"
+//       .'document.write (\'<a href="javascript:widget_collapse(\''.$r.'\');">'.$label.'</a>\');'."\n"
+       .'//-->'
+       .'</script>'
+       .'<a href="javascript:widget_collapse(\''.$r.'\');">'.$label.'</a>'
+       .'<div id="'.$r.'"'
+       .($collapsed ? ' style="display:none;"' : '')
+       .'>'
+       .$s
+       .'</div>';
+  
+  return $p;
+}
+*/
+
+
 function
 widget_onhover_link ($url, $image1, $image2)
 {
