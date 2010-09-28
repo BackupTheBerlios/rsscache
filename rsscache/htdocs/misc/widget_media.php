@@ -494,10 +494,10 @@ off.
   $s .= widget_media_object_func ($o, $p, $e);
 
   // iframe
-  $s = '<iframe class="youtube-player" type="text/html" width="'.$width.'" height="'.$height.'" src="http://www.youtube.com/embed/'.$video_url
+//  $s = '<iframe class="youtube-player" type="text/html" width="'.$width.'" height="'.$height.'" src="http://www.youtube.com/embed/'.$video_url
 //.($autoplay ? '&autoplay=1' : '')
 //.($loop ? '&loop=1' : '')
-.'" frameborder="0"></iframe>';
+//.'" frameborder="0"></iframe>';
 
   if ($download == 0)
     return $s;
