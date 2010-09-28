@@ -480,7 +480,7 @@ $head = '<html>'
        .$tv2_title
        .'</title>'
        .'<link rel="stylesheet" type="text/css" media="screen" href="tv2.css">'
-       .'<meta name="google-site-verification" content="akU6AtYoOtUZ5n8IGHTC3s5uc9AOAnPeqxkckHSi224" />'
+       .'<script type="text/javascript" src="misc/misc.js"></script>'
        .misc_seo_description ($body)
 ;
 
