@@ -297,7 +297,8 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
               else
                 $query .= ($category->src ? $category->src : $category->query);
 
-              $query = '?'.trim ($query, '?');
+              if ($query[0] == '?')  // HACK: remove double ??'s
+                $query = '?'.trim ($query, '?');
 
               // misc_getlink ($a, false)
               if ($category->buttononly == 1 || $flags & WIDGET_CMS_BUTTON_ONLY)
