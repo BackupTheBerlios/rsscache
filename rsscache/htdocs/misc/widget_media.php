@@ -795,13 +795,9 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autopla
   $demux = widget_media_demux ($media_url);
   $s = '';
 
-  // javascript wrapper for fullscreen
-//  $f = get_request_value ('f');
-
   $scale = 0;
   if ($width == -1 || $height == -1)
     $scale = 1;
-
 
   if ($scale)
     {
