@@ -668,7 +668,7 @@ widget_video_yahoo ($video_url, $width=512, $height=322, $download = 0, $autopla
 
 
 function
-widget_video_owned ($video_url, $width=640, $height=360, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_own3d ($video_url, $width=640, $height=360, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
 {
   //http://www.own3d.tv/video/25617
   //http://www.own3d.tv/stream/25617
@@ -722,11 +722,11 @@ widget_media_demux ($media_url)
     return 9;
   else if (strstr ($media_url, 'tnaflix.com'))
     return 10;
-  else if (strstr ($media_url, 'http://') && 
-           in_array (strtolower (get_suffix ($media_url)), array ('.m3u', '.pls', '.xspf', '.wpl')))
-    return 11; // playlist files
-  else if (strstr ($media_url, 'owned.tv'))
-    return 12;
+  else if (strstr ($media_url, 'own3d.tv'))
+    return 11;
+//  else if (strstr ($media_url, 'http://') && 
+//           in_array (strtolower (get_suffix ($media_url)), array ('.m3u', '.pls', '.xspf', '.wpl')))
+//    return 12; // playlist files
 
   return 0;
 }
@@ -764,7 +764,7 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autopla
          'widget_video_xxxbunker',
          'widget_video_google',
          'widget_video_tnaflix',
-         'widget_video_owned',
+         'widget_video_own3d',
 );
 
   if ($demux > 0)
