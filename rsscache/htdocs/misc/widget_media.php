@@ -72,6 +72,7 @@ widget_media_info_func ($media_url)
 
 
 /*
+// flowplayer
 function
 widget_video_flash ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
 {
@@ -123,6 +124,7 @@ widget_video_flash ($video_url, $width = 400, $height = 300, $download = 0, $aut
 */
 
 
+// jwplayer
 function
 widget_video_flash ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
 {
@@ -621,6 +623,13 @@ widget_video_xfire ($video_url, $width=425, $height=279, $download = 0, $autopla
   $video_url = substr ($video_url, strpos ($video_url, '/video/') + 7, -1);
 //  $video_url = '1';
   $url = 'http://media.xfire.com/swf/embedplayer.swf';
+
+//<object width="405" height="344">
+//<embed src="http://media.xfire.com/swf/embedplayer.swf" type="application/x-shockwave-flash"
+// allowscriptaccess="always"
+// allowfullscreen="true"
+// width="405" height="344"
+// flashvars="videoid=36ca85"></embed></object>
 
   $o = array (
     array ('width', $width),
