@@ -397,7 +397,7 @@ widget_collapse ($label, $s, $collapsed)
   $p .= ''
        .'[<a href="javascript:void(0);" onclick="javascript:'
        .'document.getElementById(\''.$r.'\').style.display=(document.getElementById(\''.$r.'\').style.display==\'none\'?\'block\':\'none\')">+</a>]'
-       .' '.$label':'
+       .' '.$label.':'
        .'<br>';
 /*
   $p .= '<div id="'.$r.'" style="'
