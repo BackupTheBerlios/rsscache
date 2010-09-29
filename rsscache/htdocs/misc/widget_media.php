@@ -582,10 +582,9 @@ widget_video_myspace ($video_url, $width=425, $height=360, $download = 0, $autop
 function
 widget_video_veoh ($video_url, $width=410, $height=341, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
 {
-  // http://www.veoh.com/videos/v6387308sYb9NxBJ
-  $video_url = substr ($video_url, strpos ($video_url, '/videos/') + 8);
-  $url = 'http://www.veoh.com/static/swf/webplayer/WebPlayer.swf?version=AFrontend.5.4.3.1014&permalinkId='
-         .$video_url
+  $url = substr ($video_url, strrpos ($video_url, '/') + 1);
+  $url = 'http://www.veoh.com/static/swf/webplayer/WebPlayer.swf?version=AFrontend.5.5.3.1011&permalinkId='
+         .$url
          .'&player=videodetailsembedded&videoAutoPlay=0&id=anonymous';
 
   $o = array (
@@ -606,8 +605,8 @@ widget_video_veoh ($video_url, $width=410, $height=341, $download = 0, $autoplay
     array ('height', $height),
     array ('allowFullScreen', 'true'),
     array ('allowScriptAccess', 'always'),
-    array ('id', 'veohFlashPlayer'),
-    array ('name', 'veohFlashPlayer'),
+    array ('id', 'veohFlashPlayerEmbed'),
+    array ('name', 'veohFlashPlayerEmbed'),
   );
   return widget_media_object_func ($o, $p, $e);
 }
