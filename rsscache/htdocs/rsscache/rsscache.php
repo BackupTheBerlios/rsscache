@@ -103,9 +103,9 @@ tv2_body ()
   if ($f != 'mirror')
     $p .= tv2_button_array ($config, '%s ', 0, sizeof ($config->category));
 
-  $p .= '<br>'  
-       .'<br>'  
-;  
+//  $p .= '<br>'  
+//       .'<br>'  
+//;  
 
   // embed another page
   if ($embed)
