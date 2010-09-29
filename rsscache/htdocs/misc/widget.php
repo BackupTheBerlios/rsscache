@@ -387,7 +387,6 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 }  
 
 
-/*
 function
 widget_collapse ($label, $s, $collapsed)
 {
@@ -395,26 +394,29 @@ widget_collapse ($label, $s, $collapsed)
 
   $p = '';
 
-  $p .= '<script type="text/javascript">'
-       .'<!--'."\n"
-       .'function widget_collapse (obj)'."\n"
-       .'{'."\n"
-       .'  var o = document.getElementById(obj);'."\n"
-       .'  o.style.display = (o.style.display != \'none\') ? \'none\' : \'\';'."\n"
-       .'}'."\n"
-//       .'document.write (\'<a href="javascript:widget_collapse(\''.$r.'\');">'.$label.'</a>\');'."\n"
-       .'//-->'
-       .'</script>'
-       .'<a href="javascript:widget_collapse(\''.$r.'\');">'.$label.'</a>'
-       .'<div id="'.$r.'"'
-       .($collapsed ? ' style="display:none;"' : '')
-       .'>'
-       .$s
-       .'</div>';
+  $p .= ''
+       .'[<a href="javascript:void(0);" onclick="javascript:'
+       .'document.getElementById(\''.$r.'\').style.display=(document.getElementById(\''.$r.'\').style.display==\'none\'?\'block\':\'none\')">+</a>]'
+       .' '.$label':'
+       .'<br>';
+/*
+  $p .= '<div id="'.$r.'" style="'
+       .'height:80px;'
+       .'width:300px;'
+       .'overflow:auto;'
+       .'border:1px solid #666;'
+       .'color:#000;'
+       .'background-color:#fff;'
+       .'padding:8px;'
+       .'display:none;'
+       .'">';
+*/
+  $p .= '<div id="'.$r.'"'.($collapsed ? ' style="display:none;"' : '').'>';
+
+  $p .= $s.'</div>';
   
   return $p;
 }
-*/
 
 
 function
