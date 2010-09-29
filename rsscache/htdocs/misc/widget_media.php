@@ -274,17 +274,15 @@ widget_video_youtube ($video_url, $width = 425, $height = 344, $download = 0, $a
   $url = 'http://www.youtube.com/v/'
         .$video_url
        .'&fs=1'             // allow fullscreen
-//       .'&ap=%2526fmt%3D'.($hq ? 18 : 5) // high(er) quality?
-//       .'&showsearch=0'     // search
 //       .'&rel=1'            // related
        .($autoplay ? '&autoplay=1' : '')
        .($loop ? '&loop=1' : '')
 //       .'&color1=0x000000'
 //       .'&color2=0x000000'
 //       .'&start=30'         // skip to
-       .($hq ? '&hd=1' : '')
+//       .($hq ? '&hd=1' : '')  // high quality?
        .'&showinfo=0'
-       .'&showsearch=0'
+       .'&showsearch=0' // search
        .'&border=0'
 ;
 

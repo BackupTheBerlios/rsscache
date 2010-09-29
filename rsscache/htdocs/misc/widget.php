@@ -1609,6 +1609,7 @@ widget_relate ($title, $url = NULL)
       $url .= $_SERVER["REQUEST_URI"];
 //      if (strncmp ($_SERVER['SCRIPT_NAME'], '/index.', 7))
 //        $url .= $_SERVER['SCRIPT_NAME'];
+      $url = urlencode ($url);
     }
   $p = '';
   $p .= widget_pr_share ($title, $url);
