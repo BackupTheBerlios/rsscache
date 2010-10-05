@@ -2,7 +2,7 @@
 /*
 misc.php - miscellaneous functions
 
-Copyright (c) 2006 - 2009 NoisyB
+Copyright (c) 2006 - 2010 NoisyB
 
 
 This program is free software; you can redistribute it and/or modify
@@ -26,9 +26,63 @@ define ('MISC_MISC_PHP', 1);
 
 
 function
+file_post_contents ($url, $vars, $timeout = 300)
+{
+  $sock = curl_init ();
+  if ($sock == FALSE)
+    {
+      echo 'CURL support missing';
+      return NULL;
+    }
+
+  curl_setopt ($sock, CURLOPT_URL, $url);
+  $agent = random_user_agent ();
+  curl_setopt ($sock, CURLOPT_USERAGENT, $agent);
+  curl_setopt ($sock, CURLOPT_RETURNTRANSFER, 1); // return to string instead of spewing to output
+  curl_setopt ($sock, CURLOPT_CONNECTTIMEOUT, $timeout);
+  curl_setopt ($sock, CURLOPT_FOLLOWLOCATION, 1);  // follow location header, not sure if this is needed.
+
+  // cookies
+  curl_setopt ($sock, CURLOPT_COOKIEJAR, 'cookie.txt');
+  curl_setopt ($sock, CURLOPT_COOKIEFILE, 'cookie.txt');
+
+  // Expect: 100-continue doesn't work properly with lightTPD
+  // This fix by zorro http://groups.google.com/group/php.general/msg/aaea439233ac709b
+  curl_setopt ($sock, CURLOPT_HTTPHEADER, array ('Expect:')); 
+
+  // DEBUG
+//  curl_setopt ($sock, CURLOPT_VERBOSE, 1);
+
+  // set method POST
+  curl_setopt ($sock, CURLOPT_POST, 1);
+  curl_setopt ($sock, CURLOPT_POSTFIELDS, $vars);
+
+  $response = curl_exec ($sock);
+  if ($response == FALSE)
+    {
+      echo 'file_post_contents() failed';
+      return NULL;
+    }
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($response);
+ 
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r (curl_getinfo ($sock));
+//  print_r (curl_getinfo ($sock, CURLINFO_HTTP_CODE));
+
+  curl_close ($sock);
+
+  return $response;
+}
+
+
+function
 tor_get_contents ($url, $tor_proxy_host = '127.0.0.1', $tor_proxy_port = 9050, $timeout = 300)
 {
-  $sock = curl_init();
+  $sock = curl_init ();
   if ($sock == FALSE)
     {
       echo 'CURL support missing';
@@ -44,6 +98,8 @@ tor_get_contents ($url, $tor_proxy_host = '127.0.0.1', $tor_proxy_port = 9050, $
   curl_setopt ($sock, CURLOPT_FOLLOWLOCATION, 1);
   curl_setopt ($sock, CURLOPT_TIMEOUT, $timeout);
   curl_setopt ($sock, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+  // DEBUG
+//  curl_setopt ($sock, CURLOPT_VERBOSE, 1);
 
   $response = curl_exec ($sock);
   if ($response == FALSE)
@@ -56,11 +112,9 @@ tor_get_contents ($url, $tor_proxy_host = '127.0.0.1', $tor_proxy_port = 9050, $
 //  echo '<pre><tt>';
 //  print_r ($response);
 
-  $info = curl_getinfo ($sock);
-
   // DEBUG
 //  echo '<pre><tt>';
-//  print_r ($info);
+//  print_r (curl_getinfo ($sock));
 
   curl_close ($sock);
 
