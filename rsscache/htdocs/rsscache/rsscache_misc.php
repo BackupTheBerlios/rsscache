@@ -205,7 +205,7 @@ tv2_sitemap ()
   for ($i = 0; isset ($config_xml->category[$i]); $i++)
     if ($config_xml->category[$i]->name[0])
     $p .= '<url>'."\n"
-         .'  <loc>http://pwnoogle.com/?c='.$config_xml->category[$i]->name.'</loc>'."\n"
+         .'  <loc>http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml->category[$i]->name.'</loc>'."\n"
 /*
 The formats are as follows. Exactly the components shown here must be present, with exactly this punctuation. Note that the "T" appears literally in the string, to indicate the beginning of the time element, as specified in ISO 8601.
 
