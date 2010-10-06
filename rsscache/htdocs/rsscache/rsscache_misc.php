@@ -185,6 +185,52 @@ tv2_link_normalize ($link)
 }
 
 
+function
+tv2_sitemap ()
+{
+//    header ('Content-type: text/xml');
+  header ('Content-type: application/xml');
+//    header ('Content-type: text/xml-external-parsed-entity');
+//    header ('Content-type: application/xml-external-parsed-entity');
+//    header ('Content-type: application/xml-dtd');
+  $config_xml = config_xml ();
+
+//  echo '<pre>';
+//  print_r ($config_xml);
+
+  $p = '';
+  $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n"
+       .'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
+
+  for ($i = 0; isset ($config_xml->category[$i]); $i++)
+    if ($config_xml->category[$i]->name[0])
+    $p .= '<url>'."\n"
+         .'  <loc>http://pwnoogle.com/?c='.$config_xml->category[$i]->name.'</loc>'."\n"
+/*
+The formats are as follows. Exactly the components shown here must be present, with exactly this punctuation. Note that the "T" appears literally in the string, to indicate the beginning of the time element, as specified in ISO 8601.
+
+   Year:
+      YYYY (eg 1997)
+   Year and month:
+      YYYY-MM (eg 1997-07)
+   Complete date:
+      YYYY-MM-DD (eg 1997-07-16)
+   Complete date plus hours and minutes:
+      YYYY-MM-DDThh:mmTZD (eg 1997-07-16T19:20+01:00)
+   Complete date plus hours, minutes and seconds:
+      YYYY-MM-DDThh:mm:ssTZD (eg 1997-07-16T19:20:30+01:00)
+   Complete date plus hours, minutes, seconds and a decimal fraction of a second
+      YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
+*/
+         .'<lastmod>'.strftime ('%FT%T').'</lastmod>'."\n"
+         .'<changefreq>always</changefreq>'."\n"
+         .'</url>'."\n";
+  $p .= '</urlset>';
+
+  return $p;
+}
+
+
 }
 
 
