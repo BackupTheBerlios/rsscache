@@ -16,8 +16,7 @@ $tv2_icon = 'images/icon.png';
 $tv2_search_s = 'Search';
 $tv2_title = 'pwnoogle \:D/ - watch videos of games';
 $tv2_head_tag = '<title>'.$tv2_title.'</title>'
-       .'<meta name="google-site-verification" content="akU6AtYoOtUZ5n8IGHTC3s5uc9AOAnPeqxkckHSi224" />'
-;
+.'<meta name="google-site-verification" content="akU6AtYoOtUZ5n8IGHTC3s5uc9AOAnPeqxkckHSi224" />';
 $tv2_body_tag = '<body style="font-family:sans-serif;font-size:13px;opacity:1.0;">';
 $tv2_table_tag = '<table style="font-family:sans-serif;font-size:13px;opacity:1.0;" cellspacing="0" cellpadding="0" border="0">';
 $tv2_logo = '<span style="font-size:32px;font-family:sans-serif;color:#000;font-weight:bolder;width:100%;text-align:center">'
