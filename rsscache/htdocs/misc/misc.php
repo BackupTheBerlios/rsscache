@@ -22,7 +22,76 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 if (!defined ('MISC_MISC_PHP'))
 {
 define ('MISC_MISC_PHP', 1);
+/*
 //error_reporting(E_ALL | E_STRICT);
+//if (file_exists ('geoip/geoip.inc') == TRUE)
+//  {
+//    define ('USE_GEOIP', 1);
+//    include_once ('geoip/geoip.inc');
+//  }
+// HACK: turn off GameQ errors
+function dummy() {null;}
+set_error_handler('dummy');
+include_once ('gameq/GameQ.php'); // do not require it
+// HACK: turn on errors
+restore_error_handler();
+
+
+function
+gameq_server_link ($ip, $port)
+{
+  return 'eye://'.$ip.':'.$port;
+//  return 'Q3://'.$ip.':'.$port;
+//  return 'q3a://'.$ip.':'.$port;
+}
+
+
+// turn game server array into game server data array
+function
+gameq_get_server_array ($servers)
+{
+  $data = array ();
+
+  // Initialize the class
+  $gq = new GameQ;
+    
+  // Add the servers
+  $gq->addServers((array) $servers);
+    
+  // Normalise the different data from different games
+  $gq->setFilter('normalise');
+  $gq->setFilter('sortplayers', array('gq_score', false));
+
+  // Request the data
+  try
+    {
+      $data = $gq->requestData();
+    }
+    
+  // Catch any errors that might have occurred
+  catch (GameQ_Exception $e)
+    {
+      echo 'An error occurred in GameQ.';
+      exit;
+    }
+
+  return $data;
+}
+
+
+// get single game server data
+function
+gameq_get_server ($game, $address, $port)
+{
+  $servers = array (array ());
+
+  $servers[0][0] = (String) $game;
+  $servers[0][1] = (String) $address;
+  $servers[0][2] = (String) $port;
+
+  return gameq_get_server_array ($servers);
+}
+*/
 
 
 function
