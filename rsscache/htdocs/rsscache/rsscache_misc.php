@@ -222,7 +222,7 @@ The formats are as follows. Exactly the components shown here must be present, w
    Complete date plus hours, minutes, seconds and a decimal fraction of a second
       YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
 */
-         .'<lastmod>'.strftime ('%FT%T').'</lastmod>'."\n"
+         .'<lastmod>'.strftime ('%F' /* 'T%T%Z' */).'</lastmod>'."\n"
          .'<changefreq>always</changefreq>'."\n"
          .'</url>'."\n";
   $p .= '</urlset>';
