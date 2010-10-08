@@ -477,3 +477,62 @@ function embed_iframe (id, url)
 }
 
 
+function detect_flash ()
+{
+//  var browser = navigator.userAgent.toLowerCase();
+  v = 0;	
+
+  if (navigator.plugins != null &&
+      navigator.plugins.length > 0)
+    {
+      var p = navigator.plugins['Shockwave Flash'];
+      if ( typeof p == 'object' )
+        {
+          if ( p.description.indexOf('11.') != -1 ) v = 11;
+          else if ( p.description.indexOf('10.') != -1 ) v = 10;
+          else if ( p.description.indexOf('9.') != -1 ) v = 9;
+          else if ( p.description.indexOf('8.') != -1 ) v = 8;
+          else if ( p.description.indexOf('7.') != -1 ) v = 7;
+          else if ( p.description.indexOf('6.') != -1 ) v = 6;
+          else if ( p.description.indexOf('5.') != -1 ) v = 5;
+          else if ( p.description.indexOf('4.') != -1 ) v = 4;
+          else if ( p.description.indexOf('3.') != -1 ) v = 3;
+        }
+    }
+/*
+  else if (browser.indexOf ("msie") != -1 &&
+           parseInt (navigator.appVersion) >= 4 &&
+           browser.indexOf("win")!= -1 &&
+           browser.indexOf("16bit")== -1)
+    {
+      document.write('<scr' + 'ipt language="VBScript"\> \n');
+      document.write('on error resume next \n');
+      document.write('DIM obFlash \n');
+      document.write('SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.7") \n');
+      document.write('IF IsObject(obFlash) THEN \n');
+      document.write('v = 7 \n');
+
+      document.write('ELSE SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.6") END IF \n');
+      document.write('IF v < 7 and IsObject(obFlash) THEN \n');
+      document.write('v = 6 \n');
+      document.write('ELSE SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.5") END IF \n');
+      document.write('IF v < 6 and IsObject(obFlash) THEN \n');
+      document.write('v = 5 \n');
+      document.write('ELSE SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.4") END IF \n');
+      document.write('IF v < 5 and IsObject(obFlash) THEN \n');
+      document.write('v = 4 \n');
+      document.write('ELSE SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.3") END IF \n');
+      document.write('IF v < 4 and IsObject(obFlash) THEN \n');
+      document.write('v = 3 \n');
+
+      document.write('END IF');
+      document.write('</scr' + 'ipt\> \n');
+    } // no Flash
+*/
+  else
+    {
+      v = -1;
+    }
+
+  return v;
+}

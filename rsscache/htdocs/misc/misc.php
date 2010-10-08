@@ -22,7 +22,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 if (!defined ('MISC_MISC_PHP'))
 {
 define ('MISC_MISC_PHP', 1);
-/*
 //error_reporting(E_ALL | E_STRICT);
 //if (file_exists ('geoip/geoip.inc') == TRUE)
 //  {
@@ -30,6 +29,7 @@ define ('MISC_MISC_PHP', 1);
 //    include_once ('geoip/geoip.inc');
 //  }
 // HACK: turn off GameQ errors
+/*
 function dummy() {null;}
 set_error_handler('dummy');
 include_once ('gameq/GameQ.php'); // do not require it
@@ -221,30 +221,31 @@ misc_write_cache ($cachefile, $data)
 function
 misc_url_exists ($url)
 {
-/*
-  // check UDP
-  $a = explode (':', $url);
+  if (!strncasecmp ($url, 'udp://'))  // check UDP
+    {
+      $a = explode (':', $url);
 
-  if (!($fp = fsockopen("udp://".$a[0], $a[1], $errno, $errstr, 1)))
-    return false;
+      if (!($fp = fsockopen("udp://".$a[0], $a[1], $errno, $errstr, 1)))
+        return false;
 
-  socket_set_timeout ($fp, 2);
-  if (!fwrite ($fp,"\x00"))
-    return false;
+      socket_set_timeout ($fp, 2);
+      if (!fwrite ($fp,"\x00"))
+        return false;
 
-  $t1 = time();
-  $res = fread($fp, 1);
-  $t2 = time();
-  fclose ($fp);
+      $t1 = time();
+      $res = fread($fp, 1);
+      $t2 = time();
+      fclose ($fp);
 
-  if ($t2 - $t1 > 1)
-    return false;
+      if ($t2 - $t1 > 1)
+        return false;
 
-  if (!($res))
-    return false;
+      if (!($res))
+        return false;
 
-  return true;
-*/
+      return true;
+    }
+
   if (file_get_contents ($url, FALSE, NULL, 0, 0) === false)
     return false;
   return true;
@@ -252,101 +253,9 @@ misc_url_exists ($url)
 
 
 function
-misc_get_browser_config ()
+check_udp ($address, $port)
 {
-  // get the settings of the browser and stores them in cookie
-  if (isset ($_GET['config']))
-    {
-      $a = array('js' => $_GET['js'],
-//                 'flash' => $_GET['flash'], 
-                 'w' => $_GET['w'], 
-                 'h' => $_GET['h'],
-        );
-
-      // DEBUG
-//      echo '<pre><tt>';
-//      print_r ($a);
-
-      // TODO: store in cookie
-
-      return $a;
-    }
-
-
-  $p = '';
-
-  // send javascript probe to browser and a refresh
-  $p .= '<script type="text/javascript">
-//  var w = window.width;
-//  var h = window.height;
-  var w = screen.width;
-  var h = screen.height;
-  if (self.innerWidth != undefined)
-    {
-      w = self.innerWidth; h = self.innerHeight;
-    }
-  else
-    {
-      var d = document.documentElement;
-      if (d)
-        {
-          w = d.clientWidth; h = d.clientHeight;
-        }
-    }
-//  document.write (w+" "+h);
-//  document.write (\'<meta http-equiv="refresh" content="0,URL=?config=1&js=1&flash=0&w=\'+w+\'&h=\'+h+\'">\');
-  document.write (\'<meta http-equiv="refresh" content="0,URL=?config=1&js=1&w=\'+w+\'&h=\'+h+\'">\');
-  </script>
-  <noscript>
-  <meta http-equiv="refresh" content="0,URL=?config=1&js=0">
-  </noscript>';
-
-  echo $p;
-
-/*
-$flash = '
-function detectingFLASH() {
-  var browser = navigator.userAgent.toLowerCase();
-  flashVersion = 0;	
-	// NS3+, Opera3+, IE5+ Mac
-	if ( navigator.plugins != null && navigator.plugins.length > 0 ) {
-		var flashPlugin = navigator.plugins['Shockwave Flash'];
-		if ( typeof flashPlugin == 'object' ) { 
-			if ( flashPlugin.description.indexOf('7.') != -1 ) flashVersion = 7;
-			else if ( flashPlugin.description.indexOf('6.') != -1 ) flashVersion = 6;
-			else if ( flashPlugin.description.indexOf('5.') != -1 ) flashVersion = 5;
-			else if ( flashPlugin.description.indexOf('4.') != -1 ) flashVersion = 4;
-			else if ( flashPlugin.description.indexOf('3.') != -1 ) flashVersion = 3;
-		}
-	} // IE4+ Win32 (VBscript)
-	else if ( browser.indexOf("msie") != -1 && parseInt(navigator.appVersion) >= 4 && browser.indexOf("win")!= -1 && browser.indexOf("16bit")== -1 ) {
-	  document.write('<scr' + 'ipt language="VBScript"\> \n');
-		document.write('on error resume next \n');
-		document.write('DIM obFlash \n');
-		document.write('SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.7") \n');
-		document.write('IF IsObject(obFlash) THEN \n');
-		document.write('flashVersion = 7 \n');
-		document.write('ELSE SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.6") END IF \n');
-		document.write('IF flashVersion < 7 and IsObject(obFlash) THEN \n');
-		document.write('flashVersion = 6 \n');
-		document.write('ELSE SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.5") END IF \n');
-		document.write('IF flashVersion < 6 and IsObject(obFlash) THEN \n');
-		document.write('flashVersion = 5 \n');
-		document.write('ELSE SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.4") END IF \n');
-		document.write('IF flashVersion < 5 and IsObject(obFlash) THEN \n');
-		document.write('flashVersion = 4 \n');
-		document.write('ELSE SET obFlash = CreateObject("ShockwaveFlash.ShockwaveFlash.3") END IF \n');
-		document.write('IF flashVersion < 4 and IsObject(obFlash) THEN \n');
-		document.write('flashVersion = 3 \n');
-		document.write('END IF');
-	  document.write('</scr' + 'ipt\> \n');
-  } // no Flash
-  else {
-	flashVersion = -1;
-  }
-return flashVersion;
-';
-*/
+  return misc_url_exists ('udp://'.$address.':'.$port);
 }
 
 
@@ -394,41 +303,6 @@ misc_explode_tag ($html_tag)
 //  print_r ($tag);
 
   return $tag;
-}
-
-
-function
-enforce_gre ()
-{
-  $p = '';
-
-  // enforce gecko render engine (used by firefox, safari, etc.)
-  if (!stristr ($_SERVER['HTTP_USER_AGENT'], "moz"))
-    {
-      $url = 'http://www.firefox.com';
-
-      // redirect using js
-//      $p .= '<script type="text/javascript"><!--'."\n"
-//           .'location.href="'.$url.'"'."\n"
-//           .'//--></script>'."\n";
-
-      $refresh = 1;
-      $p .= '<meta name="refresh" content="refresh: '.$refresh.'; url="'.$url.'">';
-
-      $p .= '<span style="font-family: arial,sans-serif;">'
-           .'<table border="0" cellpadding="0" cellspacing="0" width="80%" height="100">'
-           .'<tr>'
-           .'<td border="0" cellpadding="0" cellspacing="0" bgcolor="#ffff80" align="center">'
-           .'<font size="-1" face="arial" color="#000000">Your browser is not supported here. Redirecting...</font>'
-           .'</td>'
-           .'</tr>'
-           .'</table>'
-           .'</span>';
-
-      echo $p;
-
-      exit;
-    }
 }
 
 
@@ -529,32 +403,6 @@ get_ip ($address)
     $result = $address;
         
   return $result;
-}
-
-
-function
-check_udp ($address, $port)
-{
-  $fp = fsockopen('udp://'.$address, $port, $errno, $errstr, 1); 
-  if (!$fp)
-    return 0;
-
-  socket_set_timeout ($fp, 2);
-  if (!fwrite($fp,'\x00'))
-    return 0;
-
-  $t1 = time();
-  $res = fread($fp, 1);
-  $t2 = time();
-  fclose ($fp);
-
-  if ($t2 - $t1 > 1)
-    return 0; 
-
-  if (!($res))
-    return 0;
-
-  return 1;
 }
 
 
@@ -867,71 +715,30 @@ sprint_r ($var)
 
 
 function
-ftp_search ($search)
+misc_search ($search)
 {
+  $a = array ();
+
+  // ftp
   $search = str_replace (' ', '+', $search);
 //  $query = 'intitle:("Index.of.*"|"Index.von.*") +("'.$search.'") -inurl:(htm|php|html|py|asp|pdf) -inurl:inurl -inurl:in
   $query = 'intitle:("Index.of.*") +("'.$search.'") -inurl:(htm|php|html|py|asp|pdf) -inurl:inurl -inurl:index';
-  $url = 'http://www.google.com/search?q='.urlencode ($query);
-
-  return $url;
-}
-
-
-function
-video_search ($search)
-{
+  $a[] = 'http://www.google.com/search?q='.urlencode ($query);
+  // video
   $search = str_replace (' ', '+', $search);
 //  $query = 'intitle:("Index.of.*"|"Index.von.*") +("'.$search.'") -inurl:(htm|php|html|py|asp|pdf) -inurl:inurl -inurl:in
   $query = 'intitle:("Index.of.*") +("'.$search.'") -inurl:(htm|php|html|py|asp|pdf) -inurl:inurl -inurl:index';
-  $url = 'http://www.google.com/search?q='.urlencode ($query);
-
-  return $url;
+  $a[] = 'http://www.google.com/search?q='.urlencode ($query);
 // youtube
 //    <feed>http://video.google.com/videosearch?q=quakeworld&amp;so=1&amp;output=rss&amp;num=1000</feed>
 //    <feed>http://gdata.youtube.com/feeds/api/videos?vq=quake1&amp;max-results=50</feed>
-}
+  $a[] = 'http://en.wikipedia.org/w/index.php?title=Special%3ASearch&redirs=0&search='.$search.'&fulltext=Search&ns0=1'; // wikipedia
+  $a[] = 'http://www.google.com/search?ie=UTF-8&oe=utf-8&q='.$search; // lyrics
+  $a[] = 'http://images.google.com/search?ie=UTF-8&oe=utf-8&q='.$search;             // images
+  $a[] = 'http://images.google.com/search?ie=UTF-8&oe=utf-8&q=walkthrough+'.$search; // walkthrough
+  $a[] = 'http://images.google.com/search?ie=UTF-8&oe=utf-8&q=cheat+'.$search; // cheat
 
-
-function
-wikipedia_search ($search)
-{
-  $url = 'http://en.wikipedia.org/w/index.php?title=Special%3ASearch&redirs=0&search='.$search.'&fulltext=Search&ns0=1';
-  return $url;
-}
-
-
-function
-lyrics_search ($search)
-{
-  $url = 'http://www.google.com/search?ie=UTF-8&oe=utf-8&q='.$search;
-  return $url;
-}
-
-
-function
-image_search ($search)
-{
-  $url = 'http://images.google.com/search?ie=UTF-8&oe=utf-8&q='.$search;             
-  return $url;
-}
-
-
-// gaming
-function
-walkthrough_search ($search)
-{
-  $url = 'http://images.google.com/search?ie=UTF-8&oe=utf-8&q=walkthrough+'.$search;
-  return $url;
-}
-
-
-// gaming
-function
-cheat_search ($search)
-{
-  $url = 'http://images.google.com/search?ie=UTF-8&oe=utf-8&q=cheat+'.$search;
-  return $url;
+  return $a;
 }
 
 
