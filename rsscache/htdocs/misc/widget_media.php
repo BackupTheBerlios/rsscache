@@ -29,7 +29,7 @@ include_once ('misc/youtube.php');
 
 
 function
-widget_media_object_func ($object, $param, $embed)
+widget_media_object_func ($object, $param, $embed, $code)
 {
   $p = '';
 
@@ -58,23 +58,17 @@ widget_media_object_func ($object, $param, $embed)
   if ($object)
     $p .= '<object>';
 
+  if ($code)
+    $p .= '<textarea readonly="readonly">'.$p.'</textarea>';
+
   return $p;
-}
-
-
-function
-widget_media_info_func ($media_url)
-{
-// wikipedia link, cover from google/images, lyrics
-// download link for youtube videos
-  return '';
 }
 
 
 /*
 // flowplayer
 function
-widget_video_flash ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_flash ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   $fgcolor = '#ffffff';
   $bgcolor = '#000000';
@@ -126,7 +120,7 @@ widget_video_flash ($video_url, $width = 400, $height = 300, $download = 0, $aut
 
 // jwplayer
 function
-widget_video_flash ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_flash ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   $url = $video_url;
 
@@ -157,7 +151,7 @@ widget_video_flash ($video_url, $width = 400, $height = 300, $download = 0, $aut
 
 
 function
-widget_audio_flash ($audio_url, $width, $height, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_audio_flash ($audio_url, $width, $height, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   $url = 'misc/widget_audio.swf?url='.$audio_url.'&start='.$start.'&stream='.$stream
         .($next_stream ? '&next='.$next_stream : '');
@@ -215,7 +209,7 @@ else if (isset($_GET['mp3']))
 
 
 function
-widget_video_html5 ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_html5 ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   $p = '';
   $p .= '<video src="'.$video_url.'" width="'.$width.'" height="'.$height.'"'
@@ -232,7 +226,7 @@ widget_video_html5 ($video_url, $width = 400, $height = 300, $download = 0, $aut
 
 
 function
-widget_audio_html5 ($audio_url, $width, $height, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_audio_html5 ($audio_url, $width, $height, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   $p = '';
   $p .= '<audio src="'.$audio_url.'"'
@@ -245,7 +239,7 @@ widget_audio_html5 ($audio_url, $width, $height, $download = 0, $autoplay = 0, $
 
 
 function
-widget_audio_youtube ($video_url, $width, $height, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_audio_youtube ($video_url, $width, $height, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
 // show only the controls
 /*
@@ -261,7 +255,7 @@ widget_audio_youtube ($video_url, $width, $height, $download = 0, $autoplay = 0,
 
 
 function
-widget_video_youtube ($video_url, $width = 425, $height = 344, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_youtube ($video_url, $width = 425, $height = 344, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   $tor_enabled = 0;
   if (strstr ($video_url, '?v='))   
@@ -308,7 +302,7 @@ widget_video_youtube ($video_url, $width = 425, $height = 344, $download = 0, $a
  
   $s = '';
 
-  $s .= widget_media_object_func ($o, $p, $e);
+  $s .= widget_media_object_func ($o, $p, $e, $code);
 
   // iframe
 //  $s = '<iframe class="youtube-player" type="text/html" width="'.$width.'" height="'.$height.'" src="http://www.youtube.com/embed/'.$video_url
@@ -391,7 +385,7 @@ widget_video_youtube ($video_url, $width = 425, $height = 344, $download = 0, $a
 
 
 function
-widget_video_dailymotion ($video_url, $width=420, $height=336, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_dailymotion ($video_url, $width=420, $height=336, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   $video_url = substr ($video_url, strpos ($video_url, '/video/') + 7);
   $video_url = substr ($video_url, 0, strpos ($video_url, 'from') - 3);
@@ -416,12 +410,12 @@ widget_video_dailymotion ($video_url, $width=420, $height=336, $download = 0, $a
     array ('allowScriptAccess', 'always'),
   );
 
-  return widget_media_object_func ($o, $p, $e);
+  return widget_media_object_func ($o, $p, $e, $code);
 }
 
 
 function
-widget_video_xvideos ($video_url, $width=510, $height=400, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_xvideos ($video_url, $width=510, $height=400, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   // http://www.xvideos.com/video266837/dia_zerva_jordan_and_kenzi_marie
   $video_url = substr ($video_url, strpos ($video_url, '/video') + 6);
@@ -455,12 +449,12 @@ widget_video_xvideos ($video_url, $width=510, $height=400, $download = 0, $autop
     array ('flashvars', 'id_video='.$video_url),
   );
 
-  return widget_media_object_func ($o, $p, $e);
+  return widget_media_object_func ($o, $p, $e, $code);
 }
 
 
 function
-widget_video_xxxbunker ($video_url, $width=550, $height=400, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_xxxbunker ($video_url, $width=550, $height=400, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   //http://xxxbunker.com/1209498
   $video_url = substr ($video_url, strpos ($video_url, 'xxxbunker.com/') + 14);
@@ -489,12 +483,12 @@ widget_video_xxxbunker ($video_url, $width=550, $height=400, $download = 0, $aut
     array ('allowScriptAccess', 'always'),
   );
  
-  return widget_media_object_func ($o, $p, $e);
+  return widget_media_object_func ($o, $p, $e, $code);
 }
 
 
 function
-widget_video_tnaflix ($video_url, $width=650, $height=515, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_tnaflix ($video_url, $width=650, $height=515, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   // http://www.tnaflix.com/view_video.php?viewkey=e6f818fd95b6313e2c28
   $video_url = substr ($video_url, strpos ($video_url, 'viewkey=') + 8);
@@ -513,12 +507,12 @@ widget_video_tnaflix ($video_url, $width=650, $height=515, $download = 0, $autop
     array ('FlashVars', 'value='.$url),  
   );
     
-  return widget_media_object_func ($o, $p, NULL);
+  return widget_media_object_func ($o, $p, NULL, $code);
 }
 
 
 function
-widget_video_xfire ($video_url, $width=425, $height=279, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_xfire ($video_url, $width=425, $height=279, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   $video_url = substr ($video_url, strpos ($video_url, '/video/') + 7, -1);
   $url = 'http://media.xfire.com/swf/embedplayer.swf';
@@ -537,12 +531,12 @@ widget_video_xfire ($video_url, $width=425, $height=279, $download = 0, $autopla
     array ('allowScriptAccess', 'always'),
   );
 
-  return widget_media_object_func ($o, NULL, $e);
+  return widget_media_object_func ($o, NULL, $e, $code);
 }
 
 
 function
-widget_video_myspace ($video_url, $width=425, $height=360, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_myspace ($video_url, $width=425, $height=360, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
 //  $video_url = 'k4H0eU9uhV7waa1XXp';
   $video_url = '6773592';
@@ -565,12 +559,12 @@ widget_video_myspace ($video_url, $width=425, $height=360, $download = 0, $autop
     array ('wmode', 'transparent'),
     array ('allowFullScreen', 'true'),
   );
-  return widget_media_object_func ($o, $p, $e);
+  return widget_media_object_func ($o, $p, $e, $code);
 }
 
 
 function
-widget_video_veoh ($video_url, $width=410, $height=341, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_veoh ($video_url, $width=410, $height=341, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   $url = substr ($video_url, strrpos ($video_url, '/') + 1);
   $url = 'http://www.veoh.com/static/swf/webplayer/WebPlayer.swf?version=AFrontend.5.5.3.1011&permalinkId='
@@ -598,12 +592,12 @@ widget_video_veoh ($video_url, $width=410, $height=341, $download = 0, $autoplay
     array ('id', 'veohFlashPlayerEmbed'),
     array ('name', 'veohFlashPlayerEmbed'),
   );
-  return widget_media_object_func ($o, $p, $e);
+  return widget_media_object_func ($o, $p, $e, $code);
 }
 
 
 function
-widget_video_google ($video_url, $width=400, $height=326, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_google ($video_url, $width=400, $height=326, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   $url = 'http://video.google.com/googleplayer.swf?docid='.$video_url.'&fs=true';
 
@@ -617,12 +611,12 @@ widget_video_google ($video_url, $width=400, $height=326, $download = 0, $autopl
     array ('allowScriptAccess', 'always'),
   );
  
-  return widget_media_object_func (NULL, NULL, $e);
+  return widget_media_object_func (NULL, NULL, $e, $code);
 }
 
 
 function
-widget_video_yahoo ($video_url, $width=512, $height=322, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_yahoo ($video_url, $width=512, $height=322, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
 // vid id
 //http://espanol.video.yahoo.com/watch/5410123/14251443
@@ -652,12 +646,12 @@ widget_video_yahoo ($video_url, $width=512, $height=322, $download = 0, $autopla
     array ('bgcolor', '#000000'),
     array ('flashvars', 'id='.$id.'&vid='.$vid.'&lang=es-mx&intl=e1&thumbUrl=http%3A//l.yimg.com/a/p/i/bcst/videosearch/9707/88446579.jpeg&embed=1'),
   );
-  return widget_media_object_func ($o, $p, $e);
+  return widget_media_object_func ($o, $p, $e, $code);
 }
 
 
 function
-widget_video_own3d ($video_url, $width=640, $height=360, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_own3d ($video_url, $width=640, $height=360, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   //http://www.own3d.tv/video/25617
   //http://www.own3d.tv/stream/25617
@@ -682,7 +676,7 @@ widget_video_own3d ($video_url, $width=640, $height=360, $download = 0, $autopla
     array ('allowScriptAccess', 'always'),
     array ('wmode', 'transparent'),
   );
-  return widget_media_object_func ($o, $p, $e);
+  return widget_media_object_func ($o, $p, $e, $code);
 }
 
 
@@ -722,7 +716,7 @@ widget_media_demux ($media_url)
 
 
 function
-widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   $demux = widget_media_demux ($media_url);
   $s = '';
@@ -760,7 +754,7 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autopla
     if (isset ($a[$demux - 1]))
       {
         $p = $a[$demux - 1];
-        $s .= $p ($media_url, $width, $height, $download, $autoplay, $hq, $loop);
+        $s .= $p ($media_url, $width, $height, $download, $autoplay, $hq, $loop, $code);
       }
 
  if ($scale)
@@ -775,7 +769,7 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autopla
 
 
 function
-widget_audio_file_playlist ($media_url, $width = NULL, $height = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_audio_file_playlist ($media_url, $width = NULL, $height = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   $fh = fopen ($filename, 'r');
 
@@ -824,7 +818,7 @@ widget_audio_file_playlist ($media_url, $width = NULL, $height = NULL, $download
 
 
 function
-widget_video_youtube_playlist ($video_urls, $width = 425, $height = 344, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_video_youtube_playlist ($video_urls, $width = 425, $height = 344, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   $p = '';
 
@@ -886,11 +880,11 @@ swfobject.embedSWF("http://www.youtube.com/apiplayer?enablejsapi=1&playerapiid=y
 
 
 function
-widget_media_playlist ($media_urls, $width = NULL, $height = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_media_playlist ($media_urls, $width = NULL, $height = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
 {
   // not a playlist?
   if (!is_array ($media_urls))
-    return widget_media ($media_urls, $width, $height, $download, $autoplay, $hq, $loop);
+    return widget_media ($media_urls, $width, $height, $download, $autoplay, $hq, $loop, $code);
 
   $a = array (
          'widget_video_youtube_playlist',
@@ -901,7 +895,7 @@ widget_media_playlist ($media_urls, $width = NULL, $height = NULL, $download = 0
     if (isset ($a[$demux - 1]))
       {
         $p = $a[$demux - 1];
-        $s .= $p ($media_urls, $width, $height, $download, $autoplay, $hq, $loop);
+        $s .= $p ($media_urls, $width, $height, $download, $autoplay, $hq, $loop, $code);
       }
 
   return '';
