@@ -678,6 +678,39 @@ widget_video_own3d ($video_url, $width=640, $height=360, $download = 0, $autopla
 
 
 function
+widget_video_archive ($video_url, $width=640, $height=506, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+{
+  $o = array (
+    array ('width', $width),
+    array ('height', $height),
+//    array ('classid', 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000'),
+  );
+  $p = array (
+    array ('allowFullScreen', 'true'),
+    array ('allowScriptAccess', 'always'),
+    array ('quality', 'high'),           
+    array ('cachebusting', 'true'),
+//    array ('bgcolor', '#000000'),
+    array ('movie', 'http://www.archive.org/flow/flowplayer.commercial-3.2.1.swf'),
+    array ('flashvars', "config={'key':'#$aa4baff94a9bdcafce8','playlist':['format=Thumbnail?.jpg',{'autoPlay':false,'url':'Consolevania-03x25677-3-The_Black_Episode_512kb.mp4'}],'clip':{'autoPlay':true,'baseUrl':'http://www.archive.org/download/Consolevania-03x25677-3-The_Black_Episode/','scaling':'fit','provider':'h264streaming'},'canvas':{'backgroundColor':'#000000','backgroundGradient':'none'},'plugins':{'controls':{'playlist':false,'fullscreen':true,'height':26,'backgroundColor':'#000000','autoHide':{'fullscreenOnly':true}},'h264streaming':{'url':'http://www.archive.org/flow/flowplayer.pseudostreaming-3.2.1.swf'}},'contextMenu':[{},'-','Flowplayer v3.2.1']}"),
+  );
+  $e = array (
+    array ('src', 'http://www.archive.org/flow/flowplayer.commercial-3.2.1.swf'),
+    array ('type', 'application/x-shockwave-flash'),
+    array ('width', $width),
+    array ('height', $height),
+    array ('allowFullScreen', 'true'),
+    array ('allowScriptAccess', 'always'),
+    array ('quality', 'high'),
+    array ('cachebusting', 'true'),
+//    array ('bgcolor', '#000000'),
+    array ('flashvars', "config={'key':'#$aa4baff94a9bdcafce8','playlist':['format=Thumbnail?.jpg',{'autoPlay':false,'url':'Consolevania-03x25677-3-The_Black_Episode_512kb.mp4'}],'clip':{'autoPlay':true,'baseUrl':'http://www.archive.org/download/Consolevania-03x25677-3-The_Black_Episode/','scaling':'fit','provider':'h264streaming'},'canvas':{'backgroundColor':'#000000','backgroundGradient':'none'},'plugins':{'controls':{'playlist':false,'fullscreen':true,'height':26,'backgroundColor':'#000000','autoHide':{'fullscreenOnly':true}},'h264streaming':{'url':'http://www.archive.org/flow/flowplayer.pseudostreaming-3.2.1.swf'}},'contextMenu':[{},'-','Flowplayer v3.2.1']}"),
+  );
+  return widget_media_object_func ($o, $p, $e);
+}
+
+
+function
 widget_media_demux ($media_url)
 {
   if (strstr ($media_url, '.youtube.com'))
@@ -704,6 +737,8 @@ widget_media_demux ($media_url)
     return 10;
   else if (strstr ($media_url, 'own3d.tv'))
     return 11;
+  else if (strstr ($media_url, 'archive.org'))
+    return 12;
 //  else if (strstr ($media_url, 'http://') && 
 //           in_array (strtolower (get_suffix ($media_url)), array ('.m3u', '.pls', '.xspf', '.wpl')))
 //    return 12; // playlist files
@@ -751,6 +786,7 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autopla
          'widget_video_google',
          'widget_video_tnaflix',
          'widget_video_own3d',
+         'widget_video_archive',
 );
 
   if ($demux > 0)
