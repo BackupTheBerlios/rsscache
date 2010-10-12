@@ -108,7 +108,7 @@ widget_media_object_func ($object, $param, $embed)
     }
 
   if ($object)
-    $p .= '<object>';
+    $p .= '</object>';
 
   return $p;
 }

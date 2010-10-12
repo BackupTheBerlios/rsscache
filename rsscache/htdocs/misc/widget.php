@@ -1099,6 +1099,7 @@ widget_index_tree ($name, $path, $mime_type, $flags)
 */
 
 
+/*
 function
 widget_indexof_func ($b)
 {
@@ -1144,6 +1145,7 @@ widget_indexof_func ($b)
 
   return $p;
 }
+*/
 
 
 function
