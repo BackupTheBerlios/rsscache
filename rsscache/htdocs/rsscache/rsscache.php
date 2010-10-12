@@ -250,9 +250,7 @@ tv2_body ()
   // embed player
   if ($v)
     {
-      $p .= tv2_player ($d)
-//           .'<br>'
-;
+      $p .= tv2_player ($d);
     }
   else if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
     {
@@ -264,12 +262,8 @@ tv2_body ()
 //      if ($i < 1)
 //        {
 //          $p .= tv2_player ($d);
-//          $p .= '</td>';
-//          $p .= '<td>';
 //        }
-      $p .= tv2_player_preview ($d)
-//           .'<br>'
-;
+      $p .= tv2_player_preview ($d);
     }
 
   // description
