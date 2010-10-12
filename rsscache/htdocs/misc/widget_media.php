@@ -62,164 +62,28 @@ widget_media_object_func ($object, $param, $embed)
 }
 
 
-/*
-// flowplayer
 function
-widget_video_flash ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
-{
-  $fgcolor = '#ffffff';
-  $bgcolor = '#000000';
-  $bgcolor2 = '#444444';
-  $bgcolor3 = '#ff0000';
-  $url = $video_url;
-
-  $p = '<script type="text/javascript" src="misc/flowplayer-3.1.4.min.js"></script>'
-      .'<a href="'.$url.'" id="player"></a>'
-      .'<script><!--'."\n"
-      .'flowplayer('."\n"
-      .'  "player",'."\n"
-      .'  {'."\n"
-      .'    src: "misc/flowplayer-3.1.4.swf",'."\n"
-      .'    width:'.$width.','."\n"
-      .'    height:'.$height."\n"
-      .'  },'."\n"
-      .'  {'."\n"
-      .'    canvas: {backgroundColor: "'.$bgcolor.'"'."\n"
-      .'  },'."\n"
-      .'  plugins:'."\n"
-      .'    {'."\n"
-      .'      controls:'."\n"
-      .'        {'."\n"
-      .'          buttonOverColor: "'.$bgcolor2.'",'."\n"
-      .'          timeColor: "'.$fgcolor.'",'."\n"
-      .'          sliderColor: "'.$bgcolor2.'",'."\n"
-      .'          buttonColor: "'.$bgcolor.'",'."\n"
-      .'          bufferColor: "'.$bgcolor3.'",'."\n"
-      .'          progressColor: "'.$bgcolor2.'",'."\n"
-      .'          durationColor: "'.$fgcolor.'",'."\n"
-      .'          progressGradient: "none",'."\n"
-      .'          sliderGradient: "none",'."\n"
-      .'          borderRadius: "0px",'."\n"
-      .'          backgroundColor: "'.$bgcolor.'",'."\n"
-      .'          backgroundGradient: "none",'."\n"
-      .'          bufferGradient: "none",'."\n"
-      .'          opacity:1.0'."\n"
-      .'        }'."\n"
-      .'    }'."\n"
-      .'});'."\n"
-      .'//-->'
-      .'</script>';
-
-  return $p;
-}
-*/
-
-
-// jwplayer
-function
-widget_video_flash ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
-{
-  $url = $video_url;
-
-  if ($preview_image)
-    $url = '&image='.$preview_image;
-
-  $p = ''
-//      .'<script type="text/javascript" src="misc/swfobject.js"></script>'
-//      .'<script type="text/javascript">'."\n"
-//      .'swfobject.registerObject("player","9.0.98","misc/expressInstall.swf");'."\n"
-//      .'</script>'
-      .'<object id="player" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" name="player" width="'.$width.'" height="'.$height.'">'
-      .'<param name="movie" value="misc/player.swf" />'
-      .'<param name="allowfullscreen" value="true" />' 
-      .'<param name="allowscriptaccess" value="always" />' 
-      .'<param name="flashvars" value="file='.$url.'" />'
-      .'<object type="application/x-shockwave-flash" data="misc/player.swf" width="'.$width.'" height="'.$height.'">'
-      .'<param name="movie" value="misc/player.swf" />'
-      .'<param name="allowfullscreen" value="true" />'
-      .'<param name="allowscriptaccess" value="always" />'
-      .'<param name="flashvars" value="file='.$url.'" />'
-//      .<p><a href="http://get.adobe.com/flashplayer">Get Flash</a> to see this player.</p>'
-      .'</object>'
-      .'</object>';
-
-  return $p;
-}
-
-
-function
-widget_audio_flash ($audio_url, $width, $height, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
-{
-  $url = 'misc/widget_audio.swf?url='.$audio_url.'&start='.$start.'&stream='.$stream
-        .($next_stream ? '&next='.$next_stream : '');
-
-  $p = ''
-      .'<object>'
-      .'<embed'
-      .' src="'.$url.'"'
-      .' type="application/x-shockwave-flash"'
-      .' width="1"'
-      .' height="1"'
-//      .' pluginspace="http://www.macromedia.com/go/flashplayer/"'
-      .'></embed>'
-      .'</object>';
-
-/*
-else if (isset($_GET['mp3']))
-  {
-    $mp3_width = "150";				// Set the width of your FLV Player
-    $mp3_height = "120";			// Set the total height of your FLV Player
-    $mp3_dispheight = "100";		// Set the display height (above the control bar) of your FLV Player
-    
-    $mp3_bgcolor = "000000";		// Set the background color
-    $mp3_lightcolor = "CC9900";		// Set the light color
-    $mp3_backcolor = "000000";		// Set the back color
-    $mp3_frontcolor = "CCCCCC";		// Set the front color
-    
-    $mp3_site = "";
-    $mp3_file = "block_playlist.xml";	// Set the file location of the MP3 or XML file (XML must be in the "player" directory)	
-    $mp3_auto = "true";				// Set the FLV player to automatically start when the page loads
-    $mp3_shuffle = "true";			// Set the playlist to shuffle the songs
-    $mp3_digits = "false";			// Turn on/off the elapsed time digits
-    $mp3_repeat = "true";			// Set the music to auto repeat
-    $mp3_showeq = "true";			// Display faux equalizers (if your display height is high enough)
-    $mp3_showfs = "false";			// Display the Full Screen button
-    $mp3_showthumbs = "false";		// Display the thumbnail from the RSS <image> tag in the playlist
-    
-    $p .= '<object type="application/x-shockwave-flash" data="'.$mp3_site.'player/mediaplayer.swf" height="'.$mp3_height.'" width="'.$mp3_width.'">
-    	<param name="movie" value="'.$mp3_site.'player/mediaplayer.swf" />
-    	<param name="allowScriptAccess" value="never" />
-    	<param name="allowNetworking" value="internal" />
-    	<param name="wmode" value="transparent" />
-    	<param name="bgcolor" value="#FFFFFF" />
-    	<param name="flashvars" value="file='.$mp3_file.'&autostart='.$mp3_auto.'&shuffle='.$mp3_shuffle.'&showdigits='.$mp3_digits.'&showeq='.$mp3_showeq.'&showfsbutton='.$mp3_showfs.'&displayheight='.$mp3_dispheight.'&repeat='.$mp3_repeat.'&thumbsinplaylist='.$mp3_showthumbs.'&lightcolor=0x'.$mp3_lightcolor.'&backcolor=0x'.$mp3_backcolor.'&frontcolor=0x'.$mp3_frontcolor.'&bufferlength=10" />
-    	<embed allowScriptAccess="never" allowNetworking="internal" enableJavaScript="false" 
-    	src="'.$mp3_site.'player/mediaplayer.swf" wmode="transparent" width="'.$mp3_width.'" height="'.$mp3_height.'" bgcolor="#'.$mp3_bgcolor.'" 
-    	type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" 
-    	flashvars="file='.$mp3_file.'&autostart='.$mp3_auto.'&shuffle='.$mp3_shuffle.'&showdigits='.$mp3_digits.'&showeq='.$mp3_showeq.'&showfsbutton='.$mp3_showfs.'&displayheight='.$mp3_dispheight.'&repeat='.$mp3_repeat.'&thumbsinplaylist='.$mp3_showthumbs.'&lightcolor=0x'.$mp3_lightcolor.'&backcolor=0x'.$mp3_backcolor.'&frontcolor=0x'.$mp3_frontcolor.'&bufferlength=10" />
-    	</embed></object>';
-  }
-*/
-
-  return $p;
-}
-
-
-function
-widget_video_html5 ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_image_html4 ($image_url, $width = NULL, $height = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
 {
   $p = '';
-  $p .= '<video src="'.$video_url.'" width="'.$width.'" height="'.$height.'"'
-       .' controls="controls"'
-       .($autoplay ? ' autoplay="autoplay"' : '')
-       .($loop ? ' loop="loop"' : '')
-       .' preload="meta"></video>'
-       .'<br>'
-       .'Video codec: <a href="http://www.webmproject.org/users/">WebM</a>'
-;
-
+  $p .= '<img src="'.$image_url.'"'
+       .($width ? ' width="'.$width.'"' : '')
+       .($height ? ' height="'.$height.'"' : '')
+//image-rendering:  auto | inherit | optimizeSpeed | optimizeQuality | -moz-crisp-edges
+       .($hq ? ' style="image-rendering:otimizeQuality"' : ' style="image-rendering:optimizeSpeed"')
+       .' border="0">';
   return $p;
 }
+
+
+/*
+function
+widget_audio_html4 ($audio_url, $width, $height, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+{
+  $p = '';
+  return $p;
+}
+*/
 
 
 function
@@ -235,19 +99,62 @@ widget_audio_html5 ($audio_url, $width, $height, $download = 0, $autoplay = 0, $
 }
 
 
+/*
 function
 widget_audio_youtube ($video_url, $width, $height, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
 {
 // show only the controls
-/*
-<object height="344" width="425">
-<param name="movie" value="http://www.youtube.com/v/6X-RUpNaiL8&amp;hl=en_US&amp;fs=1&amp;">
-<param name="allowFullScreen" value="true">
-<param name="allowscriptaccess" value="always">
-<embed src="http://www.youtube.com/v/6X-RUpNaiL8&amp;hl=en_US&amp;fs=1&amp;" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true"
- height="25" width="425">
-</object>
+  $p = '';
+  return $p;
+}
 */
+
+
+function
+widget_video_html4 ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+{
+  $url = $video_url;
+
+  if ($preview_image)
+    $url = '&image='.$preview_image;
+
+  // using flowplayer or jwplayer
+  $o = array (
+    array ('type', 'application/x-shockwave-flash'),
+    array ('data', 'misc/flowplayer.swf'), 
+//    array ('data', 'misc/jwplayer.swf'),  
+    array ('width', $width),
+    array ('height', $height),
+  );
+  $p = array (
+    array ('movie', 'misc/flowplayer.swf'),
+//    array ('movie', 'misc/jwplayer.swf'),
+    array ('allowFullScreen', 'true'),
+    array ('allowScriptAccess', 'always'),
+    array ('flashvars', 'config={"clip":"'.$video_url.'"}'),
+//    array ('flashvars', 'file='.$video_url),  
+  );
+
+  $s .= widget_media_object_func ($o, $p, NULL);
+
+  return $p;
+}
+
+
+function
+widget_video_html5 ($video_url, $width = 400, $height = 300, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+{
+  $p = '';
+  $p .= '<video src="'.$video_url.'" width="'.$width.'" height="'.$height.'"'
+       .' controls="controls"'
+       .($autoplay ? ' autoplay="autoplay"' : '')
+       .($loop ? ' loop="loop"' : '')
+       .' preload="meta"></video>'
+//       .'<br>'
+//       .'Video codec: <a href="http://www.webmproject.org/users/">WebM</a>'
+;
+
+  return $p;
 }
 
 
@@ -719,38 +626,86 @@ widget_media_demux ($media_url)
     return 2;
   else if (strstr ($media_url, '.xfire.com'))
     return 3;
-  else if (strstr ($media_url, 'http://') && 
+  else if (//strstr ($media_url, 'http://') && 
+           in_array (strtolower (get_suffix ($media_url)), array ('.flv', '.mp4')))
+    return 4; // jwplayer or flowplayer
+  else if (//strstr ($media_url, 'http://') && 
            in_array (strtolower (get_suffix ($media_url)), array ('.webm', '.ogg')))
-    return 4; // <video>
-  else if (strstr ($media_url, 'http://') &&
+    return 5; // <video>
+  else if (//strstr ($media_url, 'http://') &&
            in_array (strtolower (get_suffix ($media_url)), array ('.weba', '.wav')))
-    return 5; // <audio>
+    return 6; // <audio>
   else if (strstr ($media_url, '.veoh.com'))
-    return 6;
-  else if (strstr ($media_url, 'xvideos.com'))
     return 7;
-  else if (strstr ($media_url, 'xxxbunker.com'))
+  else if (strstr ($media_url, 'xvideos.com'))
     return 8;
-  else if (strstr ($media_url, 'video.google'))
+  else if (strstr ($media_url, 'xxxbunker.com'))
     return 9;
-  else if (strstr ($media_url, 'tnaflix.com'))
+  else if (strstr ($media_url, 'video.google'))
     return 10;
-  else if (strstr ($media_url, 'own3d.tv'))
+  else if (strstr ($media_url, 'tnaflix.com'))
     return 11;
-  else if (strstr ($media_url, 'archive.org'))
+  else if (strstr ($media_url, 'own3d.tv'))
     return 12;
-//  else if (strstr ($media_url, 'http://') && 
+  else if (strstr ($media_url, 'archive.org'))
+    return 13;
+  else if (//strstr ($media_url, 'http://') &&
+           in_array (strtolower (get_suffix ($media_url)), array ('.jpg', '.png', '.webp', '.gif')))
+    return 14; // <img>
+//  else if (//strstr ($media_url, 'http://') && 
 //           in_array (strtolower (get_suffix ($media_url)), array ('.m3u', '.pls', '.xspf', '.wpl')))
-//    return 12; // playlist files
+//    return 15; // playlist files
 
   return 0;
 }
 
 
 function
-widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0, $code = 0)
+widget_media_demux_func ($media_url)
 {
   $demux = widget_media_demux ($media_url);
+  $a = array (
+         'widget_video_youtube',
+         'widget_video_dailymotion',
+         'widget_video_xfire',
+         'widget_video_html4',  
+         'widget_video_html5',    
+         'widget_audio_html5',    
+         'widget_video_veoh',     
+         'widget_video_xvideos',  
+         'widget_video_xxxbunker',
+         'widget_video_google', 
+         'widget_video_tnaflix',
+         'widget_video_own3d',  
+         'widget_video_archive',
+         'widget_image_html4',
+);
+  if ($demux > 0)
+    if (isset ($a[$demux - 1])) 
+      return $a[$demux - 1];
+  return NULL;
+}
+
+
+function
+widget_media_embed_code ($media_url)
+{
+  $func = widget_media_demux_func ($media_url);
+  $s = '';
+
+  if ($func)
+    {
+      $c = $func ($media_url);
+      $s .= '<input type="text" readonly="readonly" value="'.htmlentities ($c).'">';
+    }
+  return $s;
+}
+
+
+function
+widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+{
+  $func = widget_media_demux_func ($media_url);
   $s = '';
 
   $scale = 0;
@@ -760,45 +715,33 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autopla
 
   if ($scale)
     {
-//      $width = '\'+Math.floor (misc_getwh ()[0] * 0.5 - 30)+\'';
-//      $height = '\'+Math.floor (misc_getwh ()[1] * 0.5 - 35)+\'';
-      $width = '\'+Math.floor (misc_getwh ()[0] * 0.4)+\'';
-      $height = '\'+Math.floor ((misc_getwh ()[0] * 0.4) * 3 / 4)+\'';
+      $bg_width = '\'+Math.floor (misc_getwh ()[0])+\''; // width of black background
+      if ($ratio)
+        $width = '\'+Math.floor (misc_getwh ()[1] * '.$ratio.')+\'';
+      else
+        $width = $bg_width;
+      $height = '\'+Math.floor (misc_getwh ()[1])+\'';
       $s .= ''
            .'<script type="text/javascript">'."\n"
            .'document.write (\'';
     } 
   else
     {
-      $width = floor ($width);
+      $bg_width = floor ($width); // width of black background
+      if ($ratio)
+        $width = floor ($height * $ratio);
+      else
+        $width = $bg_width;
       $height = floor ($height);
     }
 
-  $a = array (
-         'widget_video_youtube',
-         'widget_video_dailymotion',
-         'widget_video_xfire',
-         'widget_video_html5',
-         'widget_audio_html5',
-         'widget_video_veoh',
-         'widget_video_xvideos',
-         'widget_video_xxxbunker',
-         'widget_video_google',
-         'widget_video_tnaflix',
-         'widget_video_own3d',
-         'widget_video_archive',
-);
-
-  if ($demux > 0)
-    if (isset ($a[$demux - 1]))
+  if ($func)
       {
-        $p = $a[$demux - 1];
-        $c = $p ($media_url, $width, $height, $download, $autoplay, $hq, $loop);
+        $c = $func ($media_url, $width, $height, $download, $autoplay, $hq, $loop);
 
-        $s .= $c;
-
-        if ($code)
-          $s .= '<br><input type="text" readonly="readonly" size="100" value="'.htmlentities ($c).'">';
+        $s .= '<div width="'.$bg_width.'" height="'.$height.'" style="background-color:#000;text-align:center;">'
+             .$c
+             .'</div>';
       }
 
  if ($scale)
@@ -812,8 +755,9 @@ widget_media ($media_url, $width = NULL, $height = NULL, $download = 0, $autopla
 }
 
 
+/*
 function
-widget_audio_file_playlist ($media_url, $width = NULL, $height = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_media_playlist ($media_urls_array, $width = NULL, $height = NULL, $ratio = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
 {
   $fh = fopen ($filename, 'r');
 
@@ -944,7 +888,7 @@ widget_media_playlist ($media_urls, $width = NULL, $height = NULL, $download = 0
 
   return '';
 }
-
+*/
 
 }
 
