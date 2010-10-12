@@ -19,7 +19,7 @@ $tv2_head_tag = '<title>'.$tv2_title.'</title>'
 .'<meta name="google-site-verification" content="akU6AtYoOtUZ5n8IGHTC3s5uc9AOAnPeqxkckHSi224" />';
 $tv2_body_tag = '<body style="font-family:sans-serif;font-size:13px;opacity:1.0;">';
 $tv2_table_tag = '<table style="font-family:sans-serif;font-size:13px;opacity:1.0;" cellspacing="0" cellpadding="0" border="0">';
-$tv2_logo = '<span style="font-size:32px;font-family:sans-serif;color:#000;font-weight:bolder;width:100%;text-align:center">'
+$tv2_logo = '<span style="font-size:32px;font-family:sans-serif;color:#000;font-weight:bolder;">'
            .'pwnoogle'
 //           .' <img src="images/preview.png" border="0">'
            .'</span> '
@@ -49,8 +49,9 @@ $tv2_related_search = 0; // make use of related searches (requires keywords)
 // player settings
 //$tv2_player_w = 400; // max. width
 //$tv2_player_h = 300; // max. height
-$tv2_player_w = -1; $tv2_player_h = -1; // scaled
-
+//$tv2_player_w = -1; $tv2_player_h = -1; // scaled
+$tv2_player_w = 640; // max. width
+$tv2_player_h = 480; // max. height
 
 // database settings
 if (stristr ($_SERVER['SERVER_NAME'], 'pwnoogle.com'))

@@ -29,6 +29,58 @@ include_once ('misc/youtube.php');
 
 
 function
+playlist_parser ($playlist)
+{
+  // parse m3u, pls, xspf, wpl and return url array
+  $a = array ();
+/*
+  $fh = fopen ($filename, 'r');
+
+  if (!$fh)
+    return '';
+
+  $demux = 0;
+  $suffix = strtolower (get_suffix ($filename));
+  if ($suffix == '.m3u')
+    $demux = 1;
+  if ($suffix == '.pls')
+    $demux = 2;
+  if ($suffix == '.xspf')
+    $demux = 3;
+  if ($suffix == '.wpl')
+    $demux = 4;
+
+  if ($demux == 1)
+    {
+  $count = 0;
+  $a = array (array ());
+  while (($p = fgets ($fh)))
+    {
+      $p = str_replace ("\n", '', $p);
+
+      if ($p[0] != '#')
+        continue;
+
+      if (strstr ($p, '#EXTM3U'))
+        $demux = 1;
+      else if (strstr ($p, '#EXTINF:'))
+        {
+          $p = substr ($p, 8, -3);
+          $a[$count]['title'] = trim (substr ($p, strpos ($p, ',') + 1));
+          $a[$count]['link'] = str_replace ("\n", '', fgets ($fh));
+          $a[$count++]['duration'] = trim (substr ($p, 0, strpos ($p, ',')));
+        }
+      else $a[$count++]['title'] = trim ($p, ' #-');
+    }
+
+  fclose ($fh);
+    }
+*/
+  return $a;
+}
+
+
+function
 widget_media_object_func ($object, $param, $embed)
 {
   $p = '';
@@ -627,7 +679,7 @@ widget_media_demux ($media_url)
   else if (strstr ($media_url, '.xfire.com'))
     return 3;
   else if (//strstr ($media_url, 'http://') && 
-           in_array (strtolower (get_suffix ($media_url)), array ('.flv', '.mp4')))
+           in_array (strtolower (get_suffix ($media_url)), array ('.flv', '.mp4', '.mp3')))
     return 4; // jwplayer or flowplayer
   else if (//strstr ($media_url, 'http://') && 
            in_array (strtolower (get_suffix ($media_url)), array ('.webm', '.ogg')))
@@ -652,9 +704,6 @@ widget_media_demux ($media_url)
   else if (//strstr ($media_url, 'http://') &&
            in_array (strtolower (get_suffix ($media_url)), array ('.jpg', '.png', '.webp', '.gif')))
     return 14; // <img>
-//  else if (//strstr ($media_url, 'http://') && 
-//           in_array (strtolower (get_suffix ($media_url)), array ('.m3u', '.pls', '.xspf', '.wpl')))
-//    return 15; // playlist files
 
   return 0;
 }
@@ -738,13 +787,12 @@ widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $downloa
   if ($func)
       {
         $c = $func ($media_url, $width, $height, $download, $autoplay, $hq, $loop);
-
         $s .= '<div width="'.$bg_width.'" height="'.$height.'" style="background-color:#000;text-align:center;">'
              .$c
              .'</div>';
       }
 
- if ($scale)
+  if ($scale)
     {   
       $s .= '\');'."\n\n"
            .'</script>'
@@ -756,55 +804,6 @@ widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $downloa
 
 
 /*
-function
-widget_media_playlist ($media_urls_array, $width = NULL, $height = NULL, $ratio = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
-{
-  $fh = fopen ($filename, 'r');
-
-  if (!$fh)
-    return '';
-
-  $demux = 0;
-  $suffix = strtolower (get_suffix ($filename));
-  if ($suffix == '.m3u')
-    $demux = 1;
-  if ($suffix == '.pls')
-    $demux = 2;
-  if ($suffix == '.xspf')
-    $demux = 3;
-  if ($suffix == '.wpl')
-    $demux = 4;
-
-  if ($demux == 1)
-    {
-  $count = 0;
-  $a = array (array ());
-  while (($p = fgets ($fh)))
-    {
-      $p = str_replace ("\n", '', $p);
-
-      if ($p[0] != '#')
-        continue;
-
-      if (strstr ($p, '#EXTM3U'))
-        $demux = 1;
-      else if (strstr ($p, '#EXTINF:'))
-        {
-          $p = substr ($p, 8, -3);
-          $a[$count]['title'] = trim (substr ($p, strpos ($p, ',') + 1));
-          $a[$count]['link'] = str_replace ("\n", '', fgets ($fh));
-          $a[$count++]['duration'] = trim (substr ($p, 0, strpos ($p, ',')));
-        }
-      else $a[$count++]['title'] = trim ($p, ' #-');
-    }
-
-  fclose ($fh);
-    }
-
-  return $a;
-}
-
-
 function
 widget_video_youtube_playlist ($video_urls, $width = 425, $height = 344, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
 {
@@ -865,30 +864,16 @@ swfobject.embedSWF("http://www.youtube.com/apiplayer?enablejsapi=1&playerapiid=y
 
   return $p;
 }
+*/
 
 
 function
-widget_media_playlist ($media_urls, $width = NULL, $height = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
+widget_media_playlist ($media_urls, $width = NULL, $height = NULL, $ratio = NULL, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
 {
-  // not a playlist?
-  if (!is_array ($media_urls))
-    return widget_media ($media_urls, $width, $height, $download, $autoplay, $hq, $loop);
-
-  $a = array (
-         'widget_video_youtube_playlist',
-         'widget_audio_file_playlist'
-);
-
-  if ($demux > 0)
-    if (isset ($a[$demux - 1]))
-      {
-        $p = $a[$demux - 1];
-        $s .= $p ($media_urls, $width, $height, $download, $autoplay, $hq, $loop);
-      }
-
-  return '';
+  $p = '';
+  return $p;
 }
-*/
+
 
 }
 
