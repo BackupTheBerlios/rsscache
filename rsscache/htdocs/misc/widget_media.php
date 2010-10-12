@@ -803,68 +803,12 @@ widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $downloa
 }
 
 
-/*
 function
 widget_video_youtube_playlist ($video_urls, $width = 425, $height = 344, $download = 0, $autoplay = 0, $hq = 0, $loop = 0)
 {
   $p = '';
-
-  $p .= '<script src="http://www.google.com/jsapi"></script>'
-       .'<script>
-google.load ("swfobject", "2.1");
-</script>'
-.'<script type="text/javascript">
-
-
-function play ()
-{
-  ytplayer = document.getElementById ("widget_video_playall2");
-
-  if (ytplayer.getPlayerState () == 1)
-    return;
-
-  if (typeof this.pos == \'undefined\')
-    this.pos = 0;
-
-  a = new Array (';
-
-  for ($i = 0; isset ($video_url_array[$i]); $i++)
-    $p .= ($i > 0 ? ",\n" : '').'"'.$video_urls[$i].'"';
-
-  $p .= '  );
-
-  if (this.pos == a.length)
-    this.pos = 0;
-
-  ytplayer.loadVideoById (a[this.pos++], 0);
-  ytplayer.playVideo ();
-}
-
-
-function playall ()
-{
-//  ytplayer = document.getElementById ("widget_video_playall2");
-
-//  if (ytplayer) 
-    setInterval (play, 2000);
-}
-
-
-var params = { allowScriptAccess: "always" };
-var atts = { id: "widget_video_playall2" };
-swfobject.embedSWF("http://www.youtube.com/apiplayer?enablejsapi=1&playerapiid=ytplayer&autoplay=1", 
-                   "widget_video_playall", '.$width.', '.$height.', "8", null, null, params, atts);
-//swfobject.embedSWF("http://www.youtube.com/v/590LV50yUN4?enablejsapi=1&playerapiid=ytplayer&autoplay=1&showsearch=0&rel=0",
-//                   "widget_video_playall", '.$width.', '.$height.', "8", null, null, params, atts);
-
-
-</script>
-<div id="widget_video_playall"></div><br>
-<a href="javascript:void(0);" onclick="javascript:playall()">Play</a>';
-
   return $p;
 }
-*/
 
 
 function

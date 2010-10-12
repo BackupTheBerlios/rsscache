@@ -30,7 +30,7 @@ tv2_body ()
          $tv2_results,
          $tv2_isnew,
          $tv2_body_tag,
-         $tv2_table_tag,
+//         $tv2_table_tag,
          $tv2_download_video,
          $tv2_logo,
          $tv2_title,
