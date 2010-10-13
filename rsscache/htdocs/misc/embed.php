@@ -108,6 +108,47 @@ widget_embed ($url_or_path_of_page)
 
 
 function
+widget_embed_frame ($url_or_path_of_page)
+{
+  $url = $url_or_path_of_page;
+
+//  $a = parse_url ($embed);
+//  parse_str ($a['query'], $a);
+//  $url = $embed.misc_getlink (array_merge ($a, $_GET), false);
+//echo $embed;
+//  $html = file_get_contents ($embed.misc_getlink (array_merge ($a, $_GET), false));
+//  $a = split_html_content ($html);
+//  $p = $a['body'];
+//  $p = str_ireplace ('</form>', '<input type="hidden" name="embed" value="'.$embed.'"></form>', $p);
+//  return $p;
+//  return embed_other_page ($embed);
+  $p = '';
+                // embed from localhost
+                if (file_exists ($url))
+                  {
+//                    $p .= file_get_contents ($url);
+                    ob_start ();
+                    require_once ($url);
+                    $p .= ob_get_contents ();
+                    ob_end_clean ();
+                  }
+                else // iframe
+                  {
+//$p .= '<script type="text/javascript">'."\n"
+//.'function resizeIframe(newHeight)'."\n"
+//.'{'."\n"
+//.'  document.getElementById(\'blogIframe\').style.height = parseInt(newHeight) + 10 + \'px\';'."\n"
+//.'}'."\n"
+//.'</script>';
+                    $p .= '<iframe width="100%" height="90%" marginheight="0" marginwidth="0" frameborder="0" src="'
+                         .$url
+                         .'"></iframe>';
+                  }
+  return $p;
+}
+
+
+function
 embed_other_page ($url, $form_action = '', $form_method = 'GET', $allow = ALLOW_DEF)
 {
   $html = '';
