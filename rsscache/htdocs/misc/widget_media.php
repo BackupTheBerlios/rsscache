@@ -187,9 +187,7 @@ widget_video_html4 ($video_url, $width = 400, $height = 300, $autoplay = 0, $hq 
 //    array ('flashvars', 'file='.$video_url),  
   );
 
-  $s .= widget_media_object_func ($o, $p, NULL);
-
-  return $p;
+  return widget_media_object_func ($o, $p, NULL);
 }
 
 
@@ -667,14 +665,14 @@ function
 widget_media_embed_code ($media_url)
 {
   $func = widget_media_demux_func ($media_url);
-  $s = '';
+  $p = '';
 
   if ($func)
     {
       $c = $func ($media_url);
-      $s .= '<input type="text" readonly="readonly" value="'.htmlentities ($c).'">';
+      $p .= '<input type="text" readonly="readonly" value="'.htmlentities ($c).'">';
     }
-  return $s;
+  return $p;
 }
 
 
@@ -682,7 +680,7 @@ function
 widget_media_download ($media_url)
 {
   $demux = widget_media_demux ($media_url);
-  $s = '';
+  $p = '';
 
   if ($demux == 1)
     {
@@ -697,12 +695,12 @@ widget_media_download ($media_url)
 
   if ($yt['status'] == 'fail') // youtube fail
     {
-      $s .= $yt['errorcode'].': '.$yt['reason'];
+      $p .= $yt['errorcode'].': '.$yt['reason'];
  
       switch ($yt['errorcode'])
         {
           case 150: // copyright
-            $s .= '<br>'
+            $p .= '<br>'
                  .' Probably Naziwalled against access from your country<br>'
                  .'Try a proxy or service that is located in the country of the possible license owner'
 ;
@@ -718,25 +716,25 @@ widget_media_download ($media_url)
 //    [fmt_list] => 35/854x480/9/0/115,34/640x360/9/0/115,18/640x360/9/0/115,5/320x240/7/0/0
       $a = explode (',', $yt['fmt_list']);
 
-      $s .= '<br>';
+      $p .= '<br>';
 
       // download
-      $s .= '<a href="'.$yt['video_url'].'">Best</a>';
+      $p .= '<a href="'.$yt['video_url'].'">Best</a>';
 
       for ($q = 0; isset ($yt[$q]); $q++)
         {
           $b = explode ('/', $a[$q]);
           $fmt = substr ($yt[$q], 0, strpos ($yt[$q], '|'));
           $t = substr ($yt[$q], strpos ($yt[$q], '|') + 1);
-          $s .= ' <a href="'.$t.'" title="&fmt='.$fmt.'">'.$b[1].'</a>';
+          $p .= ' <a href="'.$t.'" title="&fmt='.$fmt.'">'.$b[1].'</a>';
         }
 
       // direct link
-//      $s .= ' <a href="'.$yt['ad_eurl'].'">Direct</a>';
+//      $p .= ' <a href="'.$yt['ad_eurl'].'">Direct</a>';
 
-      $s .= '<br>';
+      $p .= '<br>';
 
-      $s .= ''
+      $p .= ''
 //           .'<div style="width:'.($width - 10).'px;">'
            .'<input type="text"'
            .' style="width:'.($width - 10).'px;"'
@@ -748,12 +746,12 @@ widget_media_download ($media_url)
 //           .'</div>'
 ;
 
-      $s .= '<br>';
-      $s .= widget_collapse ('Details', '<pre><tt>'.sprint_r ($yt).'</tt></pre>', 1);
+      $p .= '<br>';
+      $p .= widget_collapse ('Details', '<pre><tt>'.sprint_r ($yt).'</tt></pre>', 1);
     }
     }
 
-  return $s;
+  return $p;
 }
 
 
@@ -761,7 +759,7 @@ function
 widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0)
 {
   $func = widget_media_demux_func ($media_url);
-  $s = '';
+  $p = '';
 
   $scale = 0;
 
@@ -776,7 +774,7 @@ widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autopla
       else
         $width = $bg_width;
       $height = '\'+Math.floor (misc_getwh ()[1])+\'';
-      $s .= ''
+      $p .= ''
            .'<script type="text/javascript">'."\n"
            .'document.write (\'';
     } 
@@ -793,19 +791,19 @@ widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autopla
   if ($func)
       {
         $c = $func ($media_url, $width, $height, $autoplay, $hq, $loop);
-        $s .= '<div width="'.$bg_width.'" height="'.$height.'" style="background-color:#000;text-align:center;">'
+        $p .= '<div width="'.$bg_width.'" height="'.$height.'" style="background-color:#000;text-align:center;">'
              .$c
              .'</div>';
       }
 
   if ($scale)
     {   
-      $s .= '\');'."\n\n"
+      $p .= '\');'."\n\n"
            .'</script>'
 ;
     }
 
-  return $s;
+  return $p;
 }
 
 
