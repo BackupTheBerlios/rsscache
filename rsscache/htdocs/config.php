@@ -60,6 +60,12 @@ if (stristr ($_SERVER['SERVER_NAME'], 'pwnoogle.com'))
     $tv2_dbuser = 'pwnoogle';
     $tv2_dbpass = 'hUn1WrG7';
   }
+else if (stristr ($_SERVER['SERVER_NAME'], 'd5.ath.cx'))
+  {
+    $tv2_dbname = 'pwnoogle_videos';
+    $tv2_dbuser = 'root';
+    $tv2_dbpass = 'nb';  
+  }
 else
   {
     $tv2_dbname = 'pwnoogle';
