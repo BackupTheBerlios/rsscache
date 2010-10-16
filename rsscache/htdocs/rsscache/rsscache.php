@@ -207,7 +207,9 @@ tv2_body ()
   $s = tv2_link ($d);
 
   // link as title  
-  $p .= '<b><a style="font-size:16px;" href="'.$s.'" title="'.$d['rsstool_title'].'">'.str_shorten ($d['rsstool_title'], 80).'</a></b>';
+//  $p .= '<b><a style="font-size:16px;" href="'.$s.'" title="'.$d['rsstool_title'].'">'.str_shorten ($d['rsstool_title'], 80).'</a></b>';
+//widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
+  $p .= '<b style="font-size:16px;">'.widget_button (NULL, $s, str_shorten ($d['rsstool_title'], 80), $d['rsstool_title']).'</b>';
 
   // duration
   $p .= ' '.tv2_duration ($d);
