@@ -129,7 +129,6 @@ widget_image_html4 ($image_url, $width = NULL, $height = NULL, $autoplay = 0, $h
   $p .= '<img name="widget_image_html4_playlist" src="'.$image_url.'"'
        .($width ? ' width="'.$width.'"' : '')
        .($height ? ' height="'.$height.'"' : '')
-//image-rendering:  auto | inherit | optimizeSpeed | optimizeQuality | -moz-crisp-edges
        .($hq ? ' style="image-rendering:otimizeQuality"' : ' style="image-rendering:optimizeSpeed"')
        .' border="0">';
   return $p;
@@ -155,7 +154,10 @@ widget_audio_html5 ($audio_url, $width, $height, $autoplay = 0, $hq = 0, $loop =
        .' controls="controls"'
        .($autoplay ? ' autoplay="autoplay"' : '')
        .($loop ? ' loop="loop"' : '')
-       .' preload="meta"></audio>';
+       .' preload="meta">'
+       // fallback to html4 (flash)
+//       .widget_audio_html4 ($video_url, $width, $height, $autoplay, $hq, $loop)
+       .'</audio>';
   return $p;
 }
 
@@ -208,7 +210,10 @@ widget_video_html5 ($video_url, $width = 400, $height = 300, $autoplay = 0, $hq 
        .' controls="controls"'
        .($autoplay ? ' autoplay="autoplay"' : '')
        .($loop ? ' loop="loop"' : '')
-       .' preload="meta"></video>'
+       .' preload="meta">'
+       // fallback to html4 (flash)
+//       .widget_video_html4 ($video_url, $width, $height, $autoplay, $hq, $loop)
+       .'</video>'
 //       .'<br>'
 //       .'Video codec: <a href="http://www.webmproject.org/users/">WebM</a>'
 ;
