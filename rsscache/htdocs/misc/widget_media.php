@@ -94,13 +94,20 @@ widget_media_object_func ($object, $param, $embed)
     }
 
   if ($param)
-  for ($i = 0; isset ($param[$i]); $i++)
-    $p .= '<param name="'
-         .$param[$i][0].'" value="'.$param[$i][1].'"'
-         .'></param>';
-
+    {
+      $param[] = array ('allowFullScreen', 'true');
+      $param[] = array ('allowScriptAccess', 'always');
+      $param[] = array ('wmode', 'transparent');
+      for ($i = 0; isset ($param[$i]); $i++)
+        $p .= '<param name="'
+             .$param[$i][0].'" value="'.$param[$i][1].'"'
+             .'></param>';
+    }
   if ($embed)
     {
+      $embed[] = array ('allowFullScreen', 'true');      
+      $embed[] = array ('allowScriptAccess', 'always');      
+      $embed[] = array ('wmode', 'transparent');      
       $p .= '<embed';
       for ($i = 0; isset ($embed[$i]); $i++)
         $p .= ' '.$embed[$i][0].'="'.$embed[$i][1].'"';
@@ -183,8 +190,8 @@ widget_video_html4 ($video_url, $width = 400, $height = 300, $autoplay = 0, $hq 
   $p = array (
     array ('movie', 'misc/flowplayer.swf'),
 //    array ('movie', 'misc/jwplayer.swf'),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
     array ('flashvars', 'config={"clip":"'.$video_url.'"}'),
 //    array ('flashvars', 'file='.$video_url),  
   );
@@ -242,10 +249,10 @@ widget_video_youtube ($video_url, $width = 425, $height = 344, $autoplay = 0, $h
   );
   $p = array (
     array ('movie', $url),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
     array ('autoplay', $autoplay ? 'true' : 'false'),
-    array ('wmode', 'transparent'),   
+//    array ('wmode', 'transparent'),   
   );
   $e = array (
     array ('src', $url),
@@ -253,8 +260,8 @@ widget_video_youtube ($video_url, $width = 425, $height = 344, $autoplay = 0, $h
     array ('width', $width),
     array ('height', $height),
     array ('autoplay', $autoplay ? 'true' : 'false'),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
   );
  
   return widget_media_object_func ($o, $p, $e);
@@ -282,16 +289,16 @@ widget_video_dailymotion ($video_url, $width=420, $height=336, $autoplay = 0, $h
   );
   $p = array (
     array ('movie', $url),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
   );
   $e = array (
     array ('src', $url),
     array ('type', 'application/x-shockwave-flash'),
     array ('width', $width),
     array ('height', $height),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
   );
 
   return widget_media_object_func ($o, $p, $e);
@@ -313,8 +320,8 @@ widget_video_xvideos ($video_url, $width=510, $height=400, $autoplay = 0, $hq = 
   );
   $p = array (
     array ('movie', 'http://static.xvideos.com/swf/flv_player_site_v4.swf'),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
     array ('quality', 'high'),
     array ('bgcolor', '#000000'),
     array ('flashvars', 'id_video='.$video_url),
@@ -327,8 +334,8 @@ widget_video_xvideos ($video_url, $width=510, $height=400, $autoplay = 0, $hq = 
     array ('menu', 'false'),
     array ('quality', 'high'),
     array ('bgcolor', '#000000'),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
     array ('pluginspage', 'http://www.macromedia.com/go/getflashplayer'),
     array ('flashvars', 'id_video='.$video_url),
   );
@@ -351,9 +358,9 @@ widget_video_xxxbunker ($video_url, $width=550, $height=400, $autoplay = 0, $hq 
   );
   $p = array (
     array ('movie', 'http://xxxbunker.com/flash/player.swf'),
-    array ('wmode', 'transparent'),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('wmode', 'transparent'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
     array ('flashvars', 'config='.$url),
   );
   $e = array (
@@ -362,9 +369,9 @@ widget_video_xxxbunker ($video_url, $width=550, $height=400, $autoplay = 0, $hq 
     array ('width', $width),
     array ('height', $height),
     array ('flashvars', 'config='.$url),  
-    array ('wmode', 'transparent'),
-    array ('allowFullScreen', 'true'),  
-    array ('allowScriptAccess', 'always'),
+//    array ('wmode', 'transparent'),
+//    array ('allowFullScreen', 'true'),  
+//    array ('allowScriptAccess', 'always'),
   );
  
   return widget_media_object_func ($o, $p, $e);
@@ -386,8 +393,8 @@ widget_video_tnaflix ($video_url, $width=650, $height=515, $autoplay = 0, $hq = 
   );
   $p = array (
     array ('movie', 'http://www.tnaflix.com//embedding_player/player_v0.2.1.swf'),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
     array ('FlashVars', 'value='.$url),  
   );
     
@@ -411,8 +418,8 @@ widget_video_xfire ($video_url, $width=425, $height=279, $autoplay = 0, $hq = 0,
     array ('width', $width),
     array ('height', $height),
     array ('flashvars', 'videoid='.$video_url),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
   );
 
   return widget_media_object_func ($o, NULL, $e);
@@ -432,16 +439,16 @@ widget_video_myspace ($video_url, $width=425, $height=360, $autoplay = 0, $hq = 
   );
   $p = array (
     array ('movie', $url),
-    array ('wmode', 'transparent'),   
-    array ('allowFullScreen', 'true'),
+//    array ('wmode', 'transparent'),   
+//    array ('allowFullScreen', 'true'),
   );
   $e = array (
     array ('src', $url),
     array ('type', 'application/x-shockwave-flash'),
     array ('width', $width),
     array ('height', $height),
-    array ('wmode', 'transparent'),
-    array ('allowFullScreen', 'true'),
+//    array ('wmode', 'transparent'),
+//    array ('allowFullScreen', 'true'),
   );
   return widget_media_object_func ($o, $p, $e);
 }
@@ -463,16 +470,16 @@ widget_video_veoh ($video_url, $width=410, $height=341, $autoplay = 0, $hq = 0, 
   );
   $p = array (
     array ('movie', $url),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
   );
   $e = array (
     array ('src', $url),
     array ('type', 'application/x-shockwave-flash'),
     array ('width', $width),
     array ('height', $height),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
     array ('id', 'veohFlashPlayerEmbed'),
     array ('name', 'veohFlashPlayerEmbed'),
   );
@@ -491,8 +498,8 @@ widget_video_google ($video_url, $width=400, $height=326, $autoplay = 0, $hq = 0
     array ('src', $url),
     array ('type', 'application/x-shockwave-flash'),
     array ('style', 'width:'.$width.'px;height:'.$height.'px;'),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
   );
  
   return widget_media_object_func (NULL, NULL, $e);
@@ -515,8 +522,8 @@ widget_video_yahoo ($video_url, $width=512, $height=322, $autoplay = 0, $hq = 0,
   );
   $p = array (
     array ('movie', 'http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.46'),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
     array ('bgcolor', '#000000'),
     array ('flashvars', 'id='.$id.'&vid='.$vid.'&lang=es-mx&intl=e1&thumbUrl=http%3A//l.yimg.com/a/p/i/bcst/videosearch/9707/88446579.jpeg&embed=1'),
   );
@@ -525,8 +532,8 @@ widget_video_yahoo ($video_url, $width=512, $height=322, $autoplay = 0, $hq = 0,
     array ('type', 'application/x-shockwave-flash'),
     array ('width', $width),
     array ('height', $height),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
     array ('bgcolor', '#000000'),
     array ('flashvars', 'id='.$id.'&vid='.$vid.'&lang=es-mx&intl=e1&thumbUrl=http%3A//l.yimg.com/a/p/i/bcst/videosearch/9707/88446579.jpeg&embed=1'),
   );
@@ -547,18 +554,18 @@ widget_video_own3d ($video_url, $width=640, $height=360, $autoplay = 0, $hq = 0,
   );
   $p = array (
     array ('movie', $url),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
-    array ('wmode', 'transparent'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
+//    array ('wmode', 'transparent'),
   );
   $e = array (
     array ('src', $url),
     array ('type', 'application/x-shockwave-flash'),
     array ('width', $width),
     array ('height', $height),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
-    array ('wmode', 'transparent'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
+//    array ('wmode', 'transparent'),
   );
   return widget_media_object_func ($o, $p, $e);
 }
@@ -573,8 +580,8 @@ widget_video_archive ($video_url, $width=640, $height=506, $autoplay = 0, $hq = 
 //    array ('classid', 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000'),
   );
   $p = array (
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
     array ('quality', 'high'),           
     array ('cachebusting', 'true'),
 //    array ('bgcolor', '#000000'),
@@ -586,8 +593,8 @@ widget_video_archive ($video_url, $width=640, $height=506, $autoplay = 0, $hq = 
     array ('type', 'application/x-shockwave-flash'),
     array ('width', $width),
     array ('height', $height),
-    array ('allowFullScreen', 'true'),
-    array ('allowScriptAccess', 'always'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
     array ('quality', 'high'),
     array ('cachebusting', 'true'),
 //    array ('bgcolor', '#000000'),
