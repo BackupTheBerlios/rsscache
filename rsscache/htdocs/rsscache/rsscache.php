@@ -115,7 +115,7 @@ tv2_body ()
 
   // logo
   $p .= '<nobr>';
-  $p .= tv2_logo ();
+  $p .= tv2_logo_func ();
   $p .= '</nobr>';
 
   if ($f != 'mirror')
@@ -189,7 +189,14 @@ tv2_body ()
   // output
   $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
 
-  $p .= '<div>';
+  $p .= '<div';
+  if ($f == '2cols')
+    {
+      $p .= ' style="width:50%;';
+      $p .= 'float:left;';
+      $p .= '"';
+    }
+  $p .= '>';
 
   if ($f != 'mirror')
     $p .= tv2_time_count ($d);
@@ -250,6 +257,8 @@ tv2_body ()
       $p .= tv2_player_preview ($d);
     }
 
+//  $p .= '<br>';
+
   // description
   $p .= tv2_include ($d);
 
@@ -279,9 +288,8 @@ tv2_body ()
 
   if ($v)
     {
-      $p .= '<br>';
-      $p .= tv2_prev_video_button ($d);
-      $p .= tv2_next_video_button ($d);
+//      $p .= tv2_prev_video_button ($d);
+//      $p .= tv2_next_video_button ($d);
 
       if ($d_category->voteable == 1)   
         { 
@@ -300,9 +308,9 @@ tv2_body ()
         }
     }
 
-  $p .= '<div style="color:#bbb;">';
+  $p .= '<br><span style="color:#bbb;">';
   $p .= tv2_keywords ($d);
-  $p .= '</div>';
+  $p .= '</span>';
   $p .= '</div>';
 
     }
@@ -311,7 +319,7 @@ tv2_body ()
  
   // logo
   $p .= '<nobr>'; 
-  $p .= tv2_logo ();
+  $p .= tv2_logo_func ();
   $p .= '</nobr>';
 
   if ($f != 'mirror')  
