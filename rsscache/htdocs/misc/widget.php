@@ -237,7 +237,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
   $p = '';
 
   if ($flags & WIDGET_CMS_VLIST)
-    $p .= ''
+    $p .= '<br>'
          .($logo ? '<img src="'.$logo.'" border="0">' : '')
          .'<br>'  
          .'<br>'
@@ -364,7 +364,8 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
         }
       else if ($logo)
         $p .= ''
-//             .'<br><br>'
+//             .'<br>'
+             .'<br>'
              .'<img src="'.$logo.'" border="0">';
     }
 
