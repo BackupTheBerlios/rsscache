@@ -191,6 +191,9 @@ tv2_body ()
 
   $p .= '<div>';
 
+  if ($f != 'mirror')
+    $p .= tv2_time_count ($d);
+
   // logo
   $p .= '<nobr>&nbsp;'.tv2_button ($d_category).'&nbsp;</nobr>';
 
@@ -257,12 +260,6 @@ tv2_body ()
     }
   else
     {
-      if ($f != 'mirror')
-        $p .= tv2_time_count ($d);
-//      if ($i < 1)
-//        {
-//          $p .= tv2_player ($d);
-//        }
       $p .= tv2_player_preview ($d);
     }
 
