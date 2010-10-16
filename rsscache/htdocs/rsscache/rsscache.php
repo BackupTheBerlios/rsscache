@@ -30,7 +30,6 @@ tv2_body ()
          $tv2_results,
          $tv2_isnew,
          $tv2_body_tag,
-//         $tv2_table_tag,
          $tv2_download_video,
          $tv2_logo,
          $tv2_title,
@@ -184,7 +183,6 @@ tv2_body ()
     }
 
   // normal view
-//  $p .= $tv2_table_tag;
   for ($i = 0; isset ($d_array[$i]); $i++)
     {
   $d = $d_array[$i];
@@ -474,6 +472,7 @@ $head = '<html>'
        .'</title>'
        .'<link rel="stylesheet" type="text/css" media="screen" href="tv2.css">'
        .'<script type="text/javascript" src="misc/misc.js"></script>'
+       .'<script type="text/javascript" src="tv2.js"></script>'
        .misc_seo_description ($body)
 ;
 

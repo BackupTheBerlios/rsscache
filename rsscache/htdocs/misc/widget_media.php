@@ -118,13 +118,15 @@ function
 widget_image_html4 ($image_url, $width = NULL, $height = NULL, $autoplay = 0, $hq = 0, $loop = 0)
 {
   $p = '';
-  $p .= '<img src="'.$image_url.'"'
+
+  $p .= '<img name="widget_image_html4_playlist" src="'.$image_url.'"'
        .($width ? ' width="'.$width.'"' : '')
        .($height ? ' height="'.$height.'"' : '')
 //image-rendering:  auto | inherit | optimizeSpeed | optimizeQuality | -moz-crisp-edges
        .($hq ? ' style="image-rendering:otimizeQuality"' : ' style="image-rendering:optimizeSpeed"')
        .' border="0">';
   return $p;
+//  return '';
 }
 
 
