@@ -97,7 +97,7 @@ widget_media_object_func ($object, $param, $embed)
     {
       $param[] = array ('allowFullScreen', 'true');
       $param[] = array ('allowScriptAccess', 'always');
-      $param[] = array ('wmode', 'transparent');
+//      $param[] = array ('wmode', 'transparent');
       for ($i = 0; isset ($param[$i]); $i++)
         $p .= '<param name="'
              .$param[$i][0].'" value="'.$param[$i][1].'"'
@@ -107,7 +107,7 @@ widget_media_object_func ($object, $param, $embed)
     {
       $embed[] = array ('allowFullScreen', 'true');      
       $embed[] = array ('allowScriptAccess', 'always');      
-      $embed[] = array ('wmode', 'transparent');      
+//      $embed[] = array ('wmode', 'transparent');      
       $p .= '<embed';
       for ($i = 0; isset ($embed[$i]); $i++)
         $p .= ' '.$embed[$i][0].'="'.$embed[$i][1].'"';
