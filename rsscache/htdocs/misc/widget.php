@@ -237,17 +237,11 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
   $p = '';
 
   if ($flags & WIDGET_CMS_VLIST)
-    $p .= '<br>'
-         .'<br>'
-         .'<br>'
-         .'<br>'
-         .'<center>'
+    $p .= ''
          .($logo ? '<img src="'.$logo.'" border="0">' : '')
          .'<br>'  
          .'<br>'
 ;
-//  else if ($logo)
-//    $p .= '<a href="."><img src="'.$logo.'" border="0" align="middle" height="50"></a> ';
 
   // categories
   if ($flags & WIDGET_CMS_MENU)
@@ -315,12 +309,11 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
         }
       else // title (no link)
         {
-//          $p .= '<font size="5">';
           $p .= $category->title;
-//          $p .= '</font>';
         }
 
-      $p .= ($category->new == 1 ? '<img src="images/new.png">' : '');
+      if ($category->new == 1)
+        $p .= '<img src="images/new.png">';
 
       $p .= '</nobr>';
 
@@ -338,9 +331,6 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
   if ($flags & WIDGET_CMS_MENU)
     $p .= '</select>';
 
-  if ($flags & WIDGET_CMS_VLIST)
-    $p .= '</center>';
-
   if ($flags & WIDGET_CMS_HLIST)
     {
 //      $p .= '<hr>';
@@ -355,7 +345,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
                 // embed from localhost
                 if (file_exists ($config_xml->category[$i]->src))
                   {
-                    $p .= '<br>';
+//                    $p .= '<br>';
 //                    $p .= file_get_contents ($config_xml->category[$i]->src);
                     ob_start ();
                     require_once ($config_xml->category[$i]->src);
@@ -364,13 +354,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
                   }
                 else // iframe
                   {
-                    $p .= '<br>';
-//$p .= '<script type="text/javascript">'."\n"
-//.'function resizeIframe(newHeight)'."\n"
-//.'{'."\n"
-//.'  document.getElementById(\'blogIframe\').style.height = parseInt(newHeight) + 10 + \'px\';'."\n"
-//.'}'."\n"
-//.'</script>';
+//                    $p .= '<br>';
                     $p .= '<iframe width="100%" height="90%" marginheight="0" marginwidth="0" frameborder="0" src="'  
                          .$config_xml->category[$i]->src
                          .'"></iframe>'; 
@@ -379,7 +363,9 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
               }
         }
       else if ($logo)
-        $p .= '<br><br><img src="'.$logo.'" border="0">';
+        $p .= ''
+//             .'<br><br>'
+             .'<img src="'.$logo.'" border="0">';
     }
 
   return $p;
@@ -397,22 +383,11 @@ widget_collapse ($label, $s, $collapsed)
        .'[<a href="javascript:void(0);" onclick="javascript:'
        .'document.getElementById(\''.$r.'\').style.display=(document.getElementById(\''.$r.'\').style.display==\'none\'?\'block\':\'none\')">+</a>]'
        .' '.$label.':'
-       .'<br>';
-/*
-  $p .= '<div id="'.$r.'" style="'
-       .'height:80px;'
-       .'width:300px;'
-       .'overflow:auto;'
-       .'border:1px solid #666;'
-       .'color:#000;'
-       .'background-color:#fff;'
-       .'padding:8px;'
-       .'display:none;'
-       .'">';
-*/
+       .'<br>'
+;
   $p .= '<div id="'.$r.'"'.($collapsed ? ' style="display:none;"' : '').'>';
-
-  $p .= $s.'</div>';
+       .$s
+       .'</div>';
   
   return $p;
 }
