@@ -235,29 +235,16 @@ tv2_body ()
 
   $p .= '</nobr>';
 
-/*
-  if ($v)
-    {
-      $p .= '<div style="width:400px;">';
-//      $p .= '<div>';
-      $p .= tv2_thumbnail ($d);
-    }
-  else
-    {
-      $p .= '<div style="width:600px;">';
-//      $p .= '<div>'; 
-      $p .= tv2_thumbnail ($d, 240);
-    }
-*/
   $p .= '<br>';
+
   // embed player
   if ($v)
     {
       $p .= tv2_player ($d);
     }
-  else if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
-    {
-    }
+//  else if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
+//    {
+//    }
   else
     {
       $p .= tv2_player_preview ($d);
