@@ -385,7 +385,7 @@ widget_collapse ($label, $s, $collapsed)
        .' '.$label.':'
        .'<br>'
 ;
-  $p .= '<div id="'.$r.'"'.($collapsed ? ' style="display:none;"' : '').'>';
+  $p .= '<div id="'.$r.'"'.($collapsed ? ' style="display:none;"' : '').'>'
        .$s
        .'</div>';
   
