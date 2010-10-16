@@ -245,6 +245,7 @@ widget_video_youtube ($video_url, $width = 425, $height = 344, $autoplay = 0, $h
     array ('allowFullScreen', 'true'),
     array ('allowScriptAccess', 'always'),
     array ('autoplay', $autoplay ? 'true' : 'false'),
+    array ('wmode', 'transparent'),   
   );
   $e = array (
     array ('src', $url),

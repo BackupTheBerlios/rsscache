@@ -101,13 +101,22 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 {
   $p = '';
 
-  $p = '<a href="'.$query.'"'
-      .' title="'.$tooltip
-      .'"'
+  $p = '<a'
+        .' href="'.$query.'"'
+//      .' title="'.$tooltip.'"'
 //      .' style="opacity:1.0;"'
 //      .' onhover="opacity:1.0;"'
       .' alt="'.$label.'"'
-      .'>';
+      .' onmouseover="tv2_tt_show(\''.$tooltip.'\');"'
+      .' onmouseout="tv2_tt_hide();"'
+;
+
+  if (!$icon)
+      $p .= ''
+         .'style="width:32px;height:32px;font-size:16px;"'
+;
+
+  $p .= '>';
 
   $s = '';
   if ($icon)
@@ -134,16 +143,12 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 
   $p .= $s;
 
-  if (!$icon)
-    $p .= ''
-         .'<span style="width:32px;height:32px;font-size:16px;">'
-         .$label
-         .'</span>'
-;
-  else if (!($flags & WIDGET_BUTTON_ONLY))
+  if (!($flags & WIDGET_BUTTON_ONLY))
     $p .= '&nbsp;'
          .$label
 ;
+  if ($tooltip)
+    $p .= '<span>'.$tooltip.'</span>';
   $p .= '</a>';
 
   return $p;
