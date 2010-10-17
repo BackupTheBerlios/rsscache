@@ -610,6 +610,30 @@ widget_video_archive ($video_url, $width=640, $height=506, $autoplay = 0, $hq = 
 
 
 function
+widget_video_liveleak ($video_url, $width=450, $height=370, $autoplay = 0, $hq = 0, $loop = 0)
+{
+  $o = array (
+    array ('width', $width),
+    array ('height', $height),
+  );
+  $p = array (
+//    array ('wmode', 'transparent'),
+//    array ('allowScriptAccess', 'always'),  
+    array ('movie', 'http://www.liveleak.com/e/06c_1287260062'), 
+  );
+  $e = array (
+    array ('src', 'http://www.liveleak.com/e/06c_1287260062'),
+    array ('type', 'application/x-shockwave-flash'),
+    array ('width', $width),
+    array ('height', $height),
+//    array ('allowScriptAccess', 'always'),
+//    array ('wmode', 'transparent'),
+  );
+  return widget_media_object_func ($o, $p, $e);
+}
+
+
+function
 widget_media_demux ($media_url)
 {
   if (strstr ($media_url, '.youtube.com'))
@@ -644,6 +668,8 @@ widget_media_demux ($media_url)
   else if (//strstr ($media_url, 'http://') &&
            in_array (strtolower (get_suffix ($media_url)), array ('.jpg', '.png', '.webp', '.gif')))
     return 14; // <img>
+  else if (strstr ($media_url, 'liveleak.com'))
+    return 15;
 
   return 0;
 }
@@ -668,6 +694,7 @@ widget_media_demux_func ($media_url)
          'widget_video_own3d',  
          'widget_video_archive',
          'widget_image_html4',
+         'widget_video_liveleak',
 );
   if ($demux > 0)
     if (isset ($a[$demux - 1])) 
