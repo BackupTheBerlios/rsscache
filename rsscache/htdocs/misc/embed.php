@@ -1,5 +1,6 @@
 <?php
-require_once ('widget.php');
+//require_once ('widget.php');
+//require_once ('wikipedia.php'); // embed wikipedia stuff using wikipedia API
 
 
 define ('ALLOW_DEF', ''
@@ -91,15 +92,15 @@ widget_embed_proxy ($src)
 function
 widget_embed_iframe ($src)
 {
-//$p .= '<script type="text/javascript">'."\n"
-//.'function resizeIframe(newHeight)'."\n"
-//.'{'."\n"
-//.'  document.getElementById(\'blogIframe\').style.height = parseInt(newHeight) + 10 + \'px\';'."\n"
-//.'}'."\n"
-//.'</script>';
-  $p .= '<iframe width="100%" height="90%" marginheight="0" marginwidth="0" frameborder="0" src="'
-       .$url
+  // automatic scale to the content size requires javascript and misc.js
+  $p .= '';
+  $p .= '<iframe'
+//       .' onload="javascript:autoscaleiframe(this);" scrolling="no"' // with js
+       .' width="100%" height="90%"' // without js
+       .' marginheight="0" marginwidth="0" frameborder="0" src="'
+       .$src
        .'"></iframe>';
+  return $p;
 }
 
 
@@ -109,9 +110,9 @@ widget_embed_local ($src)
   $p = '';
   if (file_exists ($src))
     {
-//    $p .= file_get_contents ($url);
+//    $p .= file_get_contents ($src);
       ob_start ();
-      require_once ($url);
+      require_once ($src);
       $p .= ob_get_contents ();
       ob_end_clean ();
     } 
@@ -124,25 +125,8 @@ widget_embed_local ($src)
 function
 widget_embed_js ($src)
 {
-//header ('Content-type: text/xml');
-//header ('Content-type: application/xml');
-//header ('Content-type: text/xml-external-parsed-entity');
-//header ('Content-type: application/xml-external-parsed-entity');
-//header ('Content-type: application/xml-dtd');
-
-// DEBUG
-//echo '<tt><pre>';
-//print_r ($server_xml);
-
-//echo array2xml ($server_xml);
-
-
-
-
-
-/*
   $p = '';
-
+/*
   $p .= '<script type="text/javascript">
 ';
 
@@ -174,54 +158,8 @@ document.include = function (url)
 <script>
 document.include (\''.$url.'\');
 </script>';
-
+*/
   return $p;
-*/
-
-
-
-
-/*
-<html>  
-<head>
-<script>
-
-function autoscaleiframe (f)
-{
-// scales iframe to the size of its content
-// RESTRICTIONS: iframe content must be from the *same* domain as this file
-// tested with FF and IE8
-
-//var d = f.contentDocument;
-var w = f.contentWindow;
-var width = 
-        w.document.body.scrollLeft ||
-        w.document.body.scrollWidth
-//        d.body.scrollLeft ||
-//        d.body.scrollWidth
-;
-var height =
-        w.document.body.scrollTop ||
-        w.document.body.scrollHeight
-//        d.body.scrollTop ||
-//        d.body.scrollHeight
-;
-f.style.width = parseInt(width) + 10 + 'px';
-f.style.height = parseInt(height) + 10 + 'px';
-}  
-
-</script>
-</head>
-<body>
-<iframe onload="javascript:autoscaleiframe(this);" src="test40_.html" frameborder="0" marginwidth="0" marginheight="0 scrolling="no"></iframe>
-</body>
-</html>  
-
-*/
-
-
-
-
 }
 
 
@@ -231,7 +169,7 @@ widget_embed ($src, $flags = 0)
   $p = '';
   if ($flags == 0 || $flags == WIDGET_EMBED_AUTO)
     {
-      if (stristr ($src, 'http://'))
+      if (!strncasecmp ($src, 'http://', 7))
         {
 //          $p .= widget_embed_proxy ($src);
           $p .= widget_embed_iframe ($src);
