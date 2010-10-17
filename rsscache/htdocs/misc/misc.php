@@ -887,33 +887,11 @@ random_user_agent ()
 }
 
 
-// turn any variable into name=value pairs
-function
-var_property ($v)
-{
-  ob_start ();
-
-  print_r ($v);
-//  var_dump ($v);
-
-  $p = ob_get_contents ();
-
-  ob_end_clean ();
-
-  $p = str_replace (array (' => ', 'SimpleXMLElement', 'Object'), '', $p);
-  $p = str_replace (array (']Array'), ']', $p);
-//  $p = str_replace (array ('('."\n"), '', $p);
-//  $p = str_replace ('[', '<', $p);
-//  $p = str_replace (']', '>', $p);
-
-  return $p;
-}
-
-
 // turn any variable into XML string
 function
 var_xml ($v)
 {
+/*
   ob_start ();
 
   print_r ($v);
@@ -931,6 +909,8 @@ var_xml ($v)
   $p = '<?xml version="1.0" encoding="UTF-8"?>'.$p;
 
   return $p;
+*/
+  return $v->asXML();
 }
 
 
