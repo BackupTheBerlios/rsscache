@@ -93,7 +93,7 @@ function
 widget_embed_iframe ($src)
 {
   // automatic scale to the content size requires javascript and misc.js
-  $p .= '';
+  $p = '';
   $p .= '<iframe'
 //       .' onload="javascript:autoscaleiframe(this);" scrolling="no"' // with js
        .' width="100%" height="90%"' // without js

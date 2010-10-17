@@ -236,7 +236,7 @@ sql_write ($sql_query_s, $unbuffered = 0, $debug = 0)
 
   if ($this->res != FALSE) // TRUE or resource (depending on query)
     return 1;
-  return 0; // fail
+  return 0;
 }
 
 
