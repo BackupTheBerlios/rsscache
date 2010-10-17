@@ -146,7 +146,8 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
          .$label
 ;
   if ($tooltip)
-    $p .= '<span>'.$tooltip.'</span>';
+    if (trim ($tooltip) != '')
+      $p .= '<span>'.$tooltip.'</span>';
   $p .= '</a>';
 
   return $p;
