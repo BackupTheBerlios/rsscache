@@ -695,6 +695,8 @@ function
 widget_media_download ($media_url)
 {
   $demux = widget_media_demux ($media_url);
+  $tor_enabled = 0;
+
   $p = '';
 
   if ($demux == 1)

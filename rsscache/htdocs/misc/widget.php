@@ -222,14 +222,39 @@ widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1)
     <lf>1</lf>
   </category>
 */
-define ('WIDGET_CMS_LINK', 1); // default
-define ('WIDGET_CMS_MENU', 2);
-define ('WIDGET_CMS_HLIST', 4); // default
-define ('WIDGET_CMS_HLIST_COLS', 8);
-define ('WIDGET_CMS_VLIST', 16);
-define ('WIDGET_CMS_BUTTON_ONLY', 32);
+define ('WIDGET_CMS_LINK', 1); // (default)
+define ('WIDGET_CMS_SELECT', 2); // select box menu
+define ('WIDGET_CMS_ROW', 4); // row with buttons (default)
+define ('WIDGET_CMS_RC', 8);  // row with columns of buttons
+define ('WIDGET_CMS_COL', 16);  // column with buttons
+define ('WIDGET_CMS_BUTTON_ONLY', 32); // show button only; not text
 define ('WIDGET_CMS_BUTTON16', 64);
 define ('WIDGET_CMS_BUTTON32', 128);
+function
+widget_cms_select ()
+{
+}
+
+
+function
+widget_cms_row ()
+{
+}
+
+
+function
+widget_cms_col ()
+{
+}
+
+
+function
+widget_cms_rc ()
+{
+}
+
+
+
 function
 widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 {
@@ -239,7 +264,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 
   $p = '';
 
-  if ($flags & WIDGET_CMS_VLIST)
+  if ($flags & WIDGET_CMS_COL)
     $p .= '<br>'
          .($logo ? '<img src="'.$logo.'" border="0">' : '')
          .'<br>'  
@@ -247,7 +272,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 ;
 
   // categories
-  if ($flags & WIDGET_CMS_MENU)
+  if ($flags & WIDGET_CMS_SELECT)
     $p .= '<select name="'.$name.'"'
 //         .($active == 1 ? '' : ' disabled="disabled"')
          .'>';
@@ -262,7 +287,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 
       if ($category->src || $category->query || $category->id)
         {   
-          if ($flags & WIDGET_CMS_MENU)
+          if ($flags & WIDGET_CMS_SELECT)
             {
               if ($category->embed == 1)
                 $s = $category->id;
@@ -274,7 +299,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
           else
             {
 /*
-              if ($flags | WIDGET_CMS_HLIST_COLS)
+              if ($flags | WIDGET_CMS_RC)
                 {
                   $last = ($i > 0 ? $config_xml->category[$i - 1]->title : '');
                   if ($last != '')
@@ -320,7 +345,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 
       $p .= '</nobr>';
 
-      if ($flags & WIDGET_CMS_HLIST)
+      if ($flags & WIDGET_CMS_ROW)
         $p .= '&nbsp;&nbsp; ';
       else if ($category->lf > 0)
         $p .= str_repeat ('<br>', $category->lf);
@@ -331,10 +356,10 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
         $p .= '<hr>';
     }
 
-  if ($flags & WIDGET_CMS_MENU)
+  if ($flags & WIDGET_CMS_SELECT)
     $p .= '</select>';
 
-  if ($flags & WIDGET_CMS_HLIST)
+  if ($flags & WIDGET_CMS_ROW)
     {
 //      $p .= '<hr>';
       $p .= '<!-- content -->';
