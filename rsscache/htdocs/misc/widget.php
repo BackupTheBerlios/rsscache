@@ -230,29 +230,46 @@ define ('WIDGET_CMS_COL', 16);  // column with buttons
 define ('WIDGET_CMS_BUTTON_ONLY', 32); // show button only; not text
 define ('WIDGET_CMS_BUTTON16', 64);
 define ('WIDGET_CMS_BUTTON32', 128);
+
+
 function
-widget_cms_select ()
+widget_cms_select ($logo, $config_xml, $name = 'q', $link_suffix = NULL)
 {
+  $p = '';
+    $p .= '<select name="'.$name.'"'
+//         .($active == 1 ? '' : ' disabled="disabled"')
+         .'>';
+  return $p; 
 }
 
 
 function
-widget_cms_row ()
+widget_cms_row ($logo, $config_xml, $name = 'q', $link_suffix = NULL)
 {
+  $p = '';
+  return $p; 
 }
 
 
 function
-widget_cms_col ()
+widget_cms_col ($logo, $config_xml, $name = 'q', $link_suffix = NULL)
 {
+  $p = '';
+    $p .= '<br>'
+         .($logo ? '<img src="'.$logo.'" border="0">' : '')
+         .'<br>'  
+         .'<br>'
+;
+  return $p; 
 }
 
 
 function
-widget_cms_rc ()
+widget_cms_rc ($logo, $config_xml, $name = 'q', $link_suffix = NULL)
 {
+  $p = '';
+  return $p;
 }
-
 
 
 function
@@ -264,18 +281,11 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 
   $p = '';
 
+  // categories  
   if ($flags & WIDGET_CMS_COL)
-    $p .= '<br>'
-         .($logo ? '<img src="'.$logo.'" border="0">' : '')
-         .'<br>'  
-         .'<br>'
-;
-
-  // categories
-  if ($flags & WIDGET_CMS_SELECT)
-    $p .= '<select name="'.$name.'"'
-//         .($active == 1 ? '' : ' disabled="disabled"')
-         .'>';
+    $p .= widget_cms_col ($logo, $config_xml, $name, $link_suffix);
+  else if ($flags & WIDGET_CMS_SELECT)
+    $p .= widget_cms_select ($logo, $config_xml, $name, $link_suffix);
 
   for ($i = 0; isset ($config_xml->category[$i]); $i++)
     if (!isset ($config_xml->category[$i]->button) ||
@@ -370,6 +380,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
           for ($i = 0; $config_xml->category[$i]; $i++)
             if ($q == $config_xml->category[$i]->id)
               {
+/*
                 // embed from localhost
                 if (file_exists ($config_xml->category[$i]->src))
                   {
@@ -388,6 +399,8 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
                          .'"></iframe>'; 
                   }
                  break;
+*/
+                $p .= widget_embed ($config_xml->category[$i]->src);
               }
         }
       else if ($logo)
@@ -425,18 +438,23 @@ widget_collapse ($label, $s, $collapsed)
 function
 widget_onhover_link ($url, $image1, $image2)
 {
-  $name = rand (0, 99999999).crc32 ($url.$image1.$image2);
+//  $name = rand (0, 99999999).crc32 ($url.$image1.$image2);
 
   $p = '';
+//  $p .= '<a href="'.$url.'"'
+//       .' onmouseover="document.'.$name.'.src='.$image1.'"'
+//       .' onmouseout="document.'.$name.'.src='.$image2.'"'
+//       .'><img src="'.$image1.'" border="0" name="'.$name.'"></a>';
   $p .= '<a href="'.$url.'"'
-       .' onmouseover="document.'.$name.'.src='.$image1.'"'
-       .' onmouseout="document.'.$name.'.src='.$image2.'"'
-       .'><img src="'.$image1.'" border="0" name="'.$name.'"></a>';
+       .' onmouseover="this.src='.$image1.'"'
+       .' onmouseout="this.src='.$image2.'"'
+       .'><img src="'.$image1.'" border="0"></a>';
 
   return $p;
 }
 
 
+/*
 function
 widget_window_open ($url, $fullscreen = 0, $window_name = '')
 {
@@ -518,8 +536,10 @@ widget_window_open ($url, $fullscreen = 0, $window_name = '')
 
   return $p;
 }
+*/
 
 
+/*
 function
 widget_carousel ($xmlfile, $width=200, $height=150)
 {
@@ -546,6 +566,7 @@ widget_carousel ($xmlfile, $width=200, $height=150)
 
   echo $p;
 }
+*/
 
 
 function
