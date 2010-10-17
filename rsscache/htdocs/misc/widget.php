@@ -104,7 +104,11 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   $p = '<a'
         .' href="'.$query.'"'
 //      .' title="'.$tooltip.'"'
-      .' alt="'.$label.'"'
+      .' alt="'.$label.'"';
+
+  if ($tooltip)
+    if (trim ($tooltip) != '')
+      $p .= ''
       .' onmouseover="tv2_tt_show(\''.htmlentities ($tooltip, ENT_QUOTES).'\');"'
       .' onmouseout="tv2_tt_hide();"'
 ;

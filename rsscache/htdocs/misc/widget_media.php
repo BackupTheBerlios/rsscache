@@ -771,8 +771,28 @@ widget_media_download ($media_url)
 
 
 function
+widget_video_youtube_playlist ($video_urls, $width = 425, $height = 344, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0)
+{
+  $p = '';
+  return $p;
+}
+
+
+function
+widget_media_playlist ($media_urls, $width = NULL, $height = NULL, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0)
+{
+  $p = '';
+  return $p;
+}
+
+
+function
 widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0)
 {
+  // array
+  if (gettype ($media_url) == 'array')
+    return widget_media_playlist ($media_url, $width, $height, $ratio, $autoplay, $hq, $loop);
+
   $func = widget_media_demux_func ($media_url);
   $p = '';
 
@@ -820,22 +840,6 @@ widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autopla
 ;
     }
 
-  return $p;
-}
-
-
-function
-widget_video_youtube_playlist ($video_urls, $width = 425, $height = 344, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0)
-{
-  $p = '';
-  return $p;
-}
-
-
-function
-widget_media_playlist ($media_urls, $width = NULL, $height = NULL, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0)
-{
-  $p = '';
   return $p;
 }
 
