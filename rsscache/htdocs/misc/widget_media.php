@@ -177,25 +177,25 @@ function
 widget_video_html4 ($video_url, $width = 400, $height = 300, $autoplay = 0, $hq = 0, $loop = 0)
 {
   $url = $video_url;
-
-  if ($preview_image)
-    $url = '&image='.$preview_image;
+//  if ($preview_image)
+//    $url .= '&image='.$preview_image;
 
   // using flowplayer or jwplayer
   $o = array (
     array ('type', 'application/x-shockwave-flash'),
-    array ('data', 'misc/flowplayer.swf'), 
-//    array ('data', 'misc/jwplayer.swf'),  
+//    array ('data', 'misc/flowplayer.swf'),  // flowplayer
+    array ('data', 'misc/jwplayer.swf'),   // jwplayer
     array ('width', $width),
     array ('height', $height),
   );
   $p = array (
-    array ('movie', 'misc/flowplayer.swf'),
-//    array ('movie', 'misc/jwplayer.swf'),
+//    array ('movie', 'misc/flowplayer.swf'), // flowplayer
+    array ('movie', 'misc/jwplayer.swf'), // jwplayer
 //    array ('allowFullScreen', 'true'),
 //    array ('allowScriptAccess', 'always'),
-    array ('flashvars', 'config={"clip":"'.$video_url.'"}'),
-//    array ('flashvars', 'file='.$video_url),  
+//    array ('flashvars', 'config={"clip":"'.$url.'"}'), // flowplayer
+    array ('flashvars', 'file='.$url),   // jwplayer
+    array ('autostart', $autoplay ? 'true' : 'false'), // jwplayer
   );
 
   return widget_media_object_func ($o, $p, NULL);
