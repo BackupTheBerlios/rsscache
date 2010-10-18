@@ -79,6 +79,7 @@ generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_d
 }
 
 
+/*
 function
 rsstool_table_insert ($db, $url, $title, $desc, $site, $dl_url, $date, $dl_date)
 {
@@ -113,11 +114,13 @@ rsstool_table_insert ($db, $url, $title, $desc, $site, $dl_url, $date, $dl_date)
   $db->sql_write ($p, 0);
 // return $p;
 }
+*/
 
 
 function
 rss_to_array ($tag, $array, $url)
 {
+  // TODO: use ->asXML() ?
   $doc = new DOMdocument();
   $doc->load($url);
 

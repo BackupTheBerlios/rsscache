@@ -272,14 +272,16 @@ tv2_body ()
     $p .= '&nbsp;Embed code: '.$s;
   $p .= '</nobr>';
 
-  if ($d_category->movable == 1 && $f != 'mirror')
+  if (isset ($d['movable']))
+  if ($d['movable'] == 1 && $f != 'mirror')
     {
       $p .= '<br><nobr>';
       $p .= tv2_move_form ($d);
       $p .= '</nobr>';
     }
 
-  if ($d_category->reportable == 1 && $f != 'mirror')
+  if (isset ($d['reportable']))
+  if ($d['reportable'] == 1 && $f != 'mirror')
     {
       $p .= '<br><nobr>';
       $p .= tv2_report_form ($d);
@@ -300,7 +302,8 @@ tv2_body ()
     }
   else
     {
-      if ($d_category->voteable == 1)
+      if (isset ($d['voteable']))
+        if ($d['voteable'] == 1)
         {
           $p .= '&nbsp;&nbsp;&nbsp;<nobr>';
           $p .= tv2_vote_show ($d);
