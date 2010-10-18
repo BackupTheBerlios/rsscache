@@ -160,7 +160,7 @@ tv2_body ()
 //      $p .= '<br>'
 //           .'<br>'
 //;
-      $p .= tv2_page ($start, $num, sizeof ($d_array));
+      $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
     }
 
   if (sizeof ($d_array) == 0)
@@ -336,7 +336,7 @@ tv2_body ()
   // show page-wise navigation (bottom)
   if (!$v && $f != 'mirror')
     {
-      $s = tv2_page ($start, $num, sizeof ($d_array));
+      $s = ' '.tv2_page ($start, $num, sizeof ($d_array));
       if ($s)
         $p .= $s;
     }
