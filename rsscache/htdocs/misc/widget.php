@@ -33,8 +33,10 @@ CSS: canvas image
 */
 
 
-//$widget_output;
-$widget_step_count;
+//$widget_output = 0;
+$widget_step_count = 0;
+
+
 function
 widget_count_steps ()
 {
