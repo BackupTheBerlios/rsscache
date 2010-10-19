@@ -373,7 +373,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
          $tv2_root,
          $tv2_enable_search,
          $tv2_related_search,
-         $tv2_sort_by_dl_date;
+         $tv2_use_dl_date,
   global $tv2_debug_sql;
   $debug = $tv2_debug_sql;
 //  $debug = 1;
@@ -461,7 +461,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
         $sql_query_s .= ' ORDER BY tv2_score ASC';
       else if ($f == 'new')
         $sql_query_s .= ' ORDER BY rsstool_dl_date DESC';
-      else if ($tv2_sort_by_dl_date)
+      else if ($tv2_use_dl_date)
         $sql_query_s .= ' ORDER BY rsstool_dl_date DESC';
       else
         $sql_query_s .= ' ORDER BY rsstool_date DESC';
