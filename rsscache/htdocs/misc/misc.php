@@ -611,6 +611,14 @@ parse_links ($s, $cached = 1)
 }
 
 
+function
+detect_links ($s, $cached = 1)
+{
+  // find urls in text and turn them into links
+  return parse_links ($s, $cached);
+}
+
+
 if (!function_exists('sys_get_temp_dir'))
 {
 function
