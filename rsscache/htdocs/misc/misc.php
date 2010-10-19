@@ -602,7 +602,7 @@ parse_links ($s, $cached = 1)
 // cached: http://web.archive.org/web/*/http://ucon64.sourceforge.net
         $link = '<a href="'.$url.'">'.$url.'</a>';
         if ($cached == 1)
-          $link = $link.'[<a href="http://web.archive.org/web/*/'.$url.'">Cached</a>]'
+          $link = $link.'[<a href="http://web.archive.org/web/*/'.$url.'">Cached</a>]';
 
         $s = str_replace ($a[$i], $link, $s);
       }

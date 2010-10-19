@@ -129,16 +129,19 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 //      if (file_exists ($icon))
         {
           // remove missing image in IE
-          $ie_fix = '';
-          if (stristr ($_SERVER["HTTP_USER_AGENT"], 'MSIE') ||
-              stristr ($_SERVER["HTTP_USER_AGENT"], 'Windows'))
-            $ie_fix = ' onerror="this.parentNode.removeChild(this);"';
+//          $ie_fix = '';
+//          if (stristr ($_SERVER["HTTP_USER_AGENT"], 'MSIE') ||
+//              stristr ($_SERVER["HTTP_USER_AGENT"], 'Windows'))
+//            $ie_fix = ' onerror="this.parentNode.removeChild(this);"';
 
           $s .= '<img src="'.$icon.'" border="0" alt=""';
 
           if ($flags & WIDGET_BUTTON_SMALL)
             $s .= ' height="16"';
-          $s .= $ie_fix.'>';
+          $s .= ''
+//               .$ie_fix
+               .' onerror="this.parentNode.removeChild(this);"'
+               .'>';
         }
 //      else $icon = NULL;
     }
