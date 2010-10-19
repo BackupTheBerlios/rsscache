@@ -579,7 +579,7 @@ is_url ($s)
 
 
 function
-parse_links ($s)
+parse_links ($s, $cached = 1)
 {
   // turn plain text urls into links
 //  return preg_replace ('/\\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]/i', "<a href=\"#\" onclick=\"open_url('\\0')\";return false;>\\0</a>", $s);
@@ -595,10 +595,16 @@ parse_links ($s)
   for ($i = 0; $i < $a_size; $i++)
     if (is_url ($a[$i]))
       {
-        if (stristr ($a[$i], 'http://'))
-          $s = str_replace ($a[$i], '<a href="'.$a[$i].'">'.$a[$i].'</a>', $s);
-        else
-          $s = str_replace ($a[$i], '<a href="http://'.$a[$i].'">'.$a[$i].'</a>', $s);
+        $url = $a[$i];
+        if (!stristr ($url, 'http://'))
+          $url = 'http://'.$url;
+
+// cached: http://web.archive.org/web/*/http://ucon64.sourceforge.net
+        $link = '<a href="'.$url.'">'.$url.'</a>';
+        if ($cached == 1)
+          $link = $link.'[<a href="http://web.archive.org/web/*/'.$url.'">Cached</a>]'
+
+        $s = str_replace ($a[$i], $link, $s);
       }
 
   return $s;
