@@ -728,11 +728,11 @@ widget_media_download ($media_url)
 
   if ($demux == 1)
     {
-  $yt_array = youtube_download ($video_url, $tor_enabled, 0);
+  $yt_array = youtube_download ($media_url, $tor_enabled, 0);
 
   // DEBUG
 //  echo '<pre><tt>';
-//  echo $video_url."\n";
+//  echo $media_url."\n";
 //  print_r ($a); 
 
   $yt = $yt_array[0];
@@ -763,7 +763,7 @@ widget_media_download ($media_url)
       $p .= '<br>';
 
       // download
-      $p .= '<a href="'.$yt['video_url'].'">Best</a>';
+      $p .= '<a href="'.$yt['media_url'].'">Best</a>';
 
       for ($q = 0; isset ($yt[$q]); $q++)
         {

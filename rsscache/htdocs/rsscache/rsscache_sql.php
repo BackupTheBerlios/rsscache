@@ -373,7 +373,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
          $tv2_root,
          $tv2_enable_search,
          $tv2_related_search,
-         $tv2_use_dl_date,
+         $tv2_use_dl_date;
   global $tv2_debug_sql;
   $debug = $tv2_debug_sql;
 //  $debug = 1;
