@@ -763,7 +763,7 @@ widget_media_download ($media_url)
       $p .= '<br>';
 
       // download
-      $p .= '<a href="'.$yt['media_url'].'">Best</a>';
+      $p .= '<a href="'.$yt['video_url'].'">Best</a>';
 
       for ($q = 0; isset ($yt[$q]); $q++)
         {
@@ -781,11 +781,10 @@ widget_media_download ($media_url)
       $p .= ''
 //           .'<div style="width:'.($width - 10).'px;">'
            .'<input type="text"'
-           .' style="width:'.($width - 10).'px;"'
+//           .' style="width:'.($width - 10).'px;"'
            .' value="'
            .$yt['title']
            .'" readonly="readonly"'
-//           .' onclick="javascript:this.execCommand(\'copy\');"'
            .'>'
 //           .'</div>'
 ;
