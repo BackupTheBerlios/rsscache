@@ -760,7 +760,7 @@ widget_media_download ($media_url)
 //    [fmt_list] => 35/854x480/9/0/115,34/640x360/9/0/115,18/640x360/9/0/115,5/320x240/7/0/0
       $a = explode (',', $yt['fmt_list']);
 
-      $p .= '<br>';
+//      $p .= '<br>';
 
       // download
       $p .= '<a href="'.$yt['video_url'].'">Best</a>';
