@@ -91,7 +91,7 @@ tor_get_contents ($url, $tor_proxy_host = '127.0.0.1', $tor_proxy_port = 9050, $
 
   curl_setopt ($sock, CURLOPT_PROXY, $tor_proxy_host.':'.$tor_proxy_port);
   curl_setopt ($sock, CURLOPT_URL, $url);
-  curl_setopt ($sock, CURLOPT_HEADER, 1);
+//  curl_setopt ($sock, CURLOPT_HEADER, 1);
   $agent = random_user_agent ();
   curl_setopt ($sock, CURLOPT_USERAGENT, $agent);
   curl_setopt ($sock, CURLOPT_RETURNTRANSFER, 1);
