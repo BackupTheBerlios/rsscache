@@ -32,6 +32,12 @@ youtube_get_videoid ($url)
   // DEBUG
 //  echo $url."\n";
 
+//  if (strstr ($video_url, '?v='))
+//    $video_url = substr ($video_url, strpos ($video_url, '?v=') + 3);
+//  else
+//    $video_url = substr ($video_url, strpos ($video_url, 'watch') + 12);
+//  $video_url = str_replace ('&feature=youtube_gdata', '', $video_url);
+
   $p = urldecode ($url);   
   $start = strpos ($p, 'watch?v=');
   if ($start)   
