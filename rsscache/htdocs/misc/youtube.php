@@ -38,6 +38,12 @@ youtube_get_videoid ($url)
 //    $video_url = substr ($video_url, strpos ($video_url, 'watch') + 12);
 //  $video_url = str_replace ('&feature=youtube_gdata', '', $video_url);
 
+//      $start = strpos ($t, 'watch?v=') + 8;
+//      $t = substr ($t, $start);  
+//      $len = strpos ($t, '&');
+//      if ($len)  
+//        $len = substr ($t, 0, $len);
+
   $p = urldecode ($url);   
   $start = strpos ($p, 'watch?v=');
   if ($start)   

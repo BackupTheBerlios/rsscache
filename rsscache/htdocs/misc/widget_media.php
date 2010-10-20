@@ -226,11 +226,12 @@ function
 widget_video_youtube ($video_url, $width = 425, $height = 344, $autoplay = 0, $hq = 0, $loop = 0)
 {
   $tor_enabled = 0;
-  if (strstr ($video_url, '?v='))   
-    $video_url = substr ($video_url, strpos ($video_url, '?v=') + 3);
-  else
-    $video_url = substr ($video_url, strpos ($video_url, 'watch') + 12);
-  $video_url = str_replace ('&feature=youtube_gdata', '', $video_url);
+//  if (strstr ($video_url, '?v='))   
+//    $video_url = substr ($video_url, strpos ($video_url, '?v=') + 3);
+//  else
+//    $video_url = substr ($video_url, strpos ($video_url, 'watch') + 12);
+//  $video_url = str_replace ('&feature=youtube_gdata', '', $video_url);
+  $video_url = youtube_get_videoid ($video_url);
 
 //http://code.google.com/apis/youtube/player_parameters.html      
   $url = 'http://www.youtube.com/v/'
@@ -642,14 +643,11 @@ widget_media_demux ($media_url)
     return 2;
   else if (strstr ($media_url, '.xfire.com'))
     return 3;
-  else if (//strstr ($media_url, 'http://') && 
-           in_array (strtolower (get_suffix ($media_url)), array ('.flv', '.mp4', '.mp3')))
+  else if (in_array (strtolower (get_suffix ($media_url)), array ('.flv', '.mp4', '.mp3')))
     return 4; // jwplayer or flowplayer
-  else if (//strstr ($media_url, 'http://') && 
-           in_array (strtolower (get_suffix ($media_url)), array ('.webm', '.ogg')))
+  else if (in_array (strtolower (get_suffix ($media_url)), array ('.webm', '.ogg')))
     return 5; // <video>
-  else if (//strstr ($media_url, 'http://') &&
-           in_array (strtolower (get_suffix ($media_url)), array ('.weba', '.wav')))
+  else if (in_array (strtolower (get_suffix ($media_url)), array ('.weba', '.wav')))
     return 6; // <audio>
   else if (strstr ($media_url, '.veoh.com'))
     return 7;
@@ -665,8 +663,7 @@ widget_media_demux ($media_url)
     return 12;
   else if (strstr ($media_url, 'archive.org'))
     return 13;
-  else if (//strstr ($media_url, 'http://') &&
-           in_array (strtolower (get_suffix ($media_url)), array ('.jpg', '.png', '.webp', '.gif')))
+  else if (in_array (strtolower (get_suffix ($media_url)), array ('.jpg', '.png', '.webp', '.gif')))
     return 14; // <img>
   else if (strstr ($media_url, 'liveleak.com'))
     return 15;
@@ -685,11 +682,13 @@ widget_media_demux_func ($media_url)
          'widget_video_xfire',
          'widget_video_html4',  
          'widget_video_html5',    
+
          'widget_audio_html5',    
          'widget_video_veoh',     
          'widget_video_xvideos',  
          'widget_video_xxxbunker',
          'widget_video_google', 
+
          'widget_video_tnaflix',
          'widget_video_own3d',  
          'widget_video_archive',
@@ -719,15 +718,10 @@ widget_media_embed_code ($media_url)
 
 
 function
-widget_media_download ($media_url)
+widget_video_youtube_download ($media_url, $tor_enabled)
 {
-  $demux = widget_media_demux ($media_url);
-  $tor_enabled = 0;
-
   $p = '';
 
-  if ($demux == 1)
-    {
   $yt_array = youtube_download ($media_url, $tor_enabled, 0);
 
   // DEBUG
@@ -754,45 +748,56 @@ widget_media_download ($media_url)
           default:
             break;
         }
+      return $p;
     }
-  else
+
+//  [fmt_list] => 35/854x480/9/0/115,34/640x360/9/0/115,18/640x360/9/0/115,5/320x240/7/0/0
+  $a = explode (',', $yt['fmt_list']);
+
+//  $p .= '<br>';
+
+  // download
+  $p .= '<a href="'.$yt['video_url'].'">Best</a>';
+
+  for ($q = 0; isset ($yt[$q]); $q++)
     {
-//    [fmt_list] => 35/854x480/9/0/115,34/640x360/9/0/115,18/640x360/9/0/115,5/320x240/7/0/0
-      $a = explode (',', $yt['fmt_list']);
+      $b = explode ('/', $a[$q]);
+      $fmt = substr ($yt[$q], 0, strpos ($yt[$q], '|'));
+      $t = substr ($yt[$q], strpos ($yt[$q], '|') + 1);
+      $p .= ' <a href="'.$t.'" title="&fmt='.$fmt.'">'.$b[1].'</a>';
+    }
 
-//      $p .= '<br>';
+  // direct link
+//  $p .= ' <a href="'.$yt['ad_eurl'].'">Direct</a>';
 
-      // download
-      $p .= '<a href="'.$yt['video_url'].'">Best</a>';
+  $p .= '<br>';
 
-      for ($q = 0; isset ($yt[$q]); $q++)
-        {
-          $b = explode ('/', $a[$q]);
-          $fmt = substr ($yt[$q], 0, strpos ($yt[$q], '|'));
-          $t = substr ($yt[$q], strpos ($yt[$q], '|') + 1);
-          $p .= ' <a href="'.$t.'" title="&fmt='.$fmt.'">'.$b[1].'</a>';
-        }
-
-      // direct link
-//      $p .= ' <a href="'.$yt['ad_eurl'].'">Direct</a>';
-
-      $p .= '<br>';
-
-      $p .= ''
-//           .'<div style="width:'.($width - 10).'px;">'
-           .'<input type="text"'
-//           .' style="width:'.($width - 10).'px;"'
-           .' value="'
-           .$yt['title']
-           .'" readonly="readonly"'
-           .'>'
-//           .'</div>'
+  // name
+  $p .= ''
+       .'Name: <input type="text"'
+       .' value="'
+       .$yt['title']
+       .'" readonly="readonly"'
+       .'>'
 ;
 
-      $p .= '<br>';
-      $p .= widget_collapse ('Details', '<pre><tt>'.sprint_r ($yt).'</tt></pre>', 1);
-    }
-    }
+  $p .= '<br>';
+
+  // details
+  $p .= widget_collapse ('Details', '<pre><tt>'.sprint_r ($yt).'</tt></pre>', 1);
+
+  return $p;
+}
+
+
+function
+widget_media_download ($media_url, $tor_enabled = 0)
+{
+  $func = widget_media_demux_func ($media_url).'_download';
+
+  $p = '';
+  if (function_exists ($func))
+    $p .= $func ($media_url, $tor_enabled);
 
   return $p;
 }
