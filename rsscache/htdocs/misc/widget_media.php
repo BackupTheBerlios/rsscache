@@ -226,11 +226,6 @@ function
 widget_video_youtube ($video_url, $width = 425, $height = 344, $autoplay = 0, $hq = 0, $loop = 0)
 {
   $tor_enabled = 0;
-//  if (strstr ($video_url, '?v='))   
-//    $video_url = substr ($video_url, strpos ($video_url, '?v=') + 3);
-//  else
-//    $video_url = substr ($video_url, strpos ($video_url, 'watch') + 12);
-//  $video_url = str_replace ('&feature=youtube_gdata', '', $video_url);
   $video_url = youtube_get_videoid ($video_url);
 
 //http://code.google.com/apis/youtube/player_parameters.html      
