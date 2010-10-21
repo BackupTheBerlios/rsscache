@@ -778,7 +778,7 @@ widget_video_youtube_download ($media_url, $tor_enabled)
   $p .= '<br>';
 
   // details
-  $p .= widget_collapse ('Details', '<pre><tt>'.sprint_r ($yt).'</tt></pre>', 1);
+  $p .= widget_collapse ('Details', '<div style="width:200px;height:100px;overflow:auto;"><pre><tt>'.sprint_r ($yt).'</tt></pre></div>', 1);
 
   return $p;
 }

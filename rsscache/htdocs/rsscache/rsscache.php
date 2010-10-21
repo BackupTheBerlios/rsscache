@@ -183,13 +183,11 @@ tv2_body ()
     }
 
   // playlist
-  $f = 'play_all';
-  if ($f == 'play_all')
+  if ($f == 'playall')
     {
       $p .= tv2_player_playlist ($d_array);
       return $p;
     }
-
 
   // normal view
   for ($i = 0; isset ($d_array[$i]); $i++)
