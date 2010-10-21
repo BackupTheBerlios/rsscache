@@ -225,7 +225,6 @@ widget_video_html5 ($video_url, $width = 400, $height = 300, $autoplay = 0, $hq 
 function
 widget_video_youtube ($video_url, $width = 425, $height = 344, $autoplay = 0, $hq = 0, $loop = 0)
 {
-  $tor_enabled = 0;
   $video_url = youtube_get_videoid ($video_url);
 
 //http://code.google.com/apis/youtube/player_parameters.html      
@@ -802,7 +801,104 @@ function
 widget_video_youtube_playlist ($video_urls, $width = 425, $height = 344, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0)
 {
   $p = '';
-  return $p;
+
+//<script src="http://www.google.com/jsapi"></script>
+$p .= '
+<script type="text/javascript">
+
+
+function widget_video_youtube_next ()
+{
+  var e = document.getElementById (\'widget_video_youtube\');
+//  var e = document.getElementById (\'ytplayer\');
+//  var e = ytplayer;
+
+  var debug = document.getElementById (\'debug\');
+  debug.innerHTML = e.getPlayerState ()+\'\';
+
+  if (e.getPlayerState () == 1) // video is still playing
+    return;
+
+  if (typeof this.pos == \'undefined\')
+    this.pos = 0;
+
+  var a = new Array (';
+
+  for ($i = 0; isset ($video_urls[$i]); $i++)
+    {
+      if ($i > 0)
+        $p .= ', ';
+      $p .= '\''.youtube_get_videoid ($video_urls[$i]).'\'';
+    }
+
+  $p .= '
+);
+
+  // restart
+//  if (this.pos == a.length)
+//    this.pos = 0;
+
+  e.loadVideoById (a[this.pos++], 0);
+  e.playVideo ();
+//  e.loadVideoById (\'Nh6siIPTN3o\', 0);
+//  e.playVideo ();
+//  e.loadVideoById (\'R1Z7plEWGgQ\', 0);
+//  e.playVideo ();
+}
+
+
+window.onload = function ()
+//function widget_video_youtube_start()
+{
+  setInterval (\'widget_video_youtube_next()\', 500);
+}
+
+</script>
+<div id="debug"></div>
+';
+$script = $p;
+
+//http://code.google.com/apis/youtube/player_parameters.html      
+//  $url = 'http://www.youtube.com/v/'
+//        .$video_url
+  $url = 'http://www.youtube.com/apiplayer?enablejsapi=1'
+       .'&fs=1'             // allow fullscreen
+//       .'&rel=1'            // related
+//       .($autoplay ? '&autoplay=1' : '')
+//       .($loop ? '&loop=1' : '')
+//       .'&color1=0x000000'
+//       .'&color2=0x000000'
+//       .'&start=30'         // skip to
+//       .($hq ? '&hd=1' : '')  // high quality?
+       .'&showinfo=0'
+       .'&showsearch=0' // search
+       .'&border=0'
+;
+
+  $o = array (
+    array ('width', $width),
+    array ('height', $height),
+//    array ('onload', 'widget_video_youtube_start()'), // start playlist
+  );
+  $p = array (
+    array ('movie', $url),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
+    array ('autoplay', $autoplay ? 'true' : 'false'),
+//    array ('wmode', 'transparent'),   
+  );
+  $e = array (
+    array ('id', 'widget_video_youtube'),
+    array ('src', $url),
+    array ('type', 'application/x-shockwave-flash'),
+    array ('width', $width),
+    array ('height', $height),
+    array ('autoplay', $autoplay ? 'true' : 'false'),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
+  );
+ 
+  return $script.widget_media_object_func ($o, $p, $e);
 }
 
 
@@ -810,6 +906,19 @@ function
 widget_media_playlist ($media_urls, $width = NULL, $height = NULL, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0)
 {
   $p = '';
+  $a = array ();
+  for ($i = 0; isset ($media_urls[$i]) && $i < 10; $i++)
+    {
+      $demux = widget_media_demux ($media_urls[$i]);
+      if ($demux == 1)
+        $a[] = $media_urls[$i];
+    }
+
+//print_r ($a);
+
+  if (count ($a) > 0)
+    $p .= widget_video_youtube_playlist ($a, $width, $height, $ratio, $autoplay, $hq, $loop);
+
   return $p;
 }
 
