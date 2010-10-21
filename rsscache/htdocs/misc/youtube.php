@@ -32,7 +32,7 @@ youtube_get_rss ($q)
   $q = urlencode ($q);
 //Example: http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
 //         http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
-  $f = file_get_contents ('http://gdata.youtube.com/feeds/api/videos?vq='.$q.'&max-results=5');
+  $f = file_get_contents ('http://gdata.youtube.com/feeds/api/videos?vq='.$q.'&max-results=50');
   $xml = simplexml_load_string ($f);
 // DEBUG
 //echo '<pre><tt>';
