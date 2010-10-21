@@ -628,6 +628,42 @@ widget_video_liveleak ($video_url, $width=450, $height=370, $autoplay = 0, $hq =
 }
 
 
+/*
+                        # [revver] By JockeTF.
+                        $patterns[] = "#\[revver\](.*?)\[/revver\]#si";
+                        $replacements[] = '
+<embed type="application/x-shockwave-flash" src="http://flash.revver.com/player/1.0/player.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" scale="noScale" salign="TL" bgcolor="#000000" flashvars="mediaId=\\1&affiliateId=0&allowFullScreen=true" allowfullscreen="true" height="392" width="480">
+</embed>';
+
+			# [youtube] By JockeTF.
+                        $patterns[] = "#\[youtube\](.*?)\[/youtube\]#si";
+			# 16:9 By jack thompson (was 425x350)  new width = ((425*3/4)*16/9)
+                        $replacements[] = '<object width="565" height="350">
+<param name="movie" value="http://www.youtube.com/v/\\1&fmt=18">
+</param>
+<param name="wmode" value="transparent">
+</param>
+<embed src="http://www.youtube.com/v/\\1&fmt=18&fs=1" type="application/x-shockwave-flash" wmode="transparent" width="564" height="350">
+</embed>
+</object>';
+
+                        # [googlevideo] By JockeTF.
+                        $patterns[] = "#\[googlevideo\](.*?)\[/googlevideo\]#si";
+                        $replacements[] = '
+<embed style="width:400px; height:326px;" id="VideoPlayback" type="application/x-shockwave-flash" src="http://video.google.com/googleplayer.swf?docId=\\1&hl=en" flashvars=""> </embed>';
+
+                        # [metacafe] By JockeTF.
+                        $patterns[] = "#\[metacafe\](.*?)\[/metacafe\]#si";
+                        $replacements[] = '
+<embed src="http://www.metacafe.com/fplayer/\\1.swf" width="400" height="345" wmode="transparent" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> </embed>';
+
+			# [video width= height= loop= ] and [/video] code..
+			$patterns[] = "#\[video width=([0-6]?[0-9]?[0-9]) height=([0-4]?[0-9]?[0-9])\]([\w]+?://[^ \?&=\"\n\r\t<]*?(\.(avi|mpg|mpeg|wmv)))\[/video\]#si";
+			$replacements[] = '<embed src="\\3" width=\\1 height=\\2></embed>';
+*/
+
+
+
 function
 widget_media_demux ($media_url)
 {

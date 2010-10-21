@@ -14,7 +14,8 @@ $memcache_expire = 0;
 $tv2_charset = 'utf-8';
 $tv2_icon = 'images/icon.png';
 $tv2_search_s = 'Search';
-$tv2_title = '&#x2590;&#x2598;&#x2599;&#x2599;&#x258c;&#x259b;&#x259c;pwnoogle \:D/ - watch videos of games';
+$tv2_title = //'&#x2590;&#x2598;&#x2599;&#x2599;&#x258c;&#x259b;&#x259c;'
+  'pwnoogle \:D/ - watch videos of games';
 $tv2_head_tag = '<title>'.$tv2_title.'</title>'
 .'<meta name="google-site-verification" content="akU6AtYoOtUZ5n8IGHTC3s5uc9AOAnPeqxkckHSi224" />';
 $tv2_body_tag = '<body style="font-family:sans-serif;font-size:13px;opacity:1.0;">';
