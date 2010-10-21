@@ -273,7 +273,7 @@ tv2_body ()
 
   // direct link
   $p .= ' <nobr>';
-  $p .= tv2_direct_link ($d);
+//  $p .= tv2_direct_link ($d);
   $s = widget_media_embed_code ($d['rsstool_url']);
   if ($s)
     $p .= '&nbsp;Embed code: '.$s;
