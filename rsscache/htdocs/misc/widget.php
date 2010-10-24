@@ -105,6 +105,7 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   $p = '';
 
   $p = '<a'
+.' class="tooltip"'
         .' href="'.$query.'"'
 //      .' title="'.$tooltip.'"'
       .' alt="'.$label.'"';
@@ -155,9 +156,9 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
     $p .= '&nbsp;'
          .$label
 ;
-  if ($tooltip)
-    if (trim ($tooltip) != '')
-      $p .= '<span>'.$tooltip.'</span>';
+//  if ($tooltip)
+//    if (trim ($tooltip) != '')
+//      $p .= '<span>'.$tooltip.'</span>';
   $p .= '</a>';
 
   return $p;
