@@ -107,7 +107,7 @@ tv2_body ()
 //       .'<br>'  
 //;  
 
-  $p .= '</div>'; // #bodyid
+//  $p .= '</div>'; // #bodyid
 
   // embed another page
   if ($embed)
@@ -505,7 +505,7 @@ $head .= $tv2_head_tag;
 
 $head .= '</head>'
         .$tv2_body_tag
-        .'<div id="bodyid">'
+//        .'<div id="bodyid">'
 ;
 
 $end = '';
