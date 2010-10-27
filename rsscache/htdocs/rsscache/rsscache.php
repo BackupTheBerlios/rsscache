@@ -194,134 +194,134 @@ tv2_body ()
   // normal view
   for ($i = 0; isset ($d_array[$i]); $i++)
     {
-  $d = $d_array[$i];
-  // output
-  $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
+      $d = $d_array[$i];
+      // output
+      $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
+    
+      if ($f == '2cols' && !($i % (count ($d_array) * 0.5)))
+        $p .= '<div style="'.($i == 0 ? 'float:left;width:500px' : 'width:500px').'">';
+      $p .= '<div>';
+    
+      if ($f != 'mirror')
+        $p .= tv2_time_count ($d);
+    
+      // logo
+      $p .= '<nobr>&nbsp;'.tv2_button ($d_category).'&nbsp;</nobr>';
+    
+      // tv2_include_logo ()
+      $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
+    
+      $p .= '<nobr>';
+    
+      // is new?
+      if (time () - $d[$f == 'new' ? 'rsstool_dl_date' : 'rsstool_date'] < $tv2_isnew && $f != 'mirror')
+        $p .= '<img src="images/new.png" border="0" alt="New!"> ';
+    
+      // link
+      $s = tv2_link ($d);
+    
+      // link as title  
+      $p .= '<b style="font-size:16px;">'
+           .widget_button (NULL, $s, str_shorten ($d['rsstool_title'], 80), $d['rsstool_title'])
+           .'</b>';
+    
+      // duration
+      $p .= ' '.tv2_duration ($d);
+    
+//      $p .= '&nbsp;';
 
-  if ($f == '2cols' && !($i % (count ($d_array) * 0.5)))
-    $p .= '<div>';
-  $p .= '<div>';
+      // player button (embed)
+//      if ($f != 'mirror')
+//        $p .= tv2_player_button ($d);
 
-  if ($f != 'mirror')
-    $p .= tv2_time_count ($d);
+      $p .= '&nbsp;';
 
-  // logo
-  $p .= '<nobr>&nbsp;'.tv2_button ($d_category).'&nbsp;</nobr>';
+      // related
+      if ($f != 'mirror')
+        if ($tv2_related_search)
+        $p .= tv2_related_button ($d);
 
-  // tv2_include_logo ()
-  $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
+      // HACK: fix height
+      $p .= '<img src="images/trans.png" height="32" width="1">';
 
-  $p .= '<nobr>';
-
-  // is new?
-  if (time () - $d[$f == 'new' ? 'rsstool_dl_date' : 'rsstool_date'] < $tv2_isnew && $f != 'mirror')
-    $p .= '<img src="images/new.png" border="0" alt="New!"> ';
-
-  // link
-  $s = tv2_link ($d);
-
-  // link as title  
-  $p .= '<b style="font-size:16px;">'
-       .widget_button (NULL, $s, str_shorten ($d['rsstool_title'], 80), $d['rsstool_title'])
-       .'</b>';
-
-  // duration
-  $p .= ' '.tv2_duration ($d);
-
-//  $p .= '&nbsp;';
-
-  // player button (embed)
-//  if ($f != 'mirror')
-//    $p .= tv2_player_button ($d);
-
-  $p .= '&nbsp;';
-
-  // related
-  if ($f != 'mirror')
-    if ($tv2_related_search)
-    $p .= tv2_related_button ($d);
-
-  // HACK: fix height
-  $p .= '<img src="images/trans.png" height="32" width="1">';
-
-  $p .= '</nobr>';
-
-  $p .= '<br>';
-
-  // embed player
-  if ($v)
-    {
-      $p .= tv2_player ($d);
-    }
-//  else if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
-//    {
-//    }
-  else
-    {
-      $p .= tv2_player_preview ($d);
-    }
-
-//  $p .= '<br>';
-
-  // description
-  $p .= tv2_include ($d);
-
-  $p .= '<br>';
-
-  // direct link
-  $p .= ' <nobr>';
-//  $p .= tv2_direct_link ($d);
-  $s = widget_media_embed_code ($d['rsstool_url']);
-  if ($s)
-    $p .= '&nbsp;Embed code: '.$s;
-  $p .= '</nobr>';
-
-  if (isset ($d['movable']))
-  if ($d['movable'] == 1 && $f != 'mirror')
-    {
-      $p .= '<br><nobr>';
-      $p .= tv2_move_form ($d);
       $p .= '</nobr>';
-    }
 
-  if (isset ($d['reportable']))
-  if ($d['reportable'] == 1 && $f != 'mirror')
-    {
-      $p .= '<br><nobr>';
-      $p .= tv2_report_form ($d);
-      $p .= '</nobr>';
-    }
+      $p .= '<br>';
 
-  if ($v)
-    {
-//      $p .= tv2_prev_video_button ($d);
-//      $p .= tv2_next_video_button ($d);
-
-      if ($d_category->voteable == 1)   
-        { 
-          $p .= '&nbsp;&nbsp;&nbsp;<nobr>';
-          $p .= tv2_vote ($d);
-          $p .= '</nobr>';
-        }
-    }
-  else
-    {
-      if (isset ($d['voteable']))
-        if ($d['voteable'] == 1)
+      // embed player
+      if ($v)
         {
-          $p .= '&nbsp;&nbsp;&nbsp;<nobr>';
-          $p .= tv2_vote_show ($d);
+          $p .= tv2_player ($d);
+        }
+//      else if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
+//        {
+//        }
+      else
+        {
+          $p .= tv2_player_preview ($d);
+        }
+
+//      $p .= '<br>';
+
+      // description
+      $p .= tv2_include ($d);
+
+      $p .= '<br>';
+
+      // direct link
+      $p .= ' <nobr>';
+//      $p .= tv2_direct_link ($d);
+      $s = widget_media_embed_code ($d['rsstool_url']);
+      if ($s)
+        $p .= '&nbsp;Embed code: '.$s;
+      $p .= '</nobr>';
+
+      if (isset ($d['movable']))
+      if ($d['movable'] == 1 && $f != 'mirror')
+        {
+          $p .= '<br><nobr>';
+          $p .= tv2_move_form ($d);
           $p .= '</nobr>';
         }
-    }
-
-  $p .= '<br><span style="color:#bbb;">';
-  $p .= tv2_keywords ($d);
-  $p .= '</span>';
-  $p .= '</div>';
-
-  if ($f == '2cols' && !($i % (count ($d_array) * 0.5)))
-    $p .= '</div>';
+    
+      if (isset ($d['reportable']))
+      if ($d['reportable'] == 1 && $f != 'mirror')
+        {
+          $p .= '<br><nobr>';
+          $p .= tv2_report_form ($d);
+          $p .= '</nobr>';
+        }
+    
+      if ($v)
+        {
+    //      $p .= tv2_prev_video_button ($d);
+    //      $p .= tv2_next_video_button ($d);
+    
+          if ($d_category->voteable == 1)   
+            { 
+              $p .= '&nbsp;&nbsp;&nbsp;<nobr>';
+              $p .= tv2_vote ($d);
+              $p .= '</nobr>';
+            }
+        }
+      else
+        {
+          if (isset ($d['voteable']))
+            if ($d['voteable'] == 1)
+            {
+              $p .= '&nbsp;&nbsp;&nbsp;<nobr>';
+              $p .= tv2_vote_show ($d);
+              $p .= '</nobr>';
+            }
+        }
+    
+      $p .= '<br><span style="color:#bbb;">';
+      $p .= tv2_keywords ($d);
+      $p .= '</span>';
+      $p .= '</div>';
+    
+      if ($f == '2cols' && !($i % (count ($d_array) * 0.5)))  
+        $p .= '</div>';
     }
 
   $p .= '<br>';
