@@ -198,14 +198,9 @@ tv2_body ()
   // output
   $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
 
-  $p .= '<div';
-  if ($f == '2cols')
-    {
-      $p .= ' style="width:50%;';
-      $p .= 'float:left;';
-      $p .= '"';
-    }
-  $p .= '>';
+  if ($f == '2cols' && !($i % (count ($d_array) * 0.5)))
+    $p .= '<div>';
+  $p .= '<div>';
 
   if ($f != 'mirror')
     $p .= tv2_time_count ($d);
@@ -325,6 +320,8 @@ tv2_body ()
   $p .= '</span>';
   $p .= '</div>';
 
+  if ($f == '2cols' && !($i % (count ($d_array) * 0.5)))
+    $p .= '</div>';
     }
 
   $p .= '<br>';

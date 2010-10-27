@@ -243,6 +243,71 @@ widget_video_youtube ($video_url, $width = 425, $height = 344, $autoplay = 0, $h
        .'&border=0'
 ;
 
+/*
+1. View high quality videos
+
+Youtube gives you the option to switch to high quality videos for some of
+the videos, however you can check if a video is available in high quality
+format by appending &fmt=18#(stereo, 480 x 270 resolution) or
+&fmt=22#(stereo, 1280 x 720 resolution) for even higher quality.
+
+2. Embed Higher Quality Videos
+
+While the above trick works for playback, if however you want to embed hig
+quality videos you need to append "&ap=%2526fmt%3D18# and
+"&ap=%2526fmt%3D22# to the embed url.
+
+3. Cut the chase and link to the interesting part
+
+Linking to a video where the real action starts at 3 minutes 22 seconds,
+wondered if you could make it start at 03:22?  You are in luck.  All you
+have to do is add #t=03m22s (#t=XXmYYs for XX mins and YY seconds) to the
+end of the URL.
+
+4. Hide the search box
+
+youtube url start time
+
+The search box appears when you hover over an embedded video. To hide the
+search box add &showsearch=0# to the embed url.
+
+5. Embed only a part of Video
+
+youtube url to mp3
+
+Just append &start=30# to skip first 30s of the video. In general you can
+modify the value after start= to the number of seconds you want to skip the
+video for.
+
+6. Autoplay an embedded video
+
+Normally when you embed a Youtube video and load the page, the player is
+loaded and it sits there waiting for you to hit the play button.  You can
+make the video play automatically by adding &autoplay=1# to the url part of
+the embed code.
+
+7. Loop an embedded video
+
+Append &loop=1# to make the video start again without user intervention
+after it reaches the end.
+
+8. Disable Related Videos
+
+youtube url downloader
+
+Publishing your content in the form of Youtube video? Don't want people to
+see other people's content that may be related but may as well be in
+competition to you?  Just add &rel=0# to the end of the url part of the
+embed code and you just turned off the related video suggestions!
+
+9. Bypass Youtube Regional Filtering
+
+Some videos are only available in certain parts of the world. Your IP
+Address is used to determine your location and then allow or deny access to
+the video.  Change the url from http://www.youtube.com/watch?v=<somecode> to
+http://www.youtube.com/v/<somecode>
+*/
+
   $o = array (
     array ('width', $width),
     array ('height', $height),
