@@ -25,6 +25,15 @@ define ('MISC_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 
 
+function get_domain ($url)
+{
+  if (filter_var ($url, FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED) === FALSE)
+    return false;
+  $parts = parse_url ($url);
+  return $parts['scheme'].'://'.$parts['host'];
+}
+
+
 function
 file_post_contents ($url, $vars, $timeout = 300)
 {
@@ -42,9 +51,13 @@ file_post_contents ($url, $vars, $timeout = 300)
   curl_setopt ($sock, CURLOPT_CONNECTTIMEOUT, $timeout);
   curl_setopt ($sock, CURLOPT_FOLLOWLOCATION, 1);  // follow location header, not sure if this is needed.
 
+  // allow ssl always
+  curl_setopt ($sock, CURLOPT_SSL_VERIFYPEER, false);
+
   // cookies
-  curl_setopt ($sock, CURLOPT_COOKIEJAR, 'cookie.txt');
-  curl_setopt ($sock, CURLOPT_COOKIEFILE, 'cookie.txt');
+  $parts = parse_url ($url); 
+  curl_setopt ($sock, CURLOPT_COOKIEJAR, $parts['host'].'.txt');
+  curl_setopt ($sock, CURLOPT_COOKIEFILE, $parts['host'].'.txt');
 
   // Expect: 100-continue doesn't work properly with lightTPD
   // This fix by zorro http://groups.google.com/group/php.general/msg/aaea439233ac709b
@@ -98,6 +111,7 @@ tor_get_contents ($url, $tor_proxy_host = '127.0.0.1', $tor_proxy_port = 9050, $
   curl_setopt ($sock, CURLOPT_FOLLOWLOCATION, 1);
   curl_setopt ($sock, CURLOPT_TIMEOUT, $timeout);
   curl_setopt ($sock, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+
   // DEBUG
 //  curl_setopt ($sock, CURLOPT_VERBOSE, 1);
 
@@ -564,6 +578,7 @@ in_tag ($s)
 function
 is_url ($s)
 {
+/*
   // checks if string is a url
   $is_url = 0;
 
@@ -575,6 +590,10 @@ is_url ($s)
     $is_url = 1;
 
   return $is_url;
+*/
+  if (filter_var ($s, FILTER_VALIDATE_URL) == FALSE)
+    return 0;
+  return 1;
 }
 
 
