@@ -1025,7 +1025,7 @@ $script = $p;
 
 
 function
-widget_media_playlist ($media_urls, $width = NULL, $height = NULL, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0)
+widget_media_playlist ($media_urls, $width = NULL, $height = NULL, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0, $blackbg = 0)
 {
   $p = '';
   $a = array ();
@@ -1046,11 +1046,11 @@ widget_media_playlist ($media_urls, $width = NULL, $height = NULL, $ratio = NULL
 
 
 function
-widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0)
+widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0, $blackbg = 0)
 {
   // array
   if (gettype ($media_url) == 'array')
-    return widget_media_playlist ($media_url, $width, $height, $ratio, $autoplay, $hq, $loop);
+    return widget_media_playlist ($media_url, $width, $height, $ratio, $autoplay, $hq, $loop, $blackbg);
 
   $func = widget_media_demux_func ($media_url);
   $p = '';
@@ -1085,11 +1085,13 @@ widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autopla
   if ($func)
       {
         $c = $func ($media_url, $width, $height, $autoplay, $hq, $loop);
-        $p .= ''
-//             .'<div width="'.$bg_width.'" height="'.$height.'" style="background-color:#000;text-align:center;">'
-             .$c
-//             .'</div>'
-;
+        if ($blackbg)
+          $p .= ''
+               .'<div width="'.$bg_width.'" height="'.$height.'" style="background-color:#000;text-align:center;">'
+               .$c
+               .'</div>'
+;       else
+          $p .= $c;
       }
 
   if ($scale)

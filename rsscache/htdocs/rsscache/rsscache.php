@@ -264,6 +264,7 @@ tv2_body ()
       else
         {
           $p .= tv2_player_preview ($d);
+          $p .= '<br>';  
         }
 
 //      $p .= '<br>';
