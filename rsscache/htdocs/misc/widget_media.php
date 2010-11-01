@@ -899,7 +899,7 @@ widget_media_download ($media_url, $tor_enabled = 0)
 
 
 function
-widget_video_youtubereloaded_playlist 
+widget_video_youtubereloaded_playlist ($media_urls, $width = 470, $height = 470, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0)
 {
 /*
 <script type="text/javascript" src="http://www.youtubereloaded.com/embed/swfobject.js"></script>
