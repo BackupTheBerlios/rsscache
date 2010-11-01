@@ -901,6 +901,7 @@ widget_media_download ($media_url, $tor_enabled = 0)
 function
 widget_video_youtubereloaded_playlist ($media_urls, $width = 470, $height = 470, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0)
 {
+  $p = '';
 /*
 <script type="text/javascript" src="http://www.youtubereloaded.com/embed/swfobject.js"></script>
 <div id="YouTubeReloadedPlayer">This div will be replaced</div>
@@ -914,6 +915,7 @@ s1.addParam('flashvars','file=http%3A%2F%2Fgdata.youtube.com%2Ffeeds%2Fapi%2Fvid
 s1.write('YouTubeReloadedPlayer');
 </script>
 */
+  return $p;
 }
 
 
