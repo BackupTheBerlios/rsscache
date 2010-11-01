@@ -1086,9 +1086,9 @@ widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autopla
       {
         $c = $func ($media_url, $width, $height, $autoplay, $hq, $loop);
         $p .= ''
-             .'<div width="'.$bg_width.'" height="'.$height.'" style="background-color:#000;text-align:center;">'
+//             .'<div width="'.$bg_width.'" height="'.$height.'" style="background-color:#000;text-align:center;">'
              .$c
-             .'</div>'
+//             .'</div>'
 ;
       }
 
