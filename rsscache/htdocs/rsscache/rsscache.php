@@ -199,7 +199,11 @@ tv2_body ()
       $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
     
       if ($f == '2cols')
-        $p .= '<div style="float:left;width:50%">';
+        {
+          $p .= '<div style="float:left;width:50%;">';
+          if (!($i & 1))  
+            $p .= '<br>';
+        }
       else
         $p .= '<div>';
     

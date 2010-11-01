@@ -46,13 +46,13 @@ $tv2_wall_results = 500;  // number of tumbnails shown in wall
 $tv2_download_video = 0; // show link for downloading videos
 $tv2_related_search = 0; // make use of related searches (requires keywords)
 
-
 // player settings
 //$tv2_player_w = 400; // max. width
 //$tv2_player_h = 300; // max. height
 //$tv2_player_w = -1; $tv2_player_h = -1; // scaled
 $tv2_player_w = 640; // max. width
 $tv2_player_h = 480; // max. height
+$tv2_player_ratio = 4/3; // default ratio of player
 
 // database settings
 if (stristr ($_SERVER['SERVER_NAME'], 'pwnoogle.com'))
