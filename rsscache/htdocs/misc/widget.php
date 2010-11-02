@@ -105,8 +105,14 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   $p = '';
 
   $p = '<a'
-.' class="tooltip"'
-        .' href="'.$query.'"'
+.' class="tooltip"';
+
+  if (!strncasecmp ($query, 'http://', 7))
+    $p .= ' href="'.$query.'"';
+  else
+    $p .= ' href="?'.$query.'"';
+
+  $p .= ''
 //      .' title="'.$tooltip.'"'
       .' alt="'.$label.'"';
 
