@@ -339,7 +339,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 
 //              if (strncasecmp ($query, 'http://', 7) != 0)  // HACK: remove double ??'s
 //                $query = '?'.trim ($query, '?');
-              $query = str_replace ('??', '?', $query);
+              $query = str_ireplace (array ('??', '?%3f'), '?', $query);
 
               // misc_getlink ($a, false)
               if ($category->buttononly == 1 || $flags & WIDGET_CMS_BUTTON_ONLY)
