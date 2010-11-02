@@ -69,7 +69,7 @@ else if (stristr ($_SERVER['SERVER_NAME'], 'd5.ath.cx'))
   }
 else
   {
-    $tv2_dbname = 'pwnoogle';
+    $tv2_dbname = 'pwnoogle_videos';
     $tv2_dbuser = 'root';
     $tv2_dbpass = 'nb';
   }
