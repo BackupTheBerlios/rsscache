@@ -806,7 +806,7 @@ widget_media_embed_code ($media_url)
   if ($func)
     {
       $c = $func ($media_url);
-      $p .= '<input type="text" readonly="readonly" value="'.htmlentities ($c).'">';
+      $p .= '<input style="background-color:#fff;" type="text" readonly="readonly" value="'.htmlentities ($c).'">';
     }
   return $p;
 }

@@ -148,7 +148,7 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
           $s .= ''
 //               .$ie_fix
                .' onerror="this.parentNode.removeChild(this);"'
-               .'>';
+               .'>&nbsp;';
         }
 //      else $icon = NULL;
     }
@@ -159,7 +159,8 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   $p .= $s;
 
   if (!($flags & WIDGET_BUTTON_ONLY))
-    $p .= '&nbsp;'
+    $p .= ''
+//         .'&nbsp;'
          .$label
 ;
 //  if ($tooltip)
@@ -243,6 +244,7 @@ define ('WIDGET_CMS_COL', 16);  // column with buttons
 define ('WIDGET_CMS_BUTTON_ONLY', 32); // show button only; not text
 define ('WIDGET_CMS_BUTTON16', 64);
 define ('WIDGET_CMS_BUTTON32', 128);
+define ('WIDGET_CMS_NOBR', 256);
 
 
 function
