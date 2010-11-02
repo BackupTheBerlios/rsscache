@@ -397,7 +397,7 @@ if ($f == 'read' ||
                     'num' => $num
 );
 
-        setcookie ('rw', misc_getlink ($a, false), $tv2_cookie_expire);
+        setcookie ('rw', http_build_query2 ($a, false), $tv2_cookie_expire);
 */
         setcookie ('rw', $_SERVER['HTTP_REFERER'], $tv2_cookie_expire);
       }
@@ -498,7 +498,7 @@ if ($tv2_rss_head)
 //                'start' => $start,
 //                'num' => $num
 );
-    $head .= '<link rel="alternate" type="application/rss+xml" title="'.$tv2_title.'" href="'.misc_getlink ($a, true).'">';
+    $head .= '<link rel="alternate" type="application/rss+xml" title="'.$tv2_title.'" href="?'.http_build_query2 ($a, true).'">';
   }
 
 $head .= $tv2_head_tag;

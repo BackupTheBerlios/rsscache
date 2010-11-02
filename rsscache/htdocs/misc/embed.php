@@ -102,9 +102,12 @@ widget_embed_proxy ($src)
 {
   $a = parse_url ($src);
   parse_str ($a['query'], $a);
-  $url = $src.misc_getlink (array_merge ($a, $_GET), false);
+  $query = http_build_query2 (array_merge ($a, $_GET), false);
+  if ($query != '')
+    $query = '?'.$query;
+  $url = $src.$query;
 //echo $src;
-  $html = file_get_contents ($src.misc_getlink (array_merge ($a, $_GET), false));
+  $html = file_get_contents ($src.$query);
   $a = split_html_content ($html);
   $p = $a['body'];
   $p = str_ireplace ('</form>', '<input type="hidden" name="widget_embed_proxy" value="'.$src.'"></form>', $p);

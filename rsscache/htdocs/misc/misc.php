@@ -801,13 +801,6 @@ http_build_query2 ($args = array(), $use_existing_arguments = false)
 
 
 function
-misc_getlink ($args = array(), $use_existing_arguments = false)
-{
-  return '?'.http_build_query2 ($args, $use_existing_arguments);
-}
-
-
-function
 misc_seo_description ($html_body)
 {
   // generate meta tag from the body
