@@ -55,6 +55,7 @@ $tv2_player_h = 480; // max. height
 $tv2_player_ratio = 4/3; // default ratio of player
 
 // database settings
+$tv2_use_database = 1;
 if (stristr ($_SERVER['SERVER_NAME'], 'pwnoogle.com'))
   {
     $tv2_dbname = 'pwnoogle_jack';
