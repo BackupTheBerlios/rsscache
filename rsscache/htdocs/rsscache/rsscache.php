@@ -383,7 +383,8 @@ tv2_body ()
          $tv2_videos_s,
          $tv2_cookie_expire,
          $tv2_enable_search,
-         $tv2_related_search;
+         $tv2_related_search,
+         $tv2_use_database;
   global $config;
   global $embed, $f, $c, $q, $v, $start, $num, $captcha;
 
@@ -408,7 +409,7 @@ tv2_body ()
   $p .= tv2_logo_func ();
   $p .= '</nobr>';
 
-  if (!($tv2_use_database))
+  if ($tv2_use_database == 0)
     return $p;
 
   if ($captcha)
@@ -700,7 +701,7 @@ if (file_exists ('images/captcha/'))
 else
   $tv2_captcha = '';
 
-
+echo 'SHIT';
 $body = tv2_body ();
 
 $head = '<html>'
