@@ -47,13 +47,7 @@ tv2_items2 ($i, $d_array)
       // output
       $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
     
-      if ($f == '2cols')
-        {
-          $p .= '<div class="item" style="float:left;width:50%;">';
-          if (!($i & 1))  
-            $p .= '<br>';
-        }
-      else
+//      else
         $p .= '<div class="item">';
     
 
@@ -68,15 +62,16 @@ $p .= '<div class="desc">';
       // link
       $s = tv2_link ($d);
       // link as title  
-      $p .= '<b style="font-size:16px;">'
+      $p .= '<h2 style="font-size:16px;">'
            .widget_button (NULL, $s, str_shorten ($d['rsstool_title'], 80), $d['rsstool_title'])
-           .'</b>';
+//           .'</h2>'
+;
     
       // is new?
       if (time () - $d[$f == 'new' ? 'rsstool_dl_date' : 'rsstool_date'] < $tv2_isnew && $f != 'mirror')
         $p .= ' <img src="images/new.png" border="0" alt="New!"> ';
 
-//$p .= '<br>';
+$p .= '</h2>';
 //      $p .= '&nbsp;';
 
       // player button (embed)
@@ -96,36 +91,43 @@ $p .= '<div class="desc">';
 //      $p .= '</nobr>';
 
 
+      $s = tv2_duration ($d);
+        $t = tv2_time_count ($d);
+
+if ($s)
+  {
 $p .= '<span class="duration">';
       // duration
       $s = tv2_duration ($d);
       if ($s)
         $p .= $s.' min';
 $p .= '</span>';
+  }
 
-
+if ($t)
+  {
 $p .= '<span class="age">';
       if ($f != 'mirror')
-        $p .= tv2_time_count ($d);
+        $p .= $t;
 $p .= '</span>';
-
-      $p .= '<p>';
+  }
+      $p .= '<span class="desctext"><p>';
 
       // description
       $p .= tv2_include ($d);
 
-      $p .= '</p>';
+      $p .= '&nbsp;</p></span>';
 
       // direct link
 //      $p .= ' <nobr>';
 //      $p .= tv2_direct_link ($d);
 
-$p .= '<p><span class="embed">';
+$p .= '<div class="embed"><p>';
       $s = widget_media_embed_code ($d['rsstool_url']);
       if ($s)
         $p .= 'Embed code: '.$s;
 //      $p .= '</nobr>';
-$p .= '</span></p>';
+$p .= '</p></div>';
 //      $p .= '<br>';
 
 //      if (isset ($d['movable']))
@@ -147,15 +149,15 @@ $p .= '</span></p>';
         }
 
       // logo
-$p .= '<span class="category">';
+$p .= '<div class="category">';
       $p .= 'Category:&nbsp;'.tv2_button ($d_category).'&nbsp;';
       // tv2_include_logo ()
       $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
-$p .= '</span>';
+$p .= '</div>';
 
 
 //      $p .= '<br>';
-      $p .= '<br><span style="color:#bbb;">Tags: ';
+      $p .= '<span style="color:#bbb;">Tags: ';
       $p .= tv2_keywords ($d);
       $p .= '</span>';
 
@@ -534,12 +536,23 @@ tv2_body ()
     }
 
   // item view
+      if ($f == '2cols')
+        {
+          $p .= '<div id="double_column_view">';
+        }
   for ($i = 0; isset ($d_array[$i]); $i++)
     if ($v)
        $p .= tv2_items ($i, $d_array);
 else
+{
     $p .= tv2_items2 ($i, $d_array);
-
+}
+      if ($f == '2cols')
+{
+      $p .= '</div>';
+      $p .= '<div class="clear">';
+      $p .= '</div>';
+}
   $p .= '<br>';
  
   // logo

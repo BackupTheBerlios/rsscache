@@ -119,13 +119,14 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   if ($tooltip)
     if (trim ($tooltip) != '')
       $p .= ''
-      .' onmouseover="tv2_tt_show(\''.htmlentities ($tooltip, ENT_QUOTES).'\');"'
+//      .' onmouseover="tv2_tt_show(\''.htmlentities ($tooltip, ENT_QUOTES).'\');"'
+      .' onmouseover="tv2_tt_show(\''.str_replace ('\'', '\\\'', $tooltip).'\');"'
       .' onmouseout="tv2_tt_hide();"'
 ;
 
   if (!$icon)
       $p .= ''
-         .'style="width:32px;height:32px;font-size:16px;"'
+//         .'style="width:32px;height:32px;font-size:16px;"'
 ;
 
   $p .= '>';
@@ -148,10 +149,12 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
           $s .= ''
 //               .$ie_fix
                .' onerror="this.parentNode.removeChild(this);"'
-               .'>&nbsp;';
+               .'>';
         }
 //      else $icon = NULL;
     }
+//  if ($icon && $label)
+//    $p .= '&nbsp;';
 
   if ($flags & WIDGET_BUTTON_STATIC)
     return ($icon ? $s : '');
@@ -308,7 +311,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
     {
       $category = $config_xml->category[$i];
 
-      $p .= '<nobr>';
+//      $p .= '<nobr>';
 
       if ($category->src || $category->query || $category->id)
         {   
@@ -349,11 +352,13 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
                 $p .= widget_button ($category->logo ? $category->logo : NULL, $query,
                                      $category->title, $category->tooltip,
                                      $link_suffix, WIDGET_BUTTON_ONLY)
-                     .'&nbsp;&nbsp;';
+//                     .'&nbsp;&nbsp;'
+;
               else
                 $p .= widget_button ($category->logo ? $category->logo : NULL, $query,
                                      $category->title, $category->tooltip,
                                      $link_suffix, WIDGET_BUTTON_SMALL);
+$p .= '&nbsp;';
             }
         }
       else // title (no link)
@@ -364,11 +369,12 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
       if ($category->new == 1)
         $p .= '<img src="images/new.png">';
 
-      $p .= '</nobr>';
+//      $p .= '</nobr>';
 
-      if ($flags & WIDGET_CMS_ROW)
-        $p .= '&nbsp;&nbsp; ';
-      else if ($category->lf > 0)
+//      if ($flags & WIDGET_CMS_ROW && !$icon)
+//        $p .= '&nbsp;';
+//      else 
+if ($category->lf > 0)
         $p .= str_repeat ('<br>', $category->lf);
 
       if ($category->separate == 1)
