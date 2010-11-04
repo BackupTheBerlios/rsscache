@@ -360,6 +360,7 @@ tv2_body_player ($i, $d_array)
   return $p;
 }
 
+
 function
 tv2_body ()
 {
@@ -386,6 +387,30 @@ tv2_body ()
   global $config;
   global $embed, $f, $c, $q, $v, $start, $num, $captcha;
 
+  $p = '';
+
+  // icons
+  if ($f != 'mirror')
+    $p .= tv2_button_array ($config, '%s ', 0, sizeof ($config->category));
+
+//  $p .= '<br>'  
+//       .'<br>'  
+//;  
+
+//  $p .= '</div>'; // #bodyid
+
+  // embed another page
+  if ($embed)
+    return $p.tv2_embed ();
+
+  // logo
+  $p .= '<nobr>';
+  $p .= tv2_logo_func ();
+  $p .= '</nobr>';
+
+  if (!($tv2_use_database))
+    return $p;
+
   if ($captcha)
     if (widget_captcha_check () || islocalhost ())
       {
@@ -405,8 +430,6 @@ tv2_body ()
 
   // category
   $category = config_xml_by_category (strtolower ($c));
-
-  $p = '';
 
   if ($category->background || $f == 'fullscreen') // background image and fullscreen
     {
@@ -441,29 +464,12 @@ tv2_body ()
         }
     }
 
-  // flash carousel with icons
-//  $p .= widget_carousel ('carousel_xml.php', '100%', 150);
-
-  // icons
-  if ($f != 'mirror')
-    $p .= tv2_button_array ($config, '%s ', 0, sizeof ($config->category));
-
-//  $p .= '<br>'  
-//       .'<br>'  
-//;  
-
-//  $p .= '</div>'; // #bodyid
-
-  // embed another page
-  if ($embed)
-    return $p.tv2_embed ();
-
   $p .= '<div style="display:inline;">';
 
   // logo
-  $p .= '<nobr>';
-  $p .= tv2_logo_func ();
-  $p .= '</nobr>';
+//  $p .= '<nobr>';
+//  $p .= tv2_logo_func ();
+//  $p .= '</nobr>';
 
   if ($f != 'mirror')
     {
@@ -689,14 +695,13 @@ if ($memcache_expire > 0)
       }
   }
 
-$tv2_captcha = widget_captcha ('images/captcha/');
+if (file_exists ('images/captcha/'))
+  $tv2_captcha = widget_captcha ('images/captcha/');
+else
+  $tv2_captcha = '';
 
 
-  // admin
-//if (islocalhost ())
-//  $body = tv2_body (1);
-//else
-  $body = tv2_body ();
+$body = tv2_body ();
 
 $head = '<html>'
        .'<head>'
@@ -749,7 +754,8 @@ $head .= $tv2_body_tag
 
 $end = '';
 
-if ($f != 'mirror')
+if ($tv2_use_database)
+  if ($f != 'mirror')
   {
     // stats and version
     $end .= '<br><div style="width:100%;text-align:right;">'.tv2_stats ().'</div>';
