@@ -16,7 +16,7 @@ require_once ('tv2_misc.php');
 
 
 function
-tv2_items2 ($i, $d_array)
+tv2_items ($i, $d_array)
 {
   global $tv2_isnew,
          $tv2_videos_s,
@@ -197,8 +197,9 @@ $p .= '</div>';
   return $p;
 }
 
+
 function
-tv2_items ($i, $d_array)
+tv2_main_player ($i, $d_array)
 {
   global $tv2_isnew,
          $tv2_videos_s,
@@ -535,24 +536,22 @@ tv2_body ()
       return $p;
     }
 
-  // item view
+  // media player
+  if ($v)
+    $p .= tv2_main_player ($i, $d_array);
+  else
+    {
+      // items
+      if ($f == '2cols')
+        $p .= '<div id="double_column_view">';
+      for ($i = 0; isset ($d_array[$i]); $i++)
+        $p .= tv2_items ($i, $d_array);
       if ($f == '2cols')
         {
-          $p .= '<div id="double_column_view">';
+          $p .= '</div>';
+          $p .= '<div class="clear"></div>';
         }
-  for ($i = 0; isset ($d_array[$i]); $i++)
-    if ($v)
-       $p .= tv2_items ($i, $d_array);
-else
-{
-    $p .= tv2_items2 ($i, $d_array);
-}
-      if ($f == '2cols')
-{
-      $p .= '</div>';
-      $p .= '<div class="clear">';
-      $p .= '</div>';
-}
+    }
   $p .= '<br>';
  
   // logo
@@ -729,8 +728,20 @@ if ($tv2_rss_head)
 
 $head .= $tv2_head_tag;
 
-$head .= '</head>'
-        .$tv2_body_tag
+$head .= '</head>';
+
+// site links at the top
+if (file_exists ('site_config.xml'))
+  {
+    $site_config_xml = simplexml_load_file ('site_config.xml');
+    $head .= ''
+            .'<span style="font-family:sans-serif;font-size:13px;">'
+            .widget_cms (NULL, $site_config_xml)
+            .'</span>'
+;
+  }
+
+$head .= $tv2_body_tag
 //        .'<div id="bodyid">'
 ;
 
