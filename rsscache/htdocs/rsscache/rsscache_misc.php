@@ -11,6 +11,10 @@ require_once ('tv2_sql.php');
 function
 config_xml_normalize ($config)
 {
+  global $tv2_use_database;
+
+  if ($tv2_use_database == 1)
+    {
   $stats = tv2_sql_stats ();
 
   // add new variables
@@ -36,6 +40,7 @@ config_xml_normalize ($config)
             $config->category[$i]->days = $stats['days'];
           }
       }
+    }
 
   return $config;
 }
