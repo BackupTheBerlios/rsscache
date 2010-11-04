@@ -16,7 +16,7 @@ require_once ('tv2_misc.php');
 
 
 function
-tv2_items ($i, $d_array)
+tv2_body_item ($i, $d_array)
 {
   global $tv2_isnew,
          $tv2_videos_s,
@@ -199,7 +199,7 @@ $p .= '</div>';
 
 
 function
-tv2_main_player ($i, $d_array)
+tv2_body_player ($i, $d_array)
 {
   global $tv2_isnew,
          $tv2_videos_s,
@@ -538,14 +538,16 @@ tv2_body ()
 
   // media player
   if ($v)
-    $p .= tv2_main_player ($i, $d_array);
+    {
+      $p .= tv2_body_player (0, $d_array);
+    }
   else
     {
       // items
       if ($f == '2cols')
         $p .= '<div id="double_column_view">';
       for ($i = 0; isset ($d_array[$i]); $i++)
-        $p .= tv2_items ($i, $d_array);
+        $p .= tv2_body_item ($i, $d_array);
       if ($f == '2cols')
         {
           $p .= '</div>';
