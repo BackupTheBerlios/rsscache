@@ -701,7 +701,6 @@ if (file_exists ('images/captcha/'))
 else
   $tv2_captcha = '';
 
-echo 'SHIT';
 $body = tv2_body ();
 
 $head = '<html>'
