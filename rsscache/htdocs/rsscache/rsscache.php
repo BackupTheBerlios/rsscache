@@ -708,13 +708,13 @@ $head = '<html>'
        .'<title>'
        .$tv2_title
        .'</title>'
-       .'<link rel="stylesheet" type="text/css" media="screen" href="tv2.css">'
+       .'<link rel="stylesheet" type="text/css" media="screen" href="tv2/tv2.css">'
        .'<script type="text/javascript" src="misc/jquery.js"></script>'
        .'<script type="text/javascript" src="misc/jquery_ui.js"></script>'
 //       .'<script type="text/javascript" src="misc/jquery_easing.js"></script>'
        .'<script type="text/javascript" src="misc/jquery_lavalamp.js"></script>'
        .'<script type="text/javascript" src="misc/misc.js"></script>'
-       .'<script type="text/javascript" src="tv2.js"></script>'
+       .'<script type="text/javascript" src="tv2/tv2.js"></script>'
        .misc_seo_description ($body)
 ;
 
