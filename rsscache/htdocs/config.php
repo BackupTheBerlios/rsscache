@@ -52,8 +52,8 @@ $tv2_use_database = 1;
 if (stristr ($_SERVER['SERVER_NAME'], 'pwnoogle.com'))
   {
     $tv2_dbname = 'pwnoogle_jack';
-    $tv2_dbuser = 'pwnoogle';
-    $tv2_dbpass = 'hUn1WrG7';
+    $tv2_dbuser = 'pwnoogle_db';
+    $tv2_dbpass = 'pwn44553';
   }
 else if (stristr ($_SERVER['SERVER_NAME'], 'd5.ath.cx'))
   {

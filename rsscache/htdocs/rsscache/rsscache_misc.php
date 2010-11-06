@@ -149,7 +149,7 @@ tv2_rss ($d_array)
       if (substr (tv2_link ($d_array[$i]), 0, 7) == 'http://')
         $rss_link_array[$i] = tv2_link ($d_array[$i]);
       else
-        $rss_link_array[$i] = $tv2_link.tv2_link ($d_array[$i]);
+        $rss_link_array[$i] = $tv2_link.'?'.tv2_link ($d_array[$i]);
 
       $rss_desc_array[$i] = ''
                            .tv2_thumbnail ($d_array[$i], 120, 1)
