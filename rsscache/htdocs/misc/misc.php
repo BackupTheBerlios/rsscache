@@ -25,7 +25,8 @@ define ('MISC_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 
 
-function get_domain ($url)
+function
+get_domain ($url)
 {
   if (filter_var ($url, FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED) === FALSE)
     return false;

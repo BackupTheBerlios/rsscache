@@ -29,6 +29,14 @@ include_once ('misc/youtube.php');
 
 
 function
+has_webm() 
+{
+  // client does play webm
+  echo $_SERVER["HTTP_USER_AGENT"];
+}
+
+
+function
 playlist_parser ($playlist)
 {
   // parse m3u, pls, xspf, wpl and return url array
