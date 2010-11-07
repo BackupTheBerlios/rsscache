@@ -25,8 +25,17 @@ define ('MISC_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 
 
-function
-get_domain ($url)
+function encodemail ($my_mail)
+{
+  // light email protection
+  $p = '';
+  for ($i = 0; $i < strlen ($my_mail); $i++)
+    $p .= "%".dechex (ord ($my_mail[$i])); 
+  return $p;
+}
+
+
+function get_domain ($url)
 {
   if (filter_var ($url, FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED) === FALSE)
     return false;

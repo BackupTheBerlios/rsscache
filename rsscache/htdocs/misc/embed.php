@@ -134,6 +134,7 @@ widget_embed_iframe ($src)
 function
 widget_embed_local ($src)
 {
+  // use widget_embed_local() for templates
   $p = '';
   if (file_exists ($src))
     {

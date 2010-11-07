@@ -32,7 +32,10 @@ function
 has_webm() 
 {
   // client does play webm
-  echo $_SERVER["HTTP_USER_AGENT"];
+  if (stristr ($_SERVER['HTTP_USER_AGENT'], 'Firefox/4.'))
+               // Mozilla/5.0 (X11; Linux i686; rv:2.0b8pre) Gecko/20101106 Firefox/4.0b8pre
+    return true;
+  return false;
 }
 
 
