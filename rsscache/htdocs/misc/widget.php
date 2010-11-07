@@ -311,8 +311,6 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
     {
       $category = $config_xml->category[$i];
 
-//      $p .= '<nobr>';
-
       if ($category->src || $category->query || $category->id)
         {   
           if ($flags & WIDGET_CMS_SELECT)
@@ -349,16 +347,14 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
                 $query .= ($category->src ? $category->src : $category->query);
 
               if ($category->buttononly == 1 || $flags & WIDGET_CMS_BUTTON_ONLY)
-                $p .= widget_button ($category->logo ? $category->logo : NULL, $query,
-                                     $category->title, $category->tooltip,
-                                     $link_suffix, WIDGET_BUTTON_ONLY)
-//                     .'&nbsp;&nbsp;'
-;
+                $f = WIDGET_BUTTON_ONLY;
               else
-                $p .= widget_button ($category->logo ? $category->logo : NULL, $query,
-                                     $category->title, $category->tooltip,
-                                     $link_suffix, WIDGET_BUTTON_SMALL);
-$p .= '&nbsp;';
+                $f = WIDGET_BUTTON_SMALL;
+
+              $p .= widget_button ($category->logo ? $category->logo : NULL, $query,
+                                   $category->title, $category->tooltip,
+                                   $link_suffix, $f);
+              $p .= '&nbsp;&nbsp;';
             }
         }
       else // title (no link)
@@ -369,12 +365,7 @@ $p .= '&nbsp;';
       if ($category->new == 1)
         $p .= '<img src="images/new.png">';
 
-//      $p .= '</nobr>';
-
-//      if ($flags & WIDGET_CMS_ROW && !$icon)
-//        $p .= '&nbsp;';
-//      else 
-if ($category->lf > 0)
+      if ($category->lf > 0)
         $p .= str_repeat ('<br>', $category->lf);
 
       if ($category->separate == 1)
@@ -388,41 +379,21 @@ if ($category->lf > 0)
 
   if ($flags & WIDGET_CMS_ROW)
     {
-//      $p .= '<hr>';
-      $p .= '<!-- content -->';
-
       // content
       if ($q)
         {
           for ($i = 0; $config_xml->category[$i]; $i++)
             if ($q == $config_xml->category[$i]->id)
               {
-/*
                 // embed from localhost
                 if (file_exists ($config_xml->category[$i]->src))
-                  {
-//                    $p .= '<br>';
-//                    $p .= file_get_contents ($config_xml->category[$i]->src);
-                    ob_start ();
-                    require_once ($config_xml->category[$i]->src);
-                    $p .= ob_get_contents ();
-                    ob_end_clean ();
-                  }
-                else // iframe
-                  {
-//                    $p .= '<br>';
-                    $p .= '<iframe width="100%" height="90%" marginheight="0" marginwidth="0" frameborder="0" src="'  
-                         .$config_xml->category[$i]->src
-                         .'"></iframe>'; 
-                  }
-                 break;
-*/
-                $p .= widget_embed ($config_xml->category[$i]->src);
+                  $p .= widget_embed_local ($config_xml->category[$i]->src);
+                else
+                  $p .= widget_embed ($config_xml->category[$i]->src);
               }
         }
       else if ($logo)
         $p .= ''
-//             .'<br>'
              .'<br>'
              .'<img src="'.$logo.'" border="0">';
     }
