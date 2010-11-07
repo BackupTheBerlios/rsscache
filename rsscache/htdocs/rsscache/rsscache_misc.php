@@ -9,6 +9,20 @@ require_once ('tv2_sql.php');
 
 
 function
+tv2_get_category ()
+{
+  global $config;
+  $c = get_request_value ('c'); // category
+
+  if (!($c)) // default category
+    for ($i = 0; isset ($config->category[$i]); $i++)
+      if ($config->category[$i]->default == 1)
+        return $config->category[$i]->name;
+  return NULL;
+}
+
+
+function
 config_xml_normalize ($config)
 {
   global $tv2_use_database;

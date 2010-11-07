@@ -595,9 +595,10 @@ tv2_body ()
 // main ()
 
 
+$config = config_xml ();
 $embed = get_request_value ('embed'); // embed other page
 $f = get_request_value ('f'); // function
-$c = get_request_value ('c'); // category
+$c = tv2_get_category (); // category
 $q = get_request_value ('q'); // search query
 $v = get_request_value ('v'); // own video
 $captcha = get_request_value ('captcha'); // is request with captcha
@@ -649,9 +650,6 @@ if ($f == 'fullscreen')
     setcookie ('h', $a['h'], $tv2_cookie_expire);
   }
 */
-
-
-$config = config_xml ();
 
 
 // RSS only
