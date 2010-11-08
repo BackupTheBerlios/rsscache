@@ -43,157 +43,119 @@ tv2_body_item ($i, $d_array)
 
   $p = '';
 
-      $d = $d_array[$i];
-      // output
-      $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
+  $d = $d_array[$i];
+
+  // output
+  $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
     
-//      else
-        $p .= '<div class="item">';
+  $p .= '<div class="item">';
     
 
-      // embed player
-        {
-$p .= '<div class="preview">';
-          $p .= tv2_player_preview ($d);
-$p .= '</div>';
+  // embed player
+  $p .= '<div class="preview">';
+  $p .= tv2_player_preview ($d);
+  $p .= '</div>';
 
-$p .= '<div class="desc">';
+  $p .= '<div class="desc">';
     
-      // link
-      $s = tv2_link ($d);
-      // link as title  
-      $p .= '<h2 style="font-size:16px;">'
-           .widget_button (NULL, $s, str_shorten ($d['rsstool_title'], 80), $d['rsstool_title'])
-//           .'</h2>'
-;
+  // link
+  $s = tv2_link ($d);
+  // link as title  
+  $p .= '<h2 style="font-size:16px;">';
+  $p .= widget_button (NULL, $s, str_shorten ($d['rsstool_title'], 80), $d['rsstool_title']);
     
-      // is new?
-      if (time () - $d[$f == 'new' ? 'rsstool_dl_date' : 'rsstool_date'] < $tv2_isnew && $f != 'mirror')
-        $p .= ' <img src="images/new.png" border="0" alt="New!"> ';
+  // is new?
+  if (time () - $d[$f == 'new' ? 'rsstool_dl_date' : 'rsstool_date'] < $tv2_isnew && $f != 'mirror')
+    $p .= ' <img src="images/new.png" border="0" alt="New!"> ';
 
-$p .= '</h2>';
-//      $p .= '&nbsp;';
+  $p .= '</h2>';
 
-      // player button (embed)
-//      if ($f != 'mirror')
-//        $p .= tv2_player_button ($d);
+  // player button (embed)
+//  if ($f != 'mirror')
+//    $p .= tv2_player_button ($d);
 
-//      $p .= '&nbsp;';
+  // related
+//  if ($f != 'mirror')
+//    if ($tv2_related_search)
+//      $p .= tv2_related_button ($d);
 
-      // related
-//      if ($f != 'mirror')
-//        if ($tv2_related_search)
-//        $p .= tv2_related_button ($d);
-
-      // HACK: fix height
-//      $p .= '<img src="images/trans.png" height="32" width="1">';
-
-//      $p .= '</nobr>';
-
-
-      $s = tv2_duration ($d);
-        $t = tv2_time_count ($d);
-
-if ($s)
-  {
-$p .= '<span class="duration">';
-      // duration
-      $s = tv2_duration ($d);
+  $s = tv2_duration ($d);
+  if ($s)
+    {
+      $p .= '<span class="duration">';
       if ($s)
         $p .= $s.' min';
-$p .= '</span>';
-  }
+      $p .= '</span>';
+    }
 
-if ($t)
-  {
-$p .= '<span class="age">';
+  $t = tv2_time_count ($d);
+  if ($t)
+    {
+      $p .= '<span class="age">';
       if ($f != 'mirror')
         $p .= $t;
-$p .= '</span>';
-  }
-      $p .= '<span class="desctext"><p>';
-
-      // description
-      $p .= tv2_include ($d);
-
-      $p .= '&nbsp;</p></span>';
-
-      // direct link
-//      $p .= ' <nobr>';
-//      $p .= tv2_direct_link ($d);
-
-$p .= '<div class="embed"><p>';
-      $s = widget_media_embed_code ($d['rsstool_url']);
-      if ($s)
-        $p .= 'Embed code: '.$s;
-//      $p .= '</nobr>';
-$p .= '</p></div>';
-//      $p .= '<br>';
-
-//      if (isset ($d['movable']))
-//      if ($d['movable'] == 1 && $f != 'mirror')
-//        {
-//          $p .= '<br><nobr>';
-//          $p .= tv2_move_form ($d);
-//          $p .= '</nobr>';
-//        }
-//    
-//      if (isset ($d['reportable']))
-//      if ($d['reportable'] == 1 && $f != 'mirror')
-//        {
-//          $p .= '<br><nobr>';
-//          $p .= tv2_report_form ($d);
-//          $p .= '</nobr>';
-//        }
-//          $p .= '<br>';  
-        }
-
-      // logo
-$p .= '<div class="category">';
-      $p .= 'Category:&nbsp;'.tv2_button ($d_category).'&nbsp;';
-      // tv2_include_logo ()
-      $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
-$p .= '</div>';
-
-
-//      $p .= '<br>';
-      $p .= '<span style="color:#bbb;">Tags: ';
-      $p .= tv2_keywords ($d);
       $p .= '</span>';
+    }
 
-$p .= '</div>';    
+  $p .= '<span class="desctext"><p>';
 
+  // description
+  $p .= tv2_include ($d);
 
-$p .= '<div class="clear">';
-$p .= '</div>';
-$p .= '<div class="clear">';
-$p .= '</div>';
+  $p .= '&nbsp;</p></span>';
+
+  // direct link
+//  $p .= tv2_direct_link ($d);
+
+  $s = widget_media_embed_code ($d['rsstool_url']);
+  if ($s)
+    {
+      $p .= '<div class="embed"><p>';
+        $p .= 'Embed code: '.$s;
+      $p .= '</p></div>';
+    }
+
+  if (isset ($d['movable']))
+    if ($d['movable'] == 1 && $f != 'mirror')
+      $p .= tv2_move_form ($d);
+   
+  if (isset ($d['reportable']))
+    if ($d['reportable'] == 1 && $f != 'mirror')
+      $p .= tv2_report_form ($d);
+
+  // logo
+  $p .= '<div class="category">';
+  $p .= 'Category:&nbsp;'.tv2_button ($d_category).'&nbsp;';
+  $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
+  $p .= '</div>';
+
+  $p .= '<span style="color:#bbb;">Tags: ';
+  $p .= tv2_keywords ($d);
+  $p .= '</span>';
+
+  $p .= '</div>'; // desc
+
+  $p .= '<div class="clear"></div>';
+  $p .= '<div class="clear"></div>';
     
 /*
-      if ($v)
-        {
-    //      $p .= tv2_prev_video_button ($d);
-    //      $p .= tv2_next_video_button ($d);
+  if ($v)
+    {
+//      $p .= tv2_prev_video_button ($d);
+//      $p .= tv2_next_video_button ($d);
     
-          if ($d_category->voteable == 1)   
-            { 
-              $p .= '&nbsp;&nbsp;&nbsp;<nobr>';
-              $p .= tv2_vote ($d);
-              $p .= '</nobr>';
-            }
-        }
-      else
-        {
-          if (isset ($d['voteable']))
-            if ($d['voteable'] == 1)
-            {
-              $p .= '&nbsp;&nbsp;&nbsp;<nobr>';
-              $p .= tv2_vote_show ($d);
-              $p .= '</nobr>';
-            }
-        }
+      if ($d_category->voteable == 1)   
+        $p .= tv2_vote ($d);
+    }
+  else
+    {
+      if (isset ($d['voteable']))
+        if ($d['voteable'] == 1)
+          $p .= tv2_vote_show ($d);
+    }
 */    
-      $p .= '</div>';
+  $p .= '</div>';
+
   return $p;
 }
 
@@ -589,7 +551,6 @@ tv2_body ()
 
   return $p;
 }
-
 
 
 // main ()
