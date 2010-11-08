@@ -361,16 +361,16 @@ tv2_body ()
 
 //  $p .= '</div>'; // #bodyid
 
-  // logo
-  $p .= '<nobr>';
-  $p .= tv2_logo_func ();
-  $p .= '</nobr>';
-
   // embed another page
   if ($embed)
     return $p.tv2_embed ();
   else if ($proxy)
     return $p.tv2_proxy ();
+
+  // logo  
+  $p .= '<nobr>';   
+  $p .= tv2_logo_func ();
+  $p .= '</nobr>';
 
   if ($tv2_use_database == 0)
     return $p;
