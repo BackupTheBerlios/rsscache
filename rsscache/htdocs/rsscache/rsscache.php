@@ -393,6 +393,7 @@ tv2_body ()
   // category
   $category = config_xml_by_category (strtolower ($c));
 
+/*
   if ($category->background || $f == 'fullscreen') // background image and fullscreen
     {
       $p .= '<style type="text/css">'."\n"
@@ -410,6 +411,7 @@ tv2_body ()
       $p .= "}\n"
            .'</style>';
     }
+*/
 
   // just fullscreen
   if ($v)
@@ -429,9 +431,7 @@ tv2_body ()
   $p .= '<div style="display:inline;">';
 
   // logo
-//  $p .= '<nobr>';
 //  $p .= tv2_logo_func ();
-//  $p .= '</nobr>';
 
   if ($f != 'mirror')
     {
@@ -471,11 +471,17 @@ tv2_body ()
 
   // show page-wise navigation (top)
   if (!$v && $f != 'mirror')
+    $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
+
+  if (file_exists ('func_config.xml'))
     {
-//      $p .= '<br>'
-//           .'<br>'
-//;
-      $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
+      $func_config_xml = simplexml_load_file ('func_config.xml');
+      $p .= ''
+           .'<div class="func">'
+           .widget_cms (NULL, $func_config_xml)
+           .'</div>'
+;
+      $p .= '<div class="clear"></div>';
     }
 
   if (sizeof ($d_array) == 0)
