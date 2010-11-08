@@ -360,6 +360,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
       else // title (no link)
         {
           $p .= $category->title;
+          $p .= '&nbsp;&nbsp;';
         }
 
       if ($category->new == 1)
