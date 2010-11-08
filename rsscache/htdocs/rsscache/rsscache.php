@@ -83,7 +83,7 @@ tv2_body_item ($i, $d_array)
     {
       $p .= '<span class="duration">';
       if ($s)
-        $p .= $s.' min';
+        $p .= $s.' min&nbsp;';
       $p .= '</span>';
     }
 
