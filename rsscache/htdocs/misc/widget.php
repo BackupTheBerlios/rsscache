@@ -144,8 +144,8 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
            .'>';
     }
 
-  if ($icon && $label)
-    $p .= '&nbsp;';
+//  if ($icon && $label)
+//    $p .= '&nbsp;';
 
   if ($flags & WIDGET_BUTTON_STATIC)
     return ($icon ? $s : '');

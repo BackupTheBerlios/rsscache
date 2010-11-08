@@ -49,7 +49,6 @@ tv2_body_item ($i, $d_array)
   $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
     
   $p .= '<div class="item">';
-    
 
   // embed player
   $p .= '<div class="preview">';
