@@ -105,7 +105,7 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   $p = '';
 
   $p = '<a'
-.' class="tooltip"';
+      .' class="tooltip"';
 
   if (!strncasecmp ($query, 'http://', 7))
     $p .= ' href="'.$query.'"';
@@ -113,8 +113,8 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
     $p .= ' href="?'.$query.'"';
 
   $p .= ''
-//      .' title="'.$tooltip.'"'
-      .' alt="'.$label.'"';
+//        .' title="'.$tooltip.'"'
+        .' alt="'.$label.'"';
 
   if ($tooltip)
     if (trim ($tooltip) != '')
@@ -134,27 +134,18 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   $s = '';
   if ($icon)
     {
-//      if (file_exists ($icon))
-        {
-          // remove missing image in IE
-//          $ie_fix = '';
-//          if (stristr ($_SERVER["HTTP_USER_AGENT"], 'MSIE') ||
-//              stristr ($_SERVER["HTTP_USER_AGENT"], 'Windows'))
-//            $ie_fix = ' onerror="this.parentNode.removeChild(this);"';
+      // remove missing image in IE
+      $s .= '<img src="'.$icon.'" border="0" alt=""';
 
-          $s .= '<img src="'.$icon.'" border="0" alt=""';
-
-          if ($flags & WIDGET_BUTTON_SMALL)
-            $s .= ' height="16"';
-          $s .= ''
-//               .$ie_fix
-               .' onerror="this.parentNode.removeChild(this);"'
-               .'>';
-        }
-//      else $icon = NULL;
+      if ($flags & WIDGET_BUTTON_SMALL)
+        $s .= ' height="16"';
+      $s .= ''
+           .' onerror="this.parentNode.removeChild(this);"'
+           .'>';
     }
-//  if ($icon && $label)
-//    $p .= '&nbsp;';
+
+  if ($icon && $label)
+    $p .= '&nbsp;';
 
   if ($flags & WIDGET_BUTTON_STATIC)
     return ($icon ? $s : '');
@@ -163,12 +154,12 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 
   if (!($flags & WIDGET_BUTTON_ONLY))
     $p .= ''
-//         .'&nbsp;'
          .$label
 ;
 //  if ($tooltip)
 //    if (trim ($tooltip) != '')
 //      $p .= '<span>'.$tooltip.'</span>';
+
   $p .= '</a>';
 
   return $p;
