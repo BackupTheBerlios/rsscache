@@ -128,7 +128,7 @@ tv2_body_item ($i, $d_array)
   $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
   $p .= '</div>';
 
-  $p .= '<span style="color:#bbb;">Tags: ';
+  $p .= '<span class="tags">Tags: ';
   $p .= tv2_keywords ($d);
   $p .= '</span>';
 
