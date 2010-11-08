@@ -343,7 +343,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
                 $f = WIDGET_BUTTON_SMALL;
 
               $p .= widget_button ($category->logo ? $category->logo : NULL, $query,
-                                   $category->title, $category->tooltip,
+                                   $category->title, $category->tooltip ? $category->tooltip : $category->title,
                                    $link_suffix, $f);
               $p .= '&nbsp;&nbsp;';
             }
