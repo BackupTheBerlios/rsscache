@@ -39,7 +39,7 @@ tv2_body_item ($i, $d_array)
          $tv2_enable_search,
          $tv2_related_search;
   global $config;
-  global $embed, $f, $c, $q, $v, $start, $num, $captcha;
+  global $embed, $proxy, $f, $c, $q, $v, $start, $num, $captcha;
 
   $p = '';
 
@@ -183,7 +183,7 @@ tv2_body_player ($i, $d_array)
          $tv2_enable_search,
          $tv2_related_search;
   global $config;
-  global $embed, $f, $c, $q, $v, $start, $num, $captcha;
+  global $embed, $proxy, $f, $c, $q, $v, $start, $num, $captcha;
 
   $p = '';
 
@@ -347,7 +347,7 @@ tv2_body ()
          $tv2_related_search,
          $tv2_use_database;
   global $config;
-  global $embed, $f, $c, $q, $v, $start, $num, $captcha;
+  global $embed, $proxy, $f, $c, $q, $v, $start, $num, $captcha;
 
   $p = '';
 
@@ -361,14 +361,16 @@ tv2_body ()
 
 //  $p .= '</div>'; // #bodyid
 
-  // embed another page
-  if ($embed)
-    return $p.tv2_embed ();
-
   // logo
   $p .= '<nobr>';
   $p .= tv2_logo_func ();
   $p .= '</nobr>';
+
+  // embed another page
+  if ($embed)
+    return $p.tv2_embed ();
+  else if ($proxy)
+    return $p.tv2_proxy ();
 
   if ($tv2_use_database == 0)
     return $p;
@@ -563,6 +565,7 @@ tv2_body ()
 
 $config = config_xml ();
 $embed = get_request_value ('embed'); // embed other page
+$proxy = get_request_value ('proxy'); // embed other page
 $f = get_request_value ('f'); // function
 $c = tv2_get_category (); // category
 $q = get_request_value ('q'); // search query
