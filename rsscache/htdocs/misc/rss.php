@@ -65,7 +65,8 @@ generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_d
            .htmlspecialchars ($item_desc_array[$i], ENT_QUOTES)
            .'</description>'."\n"
            .'      <pubDate>'
-           .strftime ("%Y%m%d %H:%M:%S", time ())
+//           .strftime ("%Y%m%d %H:%M:%S", time ())
+           .time ()
            .'</pubDate>'."\n"
            .'    </item>'."\n";
     }
