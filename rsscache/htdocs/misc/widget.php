@@ -406,6 +406,40 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
 }  
 
 
+/*
+function
+widget_table ($title_array, $content_array)
+{
+  // $cols == number of titles in $title_array 
+  $cols = sizeof ($title_array);
+  $rows = $cols * 0.5;
+
+  $p = '';
+
+  $p .= '<table class="widget_table" border="0" cellpadding="1" cellspacing="0">';
+
+  // titles
+  $p .= '<tr class="widget_table_title">';
+  for ($i = 0; $title_array[$i]; $i++)
+    $p .= '<td class="widget_table_td">'.$title_array[$i].'</td>';
+  $p .= '</tr>';
+
+  // content
+  for ($i = 0; $i < $rows; $i++)
+    {
+      $p .= '<tr class="widget_table_tr'.(($i & 1) + 1).'">';
+      for ($j = $rows * $cols; $j < $cols; $j++)
+        $p .= '<td class="widget_table_td">'.$content_array[$j].'</td>';
+      $p .= '</tr>';
+    }
+
+  $p .= '</table>';
+
+  return $p;
+}
+*/
+
+
 function
 widget_collapse ($label, $s, $collapsed)
 {
@@ -885,8 +919,7 @@ widget_upload ($name, $upload_path, $max_file_size, $mime_type, $submit_button_h
   $p = '';
 
   if (!$_FILES)
-    return '<form action="'
-      .$_SERVER['PHP_SELF']
+    return '<form action="?'.http_build_query2 (array (), true)
       .'" method="POST" enctype="multipart/form-data"'
 //      .' style="margin:0;"'
       .' style="display:inline;"'
@@ -966,7 +999,7 @@ widget_upload ($name, $upload_path, $max_file_size, $mime_type, $submit_button_h
 }
 */
 function
-widget_upload2 ($name, $upload_path, $max_file_size = -1, $mime_type = NULL, $whitelist = NULL, 
+widget_upload ($name, $upload_path, $max_file_size = -1, $mime_type = NULL, $whitelist = NULL, 
                $submit_button_html = NULL)
 {
   $debug = 0;
