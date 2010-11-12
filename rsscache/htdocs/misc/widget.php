@@ -38,6 +38,18 @@ $widget_step_count = 0;
 
 
 function
+widget_filename_escape ($s)
+{
+  $f = array ("/\.[^\.]+$/", "/[^\d\w\s-]/", "/\s\s+/", "/[-]+/", "/[_]+/");
+  $r = array ('', '', ' ', '-', '_');
+  $s = basename ($s);
+  $s = trim (preg_replace ($f, $r, $s));
+//  $s = str_replace (' ', '_', $s);
+  return $s;
+}
+
+
+function
 widget_count_steps ()
 {
   global $widget_step_count;
@@ -865,6 +877,7 @@ google maps:
   MAX_FILE_SIZE must precede the file input field
   Name of input element determines name in $_FILES array
 */
+/*
 function
 widget_upload ($name, $upload_path, $max_file_size, $mime_type, $submit_button_html, $uploaded_html)
 {
@@ -948,6 +961,112 @@ widget_upload ($name, $upload_path, $max_file_size, $mime_type, $submit_button_h
            .sprint_r ($s)
            .sprint_r ($_FILES);
     }
+
+  return $p;
+}
+*/
+function
+widget_upload2 ($name, $upload_path, $max_file_size = -1, $mime_type = NULL, $whitelist = NULL, 
+               $submit_button_html = NULL)
+{
+  $debug = 0;
+  $max_files = 4;
+  $s = Array (
+           UPLOAD_ERR_OK =>         'OK',
+           UPLOAD_ERR_INI_SIZE =>   'The uploaded file exceeds the upload_max_filesize directive ('
+                                   .ini_get ('upload_max_filesize')
+                                   .') in php.ini',
+           UPLOAD_ERR_FORM_SIZE =>  'The uploaded file exceeds the MAX_FILE_SIZE directive ('
+                                   .$max_file_size
+                                   .') that was specified in the HTML form',
+           UPLOAD_ERR_PARTIAL =>    'The uploaded file was only partially uploaded',
+           UPLOAD_ERR_NO_FILE =>    'No file was uploaded',
+           UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
+//           UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+//           UPLOAD_ERR_EXTENSION =>  'File upload stopped by extension'
+         );
+
+  if (!$submit_button_html)
+    $submit_button_html = '<input type="submit" value="Upload"'
+//                         .' tooltip="'.$tooltip.'"'
+                         .'>';
+
+  $p = '';
+
+  $p .= '<form action="'.$_SERVER['PHP_SELF'].'" method="POST" enctype="multipart/form-data"'
+       .' style="display:inline;"'
+       .'>';
+
+  if ($max_file_size > 0)
+    $p .= '<input type="hidden" name="MAX_FILE_SIZE" value="'.$max_file_size.'"> ';
+
+  for ($i = 0; $i < $max_files; $i++)
+    {
+      $p .= '<input type="file"'
+           .' name="'.$name.'[]"'
+//           .' title="'.$tooltip.'"'
+;
+      if ($max_file_size > 0)
+        $p .= ' maxlength="'.$max_file_size.'"';
+      if ($mime_type) 
+        $p .= ' accept="'.$mime_type.'"';
+      $p .= '> ';
+    }
+
+  $p .= $submit_button_html; 
+
+  if ($whitelist)
+    $p .= '<br>Allowed: '.implode ($whitelist, ', ').'<br> ';
+
+  $p .= '</form>';
+
+  if (!$_FILES)
+    return $p;    
+  if (empty ($_FILES[$name]))
+    return $p.'ERROR: an unknown error occured';
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($_FILES);
+
+  for ($i = 0; $i < $max_files; $i++)
+    {
+      $suffix = get_suffix ($_FILES[$name]['name'][$i]);
+      $f = widget_filename_escape ($_FILES[$name]['name'][$i]);
+
+      if ($f == '')
+//        $p .= 'ERROR: empty filename ';
+        continue;
+      else if (!in_array ($suffix, $whitelist))
+        {
+          $p .= 'ERROR: *'.$suffix.' files not allowed ';
+          continue;
+        }
+      else
+      if (file_exists ($d))
+        $p .= 'ERROR: file '.$f.$suffix.' already exists ';
+      else if ($_FILES[$name]['error'][$i] != UPLOAD_ERR_OK && $max_files == 1)
+        {
+          $e = $s[$_FILES[$name]['error'][$i]];
+          if (!$e)
+            $e .= 'An unknown error occured ';
+          $p .= 'ERROR: '.$e;
+        }
+
+      $d = $upload_path.'/'.$f.$suffix;
+      // DEBUG
+//      echo $_FILES[$name]['tmp_name'][$i].' '.$d;
+      if (!move_uploaded_file ($_FILES[$name]['tmp_name'][$i], $_SERVER['DOCUMENT_ROOT'].'/'.$d))
+        {
+//          $p .= 'ERROR: move_uploaded_file() failed ';
+        }
+      else
+        $p .= '<a href="'.$d.'">'.basename ($d).'</a> ';
+    }
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($_FILES);
 
   return $p;
 }
