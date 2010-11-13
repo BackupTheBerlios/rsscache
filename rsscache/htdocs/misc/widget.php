@@ -314,14 +314,14 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
     {
       $category = $config_xml->category[$i];
 
-      if ($category->src || $category->query || $category->id)
+      if ($category->query || $category->id)
         {   
           if ($flags & WIDGET_CMS_SELECT)
             {
               if ($category->embed == 1)
                 $s = $category->id;
               else
-                $s = ($category->src ? $category->src : $category->query);
+                $s = $category->query;
 
               $p .= widget_select_option ($category->logo, $s, $category->title, '', 0);
             }
@@ -347,7 +347,7 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
               if ($category->embed == 1)
                 $query .= $name.'='.$category->id;
               else
-                $query .= ($category->src ? $category->src : $category->query);
+                $query .= $category->query;
 
               if ($category->buttononly == 1 || $flags & WIDGET_CMS_BUTTON_ONLY)
                 $f = WIDGET_BUTTON_ONLY;
@@ -390,10 +390,10 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
             if ($q == $config_xml->category[$i]->id)
               {
                 // embed from localhost
-                if (file_exists ($config_xml->category[$i]->src))
-                  $p .= widget_embed_local ($config_xml->category[$i]->src);
+                if (file_exists ($config_xml->category[$i]->query))
+                  $p .= widget_embed_local ($config_xml->category[$i]->query);
                 else
-                  $p .= widget_embed ($config_xml->category[$i]->src);
+                  $p .= widget_embed ($config_xml->category[$i]->query);
               }
         }
       else if ($logo)
