@@ -354,8 +354,8 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
               else
                 $f = WIDGET_BUTTON_SMALL;
 
-              $p .= widget_button ($category->logo ? $category->logo : NULL, $query,
-                                   $category->title, $category->tooltip ? $category->tooltip : $category->title,
+              $p .= widget_button (($category->logo ? $category->logo : NULL), $query,
+                                   $category->title, ($category->tooltip ? $category->tooltip : $category->title),
                                    $link_suffix, $f);
               $p .= '&nbsp;&nbsp;';
             }
@@ -1361,7 +1361,7 @@ widget_pr_diggit ($title, $url)
 
   // digg this button
   $p .= '<script><!--'."\n"
-       .'digg_url = \''
+       .'diGg_url = \''
        .$url
        .'\';'
        .'//--></script>'
