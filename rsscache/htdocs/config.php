@@ -55,20 +55,18 @@ if (stristr ($_SERVER['SERVER_NAME'], 'pwnoogle.com'))
     $tv2_dbuser = 'pwnoogle_db';
     $tv2_dbpass = 'pwn44553';
   }
-else if (stristr ($_SERVER['SERVER_NAME'], 'aa.k.vu') || stristr ($_SERVER['USER'], 'root'))
+else if (stristr ($_SERVER['SERVER_NAME'], 'aa.k.vu'))
   {
     $tv2_dbname = 'pwnoogle_videos';
     $tv2_dbuser = 'root';
-    $tv2_dbpass = 'perfect';  
+    $tv2_dbpass = 'nb';  
   }
-/*
 else
   {
     $tv2_dbname = 'pwnoogle_videos';
     $tv2_dbuser = 'root';
     $tv2_dbpass = 'nb';
   }
-*/
 $tv2_dbhost = 'localhost';
 
 
