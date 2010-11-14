@@ -113,7 +113,10 @@ tv2_body_item ($i, $d_array)
       $p .= '</span>';
     }
 
-  $p .= '<span class="desctext"><p>';
+  if ($f == '2cols')
+    $p .= '<span class="desctext_2cols"><p>';
+  else
+    $p .= '<span class="desctext"><p>';
 
   // description
   $d['rsstool_desc'] = tv2_highlight ($d['rsstool_desc']);

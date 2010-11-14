@@ -9,6 +9,22 @@ require_once ('tv2_sql.php');
 
 
 function
+tv2_embed ()
+{
+  $embed = get_request_value ('embed');
+  return widget_embed ($embed, WIDGET_EMBED_AUTO);
+}
+
+
+function
+tv2_proxy ()
+{
+  $proxy = get_request_value ('proxy');
+  return widget_embed ($proxy, WIDGET_EMBED_PROXY);
+}
+
+
+function
 tv2_get_category ()
 {
 //  global $config;

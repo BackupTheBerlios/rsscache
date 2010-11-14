@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 if (!defined ('MISC_WIDGET_PHP'))
 {
 define ('MISC_WIDGET_PHP', 1);  
+//phpinfo ();
 //error_reporting(E_ALL | E_STRICT);
 include_once ('misc.php');
 include ('embed.php');
@@ -116,9 +117,38 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 {
   $p = '';
 
-  $p = '<a'
-      .' class="tooltip"';
+  // detect if button is active/selected
+  $t = array ();
+  parse_str ($query, $t[0]);
+  parse_str ($_SERVER['QUERY_STRING'], $t[1]);
+        // DEBUG
+//        echo sprint_r ($t[0]).'<br>'.sprint_r ($t[1]).'<br><br><br><br>';
+  $a = array_keys ($t[0]);
+  $selected = 1;
 
+  for ($i = 0; isset ($a[$i]); $i++)
+    if (strcasecmp ($t[1][$a[$i]], $t[0][$a[$i]]))
+      {
+        // DEBUG
+//        echo $i.', '.$t[0][$a[$i]].', '.$t[1][$a[$i]].'<br>';
+        $selected = 0;
+        break;
+      }
+
+if ($selected == 1 && !strncasecmp ($query, 'http://', 7))
+{
+//  echo $query.', '.$_SERVER['HTTP_HOST'].'<br>';
+
+  if (!stristr ($query, $_SERVER['HTTP_HOST']))
+    $selected = 0;
+}
+
+  if ($selected)
+    $p .= '<span class="tooltip"';
+  else
+    {
+  $p .= '<a'
+      .' class="tooltip"';
   if (!strncasecmp ($query, 'http://', 7))
     $p .= ' href="'.$query.'"';
   else
@@ -127,6 +157,7 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   $p .= ''
 //        .' title="'.$tooltip.'"'
         .' alt="'.$label.'"';
+    }
 
   if ($tooltip)
     if (trim ($tooltip) != '')
@@ -136,10 +167,8 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
       .' onmouseout="tv2_tt_hide();"'
 ;
 
-  if (!$icon)
-      $p .= ''
-//         .'style="width:32px;height:32px;font-size:16px;"'
-;
+//  if (!$icon)
+//      $p .= '';
 
   $p .= '>';
 
@@ -148,6 +177,8 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
     {
       // remove missing image in IE
       $s .= '<img src="'.$icon.'" border="0" alt=""';
+//      if (!($selected))
+//        $s .= ' style="opacity:0.5;"';
 
       if ($flags & WIDGET_BUTTON_SMALL)
         $s .= ' height="16"';
@@ -165,14 +196,24 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   $p .= $s;
 
   if (!($flags & WIDGET_BUTTON_ONLY))
-    $p .= ''
-         .$label
+    {
+      if ($selected)
+        $p .= '<span class="tv2_selected">';
+      $p .= ''
+           .$label
 ;
+      if ($selected)
+        $p .= '</span>';
+    }
+
 //  if ($tooltip)
 //    if (trim ($tooltip) != '')
 //      $p .= '<span>'.$tooltip.'</span>';
 
-  $p .= '</a>';
+  if ($selected)
+    $p .= '</span>';
+  else
+    $p .= '</a>';
 
   return $p;
 }
@@ -183,20 +224,20 @@ widget_select_option ($icon, $value, $label, $tooltip, $selected = 0)
 {
   $p = '';
 
-      $p .= '<option'
-           .($selected == 1 ? ' selected="selected"' : '')
-           .($tooltip ? ' title="'.$tooltip.'"' : '')
-           .' value="'.$value.'"'                  
-           .(
-            $icon ?
-            ' style="background-image:url('
-           .$icon
-           .');background-repeat:no-repeat;background-position:bottom left;padding-left:18px;"' :
-            ''
-           )
-           .'>'
-           .$label
-           .'</option>';
+  $p .= '<option'
+       .($selected == 1 ? ' selected="selected"' : '')
+       .($tooltip ? ' title="'.$tooltip.'"' : '')
+       .' value="'.$value.'"';
+
+  if ($icon)
+    $p .= ' style="background-image:url('.$icon.');'
+         .'background-repeat:no-repeat;background-position:left;'
+         .'padding-left:18px;'
+          .'"';
+
+  $p .= '>'
+       .$label
+       .'</option>';
 
   return $p;
 }
@@ -209,13 +250,30 @@ function
 widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1)
 {
   $p = '';
-  $p .= '<select name="'.$name.'"'.($active == 1 ? '' : ' disabled="disabled"').'>';
+  $p .= '<select name="'.$name.'"'.($active == 1 ? '' : ' disabled="disabled"');
+/*
+  if ($selected)
+    for ($i = 0; isset ($a[$i]); $i++)
+      if ($a[$i][2])
+        if (!strcasecmp ($a[$i][0], $selected))
+          {
+            $p .= ' style="background-image:url('.$a[$i][2].');'
+                 .'background-repeat:no-repeat;background-position:left;'
+                 .'padding-left:18px;'
+                 .'"'
+//                 .' onhover="javascript:this.style.backgroundImage=\'none\';"'
+                 .' onchange="javascript:this.form.submit();"'
+;
+            break;
+          }
+*/
+  $p .= '>';
   $sel = 0;
   for ($i = 0; isset ($a[$i]); $i++)
     {
       if ($selected)
-      if (!strcasecmp ($a[$i][0], $selected) && !($sel))
-        $sel = 1;
+        if (!strcasecmp ($a[$i][0], $selected) && !($sel))
+          $sel = 1;
 
       $p .= widget_select_option ($a[$i][2], $a[$i][0], $a[$i][1], '', $sel);
 
@@ -236,170 +294,216 @@ widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1)
     <id>qscore</id>
     <title>qscore suite</title>
     <tooltip>generate high scores and statistics from game server logs and some other useful game server admin tools</tooltip>
-    <src>aa2map_ascii.php</src>
-    <embed>1</embed>
+    <query>embed=aa2map_ascii.php</query>
     <new>0</new>
-    <lf>1</lf>
+    <separate>1</separate>
   </category>
 */
-define ('WIDGET_CMS_LINK', 1); // (default)
-define ('WIDGET_CMS_SELECT', 2); // select box menu
 define ('WIDGET_CMS_ROW', 4); // row with buttons (default)
 define ('WIDGET_CMS_RC', 8);  // row with columns of buttons
 define ('WIDGET_CMS_COL', 16);  // column with buttons
 define ('WIDGET_CMS_BUTTON_ONLY', 32); // show button only; not text
 define ('WIDGET_CMS_BUTTON16', 64);
 define ('WIDGET_CMS_BUTTON32', 128);
-define ('WIDGET_CMS_NOBR', 256);
 
 
 function
-widget_cms_select ($logo, $config_xml, $name = 'q', $link_suffix = NULL)
+widget_cms_row ($s, $i, $logo, $config_xml, $name = 'q', $link_suffix = NULL)
 {
   $p = '';
-    $p .= '<select name="'.$name.'"'
-//         .($active == 1 ? '' : ' disabled="disabled"')
-         .'>';
+  $p .= $s;
   return $p; 
 }
 
 
 function
-widget_cms_row ($logo, $config_xml, $name = 'q', $link_suffix = NULL)
+widget_cms_col ($s, $i, $logo, $config_xml, $name = 'q', $link_suffix = NULL)
 {
   $p = '';
-  return $p; 
-}
-
-
-function
-widget_cms_col ($logo, $config_xml, $name = 'q', $link_suffix = NULL)
-{
-  $p = '';
+  $p .= $s;
     $p .= '<br>'
-         .($logo ? '<img src="'.$logo.'" border="0">' : '')
-         .'<br>'  
-         .'<br>'
+//         .($logo ? '<img src="'.$logo.'" border="0">' : '')
+//         .'<br>'  
+//         .'<br>'
 ;
   return $p; 
 }
 
 
 function
-widget_cms_rc ($logo, $config_xml, $name = 'q', $link_suffix = NULL)
+str_compare2 ($str1, $str2)
 {
+/*
+// returns the percentage of the string "similarity"
+    $count = 0;
+   
+    $str1 = ereg_replace("[^a-z]", ' ', strtolower($str1));
+    while(strstr($str1, '  ')) {
+        $str1 = str_replace('  ', ' ', $str1);
+    }
+    $str1 = explode(' ', $str1);
+   
+    $str2 = ereg_replace("[^a-z]", ' ', strtolower($str2));
+    while(strstr($str2, '  ')) {
+        $str2 = str_replace('  ', ' ', $str2);
+    }
+    $str2 = explode(' ', $str2);
+   
+    if(count($str1)<count($str2)) {
+        $tmp = $str1;
+        $str1 = $str2;
+        $str2 = $tmp;
+        unset($tmp);
+    }
+   
+    for($i=0; $i<count($str1); $i++) {
+        if(in_array($str1[$i], $str2)) {
+            $count++;
+        }
+    }
+   
+    return $count/count($str2)*100;
+*/
+//      if (similar_text ($last, $category->title, $match) < 50)
+//      if (levenshtein ($last, $category->title) > 100)
+//      if (str_compare ($last, $category->title) < 50)
+  $t = array ();
+  $t[] = explode (' ', $str1);
+  $t[] = explode (' ', $str2);
+  return !strncmp (soundex ($t[0][0]), soundex ($t[1][0]), 3);
+}
+
+
+function
+widget_cms_rc ($s, $i, $logo, $config_xml, $name = 'q', $link_suffix = NULL)
+{
+  $category = $config_xml->category[$i];
+
   $p = '';
+
+  if ($i == 0)
+  $p .= '<div style="float:left;'
+        // DEBUG
+//       .'border:1px solid #000;'
+       .'">';
+
+  $p .= $s;
+  $p .= '<br>';
+
+  $pre = '';
+  if ($i > 0)
+  if (isset ($config_xml->category[$i - 1]))
+    if ($config_xml->category[$i - 1]->title)
+      $pre = $config_xml->category[$i - 1]->title;
+
+  $next = '';
+  if (isset ($config_xml->category[$i + 1]))
+    if ($config_xml->category[$i + 1]->title)
+      $next = $config_xml->category[$i + 1]->title;
+
+  $nextnext = '';
+  if (isset ($config_xml->category[$i + 2]))
+    if ($config_xml->category[$i + 2]->title)
+      $nextnext = $config_xml->category[$i + 2]->title;
+
+  if ($next != '')
+    {
+      if (!str_compare2 ($category->title, $next))
+        {
+          $s = '</div><div style="top:10px;float:left;'
+               // DEBUG
+//              .'border:1px solid #000;'
+              .'">';
+
+          // HACK: combine also completely different but single(!) categories
+          if ($pre != '' && $nextnext != '')
+            if (!str_compare2 ($pre, $category->title) &&
+                !str_compare2 ($next, $nextnext))
+              $s = '';
+          $p .= $s;
+        }
+    }
+  else
+    {
+      $p .= '</div>';
+      $p .= '<div class="clear"></div>';
+    }
   return $p;
 }
 
 
 function
-widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 13)
+widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 4)
 {
   // DEBUG
+//  echo $flags;
 //  print_r ($config_xml);
   $q = get_request_value ($name);
 
   $p = '';
 
   // categories  
-  if ($flags & WIDGET_CMS_COL)
-    $p .= widget_cms_col ($logo, $config_xml, $name, $link_suffix);
-  else if ($flags & WIDGET_CMS_SELECT)
-    $p .= widget_cms_select ($logo, $config_xml, $name, $link_suffix);
-
   for ($i = 0; isset ($config_xml->category[$i]); $i++)
-    if (!isset ($config_xml->category[$i]->button) ||
-        (isset ($config_xml->category[$i]->button) && $config_xml->category[$i]->button == 1))
+//    if (!isset ($config_xml->category[$i]->button) ||
+//        (isset ($config_xml->category[$i]->button) && $config_xml->category[$i]->button == 1))
     {
       $category = $config_xml->category[$i];
 
+      $s = '';
       if ($category->query || $category->id)
         {   
-          if ($flags & WIDGET_CMS_SELECT)
-            {
-              if ($category->embed == 1)
-                $s = $category->id;
-              else
-                $s = $category->query;
+          $query = '';
+//          if ($category->embed == 1)
+//            $query .= $name.'='.$category->id;
+//          else
+            $query .= $category->query;
 
-              $p .= widget_select_option ($category->logo, $s, $category->title, '', 0);
-            }
+          if ($category->buttononly == 1 || $flags & WIDGET_CMS_BUTTON_ONLY)
+            $f = WIDGET_BUTTON_ONLY;
           else
-            {
-/*
-              if ($flags | WIDGET_CMS_RC)
-                {
-                  $last = ($i > 0 ? $config_xml->category[$i - 1]->title : '');
-                  if ($last != '')
-                    {
-                      $last = strtolower (substr ($last, 0, 1));
-                      $next = (isset ($config_xml->category[$i + 1]) ? $config_xml->category[$i + 1]->title : '');
-                      $next = strtolower (substr ($next, 0, 1));
-                      $curr = strtolower (substr ($category->title, 0, 1));
-                      if ($last != $curr)
-                        $p .= '<br><br>';
-                      else $p .= '<br>';
-                    }
-                }
-*/
-              $query = '';
-              if ($category->embed == 1)
-                $query .= $name.'='.$category->id;
-              else
-                $query .= $category->query;
+            $f = WIDGET_BUTTON_SMALL;
 
-              if ($category->buttononly == 1 || $flags & WIDGET_CMS_BUTTON_ONLY)
-                $f = WIDGET_BUTTON_ONLY;
-              else
-                $f = WIDGET_BUTTON_SMALL;
-
-              $p .= widget_button (($category->logo ? $category->logo : NULL), $query,
-                                   $category->title, ($category->tooltip ? $category->tooltip : $category->title),
-                                   $link_suffix, $f);
-              $p .= '&nbsp;&nbsp;';
-            }
+          $s .= widget_button (($category->logo ? $category->logo : NULL), $query,
+                               $category->title, ($category->tooltip ? $category->tooltip : $category->title),
+                               $link_suffix, $f);
         }
-      else // title (no link)
-        {
-          $p .= $category->title;
-          $p .= '&nbsp;&nbsp;';
-        }
+      else // <title> (no link)
+        $s .= $category->title;
 
+      // <new>
       if ($category->new == 1)
-        $p .= '<img src="images/new.png">';
+        $s .= '&nbsp;<img src="images/new.png">';
 
-      if ($category->lf > 0)
-        $p .= str_repeat ('<br>', $category->lf);
+      $s .= '&nbsp;&nbsp;';
 
+
+      if ($flags & WIDGET_CMS_COL)
+        $p .= widget_cms_col ($s, $i, $logo, $config_xml, $name, $link_suffix);
+      else if ($flags & WIDGET_CMS_RC)
+        $p .= widget_cms_rc ($s, $i, $logo, $config_xml, $name, $link_suffix);
+      else // if ($flags & WIDGET_CMS_ROW)
+        $p .= widget_cms_row ($s, $i, $logo, $config_xml, $name, $link_suffix);
+
+      // <separate>
       if ($category->separate == 1)
         $p .= '<br>';
       else if ($category->separate == 2)
         $p .= '<hr>';
     }
 
-  if ($flags & WIDGET_CMS_SELECT)
-    $p .= '</select>';
-
-  if ($flags & WIDGET_CMS_ROW)
+  // content
+// TODO: remove
+  if ($q)
     {
-      // content
-      if ($q)
-        {
-          for ($i = 0; $config_xml->category[$i]; $i++)
-            if ($q == $config_xml->category[$i]->id)
-              {
-                // embed from localhost
-                if (file_exists ($config_xml->category[$i]->query))
-                  $p .= widget_embed_local ($config_xml->category[$i]->query);
-                else
-                  $p .= widget_embed ($config_xml->category[$i]->query);
-              }
-        }
-      else if ($logo)
-        $p .= ''
-             .'<br>'
-             .'<img src="'.$logo.'" border="0">';
+      for ($i = 0; $config_xml->category[$i]; $i++)
+        if ($q == $config_xml->category[$i]->id)
+          {
+            // embed from localhost
+            if (file_exists ($config_xml->category[$i]->query))
+              $p .= widget_embed_local ($config_xml->category[$i]->query);
+            else
+              $p .= widget_embed ($config_xml->category[$i]->query);
+          }
     }
 
   return $p;
@@ -478,91 +582,6 @@ widget_onhover_link ($url, $image1, $image2)
 
   return $p;
 }
-
-
-/*
-function
-widget_window_open ($url, $fullscreen = 0, $window_name = '')
-{
-  $p = '';
-
-  $p .= '<script type="text/javascript">'."\n";
-
-  $p .= 'function widget_window_open ()'."\n"
-       .'{'."\n";
-
-//  $p .= 'var w=screen.width;var h=screen.height;';
-
-//  $p .= 'var win=';
-
-  $p .= 'window.open(\''
-       .$url
-       .'\',\''
-       .str_replace ("'", "\'", $window_name)
-       .'\',\'';
-
-// https://developer.mozilla.org/en/Gecko_DOM_Reference
-// https://developer.mozilla.org/en/DOM/window.open
-  if ($fullscreen)
-    $p .= ''
-         .'top=0'
-         .',left=0'
-//         .',width=\'+w+\''
-//         .',height=\'+h+\''
-         .',fullscreen'
-//         .',menubars'
-         .',status=0'
-//         .',toolbar'
-         .',location=0'
-//         .',menubar=no'
-//         .',directories=no'
-//         .',resizable=no'
-//         .',scrollbars=no'
-//         .',copyhistory'
-;
-  else
-    $p .= ''
-         .'width=400'
-         .',height=300'
-         .',status=no'
-         .',toolbar=no'
-         .',location=no'
-         .',menubar=no'
-         .',directories=no'
-         .',resizable=yes'
-         .',scrollbars=yes'
-         .',copyhistory=yes'
-;
-  $p .= '\').focus();'."\n";
-
-//  $p .= 'window.opener = top;'."\n"; // this will close opener in ie only (not Firefox)
-
-  if ($fullscreen)
-  $p .= 'window.moveTo(0,0);'."\n"
-       ."\n"
-       .'// changing bar states on the existing window)'."\n"
-//       .'netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserWrite");'."\n"
-       .'window.locationbar.visible=0;'."\n"
-       .'window.statusbar.visible=0;'."\n"
-       ."\n"
-       .'if (document.all)'."\n"
-       .'  window.resizeTo(screen.width, screen.height);'."\n"
-       ."\n"
-       .'else if (document.layers || document.getElementById)'."\n"
-       .'  if (window.outerHeight < screen.height || window.outerWidth < screen.width)'."\n"
-       .'    {'."\n"
-       .'      window.outerHeight = screen.height;'."\n"
-       .'      window.outerWidth = screen.width;'."\n"
-       .'    }'."\n"
-;
-
-  $p .= '}'."\n";
-
-  $p .= '</script>';
-
-  return $p;
-}
-*/
 
 
 function
@@ -1361,7 +1380,7 @@ widget_pr_diggit ($title, $url)
 
   // digg this button
   $p .= '<script><!--'."\n"
-       .'diGg_url = \''
+       .'digg_url = \''
        .$url
        .'\';'
        .'//--></script>'
