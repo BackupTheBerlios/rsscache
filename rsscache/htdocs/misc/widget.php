@@ -117,7 +117,8 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 {
   $p = '';
 
-  // detect if button is active/selected
+/*  // detect if button is active/selected
+
   $t = array ();
   parse_str ($query, $t[0]);
   parse_str ($_SERVER['QUERY_STRING'], $t[1]);
@@ -142,6 +143,7 @@ if ($selected == 1 && !strncasecmp ($query, 'http://', 7))
   if (!stristr ($query, $_SERVER['HTTP_HOST']))
     $selected = 0;
 }
+*/
 
   if ($selected)
     $p .= '<span class="tooltip"';
