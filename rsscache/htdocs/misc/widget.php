@@ -1293,10 +1293,8 @@ In case of error, stat() returns FALSE
 function
 widget_captcha ($captcha_path)
 {
-  global $tv2_root;
-
   // use random captcha image
-  if (!($handle = opendir ($tv2_root.'/'.$captcha_path)))
+  if (!($handle = opendir ($captcha_path)))
     return 'ERROR: problem with CAPTCHA';
 
   $a = array ();

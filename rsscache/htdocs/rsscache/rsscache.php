@@ -377,9 +377,9 @@ tv2_body ()
   if ($f != 'mirror')
     $p .= tv2_button_array ($config, '%s ', 0, sizeof ($config->category));
 
-//  $p .= '<br>'  
+  $p .= '<br>'  
 //       .'<br>'  
-//;  
+;  
 
 //  $p .= '</div>'; // #bodyid
 
@@ -739,7 +739,7 @@ if (file_exists ('site_config.xml'))
             .'</span>'
             .'<br>'
             .'<br>'
-            .'<br>'
+//            .'<br>'
 ;
   }
 
