@@ -16,6 +16,20 @@ require_once ('tv2_misc.php');
 
 
 function
+tv2_highlight ($s)
+{
+  $q = get_request_value ('q');
+  // highlight search words
+  $a = explode (array (' ', '+'), $q);
+  // DEBUG
+//  print_r ($a);
+//  for ($i = 0; isset ($a[$i]); $i++)
+//    $s = str_ireplace ($a[$i], '<span class="tv2_highlight">'.$a[$i].'</span>', $s);
+  return $s;
+}
+
+
+function
 tv2_body_item ($i, $d_array)
 {
   global $tv2_isnew,
@@ -55,7 +69,10 @@ tv2_body_item ($i, $d_array)
   $p .= tv2_player_preview ($d);
   $p .= '</div>';
 
-  $p .= '<div class="desc">';
+  if ($f == '2cols')
+    $p .= '<div class="desc_2cols">';
+  else
+    $p .= '<div class="desc">';
     
   // link
   $s = tv2_link ($d);
@@ -99,6 +116,7 @@ tv2_body_item ($i, $d_array)
   $p .= '<span class="desctext"><p>';
 
   // description
+  $d['rsstool_desc'] = tv2_highlight ($d['rsstool_desc']);
   $p .= tv2_include ($d);
 
   $p .= '&nbsp;</p></span>';
@@ -263,6 +281,7 @@ tv2_body_player ($i, $d_array)
 //      $p .= '<br>';
 
       // description
+      $d['rsstool_desc'] = tv2_highlight ($d['rsstool_desc']);
       $p .= tv2_include ($d);
 
       $p .= '<br>';
@@ -479,8 +498,9 @@ tv2_body ()
     {
       $func_config_xml = simplexml_load_file ('func_config.xml');
       $p .= ''
-           .'<div class="func">'
-           .widget_cms (NULL, $func_config_xml)
+           .'<div class="tv2_func">'
+//widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 4)
+           .widget_cms (NULL, $func_config_xml, 'q', NULL, 4)
            .'</div>'
 ;
       $p .= '<div class="clear"></div>';
@@ -670,6 +690,7 @@ else
 
 $body = tv2_body ();
 
+
 $head = '<html>'
        .'<head>'
        .'<title>'
@@ -709,9 +730,13 @@ if (file_exists ('site_config.xml'))
   {
     $site_config_xml = simplexml_load_file ('site_config.xml');
     $head .= ''
-            .'<span style="font-family:sans-serif;font-size:13px;">'
-            .widget_cms (NULL, $site_config_xml)
+            .'<span class="tv2_site">'
+//widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 4)
+            .widget_cms (NULL, $site_config_xml, 'q', NULL, 4)
             .'</span>'
+            .'<br>'
+            .'<br>'
+//            .'<br>'
 ;
   }
 
