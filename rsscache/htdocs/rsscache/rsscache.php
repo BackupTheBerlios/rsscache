@@ -739,7 +739,7 @@ if (file_exists ('site_config.xml'))
             .'</span>'
             .'<br>'
             .'<br>'
-//            .'<br>'
+            .'<br>'
 ;
   }
 
