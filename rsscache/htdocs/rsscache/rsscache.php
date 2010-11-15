@@ -653,6 +653,15 @@ if ($f == 'rss')
   }
 
 
+// sitemap only
+if ($f == 'sitemap')
+  {
+    $d = tv2_sql ($c, $q, $f, NULL, $start, $num);
+    tv2_sitemap ($d);
+    exit;
+  }
+
+
 if ($f == 'mirror')
   {
     // make static (index.html)

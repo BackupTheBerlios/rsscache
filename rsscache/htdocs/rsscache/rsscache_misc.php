@@ -222,7 +222,7 @@ tv2_link_normalize ($link)
 
 
 function
-tv2_sitemap_video ()
+tv2_sitemap_video ($d_array)
 {
 /*
      <video:video>
@@ -302,7 +302,7 @@ For example:
 
 
 function
-tv2_sitemap ()
+tv2_sitemap ($d_array)
 {
 //    header ('Content-type: text/xml');
   header ('Content-type: application/xml');
@@ -340,7 +340,7 @@ The formats are as follows. Exactly the components shown here must be present, w
 */
          .'<lastmod>'.strftime ('%F' /* 'T%T%Z' */).'</lastmod>'."\n"
          .'<changefreq>always</changefreq>'."\n"
-         .tv2_sitemap_video ()
+         .tv2_sitemap_video ($d_array)
          .'</url>'."\n";
   $p .= '</urlset>';
 
