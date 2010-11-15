@@ -193,7 +193,7 @@ tv2_rss ($d_array)
 //  print_r ($rss_link_array);
 //  print_r ($rss_desc_array);
 
-  echo generate_rss ($tv2_name,
+  return generate_rss ($tv2_name,
                      $tv2_link,
                      $tv2_title,
                      $rss_title_array, $rss_link_array, $rss_desc_array);

@@ -648,7 +648,7 @@ if ($f == 'fullscreen')
 if ($f == 'rss')
   {
     $d = tv2_sql ($c, $q, $f, NULL, $start, $num);
-    tv2_rss ($d);
+    echo tv2_rss ($d);
     exit;
   }
 
@@ -657,7 +657,7 @@ if ($f == 'rss')
 if ($f == 'sitemap')
   {
     $d = tv2_sql ($c, $q, $f, NULL, $start, $num);
-    tv2_sitemap ($d);
+    echo tv2_sitemap ($d);
     exit;
   }
 
