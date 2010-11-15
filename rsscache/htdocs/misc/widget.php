@@ -124,6 +124,9 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
         // DEBUG
 //        echo sprint_r ($t[0]).'<br>'.sprint_r ($t[1]).'<br><br><br><br>';
   $a = array_keys ($t[0]);
+// TODO: fix this
+  $selected = 0;
+/*
   $selected = 1;
 
   for ($i = 0; isset ($a[$i]); $i++)
@@ -135,28 +138,29 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
         break;
       }
 
-if ($selected == 1 && !strncasecmp ($query, 'http://', 7))
-{
-//  echo $query.', '.$_SERVER['HTTP_HOST'].'<br>';
+  if ($selected == 1 && !strncasecmp ($query, 'http://', 7))
+    {
+//      echo $query.', '.$_SERVER['HTTP_HOST'].'<br>';
 
-  if (!stristr ($query, $_SERVER['HTTP_HOST']))
-    $selected = 0;
-}
+      if (!stristr ($query, $_SERVER['HTTP_HOST']))
+        $selected = 0;
+    }
+*/
 
   if ($selected)
     $p .= '<span class="tooltip"';
   else
     {
-  $p .= '<a'
-      .' class="tooltip"';
-  if (!strncasecmp ($query, 'http://', 7))
-    $p .= ' href="'.$query.'"';
-  else
-    $p .= ' href="?'.$query.'"';
+      $p .= '<a'
+           .' class="tooltip"';
+      if (!strncasecmp ($query, 'http://', 7))
+        $p .= ' href="'.$query.'"';
+      else
+        $p .= ' href="?'.$query.'"';
 
-  $p .= ''
-//        .' title="'.$tooltip.'"'
-        .' alt="'.$label.'"';
+      $p .= ''
+//           .' title="'.$tooltip.'"'
+           .' alt="'.$label.'"';
     }
 
   if ($tooltip)
