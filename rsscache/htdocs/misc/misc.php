@@ -578,6 +578,49 @@ str_shorten ($s, $limit)
 
 
 function
+str_similar ($str1, $str2)
+{
+/*
+    $count = 0;
+   
+    $str1 = ereg_replace("[^a-z]", ' ', strtolower($str1));
+    while(strstr($str1, '  ')) {
+        $str1 = str_replace('  ', ' ', $str1);
+    }
+    $str1 = explode(' ', $str1);
+   
+    $str2 = ereg_replace("[^a-z]", ' ', strtolower($str2));
+    while(strstr($str2, '  ')) {
+        $str2 = str_replace('  ', ' ', $str2);
+    }
+    $str2 = explode(' ', $str2);
+   
+    if(count($str1)<count($str2)) {
+        $tmp = $str1;
+        $str1 = $str2;
+        $str2 = $tmp;
+        unset($tmp);
+    }
+   
+    for($i=0; $i<count($str1); $i++) {
+        if(in_array($str1[$i], $str2)) {
+            $count++;
+        }
+    }
+   
+    return $count/count($str2)*100;
+*/
+//      if (similar_text ($last, $category->title, $match) < 50)
+//      if (levenshtein ($last, $category->title) > 100)
+//      if (str_compare ($last, $category->title) < 50)
+  $t = array ();
+  $t[] = explode (' ', $str1);
+  $t[] = explode (' ', $str2);
+  return !strncmp (soundex ($t[0][0]), soundex ($t[1][0]), 3);
+}
+
+
+function
 in_tag ($s)
 {
   // are we inside a tag?
