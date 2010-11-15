@@ -158,22 +158,13 @@ tv2_body_item ($i, $d_array)
   $p .= '<div class="clear"></div>';
   $p .= '<div class="clear"></div>';
     
-/*
-  if ($v)
-    {
-//      $p .= tv2_prev_video_button ($d);
-//      $p .= tv2_next_video_button ($d);
-    
-      if ($d_category->voteable == 1)   
-        $p .= tv2_vote ($d);
-    }
-  else
-    {
-      if (isset ($d['voteable']))
-        if ($d['voteable'] == 1)
-          $p .= tv2_vote_show ($d);
-    }
-*/    
+//      if ($d_category->voteable == 1)   
+//        $p .= tv2_vote ($d);
+
+//      if (isset ($d['voteable']))
+//        if ($d['voteable'] == 1)
+//          $p .= tv2_vote_show ($d);
+
   $p .= '</div>';
 
   return $p;
@@ -221,8 +212,14 @@ tv2_body_player ($i, $d_array)
       else
         $p .= '<div>';
     
+  $t = tv2_time_count ($d);
+  if ($t)
+    {
+      $p .= '<span class="age">';
       if ($f != 'mirror')
-        $p .= tv2_time_count ($d);
+        $p .= $t;
+      $p .= '</span>';
+    }
     
       // logo
       $p .= '<nobr>&nbsp;'.tv2_button ($d_category).'&nbsp;</nobr>';
@@ -268,18 +265,7 @@ tv2_body_player ($i, $d_array)
       $p .= '<br>';
 
       // embed player
-      if ($v)
-        {
           $p .= tv2_player ($d);
-        }
-//      else if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
-//        {
-//        }
-      else
-        {
-          $p .= tv2_player_preview ($d);
-          $p .= '<br>';  
-        }
 
 //      $p .= '<br>';
 
@@ -290,12 +276,13 @@ tv2_body_player ($i, $d_array)
       $p .= '<br>';
 
       // direct link
-      $p .= ' <nobr>';
-//      $p .= tv2_direct_link ($d);
-      $s = widget_media_embed_code ($d['rsstool_url']);
-      if ($s)
-        $p .= '&nbsp;Embed code: '.$s;
-      $p .= '</nobr>';
+  $s = widget_media_embed_code ($d['rsstool_url']);
+  if ($s)
+    {   
+      $p .= '<div class="embed"><p>';
+        $p .= 'Embed code: '.$s;
+      $p .= '</p></div>';
+    }
 
       if (isset ($d['movable']))
       if ($d['movable'] == 1 && $f != 'mirror')
@@ -313,8 +300,6 @@ tv2_body_player ($i, $d_array)
           $p .= '</nobr>';
         }
     
-      if ($v)
-        {
     //      $p .= tv2_prev_video_button ($d);
     //      $p .= tv2_next_video_button ($d);
     
@@ -324,21 +309,19 @@ tv2_body_player ($i, $d_array)
               $p .= tv2_vote ($d);
               $p .= '</nobr>';
             }
-        }
-      else
-        {
-          if (isset ($d['voteable']))
-            if ($d['voteable'] == 1)
-            {
-              $p .= '&nbsp;&nbsp;&nbsp;<nobr>';
-              $p .= tv2_vote_show ($d);
-              $p .= '</nobr>';
-            }
-        }
+
+//          if (isset ($d['voteable']))
+//            if ($d['voteable'] == 1)
+//            {
+//              $p .= '&nbsp;&nbsp;&nbsp;<nobr>';
+//              $p .= tv2_vote_show ($d);
+//              $p .= '</nobr>';
+//            }
     
-      $p .= '<br><span style="color:#bbb;">';
-      $p .= tv2_keywords ($d);
-      $p .= '</span>';
+      $p .= '<br>';
+  $p .= '<span class="tv2_tags">Tags: ';
+  $p .= tv2_keywords ($d);
+  $p .= '</span>';  
       $p .= '</div>';
   return $p;
 }
