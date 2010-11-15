@@ -117,8 +117,7 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 {
   $p = '';
 
-/*  // detect if button is active/selected
-
+  // detect if button is active/selected
   $t = array ();
   parse_str ($query, $t[0]);
   parse_str ($_SERVER['QUERY_STRING'], $t[1]);
@@ -143,7 +142,6 @@ if ($selected == 1 && !strncasecmp ($query, 'http://', 7))
   if (!stristr ($query, $_SERVER['HTTP_HOST']))
     $selected = 0;
 }
-*/
 
   if ($selected)
     $p .= '<span class="tooltip"';
@@ -333,53 +331,14 @@ widget_cms_col ($s, $i, $logo, $config_xml, $name = 'q', $link_suffix = NULL)
 
 
 function
-str_compare2 ($str1, $str2)
-{
-/*
-// returns the percentage of the string "similarity"
-    $count = 0;
-   
-    $str1 = ereg_replace("[^a-z]", ' ', strtolower($str1));
-    while(strstr($str1, '  ')) {
-        $str1 = str_replace('  ', ' ', $str1);
-    }
-    $str1 = explode(' ', $str1);
-   
-    $str2 = ereg_replace("[^a-z]", ' ', strtolower($str2));
-    while(strstr($str2, '  ')) {
-        $str2 = str_replace('  ', ' ', $str2);
-    }
-    $str2 = explode(' ', $str2);
-   
-    if(count($str1)<count($str2)) {
-        $tmp = $str1;
-        $str1 = $str2;
-        $str2 = $tmp;
-        unset($tmp);
-    }
-   
-    for($i=0; $i<count($str1); $i++) {
-        if(in_array($str1[$i], $str2)) {
-            $count++;
-        }
-    }
-   
-    return $count/count($str2)*100;
-*/
-//      if (similar_text ($last, $category->title, $match) < 50)
-//      if (levenshtein ($last, $category->title) > 100)
-//      if (str_compare ($last, $category->title) < 50)
-  $t = array ();
-  $t[] = explode (' ', $str1);
-  $t[] = explode (' ', $str2);
-  return !strncmp (soundex ($t[0][0]), soundex ($t[1][0]), 3);
-}
-
-
-function
 widget_cms_rc ($s, $i, $logo, $config_xml, $name = 'q', $link_suffix = NULL)
 {
   $category = $config_xml->category[$i];
+
+  $sep = '</div><div style="top:10px;float:left;'
+         // DEBUG
+//              .'border:1px solid #000;'
+        .'">';
 
   $p = '';
 
@@ -410,20 +369,19 @@ widget_cms_rc ($s, $i, $logo, $config_xml, $name = 'q', $link_suffix = NULL)
 
   if ($next != '')
     {
-      if (!str_compare2 ($category->title, $next))
+      if (!str_similar ($category->title, $next))
         {
-          $s = '</div><div style="top:10px;float:left;'
-               // DEBUG
-//              .'border:1px solid #000;'
-              .'">';
+          $s = $sep;
 
           // HACK: combine also completely different but single(!) categories
           if ($pre != '' && $nextnext != '')
-            if (!str_compare2 ($pre, $category->title) &&
-                !str_compare2 ($next, $nextnext))
+            if (!str_similar ($pre, $category->title) &&
+                !str_similar ($next, $nextnext))
               $s = '';
           $p .= $s;
         }
+      else if ($category->separator == 1)
+        $p .= $sep;
     }
   else
     {
