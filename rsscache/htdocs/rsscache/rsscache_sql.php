@@ -364,6 +364,46 @@ tv2_sql_match_func ($db, $q, $filter)
 
 
 function
+tv2_sql_leftjoin_func ($db, $q, $filter)
+{
+  global $start, $num;
+  $debug = 0;
+
+  $a = explode (' ', strtolower ($q));
+  $a = array_merge (array_unique ($a));
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($a);
+
+  $p = '';
+  $p .= ' AND rsstool_table.rsstool_url_crc32'
+       .' IN (';
+
+  $p .= 'SELECT rsstool_url_crc32'
+       .' FROM keyword_index'
+       .' LEFT JOIN keyword_table'
+       .' ON keyword_index.keyword_id = keyword_table.keyword_id'
+       .' WHERE keyword_table.keyword IN (';
+
+  for ($i = 0; isset ($a[$i]); $i++)
+    {
+      if ($i > 0)
+        $p .= ', ';
+      $p .= '\''.trim ($a[$i]).'\'';
+    }
+
+  $p .= ')';
+//  $p .= 'LIMIT '.$start.', '.$num;
+  $p .= ')';
+
+  // DEBUG
+//  echo $p;
+
+  return $p;
+}
+
+
+function
 tv2_sql ($c, $q, $f, $v, $start, $num)
 {
   global $tv2_dbhost,
@@ -391,12 +431,6 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
   $start = $db->sql_stresc ($start);
   $num = $db->sql_stresc ($num);
 
-//SELECT rsstool_table.desc FROM rsstool_table WHERE rsstool_table.id = (
-// SELECT id_table.id FROM id_table LEFT_JOIN id_table ON
-// id_table.keyword_id = keywords_table_id WHERE(keywords_table.  keyword =
-// "search" OR keywords_table.keyword = "search2"));
-
-
   $sql_query_s = '';
 //  $sql_query_s .= 'EXPLAIN ';
 //  $sql_query_s .= 'SELECT * FROM rsstool_table WHERE 1';
@@ -410,9 +444,9 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
                   .' tv2_category,'
                   .' tv2_moved,'
                   .' rsstool_media_duration,'
-                  .' rsstool_keywords,'
-                  .' tv2_votes,'
-                  .' tv2_score'
+                  .' rsstool_keywords'
+//                  .' tv2_votes,'
+//                  .' tv2_score'
                   .' FROM rsstool_table';
 
   if ($v) // direct
@@ -426,7 +460,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
 
       // category
       if ($c)
-        $sql_query_s .= ' AND ( `tv2_moved` = \''.$c.'\' )';
+        $sql_query_s .= ' AND ( tv2_moved = \''.$c.'\' )';
 
       // filter
       $filter = NULL;
@@ -441,7 +475,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
         }
 
       if ($tv2_enable_search)
-        $sql_query_s .= tv2_sql_match_func ($db, $q, $filter);
+//        $sql_query_s .= tv2_sql_match_func ($db, $q, $filter);
+        $sql_query_s .= tv2_sql_leftjoin_func ($db, $q, $filter);
 
       // functions
       if ($f == 'new')
@@ -471,6 +506,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
       $sql_query_s .= ' LIMIT '.$start.','.$num;
     }
 
+  // DEBUG
+  echo $sql_query_s;
   $db->sql_write ($sql_query_s, 1, $debug);
 
   $d = $db->sql_read (1, 0 /* $debug */);
