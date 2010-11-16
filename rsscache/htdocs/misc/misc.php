@@ -518,8 +518,10 @@ function
 misc_get_keywords_html ($s, $flag = 0) // default = isalnum
 {
   // so one keyword does not get glued to another because of strip_tags()
-  $s = str_replace ('>', '> ', $s);
-  $s = str_replace ('<', '< ', $s);
+//  $s = str_replace ('>', '> ', $s);
+//  $s = str_replace ('<', '< ', $s);
+  $s = str_replace (array ('>',   '<'),
+                    array ('> ', ' <'), $s);
   $s = str_replace (array ('  ', '  ', '  ', '  ', '  '), ' ', $s);
   $s = strip_tags ($s);
 

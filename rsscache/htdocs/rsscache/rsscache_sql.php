@@ -366,8 +366,10 @@ tv2_sql_match_func ($db, $q, $filter)
 function
 tv2_sql_leftjoin_func ($db, $q, $filter)
 {
-  global $start, $num;
   $debug = 0;
+
+  if (!$q)
+    return '';
 
   $a = explode (' ', strtolower ($q));
   $a = array_merge (array_unique ($a));
@@ -393,7 +395,6 @@ tv2_sql_leftjoin_func ($db, $q, $filter)
     }
 
   $p .= ')';
-//  $p .= 'LIMIT '.$start.', '.$num;
   $p .= ')';
 
   // DEBUG
