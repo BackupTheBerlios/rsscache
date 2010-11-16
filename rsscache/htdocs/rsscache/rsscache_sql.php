@@ -507,7 +507,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
     }
 
   // DEBUG
-  echo $sql_query_s;
+//  echo $sql_query_s;
   $db->sql_write ($sql_query_s, 1, $debug);
 
   $d = $db->sql_read (1, 0 /* $debug */);
