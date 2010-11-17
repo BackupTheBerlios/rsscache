@@ -43,36 +43,51 @@ function
 config_xml_normalize ($config)
 {
   global $tv2_use_database;
+  global $tv2_videos_s;
 
   if ($tv2_use_database == 1)
     {
-  $stats = tv2_sql_stats ();
+      $stats = tv2_sql_stats ();
 
-  // add new variables
-  $config->videos = $stats['videos'];
-  $config->videos_today = $stats['videos_today'];
-  $config->videos_7_days = $stats['videos_7_days'];
-  $config->videos_30_days = $stats['videos_30_days'];
-  $config->days = $stats['days'];
+      // add new variables
+      $config->videos = $stats['videos'];
+      $config->videos_today = $stats['videos_today'];
+      $config->videos_7_days = $stats['videos_7_days'];
+      $config->videos_30_days = $stats['videos_30_days'];
+      $config->days = $stats['days'];
 
-  for ($i = 0; $config->category[$i]; $i++)
-    if ($config->category[$i]->query)
-      {
-        $a = array();
-        parse_str ($config->category[$i]->query, $a);
-        if (isset ($a['c']))
+      for ($i = 0; isset ($config->category[$i]); $i++)
+        if ($config->category[$i]->query)
           {
-            $stats = tv2_sql_stats ($config->category[$i]->name);
-
-            $config->category[$i]->videos = $stats['videos'];
-            $config->category[$i]->videos_today = $stats['videos_today'];
-            $config->category[$i]->videos_7_days = $stats['videos_7_days'];
-            $config->category[$i]->videos_30_days = $stats['videos_30_days'];
-            $config->category[$i]->days = $stats['days'];
+            $a = array();
+            parse_str ($config->category[$i]->query, $a);
+            if (isset ($a['c']))
+              {
+                $stats = tv2_sql_stats ($config->category[$i]->name);
+    
+                $config->category[$i]->videos = $stats['videos'];
+                $config->category[$i]->videos_today = $stats['videos_today'];
+                $config->category[$i]->videos_7_days = $stats['videos_7_days'];
+                $config->category[$i]->videos_30_days = $stats['videos_30_days'];
+                $config->category[$i]->days = $stats['days'];
+              }
           }
-      }
     }
 
+  for ($i = 0; isset ($config->category[$i]); $i++)
+    {
+      $category = $config->category[$i];
+      $category->tooltip = $category->title
+                .($category->videos ? ', '.$category->videos.' '.$tv2_videos_s : '')
+                .($category->days ? ', '.$category->days.' days' : '');
+//      if ($category->query)
+//        {
+//          $b = array ();
+//          parse_str ($category->query, $b);
+//          $n = array_merge ($a, $b);
+//          $category->query = htmlentities (http_build_query2 ($n, false));
+//        }
+    }
   return $config;
 }
 

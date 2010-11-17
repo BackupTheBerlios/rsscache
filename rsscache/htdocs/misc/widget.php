@@ -146,6 +146,14 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
         $selected = 0;
     }
 */
+  if ($link_suffix)
+    {
+       $t = array ();
+       parse_str ($query, $t[0]);
+       parse_str ($link_suffix, $t[1]);
+       $a = array_merge ($t[1], $t[0]);
+       $query = http_build_query2 ($a, false);
+    }
 
   if ($selected)
     $p .= '<span class="tooltip"';
@@ -312,17 +320,24 @@ define ('WIDGET_CMS_BUTTON32', 128);
 
 
 function
-widget_cms_row ($s, $i, $logo, $config_xml, $name = 'q', $link_suffix = NULL)
+widget_cms_row_func ($s, $i, $logo, $config_xml)
 {
+  $category = $config_xml->category[$i];
   $p = '';
   $p .= $s;
+      // <separate>
+      if ($category->separate == 1)
+        $p .= '<br>';
+      else if ($category->separate == 2)
+        $p .= '<hr>';
   return $p; 
 }
 
 
 function
-widget_cms_col ($s, $i, $logo, $config_xml, $name = 'q', $link_suffix = NULL)
+widget_cms_col_func ($s, $i, $logo, $config_xml)
 {
+      $category = $config_xml->category[$i];
   $p = '';
   $p .= $s;
     $p .= '<br>'
@@ -330,12 +345,17 @@ widget_cms_col ($s, $i, $logo, $config_xml, $name = 'q', $link_suffix = NULL)
 //         .'<br>'  
 //         .'<br>'
 ;
+      // <separate>
+      if ($category->separate == 1)
+        $p .= '<br>';
+      else if ($category->separate == 2)
+        $p .= '<hr>';
   return $p; 
 }
 
 
 function
-widget_cms_rc ($s, $i, $logo, $config_xml, $name = 'q', $link_suffix = NULL)
+widget_cms_rc_func ($s, $i, $logo, $config_xml)
 {
   $category = $config_xml->category[$i];
 
@@ -392,42 +412,39 @@ widget_cms_rc ($s, $i, $logo, $config_xml, $name = 'q', $link_suffix = NULL)
       $p .= '</div>';
       $p .= '<div class="clear"></div>';
     }
+
+      // <separate>
+      if ($category->separate == 1)
+        $p .= '<br>';
+      else if ($category->separate == 2)
+        $p .= '<hr>';
   return $p;
 }
 
 
 function
-widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 4)
+widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
 {
   // DEBUG
 //  echo $flags;
 //  print_r ($config_xml);
-  $q = get_request_value ($name);
 
   $p = '';
 
   // categories  
   for ($i = 0; isset ($config_xml->category[$i]); $i++)
-//    if (!isset ($config_xml->category[$i]->button) ||
-//        (isset ($config_xml->category[$i]->button) && $config_xml->category[$i]->button == 1))
     {
       $category = $config_xml->category[$i];
 
       $s = '';
       if ($category->query || $category->id)
         {   
-          $query = '';
-//          if ($category->embed == 1)
-//            $query .= $name.'='.$category->id;
-//          else
-            $query .= $category->query;
-
           if ($category->buttononly == 1 || $flags & WIDGET_CMS_BUTTON_ONLY)
             $f = WIDGET_BUTTON_ONLY;
           else
             $f = WIDGET_BUTTON_SMALL;
 
-          $s .= widget_button (($category->logo ? $category->logo : NULL), $query,
+          $s .= widget_button (($category->logo ? $category->logo : NULL), $category->query,
                                $category->title, ($category->tooltip ? $category->tooltip : $category->title),
                                $link_suffix, $f);
         }
@@ -442,32 +459,11 @@ widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 4)
 
 
       if ($flags & WIDGET_CMS_COL)
-        $p .= widget_cms_col ($s, $i, $logo, $config_xml, $name, $link_suffix);
+        $p .= widget_cms_col_func ($s, $i, $logo, $config_xml);
       else if ($flags & WIDGET_CMS_RC)
-        $p .= widget_cms_rc ($s, $i, $logo, $config_xml, $name, $link_suffix);
+        $p .= widget_cms_rc_func ($s, $i, $logo, $config_xml);
       else // if ($flags & WIDGET_CMS_ROW)
-        $p .= widget_cms_row ($s, $i, $logo, $config_xml, $name, $link_suffix);
-
-      // <separate>
-      if ($category->separate == 1)
-        $p .= '<br>';
-      else if ($category->separate == 2)
-        $p .= '<hr>';
-    }
-
-  // content
-// TODO: remove
-  if ($q)
-    {
-      for ($i = 0; $config_xml->category[$i]; $i++)
-        if ($q == $config_xml->category[$i]->id)
-          {
-            // embed from localhost
-            if (file_exists ($config_xml->category[$i]->query))
-              $p .= widget_embed_local ($config_xml->category[$i]->query);
-            else
-              $p .= widget_embed ($config_xml->category[$i]->query);
-          }
+        $p .= widget_cms_row_func ($s, $i, $logo, $config_xml);
     }
 
   return $p;

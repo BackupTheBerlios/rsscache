@@ -18,9 +18,9 @@ require_once ('tv2_misc.php');
 function
 tv2_highlight ($s)
 {
-  $q = get_request_value ('q');
+//  $q = get_request_value ('q');
   // highlight search words
-  $a = explode (array (' ', '+'), $q);
+//  $a = explode (array (' ', '+'), $q);
   // DEBUG
 //  print_r ($a);
 //  for ($i = 0; isset ($a[$i]); $i++)
@@ -357,8 +357,11 @@ tv2_body ()
   $p = '';
 
   // icons
-  if ($f != 'mirror')
-    $p .= tv2_button_array ($config, '%s ', 0, sizeof ($config->category));
+  $p .= ''
+       .'<div class="tv2_button">'
+       .widget_cms (NULL, $config, NULL, 8)
+       .'</div>'
+;
 
   $p .= '<br>'  
 //       .'<br>'  
@@ -485,8 +488,7 @@ tv2_body ()
       $func_config_xml = simplexml_load_file ('func_config.xml');
       $p .= ''
            .'<div class="tv2_func">'
-//widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 4)
-           .widget_cms (NULL, $func_config_xml, 'q', NULL, 4)
+           .widget_cms (NULL, $func_config_xml, http_build_query2 (array (), true), 4)
            .'</div>'
 ;
       $p .= '<div class="clear"></div>';
@@ -609,12 +611,12 @@ if ($f == 'read' ||
 
         setcookie ('rw', http_build_query2 ($a, false), $tv2_cookie_expire);
 */
-        setcookie ('rw', $_SERVER['HTTP_REFERER'], $tv2_cookie_expire);
+//        setcookie ('rw', $_SERVER['HTTP_REFERER'], $tv2_cookie_expire);
       }
 
     // redirect
 //    header ('refresh: 0; url='.get_cookie ('rw'));
-    header ('location:'.get_cookie ('rw'));
+//    header ('location:'.get_cookie ('rw'));
     exit;
   }
 /*
@@ -726,8 +728,7 @@ if (file_exists ('site_config.xml'))
     $site_config_xml = simplexml_load_file ('site_config.xml');
     $head .= ''
             .'<span class="tv2_site">'
-//widget_cms ($logo, $config_xml, $name = 'q', $link_suffix = NULL, $flags = 4)
-            .widget_cms (NULL, $site_config_xml, 'q', NULL, 4)
+            .widget_cms (NULL, $site_config_xml, NULL, 4)
             .'</span>'
             .'<br>'
             .'<br>'
