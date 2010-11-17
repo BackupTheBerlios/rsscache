@@ -73,29 +73,30 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 
   // detect if button is active/selected
   $t = array ();
-  parse_str ($query, $t[0]);
+  $a = parse_url ($query);
+  parse_str ($a['query'] ? $a['query'] : $a['path'], $t[0]);
   parse_str ($_SERVER['QUERY_STRING'], $t[1]);
   // DEBUG
 //  echo '<pre><tt>';
 //  print_r ($t);
   $a = array_keys ($t[0]);
 
-  $selected = 0;
-  for ($i = 0; isset ($a[$i]); $i++)
-    if ($t[1][$a[$i]] == $t[0][$a[$i]])
-      {
-        // DEBUG
-//        echo $i.', '.$t[0][$a[$i]].', '.$t[1][$a[$i]].', '.$label.'<br>';
-        $selected = 1;
-        break;
-      }
+  $selected = 1; // black-out link
 
-//  if ($selected == 0)
+  // check query
+//  if (isset ($t[0][0]))
+  if (count (array_diff ($t[0], $t[1])) > 0)
+    $selected = 0;
+
+  // check domain
+  if ($selected == 1)
+    if (!isset ($t[0][0]))
     {
-//      echo $query.', '.$_SERVER['HTTP_HOST'].'<br>';
       $t = parse_url ($query);
-      if (!strcasecmp ($t['host'], $_SERVER['HTTP_HOST']))
-        $selected = 1;
+//      echo $t['host'].', '.$_SERVER['HTTP_HOST'].'<br>';  
+      if ($t['host'] != '')
+        if (strcasecmp ($t['host'], $_SERVER['HTTP_HOST']))
+          $selected = 0;
     }
 
   if ($link_suffix)
