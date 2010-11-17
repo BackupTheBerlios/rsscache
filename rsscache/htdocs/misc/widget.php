@@ -90,7 +90,7 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
         break;
       }
 
-  if ($selected == 0)
+//  if ($selected == 0)
     {
 //      echo $query.', '.$_SERVER['HTTP_HOST'].'<br>';
       $t = parse_url ($query);
