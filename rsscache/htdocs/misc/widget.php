@@ -125,8 +125,6 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 //        echo sprint_r ($t[0]).'<br>'.sprint_r ($t[1]).'<br><br><br><br>';
   $a = array_keys ($t[0]);
 // TODO: fix this
-  $selected = 0;
-/*
   $selected = 1;
 
   for ($i = 0; isset ($a[$i]); $i++)
@@ -138,14 +136,14 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
         break;
       }
 
-  if ($selected == 1 && !strncasecmp ($query, 'http://', 7))
+  if ($selected == 1)
     {
 //      echo $query.', '.$_SERVER['HTTP_HOST'].'<br>';
-
-      if (!stristr ($query, $_SERVER['HTTP_HOST']))
+      $t = parse_url ($query);
+      if (strcasecmp ($t['host'], $_SERVER['HTTP_HOST']))
         $selected = 0;
     }
-*/
+
   if ($link_suffix)
     {
        $t = array ();
@@ -361,16 +359,16 @@ widget_cms_rc_func ($s, $i, $logo, $config_xml)
 
   $sep = '</div><div style="top:10px;float:left;'
          // DEBUG
-//              .'border:1px solid #000;'
+//        .'border:1px solid #000;'
         .'">';
 
   $p = '';
 
   if ($i == 0)
-  $p .= '<div style="float:left;'
-        // DEBUG
-//       .'border:1px solid #000;'
-       .'">';
+    $p .= '<div style="float:left;'
+          // DEBUG
+//         .'border:1px solid #000;'
+         .'">';
 
   $p .= $s;
   $p .= '<br>';
@@ -406,6 +404,12 @@ widget_cms_rc_func ($s, $i, $logo, $config_xml)
         }
       else if ($category->separator == 1)
         $p .= $sep;
+
+      // <separate>
+      if ($category->separate == 1)
+        $p .= '<br>';
+      else if ($category->separate == 2)
+        $p .= '<hr>';
     }
   else
     {
@@ -413,11 +417,6 @@ widget_cms_rc_func ($s, $i, $logo, $config_xml)
       $p .= '<div class="clear"></div>';
     }
 
-      // <separate>
-      if ($category->separate == 1)
-        $p .= '<br>';
-      else if ($category->separate == 2)
-        $p .= '<hr>';
   return $p;
 }
 
@@ -444,9 +443,12 @@ widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
           else
             $f = WIDGET_BUTTON_SMALL;
 
-          $s .= widget_button (($category->logo ? $category->logo : NULL), $category->query,
-                               $category->title, ($category->tooltip ? $category->tooltip : $category->title),
-                               $link_suffix, $f);
+          $s .= widget_button (($category->logo ? $category->logo : NULL),
+                               $category->query,
+                               $category->title,
+                               ($category->tooltip ? $category->tooltip : $category->title),
+                               $link_suffix,
+                               $f);
         }
       else // <title> (no link)
         $s .= $category->title;
