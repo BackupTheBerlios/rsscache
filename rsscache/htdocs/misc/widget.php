@@ -74,8 +74,10 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   // detect if button is active/selected
   $t = array (array (), array ());
   $a = parse_url ($query);
-  if ($a)
-    parse_str ($a['query'] ? $a['query'] : $a['path'], $t[0]);
+  if (isset ($a['query']))
+    parse_str ($a['query'], $t[0]);
+  else if (isset ($a['path']))
+    parse_str ($a['path'], $t[0]);
   parse_str ($_SERVER['QUERY_STRING'], $t[1]);
   // DEBUG
 //  echo '<pre><tt>';
