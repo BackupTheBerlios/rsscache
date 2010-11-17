@@ -63,52 +63,6 @@ widget_count_steps ()
 }
 
 
-/*
-  takes image with e.g. 16x16 font tiles and maps them to ascii codes
-  generates CSS code to show text with it by using clip()ing
-  put CSS code into a span or div
-
-  tile_rows, tile_cols
-  16x16 are 256 characters/tiles
-
-  enclose this in a div tag to place it on the page
-    e.g. <div style="position:absolute;top:100px;left:200px;">
-*/
-function
-widget_fontiles ($image_url, $image_width, $image_height, $text, $file_cols = 16, $file_rows = 16)
-{
-  $char_w = $image_width / $file_cols; 
-  $char_h = $image_height / $file_rows;
-
-  $p = '';
-  for ($i = 0; $i < strlen ($text); $i++)
-    {
-      $c = ord ($text[$i]);
-
-      $left = $c % $file_cols;
-      $left *= $char_w;
-
-      $top = (int) ($c / $file_rows);
-      $top *= $char_h;
-
-      $right = $left + $char_w;
-      $bottom = $top + $char_h;
-
-      $pos_left = $i * $char_w - $left;
-      $pos_top = 0 - $top; 
-
-      $p .= '<img src="'.$image_url.'" style="'
-           .'position:absolute;'
-           .'clip:rect('.$top.'px,'.$right.'px,'.$bottom.'px,'.$left.'px);'
-           .'top:'.$pos_top.'px;left:'.$pos_left.'px;'
-           .'width:'.$image_width.';height:'.$image_height.';'
-           .'">'."\n";
-    }
-
-  return $p;
-}
-
-
 define ('WIDGET_BUTTON_SMALL', 1);
 define ('WIDGET_BUTTON_ONLY', 2);
 define ('WIDGET_BUTTON_STATIC', 4);
@@ -121,27 +75,27 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   $t = array ();
   parse_str ($query, $t[0]);
   parse_str ($_SERVER['QUERY_STRING'], $t[1]);
-        // DEBUG
-//        echo sprint_r ($t[0]).'<br>'.sprint_r ($t[1]).'<br><br><br><br>';
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($t);
   $a = array_keys ($t[0]);
-// TODO: fix this
-  $selected = 1;
 
+  $selected = 0;
   for ($i = 0; isset ($a[$i]); $i++)
-    if (strcasecmp ($t[1][$a[$i]], $t[0][$a[$i]]))
+    if ($t[1][$a[$i]] == $t[0][$a[$i]])
       {
         // DEBUG
-//        echo $i.', '.$t[0][$a[$i]].', '.$t[1][$a[$i]].'<br>';
-        $selected = 0;
+//        echo $i.', '.$t[0][$a[$i]].', '.$t[1][$a[$i]].', '.$label.'<br>';
+        $selected = 1;
         break;
       }
 
-  if ($selected == 1)
+  if ($selected == 0)
     {
 //      echo $query.', '.$_SERVER['HTTP_HOST'].'<br>';
       $t = parse_url ($query);
-      if (strcasecmp ($t['host'], $_SERVER['HTTP_HOST']))
-        $selected = 0;
+      if (!strcasecmp ($t['host'], $_SERVER['HTTP_HOST']))
+        $selected = 1;
     }
 
   if ($link_suffix)
@@ -224,73 +178,6 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
     $p .= '</span>';
   else
     $p .= '</a>';
-
-  return $p;
-}
-
-
-function
-widget_select_option ($icon, $value, $label, $tooltip, $selected = 0)
-{
-  $p = '';
-
-  $p .= '<option'
-       .($selected == 1 ? ' selected="selected"' : '')
-       .($tooltip ? ' title="'.$tooltip.'"' : '')
-       .' value="'.$value.'"';
-
-  if ($icon)
-    $p .= ' style="background-image:url('.$icon.');'
-         .'background-repeat:no-repeat;background-position:left;'
-         .'padding-left:18px;'
-          .'"';
-
-  $p .= '>'
-       .$label
-       .'</option>';
-
-  return $p;
-}
-
-
-/*
-  $a = array (array ('value', 'label', 'logo.png'))
-*/
-function
-widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1)
-{
-  $p = '';
-  $p .= '<select name="'.$name.'"'.($active == 1 ? '' : ' disabled="disabled"');
-/*
-  if ($selected)
-    for ($i = 0; isset ($a[$i]); $i++)
-      if ($a[$i][2])
-        if (!strcasecmp ($a[$i][0], $selected))
-          {
-            $p .= ' style="background-image:url('.$a[$i][2].');'
-                 .'background-repeat:no-repeat;background-position:left;'
-                 .'padding-left:18px;'
-                 .'"'
-//                 .' onhover="javascript:this.style.backgroundImage=\'none\';"'
-                 .' onchange="javascript:this.form.submit();"'
-;
-            break;
-          }
-*/
-  $p .= '>';
-  $sel = 0;
-  for ($i = 0; isset ($a[$i]); $i++)
-    {
-      if ($selected)
-        if (!strcasecmp ($a[$i][0], $selected) && !($sel))
-          $sel = 1;
-
-      $p .= widget_select_option ($a[$i][2], $a[$i][0], $a[$i][1], '', $sel);
-
-      if ($sel == 1)
-        $sel = 2;
-    }
-  $p .= '</select>';
 
   return $p;
 }
@@ -470,6 +357,119 @@ widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
 
   return $p;
 }  
+
+
+function
+widget_select_option ($icon, $value, $label, $tooltip, $selected = 0)
+{
+  $p = '';
+
+  $p .= '<option'
+       .($selected == 1 ? ' selected="selected"' : '')
+       .($tooltip ? ' title="'.$tooltip.'"' : '')
+       .' value="'.$value.'"';
+
+  if ($icon)
+    $p .= ' style="background-image:url('.$icon.');'
+         .'background-repeat:no-repeat;background-position:left;'
+         .'padding-left:18px;'
+          .'"';
+
+  $p .= '>'
+       .$label
+       .'</option>';
+
+  return $p;
+}
+
+
+/*
+  $a = array (array ('value', 'label', 'logo.png'))
+*/
+function
+widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1)
+{
+  $p = '';
+  $p .= '<select name="'.$name.'"'.($active == 1 ? '' : ' disabled="disabled"');
+/*
+  if ($selected)
+    for ($i = 0; isset ($a[$i]); $i++)
+      if ($a[$i][2])
+        if (!strcasecmp ($a[$i][0], $selected))
+          {
+            $p .= ' style="background-image:url('.$a[$i][2].');'
+                 .'background-repeat:no-repeat;background-position:left;'
+                 .'padding-left:18px;'
+                 .'"'
+//                 .' onhover="javascript:this.style.backgroundImage=\'none\';"'
+                 .' onchange="javascript:this.form.submit();"'
+;
+            break;
+          }
+*/
+  $p .= '>';
+  $sel = 0;
+  for ($i = 0; isset ($a[$i]); $i++)
+    {
+      if ($selected)
+        if (!strcasecmp ($a[$i][0], $selected) && !($sel))
+          $sel = 1;
+
+      $p .= widget_select_option ($a[$i][2], $a[$i][0], $a[$i][1], '', $sel);
+
+      if ($sel == 1)
+        $sel = 2;
+    }
+  $p .= '</select>';
+
+  return $p;
+}
+
+
+/*
+  takes image with e.g. 16x16 font tiles and maps them to ascii codes
+  generates CSS code to show text with it by using clip()ing
+  put CSS code into a span or div
+
+  tile_rows, tile_cols
+  16x16 are 256 characters/tiles
+
+  enclose this in a div tag to place it on the page
+    e.g. <div style="position:absolute;top:100px;left:200px;">
+*/
+function
+widget_fontiles ($image_url, $image_width, $image_height, $text, $file_cols = 16, $file_rows = 16)
+{
+  $char_w = $image_width / $file_cols; 
+  $char_h = $image_height / $file_rows;
+
+  $p = '';
+  for ($i = 0; $i < strlen ($text); $i++)
+    {
+      $c = ord ($text[$i]);
+
+      $left = $c % $file_cols;
+      $left *= $char_w;
+
+      $top = (int) ($c / $file_rows);
+      $top *= $char_h;
+
+      $right = $left + $char_w;
+      $bottom = $top + $char_h;
+
+      $pos_left = $i * $char_w - $left;
+      $pos_top = 0 - $top; 
+
+      $p .= '<img src="'.$image_url.'" style="'
+           .'position:absolute;'
+           .'clip:rect('.$top.'px,'.$right.'px,'.$bottom.'px,'.$left.'px);'
+           .'top:'.$pos_top.'px;left:'.$pos_left.'px;'
+           .'width:'.$image_width.';height:'.$image_height.';'
+           .'">'."\n";
+    }
+
+  return $p;
+}
 
 
 /*
