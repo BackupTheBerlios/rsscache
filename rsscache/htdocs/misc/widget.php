@@ -30,7 +30,6 @@ include ('embed.php');
 /*
 CSS: canvas image
   <img style="width:20%;clip:rect(10px 150px 150px 70px);position:absolute;" src="widget_relate_refrigator.png">
-
 */
 
 
@@ -83,7 +82,7 @@ widget_count_steps ()
 
 define ('WIDGET_BUTTON_SMALL', 1);
 define ('WIDGET_BUTTON_ONLY', 2);
-define ('WIDGET_BUTTON_STATIC', 4);
+//define ('WIDGET_BUTTON_STATIC', 4);
 function
 widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 {
@@ -116,9 +115,9 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
       $t = parse_url ($query);
 //      echo $t['host'].', '.$_SERVER['HTTP_HOST'].'<br>';  
       if (isset ($t['host']))
-      if ($t['host'] != '')
-        if (strcasecmp ($t['host'], $_SERVER['HTTP_HOST']))
-          $selected = 0;
+        if ($t['host'] != '')
+          if (strcasecmp ($t['host'], $_SERVER['HTTP_HOST']))
+            $selected = 0;
     }
 
   if ($link_suffix)
@@ -177,8 +176,8 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 //  if ($icon && $label)
 //    $p .= '&nbsp;';
 
-  if ($flags & WIDGET_BUTTON_STATIC)
-    return ($icon ? $s : '');
+//  if ($flags & WIDGET_BUTTON_STATIC)
+//    return ($icon ? $s : '');
 
   $p .= $s;
 
@@ -225,8 +224,6 @@ define ('WIDGET_CMS_COL', 16);  // column with buttons
 define ('WIDGET_CMS_BUTTON_ONLY', 32); // show button only; not text
 define ('WIDGET_CMS_BUTTON16', 64);
 define ('WIDGET_CMS_BUTTON32', 128);
-
-
 function
 widget_cms_row_func ($s, $i, $logo, $config_xml)
 {
@@ -267,11 +264,6 @@ widget_cms_rc_func ($s, $i, $logo, $config_xml)
 {
   $category = $config_xml->category[$i];
 
-  $sep = '</div><div style="top:10px;float:left;'
-         // DEBUG
-//        .'border:1px solid #000;'
-        .'">';
-
   $p = '';
 
   if ($i == 0)
@@ -283,43 +275,24 @@ widget_cms_rc_func ($s, $i, $logo, $config_xml)
   $p .= $s;
   $p .= '<br>';
 
-  $pre = '';
-  if ($i > 0)
-  if (isset ($config_xml->category[$i - 1]))
-    if ($config_xml->category[$i - 1]->title)
-      $pre = $config_xml->category[$i - 1]->title;
-
   $next = '';
   if (isset ($config_xml->category[$i + 1]))
     if ($config_xml->category[$i + 1]->title)
       $next = $config_xml->category[$i + 1]->title;
 
-  $nextnext = '';
-  if (isset ($config_xml->category[$i + 2]))
-    if ($config_xml->category[$i + 2]->title)
-      $nextnext = $config_xml->category[$i + 2]->title;
-
   if ($next != '')
     {
-      if (!str_similar ($category->title, $next))
-        {
-          $s = $sep;
-
-          // HACK: combine also completely different but single(!) categories
-          if ($pre != '' && $nextnext != '')
-            if (!str_similar ($pre, $category->title) &&
-                !str_similar ($next, $nextnext))
-              $s = '';
-          $p .= $s;
-        }
-      else if ($category->separator == 1)
-        $p .= $sep;
+      if ($category->separator > 0)
+        $p .= '</div><div style="top:10px;float:left;'
+              // DEBUG
+//             .'border:1px solid #000;'
+             .'">';
 
       // <separate>
-      if ($category->separate == 1)
-        $p .= '<br>';
-      else if ($category->separate == 2)
-        $p .= '<hr>';
+//      if ($category->separate == 1)
+//        $p .= '<br>';
+//      else if ($category->separate == 2)
+//        $p .= '<hr>';
     }
   else
     {
@@ -346,7 +319,7 @@ widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
       $category = $config_xml->category[$i];
 
       $s = '';
-      if ($category->query || $category->id)
+      if ($category->query)
         {   
           if ($category->buttononly == 1 || $flags & WIDGET_CMS_BUTTON_ONLY)
             $f = WIDGET_BUTTON_ONLY;
@@ -368,7 +341,6 @@ widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
         $s .= '&nbsp;<img src="images/new.png">';
 
       $s .= '&nbsp;&nbsp;';
-
 
       if ($flags & WIDGET_CMS_COL)
         $p .= widget_cms_col_func ($s, $i, $logo, $config_xml);
