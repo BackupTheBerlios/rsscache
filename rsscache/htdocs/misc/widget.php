@@ -99,7 +99,7 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   // DEBUG
 //  echo '<pre><tt>';
 //  print_r ($t);
-  $a = array_keys ($t[0]);
+//  $a = array_keys ($t[0]);
 
   $selected = 1; // black-out link
 
