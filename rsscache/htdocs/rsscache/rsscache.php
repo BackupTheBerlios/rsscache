@@ -90,11 +90,6 @@ tv2_body_item ($i, $d_array)
 //  if ($f != 'mirror')
 //    $p .= tv2_player_button ($d);
 
-  // related
-//  if ($f != 'mirror')
-//    if ($tv2_related_search)
-//      $p .= tv2_related_button ($d);
-
   $s = tv2_duration ($d);
   if ($s)
     {
@@ -152,6 +147,14 @@ tv2_body_item ($i, $d_array)
   $p .= '<span class="tv2_tags">Tags: ';
   $p .= tv2_keywords ($d);
   $p .= '</span>';
+
+  // related
+  if ($tv2_related_search)
+    {
+      $p .= '<span class="tv2_related">';
+      $p .= tv2_related_search ($d);
+      $p .= '</span>';
+    }
 
   $p .= '</div>'; // desc
 
@@ -252,11 +255,6 @@ tv2_body_player ($i, $d_array)
 
       $p .= '&nbsp;';
 
-      // related
-      if ($f != 'mirror')
-        if ($tv2_related_search)
-        $p .= tv2_related_button ($d);
-
       // HACK: fix height
       $p .= '<img src="images/trans.png" height="32" width="1">';
 
@@ -322,7 +320,17 @@ tv2_body_player ($i, $d_array)
   $p .= '<span class="tv2_tags">Tags: ';
   $p .= tv2_keywords ($d);
   $p .= '</span>';  
-      $p .= '</div>';
+
+  // related
+  if ($tv2_related_search)
+    {
+      $p .= '<span class="tv2_related">';
+      $p .= tv2_related_search ($d);
+      $p .= '</span>';
+    }
+
+  $p .= '</div>';
+
   return $p;
 }
 
@@ -730,6 +738,8 @@ if (file_exists ('site_config.xml'))
             .'<span class="tv2_site">'
             .widget_cms (NULL, $site_config_xml, NULL, 4)
             .'</span>'
+            .'&nbsp;&nbsp;'
+            .widget_gecko_install ()
             .'<br>'
             .'<br>'
 //            .'<br>'

@@ -39,6 +39,24 @@ $widget_step_count = 0;
 
 
 function
+widget_gecko_install ($target = NULL)
+{
+  $p = '';
+
+//  if (!stristr ($_SERVER['HTTP_USER_AGENT'], 'gecko'))
+  if (stristr ($_SERVER['HTTP_USER_AGENT'], 'msie'))
+    {
+      $p .= '<a href="http://www.mozilla.com/firefox/" border="0"><img src="images/widget/firefox.jpg"></a><br><br>';
+      if ($target)
+        $p .= '<a href="'.$target.'">I have to continue using MSIE</a>';
+    }
+//  else if ($target)
+//    header ('Location: '.$target);
+  return $p;
+}
+
+
+function
 widget_filename_escape ($s)
 {
   $f = array ("/\.[^\.]+$/", "/[^\d\w\s-]/", "/\s\s+/", "/[-]+/", "/[_]+/");
@@ -97,6 +115,7 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
     {
       $t = parse_url ($query);
 //      echo $t['host'].', '.$_SERVER['HTTP_HOST'].'<br>';  
+      if (isset ($t['host']))
       if ($t['host'] != '')
         if (strcasecmp ($t['host'], $_SERVER['HTTP_HOST']))
           $selected = 0;
