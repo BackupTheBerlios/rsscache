@@ -282,8 +282,8 @@ widget_cms_rc_func ($s, $i, $logo, $config_xml)
 
   if ($next != '')
     {
-      if ($category->separator > 0)
-        $p .= '</div><div style="top:10px;float:left;'
+      if ($category->separate > 0)
+        $p .= '</div><div style="float:left;'
               // DEBUG
 //             .'border:1px solid #000;'
              .'">';
