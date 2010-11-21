@@ -8,6 +8,18 @@ require_once ('misc/sql.php');
 
 
 function
+tv2_sql_open ()
+{
+}
+
+
+function
+tv2_sql_close ()
+{
+}
+
+
+function
 tv2_sql_move ($rsstool_url_crc32, $new_category)
 {
   // move item to different category
@@ -250,7 +262,6 @@ tv2_sql_normalize ($db, $d, $c, $f)
 
   return $d;
 }
-
 
 
 function

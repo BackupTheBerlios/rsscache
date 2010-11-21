@@ -308,6 +308,7 @@ function
 widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
 {
   // DEBUG
+//  echo '<pre><tt>';
 //  echo $flags;
 //  print_r ($config_xml);
 
@@ -316,7 +317,9 @@ widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
   // categories  
   for ($i = 0; isset ($config_xml->category[$i]); $i++)
     {
+//echo $config_xml->category[$i]->tooltip.'<br>';
       $category = $config_xml->category[$i];
+//echo $category->tooltip.'<br>';
 
       $s = '';
       if ($category->query)

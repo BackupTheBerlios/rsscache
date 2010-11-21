@@ -151,9 +151,9 @@ tv2_body_item ($i, $d_array)
   // related
   if ($tv2_related_search)
     {
-      $p .= '<span class="tv2_related">';
+      $p .= '<div class="tv2_related">';
       $p .= tv2_related_search ($d);
-      $p .= '</span>';
+      $p .= '</div>';
     }
 
   $p .= '</div>'; // desc
@@ -324,9 +324,9 @@ tv2_body_player ($i, $d_array)
   // related
   if ($tv2_related_search)
     {
-      $p .= '<span class="tv2_related">';
+      $p .= '<div class="tv2_related">';
       $p .= tv2_related_search ($d);
-      $p .= '</span>';
+      $p .= '</div>';
     }
 
   $p .= '</div>';
@@ -364,7 +364,27 @@ tv2_body ()
 
   $p = '';
 
-  // icons
+// site links at the top
+if (file_exists ('site_config.xml'))
+  {
+    $site_config_xml = simplexml_load_file ('site_config.xml');
+    $p .= ''
+            .'<span class="tv2_site">'
+            .widget_cms (NULL, $site_config_xml, NULL, 4)
+            .'</span>'
+            .'&nbsp;&nbsp;'
+            .widget_gecko_install ();
+  }
+
+  // logo  
+//  $p .= '<nobr>';   
+  $p .= tv2_logo_func ();
+//  $p .= '</nobr>';
+
+  $p .= '<br>';
+  $p .= '<br>';
+
+  // category buttons
   $p .= ''
        .'<div class="tv2_button">'
        .widget_cms (NULL, $config, NULL, 8)
@@ -377,10 +397,6 @@ tv2_body ()
 
 //  $p .= '</div>'; // #bodyid
 
-  // logo  
-  $p .= '<nobr>';   
-  $p .= tv2_logo_func ();
-  $p .= '</nobr>';
 
   // embed another page
   if ($embed)
@@ -572,13 +588,20 @@ tv2_body ()
         $p .= $s;
     }
 
+if ($tv2_use_database)
+  if ($f != 'mirror')
+  {
+    // stats and version
+    $body .= '<br><div style="width:100%;text-align:right;">'.tv2_stats ().'</div>';
+  }
+
   return $p;
 }
 
 
 // main ()
 
-
+tv2_sql_open ();
 $config = config_xml ();
 $embed = get_request_value ('embed'); // embed other page
 $proxy = get_request_value ('proxy'); // embed other page
@@ -693,7 +716,14 @@ if (file_exists ('images/captcha/'))
 else
   $tv2_captcha = '';
 
-$body = tv2_body ();
+$body = '';
+
+$body .= tv2_body ();
+
+if ($f != 'fullscreen')
+  $body .= ''
+         .'<br>'
+         .tv2_include_end ();
 
 
 $head = '<html>'
@@ -730,42 +760,10 @@ $head .= $tv2_head_tag;
 
 $head .= '</head>';
 
-// site links at the top
-if (file_exists ('site_config.xml'))
-  {
-    $site_config_xml = simplexml_load_file ('site_config.xml');
-    $head .= ''
-            .'<span class="tv2_site">'
-            .widget_cms (NULL, $site_config_xml, NULL, 4)
-            .'</span>'
-            .'&nbsp;&nbsp;'
-            .widget_gecko_install ()
-            .'<br>'
-            .'<br>'
-//            .'<br>'
-;
-  }
+$head .= $tv2_body_tag;
 
-$head .= $tv2_body_tag
-//        .'<div id="bodyid">'
-;
 
 $end = '';
-
-if ($tv2_use_database)
-  if ($f != 'mirror')
-  {
-    // stats and version
-    $end .= '<br><div style="width:100%;text-align:right;">'.tv2_stats ().'</div>';
-  }
-
-
-if ($f != 'fullscreen')
-  $end .= ''
-         .'<br>'
-         .tv2_include_end ();
-
-//$end .= '</div>'; // #bodyid
 
 $end .= '</body>'
        .'</html>';
@@ -777,6 +775,8 @@ $p = $head.$body.$end;
 if ($use_gzip == 1)
   echo_gzip ($p);
 else echo $p;
+
+tv2_sql_close ();
 
 // use memcache
 if ($memcache_expire > 0)
