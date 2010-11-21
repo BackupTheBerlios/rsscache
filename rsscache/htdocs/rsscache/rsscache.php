@@ -395,9 +395,6 @@ if (file_exists ('site_config.xml'))
 //       .'<br>'  
 ;  
 
-//  $p .= '</div>'; // #bodyid
-
-
   // embed another page
   if ($embed)
     return $p.tv2_embed ();
@@ -761,7 +758,6 @@ $head .= $tv2_head_tag;
 $head .= '</head>';
 
 $head .= $tv2_body_tag;
-
 
 $end = '';
 
