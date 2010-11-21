@@ -7,15 +7,32 @@ require_once ('misc/misc.php');
 require_once ('misc/sql.php');
 
 
+$db = new misc_sql;
+
+
 function
 tv2_sql_open ()
 {
+  // move item to different category
+  global $db;
+  global $tv2_dbhost,
+         $tv2_dbuser,
+         $tv2_dbpass,
+         $tv2_dbname;
+  $debug = 0;
+
+  $db->sql_open ($tv2_dbhost,
+                 $tv2_dbuser,
+                 $tv2_dbpass,
+                 $tv2_dbname);
 }
 
 
 function
 tv2_sql_close ()
 {
+  global $db;
+  $db->sql_close ();
 }
 
 
@@ -23,41 +40,21 @@ function
 tv2_sql_move ($rsstool_url_crc32, $new_category)
 {
   // move item to different category
-  global $tv2_dbhost,
-         $tv2_dbuser,
-         $tv2_dbpass,
-         $tv2_dbname;
+  global $db;
   $debug = 0;
-
-  $db = new misc_sql;  
-  $db->sql_open ($tv2_dbhost,
-                 $tv2_dbuser,
-                 $tv2_dbpass,
-                 $tv2_dbname);
 
   $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = \''.$db->sql_stresc ($new_category).'\''
                 .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
 
   $db->sql_write ($sql_query_s, 0, $debug);
-
-  $db->sql_close ();
 }
 
 
 function
 tv2_sql_vote ($rsstool_url_crc32, $new_score)
 {
-  global $tv2_dbhost,
-         $tv2_dbuser,
-         $tv2_dbpass,
-         $tv2_dbname;
+  global $db;
   $debug = 0;
-
-  $db = new misc_sql;  
-  $db->sql_open ($tv2_dbhost,
-                 $tv2_dbuser, 
-                 $tv2_dbpass, 
-                 $tv2_dbname);
 
   $sql_query_s = 'SELECT tv2_votes,tv2_score FROM rsstool_table'
                 .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
@@ -73,8 +70,6 @@ tv2_sql_vote ($rsstool_url_crc32, $new_score)
                 .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
 
   $db->sql_write ($p, 1, $debug);
-
-  $db->sql_close ();
 }
 
 
@@ -82,44 +77,24 @@ function
 tv2_sql_restore ($rsstool_url_crc32)
 {
   // restore original category
-  global $tv2_dbhost,
-         $tv2_dbuser,
-         $tv2_dbpass,
-         $tv2_dbname;
+  global $db;
   $debug = 0;
-
-  $db = new misc_sql;  
-  $db->sql_open ($tv2_dbhost,
-                 $tv2_dbuser,
-                 $tv2_dbpass,
-                 $tv2_dbname);
 
   $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = tv2_category'
                 .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
 
   $db->sql_write ($sql_query_s, 0, $debug);
-
-  $db->sql_close ();
 }
 
 
 function
 tv2_sql_stats ($category = NULL)
 {
-  global $tv2_dbhost,
-         $tv2_dbuser,
-         $tv2_dbpass,
-         $tv2_dbname;
+  global $db;
   $debug = 0;
   $f = get_request_value ('f');
 
   $stats = array ('videos' => 0, 'videos_today' => 0, 'videos_7_days' => 0, 'videos_30_days' => 0, 'days' => 0);
-
-  $db = new misc_sql;  
-  $db->sql_open ($tv2_dbhost,
-                 $tv2_dbuser,
-                 $tv2_dbpass,
-                 $tv2_dbname);
 
   // downloaded items since...
   // ...always
@@ -184,8 +159,6 @@ tv2_sql_stats ($category = NULL)
 
   if (isset ($r[0]))
     $stats['days'] = (int) ((time () - (int) $r[0][0]) / 86400);
-
-  $db->sql_close ();
 
   return $stats;
 }
@@ -262,6 +235,7 @@ tv2_sql_normalize ($db, $d, $c, $f)
 
   return $d;
 }
+
 
 
 function
@@ -418,10 +392,7 @@ tv2_sql_leftjoin_func ($db, $q, $filter)
 function
 tv2_sql ($c, $q, $f, $v, $start, $num)
 {
-  global $tv2_dbhost,
-         $tv2_dbuser,
-         $tv2_dbpass, 
-         $tv2_dbname,
+  global $db,
          $tv2_isnew,
          $tv2_root,
          $tv2_enable_search,
@@ -430,12 +401,6 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
   global $tv2_debug_sql;
   $debug = $tv2_debug_sql;
 //  $debug = 1;
-
-  $db = new misc_sql;
-  $db->sql_open ($tv2_dbhost,
-                 $tv2_dbuser,
-                 $tv2_dbpass,
-                 $tv2_dbname);
 
   $q = get_request_value ('q'); // we ignore the arg and make sure we get an unescaped one
   $c = $db->sql_stresc ($c);
@@ -529,9 +494,6 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
   // DEBUG
 //  echo '<tt><pre>';
 //  print_r ($d);
-
-  $db->sql_close ();
-
 
   return $d;
 }

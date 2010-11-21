@@ -589,7 +589,7 @@ if ($tv2_use_database)
   if ($f != 'mirror')
   {
     // stats and version
-    $body .= '<br><div style="width:100%;text-align:right;">'.tv2_stats ().'</div>';
+    $p .= '<br><div style="width:100%;text-align:right;">'.tv2_stats ().'</div>';
   }
 
   return $p;
