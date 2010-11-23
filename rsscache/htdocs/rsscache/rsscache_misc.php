@@ -9,18 +9,20 @@ require_once ('tv2_sql.php');
 
 
 function
-tv2_embed ()
+tv2_f_embed ()
 {
-  $embed = get_request_value ('embed');
-  return widget_embed ($embed, WIDGET_EMBED_AUTO);
+  $c = get_request_value ('c');
+  $config = config_xml_by_category ($c);
+  return widget_embed ($config->embed, WIDGET_EMBED_AUTO);
 }
 
 
 function
-tv2_proxy ()
+tv2_f_proxy ()
 {
-  $proxy = get_request_value ('proxy');
-  return widget_embed ($proxy, WIDGET_EMBED_PROXY);
+  $c = get_request_value ('c');        
+  $config = config_xml_by_category ($c);      
+  return widget_embed ($config->proxy, WIDGET_EMBED_AUTO);
 }
 
 
@@ -149,7 +151,7 @@ config_xml_by_category ($category)
   $config = config_xml ();
 
   for ($i = 0; $config->category[$i]; $i++)
-    if ($config->category[$i]->name == $category)
+    if ($config->category[$i]->id == $category)
       return $config->category[$i];
 
   return NULL;
