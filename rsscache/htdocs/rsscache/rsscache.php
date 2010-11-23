@@ -396,9 +396,9 @@ if (file_exists ('site_config.xml'))
 ;  
 
   // embed another page
-  if ($f = 'embed')
+  if ($f == 'embed')
     return $p.tv2_f_embed ();
-  else if ($f = 'proxy')
+  else if ($f == 'proxy')
     return $p.tv2_f_proxy ();
 
   if ($tv2_use_database == 0)
