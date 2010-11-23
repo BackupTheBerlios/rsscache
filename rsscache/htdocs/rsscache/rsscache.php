@@ -598,7 +598,8 @@ if ($tv2_use_database)
 
 // main ()
 
-tv2_sql_open ();
+if ($tv2_use_database)
+  tv2_sql_open ();
 $config = config_xml ();
 $f = get_request_value ('f'); // function
 $c = tv2_get_category (); // category
@@ -653,7 +654,6 @@ if ($f == 'fullscreen')
     setcookie ('h', $a['h'], $tv2_cookie_expire);
   }
 */
-
 
 // RSS only
 if ($f == 'rss')
@@ -770,7 +770,8 @@ if ($use_gzip == 1)
   echo_gzip ($p);
 else echo $p;
 
-tv2_sql_close ();
+if ($tv2_use_database)
+  tv2_sql_close ();
 
 // use memcache
 if ($memcache_expire > 0)
