@@ -79,7 +79,8 @@ config_xml_normalize ($config)
   for ($i = 0; isset ($config->category[$i]); $i++)
     {
       $category = $config->category[$i];
-      $category->tooltip = $category->title
+      $category->tooltip = 
+                 ($category->tooltip ? $category->tooltip : $category->title)
                 .($category->videos ? ', '.$category->videos.' '.$tv2_videos_s : '')
                 .($category->days ? ', '.$category->days.' days' : '');
 //      if ($category->query)

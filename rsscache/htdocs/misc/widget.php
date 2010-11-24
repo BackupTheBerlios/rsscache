@@ -317,9 +317,12 @@ widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
   // categories  
   for ($i = 0; isset ($config_xml->category[$i]); $i++)
     {
-//echo $config_xml->category[$i]->tooltip.'<br>';
+//  echo '<pre><tt>';
+//print_r ($config_xml->category[$i]).'<br>';
       $category = $config_xml->category[$i];
-//echo $category->tooltip.'<br>';
+//  echo '<pre><tt>';
+//print_r ($category).'<br>';
+//echo ((string) $category->tooltip).'<br>';
 
       $s = '';
       if ($category->query)
@@ -332,7 +335,7 @@ widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
           $s .= widget_button (($category->logo ? $category->logo : NULL),
                                $category->query,
                                $category->title,
-                               ($category->tooltip ? $category->tooltip : $category->title),
+                               $category->tooltip, // ? $category->tooltip : $category->title),
                                $link_suffix,
                                $f);
         }
