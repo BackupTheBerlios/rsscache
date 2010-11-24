@@ -377,11 +377,12 @@ if (file_exists ('site_config.xml'))
   }
 
   // logo  
-//  $p .= '<nobr>';   
+  $p .= '<div style="float:right;">';
   $p .= tv2_logo_func ();
-//  $p .= '</nobr>';
+  $p .= '</div>';
+  $p .= '<div class="clear;">';
+  $p .= '</div>';
 
-  $p .= '<br>';
   $p .= '<br>';
 
   // category buttons
