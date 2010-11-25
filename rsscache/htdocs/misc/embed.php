@@ -23,7 +23,6 @@ if (!defined ('MISC_EMBED_PHP'))
 {
 define ('MISC_EMBED_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
-//require_once ('widget.php');
 //require_once ('wikipedia.php'); // embed wikipedia stuff using wikipedia API
 
 
@@ -59,60 +58,61 @@ define ('WIDGET_EMBED_JS', 4);
 
 
 function
-widget_embed_proxy_func ($url, $form_action = '', $form_method = 'GET', $allow = ALLOW_DEF)
-{
-  $html = '';
-
-  $html = file_get_contents ($url);
-  // extract head (JS, CSS, etc.) and body
-  $a = split_html_content ($html);
-  $html = ''.$a['body'];
-
-  // normalize, remove unwanted tags
-  $html = strip_tags ($html, $allow);
-
-  // rewrite form action and method
-  // TODO: repeat
-  $html_tag = substr ($html, strpos ($html, '<form '));
-  $html_tag = substr ($html_tag, 0, strpos ($html_tag, '>') + 1);
-  $p = misc_gettag ($html_tag, array ('action' => $form_action, 'method' => $form_method), false);
-  $html = str_ireplace ($html_tag, $p, $html);
-
-  if ($form_method == 'POST')
-    {
-      // replace GET links with POST forms if necessary
-      // TODO: repeat
-      $html_tag = substr ($html, strpos ($html, '<a '));
-      $html_tag = substr ($html_tag, 0, strpos ($html_tag, '</a>') + 1);
-
-      // TODO: transform a link into a button in a post form
-//      $p = a_href_to_post_form ($html_tag);
-      $html = str_ireplace ($html_tag, $p, $html);
-    }
-
-  // HACK: fix absolute links again                     
-//  $html = str_ireplace ($url.'http://', 'http://', $html);
-
-  return $html;
-}
-
-
-function
-widget_embed_proxy ($src)
+widget_embed_proxy ($src, $form_action = '', $form_method = 'GET', $allow = ALLOW_DEF)
 {
   $a = parse_url ($src);
   parse_str ($a['query'], $a);
-  $query = http_build_query2 (array_merge ($a, $_GET), false);
-  if ($query != '')
-    $query = '?'.$query;
-  $url = $src.$query;
-//echo $src;
-  $html = file_get_contents ($src.$query);
+  $b = array_merge ($a, $_GET);
+  $query = http_build_query2 ($b, false);
+
+  $url = $src.($query != '' ? '?'.$query : '');
+  // DEBUG
+//  echo $url;
+
+  // get source and extract head (JS, CSS, etc.) and body
+  $html = file_get_contents ($url);
   $a = split_html_content ($html);
-  $p = $a['body'];
-  $p = str_ireplace ('</form>', '<input type="hidden" name="widget_embed_proxy" value="'.$src.'"></form>', $p);
-  return $p;
-//  return widget_embed_proxy_func ($src);
+//  $head = ''.$a['head'];
+  $body = ''.$a['body'];
+
+/*
+  // normalize, remove unwanted tags
+  $body = strip_tags ($body, $allow);
+
+  // rewrite form tag (action and method)
+  // TODO: repeat
+  $t = substr ($body, strpos ($body, '<form '));
+  $t = substr ($t, 0, strpos ($t, '>') + 1);
+  $s = misc_gettag ($t, array ('action' => $form_action, 'method' => $form_method), false);
+  $body = str_ireplace ($t, $s, $body);
+*/
+
+/*
+  // transform GET links into POST forms if necessary
+  if ($form_method == 'POST')
+    {
+      // TODO: repeat
+      $t = substr ($body, strpos ($body, '<a '));
+      $t = substr ($t, 0, strpos ($t, '</a>') + 1);
+
+//      $s = a_href_to_post_form ($t);
+      $body = str_ireplace ($t, $s, $body);
+    }
+*/
+
+  // rewrite form with hidden tag containing the complete url
+// TODO: use php rewrite function here (see todo_htdocs.xml)
+  $p = '';
+  $a = array_keys ($b);
+  for ($i = 0; isset ($a[$i]); $i++)
+    $p .= '<input type="hidden" name="'.$a[$i].'" value="'.$b[$a[$i]].'">';
+//  $p .= '<input type="hidden" name="widget_embed_proxy" value="'.urlencode ($url).'">';
+  $body = str_ireplace ('</form>', $p.'</form>', $body);
+
+  // HACK: fix absolute links again                     
+//  $body = str_ireplace ($url.'http://', 'http://', $body);
+
+  return $body;
 }
 
 
