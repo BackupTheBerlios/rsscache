@@ -61,6 +61,19 @@ function
 widget_embed_proxy ($src, $form_action = '', $form_method = 'GET', $allow = ALLOW_DEF)
 {
   $a = parse_url ($src);
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($a);
+/*
+  if (!strncasecmp ($src, 'http://', 7))
+    {
+      $b = array ();
+      parse_str ($a['query'], $b);
+      $a = array_merge ($b, $_GET);
+      $query = http_build_query2 ($a, false);
+
+      $url = $src.($query != '' ? '?'.$query : '');
+*/
   if (isset ($a['query']))
     {
       parse_str ($a['query'], $a);
@@ -68,9 +81,15 @@ widget_embed_proxy ($src, $form_action = '', $form_method = 'GET', $allow = ALLO
     }
   else
     $b = $_GET;
-  $query = http_build_query2 ($b, false);
 
+  $query = http_build_query2 ($b, false);
+/*
+    }
+  else
+    $url = ''.$a['path'];
+*/
   $url = $src.($query != '' ? '?'.$query : '');
+
   // DEBUG
 //  echo $url;
 
