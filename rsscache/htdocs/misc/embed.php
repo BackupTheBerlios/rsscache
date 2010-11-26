@@ -106,13 +106,13 @@ widget_embed_proxy ($src, $form_action = '', $form_method = 'GET', $allow = ALLO
 */
 
   // rewrite form with hidden tag containing the complete url
-// TODO: use php rewrite function here (see todo_htdocs.xml)
   $p = '';
   $a = array_keys ($b);
   for ($i = 0; isset ($a[$i]); $i++)
     if (in_array ($a[$i], array ('f', 'c'))) // HACK
+//      output_add_rewrite_var ($a[$i], $b[$a[$i]]); // not useable
       $p .= '<input type="hidden" name="'.$a[$i].'" value="'.$b[$a[$i]].'">';
-//  $p .= '<input type="hidden" name="widget_embed_proxy" value="'.urlencode ($url).'">';
+//      $p .= '<input type="hidden" name="widget_embed_proxy" value="'.urlencode ($url).'">';
   $body = str_ireplace ('</form>', $p.'</form>', $body);
 
   // HACK: fix absolute links again                     

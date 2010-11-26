@@ -981,11 +981,10 @@ widget_upload ($name, $upload_path, $max_file_size, $mime_type, $submit_button_h
 }
 */
 function
-widget_upload ($name, $upload_path, $max_file_size = -1, $mime_type = NULL, $whitelist = NULL, 
+widget_upload ($name, $upload_path, $max_files = 1, $max_file_size = -1, $mime_type = NULL, $whitelist = NULL, 
                $submit_button_html = NULL)
 {
   $debug = 0;
-  $max_files = 4;
   $s = Array (
            UPLOAD_ERR_OK =>         'OK',
            UPLOAD_ERR_INI_SIZE =>   'The uploaded file exceeds the upload_max_filesize directive ('
