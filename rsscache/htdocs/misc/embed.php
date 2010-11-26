@@ -61,8 +61,13 @@ function
 widget_embed_proxy ($src, $form_action = '', $form_method = 'GET', $allow = ALLOW_DEF)
 {
   $a = parse_url ($src);
-  parse_str ($a['query'], $a);
-  $b = array_merge ($a, $_GET);
+  if (isset ($a['query']))
+    {
+      parse_str ($a['query'], $a);
+      $b = array_merge ($a, $_GET);
+    }
+  else
+    $b = $_GET;
   $query = http_build_query2 ($b, false);
 
   $url = $src.($query != '' ? '?'.$query : '');
@@ -105,7 +110,8 @@ widget_embed_proxy ($src, $form_action = '', $form_method = 'GET', $allow = ALLO
   $p = '';
   $a = array_keys ($b);
   for ($i = 0; isset ($a[$i]); $i++)
-    $p .= '<input type="hidden" name="'.$a[$i].'" value="'.$b[$a[$i]].'">';
+    if (in_array ($a[$i], array ('f', 'c'))) // HACK
+      $p .= '<input type="hidden" name="'.$a[$i].'" value="'.$b[$a[$i]].'">';
 //  $p .= '<input type="hidden" name="widget_embed_proxy" value="'.urlencode ($url).'">';
   $body = str_ireplace ('</form>', $p.'</form>', $body);
 
