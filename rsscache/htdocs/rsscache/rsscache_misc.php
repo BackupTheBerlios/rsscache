@@ -9,12 +9,22 @@ require_once ('tv2_sql.php');
 
 
 function
-tv2_f_embed ()
+tv2_f_local ()
 {
   $c = get_request_value ('c');
   $config = config_xml_by_category ($c);
 //  return widget_embed ($config->embed, WIDGET_EMBED_AUTO);
-  return widget_embed ($config->embed, WIDGET_EMBED_IFRAME);
+  return widget_embed ($config->local, WIDGET_EMBED_LOCAL);
+}
+
+
+function
+tv2_f_iframe ()
+{
+  $c = get_request_value ('c');
+  $config = config_xml_by_category ($c);
+//  return widget_embed ($config->embed, WIDGET_EMBED_AUTO);
+  return widget_embed ($config->iframe, WIDGET_EMBED_IFRAME);
 }
 
 

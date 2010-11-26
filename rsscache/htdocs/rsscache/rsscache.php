@@ -398,8 +398,10 @@ if (file_exists ('site_config.xml'))
 ;  
 
   // embed another page
-  if ($f == 'embed')
-    return $p.tv2_f_embed ();
+  if ($f == 'local')
+    return $p.tv2_f_local ();
+  else if ($f == 'iframe')
+    return $p.tv2_f_iframe ();
   else if ($f == 'proxy')
     return $p.tv2_f_proxy ();
 
