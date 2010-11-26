@@ -13,7 +13,8 @@ tv2_f_embed ()
 {
   $c = get_request_value ('c');
   $config = config_xml_by_category ($c);
-  return widget_embed ($config->embed, WIDGET_EMBED_AUTO);
+//  return widget_embed ($config->embed, WIDGET_EMBED_AUTO);
+  return widget_embed ($config->embed, WIDGET_EMBED_IFRAME);
 }
 
 
