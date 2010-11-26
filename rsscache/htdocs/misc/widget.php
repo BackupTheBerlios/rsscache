@@ -365,6 +365,9 @@ widget_select_option ($icon, $value, $label, $tooltip, $selected = 0)
 {
   $p = '';
 
+      // DEBUG
+//      echo $selected.' '.$label.'<br>';
+
   $p .= '<option'
        .($selected == 1 ? ' selected="selected"' : '')
        .($tooltip ? ' title="'.$tooltip.'"' : '')
@@ -413,10 +416,12 @@ widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1)
   for ($i = 0; isset ($a[$i]); $i++)
     {
       if ($selected)
-        if (!strcasecmp ($a[$i][0], $selected) && !($sel))
+        if (!strcasecmp ($a[$i][0], $selected) && $sel == 0)
           $sel = 1;
+      // DEBUG
+//      echo $sel.' '.$selected.' '.$a[$i][0].'<br>';
 
-      $p .= widget_select_option ($a[$i][2], $a[$i][0], $a[$i][1], '', $sel);
+      $p .= widget_select_option ($a[$i][2], $a[$i][0], $a[$i][1], '', $sel == 1 ? 1 : 0);
 
       if ($sel == 1)
         $sel = 2;
