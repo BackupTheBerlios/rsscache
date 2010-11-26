@@ -814,9 +814,6 @@ misc_exec ($cmdline, $debug = 0)
 function
 get_cookie ($name)
 {
-//  if (isset ($_REQUEST[$name]))
-//    return $_REQUEST[$name];
-
   if (isset ($_COOKIE[$name]))
     return $_COOKIE[$name];
 
@@ -827,14 +824,14 @@ get_cookie ($name)
 function
 get_request_value ($name)
 {
-//  global $_POST;
-//  global $_GET;
+//  if (isset ($_POST[$name]))
+//    return $_POST[$name];
 
-  if (isset ($_POST[$name]))
-    return $_POST[$name];
+//  if (isset ($_GET[$name]))
+//    return $_GET[$name];
 
-  if (isset ($_GET[$name]))
-    return $_GET[$name];
+  if (isset ($_REQUEST[$name])) // and cookies
+    return $_REQUEST[$name];
 
   return NULL;
 }
