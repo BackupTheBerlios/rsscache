@@ -288,7 +288,7 @@ widget_cms_rc_func ($s, $i, $logo, $config_xml)
               // DEBUG
 //             .'border:1px solid #000;'
              .'">';
-      if ($category->separate > 0)
+      else if ($category->separate > 0)
         $p .= '<br>';
     }
   else
