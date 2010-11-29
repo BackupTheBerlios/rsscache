@@ -93,8 +93,8 @@ file_post_contents ($url, $vars, $timeout = 300)
  
   // DEBUG
 //  echo '<pre><tt>';
-//  print_r (curl_getinfo ($sock));
-//  print_r (curl_getinfo ($sock, CURLINFO_HTTP_CODE));
+  print_r (curl_getinfo ($sock));
+  print_r (curl_getinfo ($sock, CURLINFO_HTTP_CODE));
 
   curl_close ($sock);
 

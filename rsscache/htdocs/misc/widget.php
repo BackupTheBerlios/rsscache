@@ -282,17 +282,14 @@ widget_cms_rc_func ($s, $i, $logo, $config_xml)
 
   if ($next != '')
     {
-      if ($category->separate > 0)
+      // <separate>
+      if ($category->separate > 1)
         $p .= '</div><div style="float:left;'
               // DEBUG
 //             .'border:1px solid #000;'
              .'">';
-
-      // <separate>
-//      if ($category->separate == 1)
-//        $p .= '<br>';
-//      else if ($category->separate == 2)
-//        $p .= '<hr>';
+      if ($category->separate > 0)
+        $p .= '<br>';
     }
   else
     {
