@@ -494,15 +494,6 @@ if (file_exists ('site_config.xml'))
 
       return $p;
     }
-  else if ($f == 'upload')
-    {
-      $p .= '<br>'
-           .'<br>'
-;
-      $p .= tv2_f_upload ();
-
-      return $p;
-    }
 
   // show page-wise navigation (top)
   if (!$v && $f != 'mirror')

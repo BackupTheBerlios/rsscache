@@ -144,13 +144,36 @@ widget_embed_proxy ($src, $form_action = '', $form_method = 'GET', $allow = ALLO
 function
 widget_embed_iframe ($src)
 {
+  $a = parse_url ($src);
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($a);
+  if (isset ($a['query']))
+    {
+      parse_str ($a['query'], $a);
+      $b = array_merge ($a, $_GET);
+    }
+  else
+    $b = $_GET;
+
+  $query = http_build_query2 ($b, false);
+/*
+    }
+  else
+    $url = ''.$a['path'];
+*/
+  $url = $src.($query != '' ? '?'.$query : '');
+
+  // DEBUG
+//  echo $url;
+
   // automatic scale to the content size requires javascript and misc.js
   $p = '';
   $p .= '<iframe'
 //       .' onload="javascript:autoscaleiframe(this);" scrolling="no"' // with js
        .' width="100%" height="90%"' // without js
        .' marginheight="0" marginwidth="0" frameborder="0" src="'
-       .$src
+       .$url
        .'"></iframe>';
   return $p;
 }
