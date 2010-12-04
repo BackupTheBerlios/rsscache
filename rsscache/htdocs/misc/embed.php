@@ -146,8 +146,8 @@ widget_embed_iframe ($src)
 {
   $a = parse_url ($src);
   // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($a);
+  echo '<pre><tt>';
+  print_r ($a);
   if (isset ($a['query']))
     {
       parse_str ($a['query'], $a);
@@ -157,12 +157,10 @@ widget_embed_iframe ($src)
     $b = $_GET;
 
   $query = http_build_query2 ($b, false);
-/*
-    }
-  else
-    $url = ''.$a['path'];
-*/
-  $url = $src.($query != '' ? '?'.$query : '');
+
+// TODO: make pass of queries optional
+//  $url = $src.($query != '' ? '?'.$query : '');
+  $url = $src;
 
   // DEBUG
 //  echo $url;
