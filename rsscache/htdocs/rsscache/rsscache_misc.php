@@ -256,8 +256,8 @@ tv2_robots ()
   header ('Content-type: text/plain');
   $p .= '';
   $p .= 'Sitemap: http://'.$_SERVER['SERVER_NAME'].'/sitemap.xml'."\n"
-        'User-agent: *'."\n"
-        'Allow: /'."\n";
+       .'User-agent: *'."\n"
+       .'Allow: /'."\n";
 
   return $p;
 }
