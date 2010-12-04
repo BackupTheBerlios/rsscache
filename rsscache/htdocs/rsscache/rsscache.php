@@ -668,6 +668,14 @@ if ($f == 'sitemap')
   }
 
 
+// robots.txt only
+if ($f == 'robots')
+  {
+    echo tv2_robots ();
+    exit;
+  }
+
+
 if ($f == 'mirror')
   {
     // make static (index.html)

@@ -251,6 +251,19 @@ tv2_link_normalize ($link)
 
 
 function
+tv2_robots ()
+{
+  header ('Content-type: text/plain');
+  $p .= '';
+  $p .= 'Sitemap: http://'.$_SERVER['SERVER_NAME'].'/sitemap.xml'."\n"
+        'User-agent: *'."\n"
+        'Allow: /'."\n";
+
+  return $p;
+}
+
+
+function
 tv2_sitemap_video ($d_array)
 {
   $p = '';
