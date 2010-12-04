@@ -170,7 +170,7 @@ widget_embed_iframe ($src)
   $p .= '<iframe'
 //       .' onload="javascript:autoscaleiframe(this);" scrolling="no"' // with js
        .' width="100%"'
-//       .' height="90%"'
+       .' height="90%"'
        .' marginheight="0" marginwidth="0" frameborder="0" src="'
        .$url
        .'"></iframe>';
