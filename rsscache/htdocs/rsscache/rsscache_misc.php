@@ -38,6 +38,15 @@ tv2_f_proxy ()
 
 
 function
+tv2_f_index ()
+{
+  $c = get_request_value ('c');        
+  $config = config_xml_by_category ($c);      
+  return widget_embed ($config->index, WIDGET_EMBED_INDEX);
+}
+
+
+function
 tv2_get_category ()
 {
 //  global $config;

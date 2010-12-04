@@ -55,6 +55,7 @@ define ('WIDGET_EMBED_PROXY', 1);
 define ('WIDGET_EMBED_IFRAME', 2);  // scales to content size
 define ('WIDGET_EMBED_LOCAL', 3); // embed a local file
 define ('WIDGET_EMBED_JS', 4);
+define ('WIDGET_EMBED_INDEX', 5); // embed ftp with proper index
 
 
 function
@@ -239,6 +240,119 @@ document.include (\''.$url.'\');
 
 
 function
+widget_indexof_sort_time ($a, $b)
+{
+  if ($a['mtime'] == $b['mtime'])
+    return 0;
+  return ($a['mtime'] < $b['mtime']) ? 1 : -1;
+}
+
+
+function
+widget_indexof_normalize ($b)
+{
+  // sort by date or size or suffix
+  usort ($b, 'widget_indexof_sort_time');
+
+  return $b;
+}
+
+
+function
+widget_indexof_func ($b)
+{
+// DEBUG
+//  echo '<pre><tt>';
+//  print_r ($b);
+
+  $p = '';
+
+  $p .= $b[0]['dirname']
+       .'<br>'
+;
+
+  for ($i = 0; isset ($b[$i]); $i++)
+    {
+      $p .= '<div style="float:left;min-width:50px;">';
+      $p .= ($b[$i]['suffix'] != '' ? substr ($b[$i]['suffix'], 1) : '&nbsp;');
+// dir     $p .= '<img src="images/file_tree_closed.png" border="0" alt="images/file_tree_open.png">';
+// file         $p .= '<img src="images/file_tree_file.png" border="0" alt="images/file_tree_file.png">';
+// other         $p .= '<img src="images/file_tree_file.png" border="0" alt="images/file_tree_file.png">';
+      $p .= '</div>';
+
+      $p .= '<div style="float:left;min-width:200px;">';
+      $p .= '<a href="'.$b[$i]['dirname'].$b[$i]['basename'].'">'
+//           .str_shorten ($b[$i]['basename'], 24)
+           .$b[$i]['basename']
+           .'</a>';
+      $p .= '</div>';
+
+      $p .= '<div style="float:left;min-width:100px;">';
+      $p .= ($b[$i]['type'] == 1 ? $b[$i]['size'] : '&nbsp;');
+      $p .= '</div>';
+
+      $p .= '<div style="float:left;">';
+//      date_default_timezone_set ('Europe/Berlin');
+      $p .= strftime ("%a %d-%b-%y %T %Z", $b[$i]['mtime']);
+      $p .= '</div>';
+
+      $p .= '<div style="clear:both;"></div>';
+    }
+
+  return $p;
+}
+
+
+/*
+function
+widget_embed_indexof ($dir, $suffix = NULL)
+{
+  // TODO: memcached support
+//  $dir = opendir ($path);
+//  while (($file = readdir ($dir)) != false)
+//    {
+//    }
+//  closedir ($dir);
+  $a = scandir ($dir, 0);
+
+  $b = array ();
+  // read filenames, sizes and mtime
+  for ($i = 0; isset ($a[$i]); $i++)
+    {
+      $dirname = str_replace ('//', '/', $dir.'/');
+      $basename = str_replace ("\n", '', $a[$i]);
+      if ($basename == '.')
+        continue;
+
+      $path = $dirname.$basename;
+
+      $s = stat ($path);
+      $b[] = array (
+        'dirname' => $dirname,
+        'basename' => $basename,
+        'size' => $s['size'],
+        'mtime' => $s['mtime'],
+        'type' => is_file ($path) ? 1 : (is_dir ($path) ? 2 : 0),
+        'suffix' => $basename != '..' ? get_suffix ($basename) : '',
+);
+    }
+
+  $b = widget_indexof_normalize ($b);
+
+  return widget_indexof_func ($b);
+}
+*/
+function
+widget_embed_indexof ()
+{
+//  $p .= tv2_search ()
+//       .'<br><br>'
+//       .widget_indexof ('incoming')
+  return '';
+}
+
+
+function
 widget_embed ($src, $flags = 0)
 {
   $p = '';
@@ -262,6 +376,8 @@ widget_embed ($src, $flags = 0)
     $p .= widget_embed_local ($src);
 //  else if ($flags == WIDGET_EMBED_JS)
 //    $p .= widget_embed_local_js ($src);
+//  else if ($flags == WIDGET_EMBED_INDEX)
+//    $p .= widget_embed_indexof ($src);
 
   return $p;
 }

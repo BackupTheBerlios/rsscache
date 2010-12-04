@@ -173,6 +173,33 @@ misc_write_cache ($cachefile, $data)
 }
 
 
+// replace custom tags
+//$template_replace = array (
+//   array ('login_button' => login_button ()),
+//   array ('content' => content ()),
+//   array ('register_button' => register_button ()),
+//);
+function
+misc_template ($src, $template_replace)
+{
+  // $template_replace = array (array ('bla', 'hello'))
+  //   replaces <!-- bla --> with hello
+  $p = $src;
+  $a = array_keys ($template_replace);
+  for ($i = 0; isset ($a[$i]); $i++)
+    {
+      $func = $template_replace[$a[$i]];
+      if (function_exists ($func))
+        $s = $func ();
+      else
+        $s = $func;
+      $p = str_replace ('<!-- '.$a[$i].' -->', $s, $p);
+    }
+
+  return $p;
+}
+
+
 function
 misc_url_exists ($url)
 {

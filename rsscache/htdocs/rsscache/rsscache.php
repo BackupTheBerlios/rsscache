@@ -404,6 +404,8 @@ if (file_exists ('site_config.xml'))
     return $p.tv2_f_iframe ();
   else if ($f == 'proxy')
     return $p.tv2_f_proxy ();
+  else if ($f == 'index')
+    return $p.tv2_f_index ();
 
   if ($tv2_use_database == 0)
     return $p;
