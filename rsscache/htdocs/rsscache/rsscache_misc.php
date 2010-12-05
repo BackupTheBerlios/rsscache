@@ -5,6 +5,7 @@ define ('TV2_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 require_once ('config.php');
 require_once ('misc/misc.php');
+require_once ('misc/wikipedia.php');
 require_once ('tv2_sql.php');
 
 
@@ -51,7 +52,8 @@ tv2_f_wiki ()
 {
   $c = get_request_value ('c');        
   $config = config_xml_by_category ($c);      
-  return widget_wikipedia ($config->wiki);
+//  return widget_wikipedia ($config->wiki);
+  return wikipedia_get_html ($config->wiki);
 }
 
 
