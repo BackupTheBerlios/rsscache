@@ -396,16 +396,20 @@ if (file_exists ('site_config.xml'))
   $p .= '<br>'  
 //       .'<br>'  
 ;  
+  // category   
+  $category = config_xml_by_category (strtolower ($c));
 
   // embed another page
-  if ($f == 'local')
+  if (isset ($category->local))
     return $p.tv2_f_local ();
-  else if ($f == 'iframe')
+  else if (isset ($category->iframe))
     return $p.tv2_f_iframe ();
-  else if ($f == 'proxy')
+  else if (isset ($category->proxy))
     return $p.tv2_f_proxy ();
-  else if ($f == 'index')
+  else if (isset ($category->index))
     return $p.tv2_f_index ();
+  else if (isset ($category->wiki))
+    return $p.tv2_f_wiki ();
 
   if ($tv2_use_database == 0)
     return $p;
@@ -426,9 +430,6 @@ if (file_exists ('site_config.xml'))
   // DEBUG
 //  echo '<pre><tt>';
 //  print_r ($d_array);
-
-  // category
-  $category = config_xml_by_category (strtolower ($c));
 
 /*
   if ($category->background || $f == 'fullscreen') // background image and fullscreen
