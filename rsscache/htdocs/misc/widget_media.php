@@ -143,7 +143,7 @@ widget_image_html4 ($image_url, $width = NULL, $height = NULL, $autoplay = 0, $h
        .($hq ? ' style="image-rendering:otimizeQuality"' : ' style="image-rendering:optimizeSpeed"')
        .' alt=""'
        .' border="0"'
-       .' style="background-color:#000;"'
+//       .' style="background-color:#000;"'
        .'>';
   return $p;
 //  return '';

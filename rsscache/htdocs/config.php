@@ -46,6 +46,8 @@ $tv2_related_search = 0; // make use of related searches (requires keywords)
 $tv2_player_w = 640; // max. width
 $tv2_player_h = 480; // max. height
 $tv2_player_ratio = 4/3; // default ratio of player
+$tv2_preview_w = 400;
+$tv2_preview_h = 300;
 
 // database settings
 $tv2_use_database = 1;

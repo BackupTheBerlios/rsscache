@@ -36,6 +36,8 @@ tv2_body_item ($i, $d_array)
          $tv2_videos_s,
          $tv2_player_w,
          $tv2_player_h,
+         $tv2_preview_w,
+         $tv2_preview_h,
          $tv2_related_s;
 
   global $tv2_root,
@@ -65,7 +67,9 @@ tv2_body_item ($i, $d_array)
   $p .= '<div class="item">';
 
   // embed player
-  $p .= '<div class="preview">';
+  $p .= '<div class="preview"'
+       .' style="width:'.$tv2_preview_w.';height:'.$tv2_preview_h.';"'
+       .'>';
   $p .= tv2_player_preview ($d);
   $p .= '</div>';
 
