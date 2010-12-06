@@ -193,7 +193,8 @@ misc_template ($src, $template_replace)
         $s = $func ();
       else
         $s = $func;
-      $p = str_replace ('<!-- '.$a[$i].' -->', $s, $p);
+//      $p = str_replace ('<!-- '.$a[$i].' -->', $s, $p);
+      $p = str_replace ($a[$i], $s, $p);
     }
 
   return $p;

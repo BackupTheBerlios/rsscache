@@ -721,69 +721,26 @@ if (file_exists ('images/captcha/'))
 else
   $tv2_captcha = '';
 
-$body = '';
-
-$body .= tv2_body ();
-
-if ($f != 'fullscreen')
-  $body .= ''
-         .'<br>'
-         .tv2_include_end ();
-
-
-$head = '<html>'
-       .'<head>'
-       .'<title>'
-       .$tv2_title
-       .'</title>'
-       .'<link rel="stylesheet" type="text/css" media="screen" href="tv2/tv2.css">'
-       .'<script type="text/javascript" src="misc/jquery.js"></script>'
-       .'<script type="text/javascript" src="misc/jquery_ui.js"></script>'
-//       .'<script type="text/javascript" src="misc/jquery_easing.js"></script>'
-       .'<script type="text/javascript" src="misc/jquery_lavalamp.js"></script>'
-       .'<script type="text/javascript" src="misc/misc.js"></script>'
-       .'<script type="text/javascript" src="tv2/tv2.js"></script>'
-       .misc_seo_description ($body)
-;
-
-$head .= misc_head_tags ($tv2_icon, 0, $tv2_charset);
-
-if ($tv2_rss_head)
-  {
-    $a = array (
-//                'c' => $c,
-//                'q' => $q,
-                'f' => 'rss',
-//                'v' => $v,
-//                'start' => $start,
-//                'num' => $num
-);
-    $head .= '<link rel="alternate" type="application/rss+xml" title="'.$tv2_title.'" href="?'.http_build_query2 ($a, true).'">';
-  }
-
-$head .= $tv2_head_tag;
-
-$head .= '</head>';
-
-$head .= $tv2_body_tag;
-
-$end = '';
-
-$end .= '</body>'
-       .'</html>';
-
-
 $template_replace = array (
-  '<!-- title -->' => tv2_title (),
-  '<!-- icon -->' => misc_head_tags ($tv2_icon, 0, $tv2_charset),
+  '<!-- title -->'    => $tv2_title,
+  '<!-- icon -->'     => misc_head_tags ($tv2_icon, 0, $tv2_charset),
   '<!-- head_seo -->' => misc_seo_description ($body),
-  '<!-- body -->' => $body,
+  '<!-- body -->'     => tv2_body (),
+  '<!-- body_tag -->' => $tv2_body_tag,
+  '<!-- head_tag -->' => $tv2_head_tag,
+  '<!-- body_end -->' => tv2_include_end (),
 );
-$template = file_get_contents ('tv2_index.html');
-$p = misc_template ($template, $template_replace);
-// the _only_ echo
-//$p = $head.$body.$end;
 
+if ($tv2_rss_head)  
+  $template_replace['<!-- head_rss -->'] =
+    '<link rel="alternate" type="application/rss+xml"'
+   .' title="'.$tv2_title.'"'
+   .' href="?'.http_build_query2 (array ('f' => 'rss'), true).'">';
+$template = file_get_contents ('tv2/tv2_index.html');
+$p = misc_template ($template, $template_replace);
+
+
+// the _only_ echo
 if ($use_gzip == 1)
   echo_gzip ($p);
 else echo $p;
