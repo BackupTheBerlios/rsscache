@@ -716,16 +716,16 @@ if ($memcache_expire > 0)
       }
   }
 
+$tv2_captcha = '';   
 if (file_exists ('images/captcha/'))
   $tv2_captcha = widget_captcha ('images/captcha/');
-else
-  $tv2_captcha = '';
 
+$body = tv2_body ();
 $template_replace = array (
   '<!-- title -->'    => $tv2_title,
   '<!-- icon -->'     => misc_head_tags ($tv2_icon, 0, $tv2_charset),
   '<!-- head_seo -->' => misc_seo_description ($body),
-  '<!-- body -->'     => tv2_body (),
+  '<!-- body -->'     => $body,
   '<!-- body_tag -->' => $tv2_body_tag,
   '<!-- head_tag -->' => $tv2_head_tag,
   '<!-- body_end -->' => tv2_include_end (),
