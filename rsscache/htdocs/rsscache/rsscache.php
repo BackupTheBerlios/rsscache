@@ -773,8 +773,16 @@ $end .= '</body>'
        .'</html>';
 
 
+$template_replace = array (
+  '<!-- title -->' => tv2_title (),
+  '<!-- icon -->' => misc_head_tags ($tv2_icon, 0, $tv2_charset),
+  '<!-- head_seo -->' => misc_seo_description ($body),
+  '<!-- body -->' => $body,
+);
+$template = file_get_contents ('tv2_index.html');
+$p = misc_template ($template, $template_replace);
 // the _only_ echo
-$p = $head.$body.$end;
+//$p = $head.$body.$end;
 
 if ($use_gzip == 1)
   echo_gzip ($p);
