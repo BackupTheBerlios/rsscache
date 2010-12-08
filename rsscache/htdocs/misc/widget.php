@@ -129,12 +129,15 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
        $query = http_build_query2 ($a, false);
     }
 
-  if ($selected)
-    $p .= '<span class="tooltip"';
-  else
+//  if ($selected)
+//    $p .= '<span class="tooltip"';
+//  else
     {
-      $p .= '<a'
-           .' class="tooltip"';
+      $p .= '<a';
+      if ($selected)
+        $p .= ' class="tv2_selected" style="color:#000;"';
+      else
+        $p .= ' class="tooltip"';
       if (!strncasecmp ($query, 'http://', 7))
         $p .= ' href="'.$query.'"';
       else
@@ -183,22 +186,22 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 
   if (!($flags & WIDGET_BUTTON_ONLY))
     {
-      if ($selected)
-        $p .= '<span class="tv2_selected">';
+//      if ($selected)
+//        $p .= '<span class="tv2_selected">';
       $p .= ''
            .$label
 ;
-      if ($selected)
-        $p .= '</span>';
+//      if ($selected)
+//        $p .= '</span>';
     }
 
 //  if ($tooltip)
 //    if (trim ($tooltip) != '')
 //      $p .= '<span>'.$tooltip.'</span>';
 
-  if ($selected)
-    $p .= '</span>';
-  else
+//  if ($selected)
+//    $p .= '</span>';
+//  else
     $p .= '</a>';
 
   return $p;
