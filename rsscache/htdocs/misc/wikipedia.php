@@ -42,10 +42,10 @@ wikipedia_get_xml ($q)
 ;
 //  $url = 'http://en.wikipedia.org/w/api.php?action=opensearch&search='.$q.'&limit=1&format=xml';
 //Category:Films
-$ua = ini_get ('user_agent'); 
-ini_set ('user_agent', random_user_agent ()); // yawn  
+  $ua = ini_get ('user_agent'); 
+  ini_set ('user_agent', random_user_agent ()); // yawn  
   $f = file_get_contents ($url);
-ini_set ('user_agent', $ua);
+  ini_set ('user_agent', $ua);
   $xml = simplexml_load_string ($f);
 // DEBUG
 //echo '<pre><tt>';
@@ -58,20 +58,28 @@ function
 wikipedia_get_html ($q)
 {
   $xml = wikipedia_get_xml ($q);
-$ua = ini_get ('user_agent');
-ini_set ('user_agent', random_user_agent ()); // yawn  
+  $ua = ini_get ('user_agent');
+  ini_set ('user_agent', random_user_agent ()); // yawn  
   $p = file_post_contents ('http://en.wikipedia.org/w/api.php',
          array ('action' => 'parse',
                 'format' => 'xml',
                 'text' => $xml->query->pages->page->revisions->rev));
-ini_set ('user_agent', $ua);
-
+  ini_set ('user_agent', $ua);
   $xml = simplexml_load_string ($p);
 
 // DEBUG  
 //echo '<pre><tt>';
-//print_r ($xml->parse->text);
-  return $xml->parse->text;
+//print_r (htmlentities ($xml->parse->text));
+
+  $t = $xml->parse->text;
+  $s = '';
+  // remove contents
+  $s .= substr ($t, 0, strpos ($t, '<table id="toc" class="toc">'));
+  $s .= substr ($t, strpos ($t, '</table>') + 8);
+  // fix links
+  $t = str_replace ('<a href="/wiki/', '<a href="http://en.wikipedia.org/wiki/', $s);
+
+  return $t;
 }
 
 
