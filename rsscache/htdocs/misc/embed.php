@@ -201,154 +201,117 @@ widget_embed_local ($src)
 function
 widget_embed_js ($src)
 {
-  $p = '';
-/*
-  $p .= '<script type="text/javascript">
-';
-
 //  $p .= 'document.include = function (url) { document.write (\'<script type="text/javascript" src="\'+url+\'"></scr\'+\'ipt>\'); }';
-
-  $p .= '// new prototype defintion
-document.include = function (url)
-{
-  if (typeof (url) == \'undefined\')
-    return false;
-
-  var p, rnd;
-  if (document.all) // IE: create an ActiveX Object instance
-    p = new ActiveXObject(\'Microsoft.XMLHTTP\');
-  else // mozilla: create an instance of XMLHttpRequest
-    p = new XMLHttpRequest ();
+//$p .= '<script>
+//document.include (\''.$src.'\');
+//</script>;';
 
   // prevent browsers from caching the included page by appending a random number
-  rnd = Math.random ().toString ().substring (2);
-  url = url.indexOf (\'?\') > -1 ? url+\'&rnd=\'+rnd : url+\'?rnd=\'+rnd;
+//  url += (url.indexOf (\'?\') > -1 ? \'&\' : \'?\')
+//        +'rnd='+Math.random ().toString ().substring (2);
 
-  // open the url and write out the response
-  p.open (\'GET\', url, false);
-  p.send (null);
-
-  document.write (p.responseText);
-}
-</script>
-<script>
-document.include (\''.$url.'\');
-</script>';
-*/
-  return $p;
-}
-
-
-function
-widget_indexof_sort_time ($a, $b)
-{
-  if ($a['mtime'] == $b['mtime'])
-    return 0;
-  return ($a['mtime'] < $b['mtime']) ? 1 : -1;
-}
-
-
-function
-widget_indexof_normalize ($b)
-{
-  // sort by date or size or suffix
-  usort ($b, 'widget_indexof_sort_time');
-
-  return $b;
-}
-
-
-function
-widget_indexof_func ($b)
-{
-// DEBUG
-//  echo '<pre><tt>';
-//  print_r ($b);
+//<script type="text/javascript" src="test.js"></script>
+//<div id="test"></div>
 
   $p = '';
 
-  $p .= $b[0]['dirname']
-       .'<br>'
-;
+$p .= '
+<script type="text/javascript">
+//function handler()
+//{
+//  if (req.readyState == 4) // complete
+//    if (req.status == 200)
+//      return req.responseText;
+//}
 
-  for ($i = 0; isset ($b[$i]); $i++)
+
+function file_get_contents (url)
+{
+  var req = false;
+
+  if (window.XMLHttpRequest)
     {
-      $p .= '<div style="float:left;min-width:50px;">';
-      $p .= ($b[$i]['suffix'] != '' ? substr ($b[$i]['suffix'], 1) : '&nbsp;');
-// dir     $p .= '<img src="images/file_tree_closed.png" border="0" alt="images/file_tree_open.png">';
-// file         $p .= '<img src="images/file_tree_file.png" border="0" alt="images/file_tree_file.png">';
-// other         $p .= '<img src="images/file_tree_file.png" border="0" alt="images/file_tree_file.png">';
-      $p .= '</div>';
-
-      $p .= '<div style="float:left;min-width:200px;">';
-      $p .= '<a href="'.$b[$i]['dirname'].$b[$i]['basename'].'">'
-//           .str_shorten ($b[$i]['basename'], 24)
-           .$b[$i]['basename']
-           .'</a>';
-      $p .= '</div>';
-
-      $p .= '<div style="float:left;min-width:100px;">';
-      $p .= ($b[$i]['type'] == 1 ? $b[$i]['size'] : '&nbsp;');
-      $p .= '</div>';
-
-      $p .= '<div style="float:left;">';
-//      date_default_timezone_set ('Europe/Berlin');
-      $p .= strftime ("%a %d-%b-%y %T %Z", $b[$i]['mtime']);
-      $p .= '</div>';
-
-      $p .= '<div style="clear:both;"></div>';
+      try
+        {
+          req = new XMLHttpRequest ();
+        }
+      catch (e)
+        {
+          req = false;
+        }
     }
-
-  return $p;
-}
-
+  else if (window.ActiveXObject) // IE
+    {
+      try
+        {
+          req = new ActiveXObject (\'MSXML2.XMLHTTP\');
+//          req = new ActiveXObject (\'MSXML2.XMLHTTP.3.0\');
+        }
+      catch (e)
+        {
+          if (document.all) // IE: create an ActiveX Object instance
+            {
+              try
+                {
+                  req = new ActiveXObject (\'Microsoft.XMLHTTP\');
+                }
+              catch (e)
+                {
+                  req = false;
+                }
+            }
+        }
+    }
 
 /*
-function
-widget_embed_indexof ($dir, $suffix = NULL)
-{
-  // TODO: memcached support
-//  $dir = opendir ($path);
-//  while (($file = readdir ($dir)) != false)
-//    {
-//    }
-//  closedir ($dir);
-  $a = scandir ($dir, 0);
-
-  $b = array ();
-  // read filenames, sizes and mtime
-  for ($i = 0; isset ($a[$i]); $i++)
+  // If native XMLHTTP has been disabled, developers can override the
+  // XMLHttpRequest property of the window object with the MSXML-XMLHTTP control,
+  // unless ActiveX has also been disabled, as in the following example.
+  if (!window.XMLHttpRequest)
     {
-      $dirname = str_replace ('//', '/', $dir.'/');
-      $basename = str_replace ("\n", '', $a[$i]);
-      if ($basename == '.')
-        continue;
-
-      $path = $dirname.$basename;
-
-      $s = stat ($path);
-      $b[] = array (
-        'dirname' => $dirname,
-        'basename' => $basename,
-        'size' => $s['size'],
-        'mtime' => $s['mtime'],
-        'type' => is_file ($path) ? 1 : (is_dir ($path) ? 2 : 0),
-        'suffix' => $basename != '..' ? get_suffix ($basename) : '',
-);
+      window.XMLHttpRequest = function()
+        {
+          try
+            {
+              req = new ActiveXObject('MSXML2.XMLHTTP.3.0');
+            }
+          catch (e)
+            {
+              req = false;
+            }
+        }
     }
-
-  $b = widget_indexof_normalize ($b);
-
-  return widget_indexof_func ($b);
-}
 */
-function
-widget_embed_indexof ()
+
+  if (req)
+    {
+      // synchronous request, wait till we have it all
+      req.open (\'GET\', url, false);
+      // asynchronous request
+//      req.open (\'GET\', url, true);
+//      req.onreadystatechange = handler;
+      req.send ();
+      return req.responseText;
+    }
+}
+
+
+function test_main ()
 {
-//  $p .= tv2_search ()
-//       .'<br><br>'
-//       .widget_indexof ('incoming')
-  return '';
+  var e = document.getElementById (\'test\');
+  e.innerHTML = file_get_contents (\''.$src.'\');
+}
+
+
+window.onload = function () {
+//  setInterval (\'test_main()\', 2000);
+  test_main ();
+}
+</script>
+
+';
+
+  return $p;
 }
 
 
@@ -376,8 +339,6 @@ widget_embed ($src, $flags = 0)
     $p .= widget_embed_local ($src);
 //  else if ($flags == WIDGET_EMBED_JS)
 //    $p .= widget_embed_local_js ($src);
-//  else if ($flags == WIDGET_EMBED_INDEX)
-//    $p .= widget_embed_indexof ($src);
 
   return $p;
 }
