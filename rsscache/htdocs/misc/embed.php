@@ -217,7 +217,8 @@ widget_embed_js ($src)
 
 $p .= '
 <script type="text/javascript">
-//function handler()
+
+//function handler ()
 //{
 //  if (req.readyState == 4) // complete
 //    if (req.status == 200)
@@ -269,11 +270,11 @@ function file_get_contents (url)
   // unless ActiveX has also been disabled, as in the following example.
   if (!window.XMLHttpRequest)
     {
-      window.XMLHttpRequest = function()
+      window.XMLHttpRequest = function ()
         {
           try
             {
-              req = new ActiveXObject('MSXML2.XMLHTTP.3.0');
+              req = new ActiveXObject (\'MSXML2.XMLHTTP.3.0\');
             }
           catch (e)
             {
