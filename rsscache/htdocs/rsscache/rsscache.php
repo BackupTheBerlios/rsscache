@@ -646,6 +646,10 @@ if ($f == 'read' ||
     // redirect
 //    header ('refresh: 0; url='.get_cookie ('rw'));
 //    header ('location:'.get_cookie ('rw'));
+
+    if ($tv2_use_database)
+      tv2_sql_close ();
+
     exit;
   }
 /*
@@ -662,6 +666,10 @@ if ($f == 'rss')
   {
     $d = tv2_sql ($c, $q, $f, NULL, $start, $num);
     echo tv2_rss ($d);
+
+    if ($tv2_use_database)
+      tv2_sql_close ();
+
     exit;
   }
 
@@ -671,6 +679,10 @@ if ($f == 'sitemap')
   {
     $d = tv2_sql ($c, $q, $f, NULL, $start, $num);
     echo tv2_sitemap ($d);
+
+    if ($tv2_use_database)
+      tv2_sql_close ();
+
     exit;
   }
 
@@ -679,6 +691,10 @@ if ($f == 'sitemap')
 if ($f == 'robots')
   {
     echo tv2_robots ();
+
+    if ($tv2_use_database)
+      tv2_sql_close ();
+
     exit;
   }
 
@@ -706,12 +722,19 @@ if ($memcache_expire > 0)
 
             echo $p;
 
+            if ($tv2_use_database)
+              tv2_sql_close ();
+
             exit;
           }
       }
     else
       {
         echo 'ERROR: could not connect to memcached';
+
+        if ($tv2_use_database)
+          tv2_sql_close ();
+
         exit; 
       }
   }

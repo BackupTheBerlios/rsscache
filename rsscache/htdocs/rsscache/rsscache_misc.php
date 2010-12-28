@@ -129,6 +129,7 @@ config_xml_normalize ($config)
 function
 config_xml ($memcache_expire = 0)
 {
+  global $tv2_use_database;
   static $config = NULL;
 
   if ($config)
@@ -151,12 +152,19 @@ if ($memcache_expire > 0)
 
             echo $p;
 
+            if ($tv2_use_database)
+              tv2_sql_close ();
+
             exit;
           }
       }
     else
       {
         echo 'ERROR: could not connect to memcached';
+
+        if ($tv2_use_database)
+          tv2_sql_close ();
+
         exit;
       }
   }
