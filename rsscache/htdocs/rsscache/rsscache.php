@@ -414,6 +414,8 @@ if (file_exists ('site_config.xml'))
     return $p.tv2_f_index ();
   else if (isset ($category->wiki))
     return $p.tv2_f_wiki ();
+  else if (isset ($category->localwiki))
+    return $p.tv2_f_localwiki ();
 
   if ($tv2_use_database == 0)
     return $p;

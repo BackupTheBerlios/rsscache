@@ -58,6 +58,15 @@ tv2_f_wiki ()
 
 
 function
+tv2_f_localwiki ()
+{
+  $c = get_request_value ('c');        
+  $config = config_xml_by_category ($c);      
+  return widget_embed ($config->localwiki, WIDGET_EMBED_PROXY);
+}
+
+
+function
 tv2_get_category ()
 {
 //  global $config;

@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 if (!defined ('MISC_WIKIPEDIA_PHP'))
 {
+//phpinfo ();
 define ('MISC_WIKIPEDIA_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 require_once ('misc/misc.php');
@@ -60,7 +61,8 @@ wikipedia_get_html ($q)
   $xml = wikipedia_get_xml ($q);
   $ua = ini_get ('user_agent');
   ini_set ('user_agent', random_user_agent ()); // yawn  
-  $p = file_post_contents ('http://en.wikipedia.org/w/api.php',
+  $p = file_post_contents (
+         'http://en.wikipedia.org/w/api.php',
          array ('action' => 'parse',
                 'format' => 'xml',
                 'text' => $xml->query->pages->page->revisions->rev));
