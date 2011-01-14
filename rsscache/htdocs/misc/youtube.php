@@ -208,6 +208,8 @@ youtube_thumbnail ($url)
       else echo $path."\n";
 
       misc_download ($url, $path);
+      if (!file_exists ($path))
+        break;
 //      echo 'wget -nc "'.$url.'" -O "'.$filename.'"'."\n"; // -N?
 //      echo 'rm "'.$filename.'"'."\n"; // remove old thumbs
     }
