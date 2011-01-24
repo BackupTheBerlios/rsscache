@@ -168,6 +168,8 @@ widget_embed_iframe ($src)
 
   // automatic scale to the content size requires javascript and misc.js
   $p = '';
+
+  $p .= '<a href='..'>Open Frame in New Window</a><br>';
   $p .= '<iframe'
 //       .' onload="javascript:autoscaleiframe(this);" scrolling="no"' // with js
        .' width="100%"'
