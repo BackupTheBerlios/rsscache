@@ -169,7 +169,7 @@ widget_embed_iframe ($src)
   // automatic scale to the content size requires javascript and misc.js
   $p = '';
 
-  $p .= '<a href='.$url.'>Open Frame in New Window</a><br>';
+  $p .= '<img src="images/widget/redirectltr.png"><a href='.$url.'>Open Frame in New Window</a><br>';
   $p .= '<iframe'
 //       .' onload="javascript:autoscaleiframe(this);" scrolling="no"' // with js
        .' width="100%"'
