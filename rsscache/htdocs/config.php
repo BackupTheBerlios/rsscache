@@ -9,6 +9,11 @@ $use_gzip = 0;
 // use memcache? 0 == off
 $memcache_expire = 0;
 
+// wget path and options
+$wget_path = '/usr/bin/torify /usr/bin/wget'; // use TOR for greedy RSS feeds
+//$wget_path = '/usr/bin/wget';
+// rsstool path and options
+$rsstool_path = '/usr/local/bin/rsstool';
 
 // localization and style
 $tv2_charset = 'utf-8';
