@@ -179,15 +179,14 @@ youtube_download ($video_id, $use_tor = 0, $debug = 0)
 
 
 function
-youtube_thumbnail ($url)
+youtube_thumbnail ($url, $thumbnails_path, $use_tor = 0)
 {
-  global $tv2_root;
-  global $thumbnails_path;
-
+//      echo 'wget -nc "'.$url.'" -O "'.$filename.'"'."\n"; // -N?
+//      echo 'rm "'.$filename.'"'."\n"; // remove old thumbs
   $s = youtube_get_videoid ($url);
 
   if (!strlen ($s))
-    return;
+    return -1;
 
   for ($i = 1; $i < 4; $i++)
     {
@@ -195,7 +194,7 @@ youtube_thumbnail ($url)
       $url = 'http://i.ytimg.com/vi/'.$s.'/'.$i.'.jpg';
 
       $filename = $s.'_'.$i.'.jpg';
-      $path = $tv2_root.'/thumbnails/youtube/'.$filename;
+      $path = $thumbnails_path.'/'.$filename;
 
       // DEBUG
 //      echo $url."\n";
@@ -205,14 +204,19 @@ youtube_thumbnail ($url)
           echo 'WARNING: file '.$path.' exists, skipping'."\n";
           return -1;
         }
-      else echo $path."\n";
+      else
+        {
+          // DEBUG
+          echo $path."\n";
+        }
 
       misc_download ($url, $path);
+
+      // skip on error
       if (!file_exists ($path))
         break;
-//      echo 'wget -nc "'.$url.'" -O "'.$filename.'"'."\n"; // -N?
-//      echo 'rm "'.$filename.'"'."\n"; // remove old thumbs
     }
+
   return 0;
 }
 
@@ -220,10 +224,6 @@ youtube_thumbnail ($url)
 function
 youtube_check_dead_link ($url, $use_tor)
 {
-  global $tv2_root;
-  global $thumbnails_path;
-  global $db;
-
   $s = youtube_get_videoid ($url);
 
   if (!strlen($s))
