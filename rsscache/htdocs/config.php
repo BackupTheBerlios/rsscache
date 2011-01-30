@@ -120,7 +120,7 @@ if ($tv2_subdomain == 'videos' || $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
 }
 else if ($tv2_subdomain == 'quakelive')                                                      
 {
-  $tv2_config_xml = 'config.xml';
+  $tv2_config_xml = 'quakelive_config.xml';
   $tv2_include_php = 'videos_include.php';
   $tv2_thumbnails_prefix = '';
 
@@ -151,6 +151,8 @@ else if ($tv2_subdomain == 'minecraft')
   $tv2_logo = 'MINECRAFT';
   $tv2_videos_s = 'videos';
   $tv2_related_s = 'Find related '.$tv2_videos_s;
+  $tv2_default_category = 'minecraft';
+  $tv2_collapsed = 1;   // collapse categories
 
   $tv2_enable_search = 0; // allow users to search db?
   $tv2_link = 'http://videos.pwnoogle.com/';
