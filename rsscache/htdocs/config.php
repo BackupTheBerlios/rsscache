@@ -98,25 +98,7 @@ $tv2_dbpass = 'pwn44553';
   }
 
 
-if ($tv2_subdomain == 'emulive')
-{
-  $tv2_config_xml = 'emulive_config.xml';
-  $tv2_include_php = 'emulive_include.php';
-  $tv2_thumbnails_prefix = '';
-  
-  $tv2_title = 'video games - pwnoogle \:D/'; //everything emulation, long-plays, oldskool 8 Bit and 16 Bit
-  $tv2_logo = 'video games';
-  $tv2_videos_s = 'videos';
-  $tv2_related_s = 'Find related '.$tv2_videos_s;
-
-  $tv2_link = 'http://emulive.pwnoogle.com/';
-  $tv2_link_static = 'http://emulive.pwnoogle.com/'; // remote static content
-  $tv2_debug_sql = 0;
-  $tv2_enable_search = 1; // allow users to search db?
-
-  $tv2_dbname = 'pwnoogle_emulive'; 
-}
-else if ($tv2_subdomain == 'videos' || $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
+if ($tv2_subdomain == 'videos' || $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
 {
   $tv2_config_xml = 'videos_config.xml';
   $tv2_include_php = 'videos_include.php';
