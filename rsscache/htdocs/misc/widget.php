@@ -529,7 +529,7 @@ widget_collapse ($label, $s, $collapsed = 0)
   $p = '';
 
   $p .= ''
-       .'<span style="font-size:24;font-weight:bolder;font-family:monospace;">'
+       .'<span style="font-family:monospace;">'
        .'[<a id="_'.$r.'" href="javascript:void(0);" onclick="javascript:'
 //       .'document.getElementById(\''.$r.'\').style.display=(document.getElementById(\''.$r.'\').style.display==\'none\'?\'block\':\'none\');'
 //       .'document.getElementById(\'_'.$r.'\').innerHTML=(document.getElementById(\''.$r.'\').style.display==\'none\'?\''.'+'.'\':\''.'-'.'\');'
