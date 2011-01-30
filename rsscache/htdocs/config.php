@@ -148,7 +148,7 @@ else if ($tv2_subdomain == 'minecraft')
 
   // localization and style
   $tv2_title = 'minecraft - pwnoogle \:D/';
-  $tv2_logo = 'MINECRAFT';
+  $tv2_logo = '<img src="images/logos/minecraft32.png" border="0">';
   $tv2_videos_s = 'videos';
   $tv2_related_s = 'Find related '.$tv2_videos_s;
   $tv2_default_category = 'minecraft';
