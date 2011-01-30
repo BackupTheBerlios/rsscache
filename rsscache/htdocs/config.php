@@ -5,7 +5,7 @@ define ('TV2_CONFIG_PHP', 1);
 
 
 // compression 1/0
-$use_gzip = 0;
+$use_gzip = 1;
 // use memcache? 0 == off
 $memcache_expire = 0;
 
@@ -24,7 +24,7 @@ $tv2_title = //'&#x2590;&#x2598;&#x2599;&#x2599;&#x258c;&#x259b;&#x259c;'
 $tv2_logo = 'pwnoogle';
 $tv2_videos_s = 'videos';
 $tv2_related_s = 'Find related '.$tv2_videos_s;
-$tv2_collapsed = 1;   // collapse categories
+$tv2_collapsed = 0;   // collapse categories
 
 $tv2_enable_search = 0; // allow users to search db?
 $tv2_rss_head = 1;
