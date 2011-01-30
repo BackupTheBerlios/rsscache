@@ -10,9 +10,42 @@ require_once ('tv2_sql.php');
 
 
 function
+tv2_get_request_value ($name)
+{
+  // wrapper for get_request_value() with hacks
+  global $tv2_default_category;
+
+  $v = get_request_value ($name);
+
+  if ($name == 'c')
+    {
+      if ($v == '')
+        $v = $tv2_default_category;
+    }
+
+  return $v;
+}
+
+
+function
+tv2_get_category ()
+{
+//  global $config;
+  $c = tv2_get_request_value ('c'); // category
+
+//  if (!($c)) // default category
+//    for ($i = 0; isset ($config->category[$i]); $i++)
+//      if ($config->category[$i]->default == 1)
+//        return $config->category[$i]->name;
+//  return NULL;
+  return $c;
+}
+
+
+function
 tv2_f_local ()
 {
-  $c = get_request_value ('c');
+  $c = tv2_get_request_value ('c');
   $config = config_xml_by_category ($c);
 //  return widget_embed ($config->embed, WIDGET_EMBED_AUTO);
   return widget_embed ($config->local, WIDGET_EMBED_LOCAL);
@@ -22,7 +55,7 @@ tv2_f_local ()
 function
 tv2_f_iframe ()
 {
-  $c = get_request_value ('c');
+  $c = tv2_get_request_value ('c');
   $config = config_xml_by_category ($c);
 //  return widget_embed ($config->embed, WIDGET_EMBED_AUTO);
   return widget_embed ($config->iframe, WIDGET_EMBED_IFRAME);
@@ -32,7 +65,7 @@ tv2_f_iframe ()
 function
 tv2_f_proxy ()
 {
-  $c = get_request_value ('c');        
+  $c = tv2_get_request_value ('c');        
   $config = config_xml_by_category ($c);      
   return widget_embed ($config->proxy, WIDGET_EMBED_PROXY);
 }
@@ -41,7 +74,7 @@ tv2_f_proxy ()
 function
 tv2_f_index ()
 {
-  $c = get_request_value ('c');        
+  $c = tv2_get_request_value ('c');        
   $config = config_xml_by_category ($c);      
   return widget_embed ($config->index, WIDGET_EMBED_INDEX);
 }
@@ -50,7 +83,7 @@ tv2_f_index ()
 function
 tv2_f_wiki ()
 {
-  $c = get_request_value ('c');        
+  $c = tv2_get_request_value ('c');        
   $config = config_xml_by_category ($c);      
 //  return widget_wikipedia ($config->wiki);
   return wikipedia_get_html ($config->wiki);
@@ -60,24 +93,9 @@ tv2_f_wiki ()
 function
 tv2_f_localwiki ()
 {
-  $c = get_request_value ('c');        
+  $c = tv2_get_request_value ('c');        
   $config = config_xml_by_category ($c);      
   return widget_embed ($config->localwiki, WIDGET_EMBED_PROXY);
-}
-
-
-function
-tv2_get_category ()
-{
-//  global $config;
-  $c = get_request_value ('c'); // category
-
-//  if (!($c)) // default category
-//    for ($i = 0; isset ($config->category[$i]); $i++)
-//      if ($config->category[$i]->default == 1)
-//        return $config->category[$i]->name;
-//  return NULL;
-  return $c;
 }
 
 
@@ -139,6 +157,7 @@ function
 config_xml ($memcache_expire = 0)
 {
   global $tv2_use_database;
+  global $tv2_config_xml;
   static $config = NULL;
 
   if ($config)
@@ -150,7 +169,7 @@ if ($memcache_expire > 0)
     if ($memcache->connect ('localhost', 11211) == TRUE)
       {
         // data from the cache
-        $p = $memcache->get (md5 ('config.xml'));
+        $p = $memcache->get (md5 ($tv2_config_xml));
 
         if ($p != FALSE)
           {
@@ -181,13 +200,13 @@ if ($memcache_expire > 0)
   // DEBUG
 //  echo 'read config';
 
-  $config = simplexml_load_file ('config.xml');
+  $config = simplexml_load_file ($tv2_config_xml);
   $config = config_xml_normalize ($config);
 
   // use memcache
 if ($memcache_expire > 0)
   {
-    $memcache->set (md5 ('config.xml'), serialize ($config), 0, $memcache_expire);
+    $memcache->set (md5 ($tv2_config_xml), serialize ($config), 0, $memcache_expire);
   }
 
   return $config;
