@@ -164,7 +164,6 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   $s = '';
   if ($icon)
     {
-      // remove missing image in IE
       $s .= '<img src="'.$icon.'" border="0" alt=""';
 //      if (!($selected))
 //        $s .= ' style="opacity:0.5;"';
@@ -340,8 +339,18 @@ widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
                                $f);
         }
       else // <title> (no link)
-        $s .= $category->title;
-
+        {
+          if ($category->logo)
+            {
+              $s .= '<img src="'.$category->logo.'" border="0" alt=""';
+//              if ($flags & WIDGET_BUTTON_SMALL)
+                $s .= ' height="16"';
+              $s .= ''
+                   .' onerror="this.parentNode.removeChild(this);"'
+                   .'>';
+            }
+          $s .= $category->title;
+        }
       // <new>
       if ($category->new == 1)
         $s .= '&nbsp;<img src="images/new.png">';
@@ -513,19 +522,38 @@ widget_table ($title_array, $content_array)
 
 
 function
-widget_collapse ($label, $s, $collapsed)
+widget_collapse ($label, $s, $collapsed = 0)
 {
   $r = rand ();
 
   $p = '';
 
   $p .= ''
-       .'[<a href="javascript:void(0);" onclick="javascript:'
-       .'document.getElementById(\''.$r.'\').style.display=(document.getElementById(\''.$r.'\').style.display==\'none\'?\'block\':\'none\')">+</a>]'
-       .' '.$label.':'
-       .'<br>'
+       .'<span style="font-size:24;font-weight:bolder;font-family:monospace;">'
+       .'[<a id="_'.$r.'" href="javascript:void(0);" onclick="javascript:'
+//       .'document.getElementById(\''.$r.'\').style.display=(document.getElementById(\''.$r.'\').style.display==\'none\'?\'block\':\'none\');'
+//       .'document.getElementById(\'_'.$r.'\').innerHTML=(document.getElementById(\''.$r.'\').style.display==\'none\'?\''.'+'.'\':\''.'-'.'\');'
+       .'e=document.getElementById(\''.$r.'\');'
+       .'f=document.getElementById(\'_'.$r.'\');'
+//       .'e.style.display=(e.style.display==\'none\'?\'block\':\'none\');'
+//       .'document.getElementById(\'_'.$r.'\').innerHTML=(e.style.display==\'none\'?\'+\':\'-\');'
+       .'if(e.style.display==\'none\'){'
+       .'e.style.display=\'block\';'
+       .'f.innerHTML=\'-\';'
+       .'}else{'
+       .'e.style.display=\'none\';'
+       .'f.innerHTML=\'+\';'
+       .'}'
+       .'">'.($collapsed ? '+' : '-').'</a>]'
+       .'</span>'
 ;
-  $p .= '<div id="'.$r.'"'.($collapsed ? ' style="display:none;"' : '').'>'
+  if ($label != '')
+    $p .= ' '.$label.':';
+
+  $p .= '<br>';
+
+  $p .= ''
+       .'<div id="'.$r.'"'.($collapsed ? ' style="display:none;"' : '').'>'
        .$s
        .'</div>';
   

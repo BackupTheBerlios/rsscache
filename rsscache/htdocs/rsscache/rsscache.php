@@ -362,7 +362,8 @@ tv2_body ()
          $tv2_cookie_expire,
          $tv2_enable_search,
          $tv2_related_search,
-         $tv2_use_database;
+         $tv2_use_database,
+         $tv2_collapsed;
   global $config;
   global $f, $c, $q, $v, $start, $num, $captcha;
 
@@ -393,7 +394,8 @@ if (file_exists ('site_config.xml'))
   // category buttons
   $p .= ''
        .'<div class="tv2_button">'
-       .widget_cms (NULL, $config, NULL, 8)
+//widget_collapse ($label, $s, $collapsed)
+       .widget_collapse ('', widget_cms (NULL, $config, NULL, 8), $tv2_collapsed)
        .'</div>'
 ;
 
