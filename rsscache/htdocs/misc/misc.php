@@ -242,6 +242,67 @@ check_udp ($address, $port)
 }
 
 
+/*
+  My notation of variables:
+  i_ = integer, ex: i_count
+  a_ = array, a_html
+  b_ = boolean,
+  s_ = string
+ 
+  What it does:
+  - parses a html string and get the tags
+  - exceptions: html tags like <br> <hr> </a>, etc
+  - At the end, the array will look like this:
+  ["IMG"][0]["SRC"] = "xxx"
+  ["IMG"][1]["SRC"] = "xxx"
+  ["IMG"][1]["ALT"] = "xxx"
+  ["A"][0]["HREF"] = "xxx"
+*/
+function
+parse_html ($s)
+{
+  $i_indicatorL = 0;
+  $i_indicatorR = 0;
+  $s_tagOption = "";
+  $i_arrayCounter = 0;
+  $a_html = array();
+
+  // search for a tag in string
+  while(is_int (($i_indicatorL = strpos ($s, '<', $i_indicatorR))))
+    {
+      // get everything into tag...
+      $i_indicatorL++;
+      $i_indicatorR = strpos ($s, '>', $i_indicatorL);
+      $s_temp = substr ($s, $i_indicatorL, ($i_indicatorR - $i_indicatorL));
+      $a_tag = explode (' ', $s_temp);
+      // here we get the tag's name
+      list(, $s_tagName, , ) = each ($a_tag);
+      $s_tagName = strtoupper ($s_tagName);
+      // well, I am not interesting in <br>, </font> or anything else like that...
+      $b_boolOptions = is_array (($s_tagOption = each ($a_tag))) && $s_tagOption[1];
+      if ($b_boolOptions)
+        {
+          // without this, we will mess up the array
+          $i_arrayCounter = (int) count ($a_html[$s_tagName]);
+          // get the tag options, like src="htt://". Here, s_tagTokOption is 'src'
+          // and s_tagTokValue is '"http://"'
+
+          do
+            {
+              $s_tagTokOption = strtoupper(strtok($s_tagOption[1], "="));
+              $s_tagTokValue = trim(strtok("="));
+              $a_html[$s_tagName][$i_arrayCounter][$s_tagTokOption] =
+              $s_tagTokValue;
+              $b_boolOptions = is_array(($s_tagOption=each($a_tag))) &&
+              $s_tagOption[1];
+            } while($b_boolOptions);
+        }
+    }
+  return $a_html;
+}
+
+
+/*
 function
 misc_explode_tag ($html_tag)
 {
@@ -344,6 +405,7 @@ misc_gettag ($html_tag, $attr = array(), $use_existing_attr = false)
 
   return misc_implode_tag ($tag);
 }
+*/
 
 
 $ctype__ = array(32,32,32,32,32,32,32,32,32,40,40,40,40,40,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,
