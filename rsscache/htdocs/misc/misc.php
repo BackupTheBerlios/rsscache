@@ -189,9 +189,9 @@ misc_template ($src, $template_replace)
   for ($i = 0; isset ($a[$i]); $i++)
     {
       $func = $template_replace[$a[$i]];
-      if (function_exists ($func))
-        $s = $func ();
-      else
+//      if (function_exists ($func))
+//        $s = $func ();
+//      else
         $s = $func;
 //      $p = str_replace ('<!-- '.$a[$i].' -->', $s, $p);
       $p = str_replace ($a[$i], $s, $p);
