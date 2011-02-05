@@ -743,7 +743,7 @@ $body = tv2_body ();
 $template_replace = array (
   '<!-- parse:title -->'    => $tv2_title,
   '<!-- parse:icon -->'     => misc_head_tags ($tv2_icon, 0, $tv2_charset),
-  '<!-- parse:head_seo -->' => misc_seo_description ($body),
+  '<!-- parse:head_seo -->' => '', // misc_seo_description ($body),
   '<!-- parse:body -->'     => $body,
   '<!-- parse:body_tag -->' => $tv2_body_tag,
   '<!-- parse:head_tag -->' => $tv2_head_tag,
@@ -756,6 +756,8 @@ if ($tv2_rss_head)
    .' title="'.$tv2_title.'"'
    .' href="?'.http_build_query2 (array ('f' => 'rss'), true).'">';
 $template = file_get_contents ('tv2/tv2_index.html');
+//echo '<pre><tt>';
+//print_r ($template_replace);
 $p = misc_template ($template, $template_replace);
 $p = misc_template ($p, $tv2_translate['default']);
 
