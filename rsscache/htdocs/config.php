@@ -2,6 +2,7 @@
 if (!defined ('TV2_CONFIG_PHP'))
 {
 define ('TV2_CONFIG_PHP', 1);
+require_once ('config_lang.php');
 
 
 // apache2
