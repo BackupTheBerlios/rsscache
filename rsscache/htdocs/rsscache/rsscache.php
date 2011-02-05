@@ -10,7 +10,6 @@ require_once ('misc/misc.php');
 //require_once ('misc/widget.php');
 require_once ('tv2_output.php');
 require_once ('tv2_misc.php');
-require_once ('tv2_lang.php');
 
 
 //$t_ms = time_ms ();

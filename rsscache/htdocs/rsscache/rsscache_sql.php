@@ -94,7 +94,7 @@ tv2_sql_stats ($category = NULL)
   $debug = 0;
   $f = get_request_value ('f');
 
-  $stats = array ('videos' => 0, 'videos_today' => 0, 'videos_7_days' => 0, 'videos_30_days' => 0, 'days' => 0);
+  $stats = array ('items' => 0, 'items_today' => 0, 'items_7_days' => 0, 'items_30_days' => 0, 'days' => 0);
 
   // downloaded items since...
   // ...always
@@ -106,7 +106,7 @@ tv2_sql_stats ($category = NULL)
   $db->sql_write ($sql_query_s, 0, $debug);
   $r = $db->sql_read (0, $debug);
 
-  $stats['videos'] = (int) $r[0][0];
+  $stats['items'] = (int) $r[0][0];
 
   if ($f == 'stats')
     {
@@ -119,7 +119,7 @@ tv2_sql_stats ($category = NULL)
       $db->sql_write ($sql_query_s, 0, $debug);
       $r = $db->sql_read (0, $debug);
 
-      $stats['videos_today'] = (int) $r[0][0];
+      $stats['items_today'] = (int) $r[0][0];
 
 
       // ...last 7 days
@@ -131,7 +131,7 @@ tv2_sql_stats ($category = NULL)
       $db->sql_write ($sql_query_s, 0, $debug);
       $r = $db->sql_read (0, $debug);
 
-      $stats['videos_7_days'] = (int) $r[0][0]; 
+      $stats['items_7_days'] = (int) $r[0][0]; 
 
 
       // ...last 30 days
@@ -143,7 +143,7 @@ tv2_sql_stats ($category = NULL)
       $db->sql_write ($sql_query_s, 0, $debug);
       $r = $db->sql_read (0, $debug);
 
-      $stats['videos_30_days'] = (int) $r[0][0];
+      $stats['items_30_days'] = (int) $r[0][0];
     }
 
   // total items downloaded...

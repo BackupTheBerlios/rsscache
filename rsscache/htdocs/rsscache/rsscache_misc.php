@@ -103,17 +103,16 @@ function
 config_xml_normalize ($config)
 {
   global $tv2_use_database;
-  global $tv2_videos_s;
 
   if ($tv2_use_database == 1)
     {
       $stats = tv2_sql_stats ();
 
       // add new variables
-      $config->videos = $stats['videos'];
-      $config->videos_today = $stats['videos_today'];
-      $config->videos_7_days = $stats['videos_7_days'];
-      $config->videos_30_days = $stats['videos_30_days'];
+      $config->items = $stats['items'];
+      $config->items_today = $stats['items_today'];
+      $config->items_7_days = $stats['items_7_days'];
+      $config->items_30_days = $stats['items_30_days'];
       $config->days = $stats['days'];
 
       for ($i = 0; isset ($config->category[$i]); $i++)
@@ -125,10 +124,10 @@ config_xml_normalize ($config)
               {
                 $stats = tv2_sql_stats ($config->category[$i]->name);
     
-                $config->category[$i]->videos = $stats['videos'];
-                $config->category[$i]->videos_today = $stats['videos_today'];
-                $config->category[$i]->videos_7_days = $stats['videos_7_days'];
-                $config->category[$i]->videos_30_days = $stats['videos_30_days'];
+                $config->category[$i]->items = $stats['items'];
+                $config->category[$i]->items_today = $stats['items_today'];
+                $config->category[$i]->items_7_days = $stats['items_7_days'];
+                $config->category[$i]->items_30_days = $stats['items_30_days'];
                 $config->category[$i]->days = $stats['days'];
               }
           }
@@ -139,8 +138,8 @@ config_xml_normalize ($config)
       $category = $config->category[$i];
       $category->tooltip = 
                  ($category->tooltip ? $category->tooltip : $category->title)
-                .($category->videos ? ', '.$category->videos.' '.$tv2_videos_s : '')
-                .($category->days ? ', '.$category->days.' days' : '');
+                .($category->items ? ', '.$category->items.' <!-- lang:items -->' : '')
+                .($category->days ? ', '.$category->days.' <!-- lang:days -->' : '');
 //      if ($category->query)
 //        {
 //          $b = array ();

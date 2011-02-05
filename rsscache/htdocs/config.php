@@ -4,9 +4,6 @@ if (!defined ('TV2_CONFIG_PHP'))
 define ('TV2_CONFIG_PHP', 1);
 
 
-function
-get_subdomain ()
-{
 // apache2
 //$_SERVER['SERVER_NAME'] == 'maps.pwnoogle.com'
 //$_SERVER['USER'] unset
@@ -19,18 +16,39 @@ get_subdomain ()
 //$_SERVER["HOSTNAME"] => stan.site5.com
 //$_SERVER["PWD"] => /home/pwnoogle/htdocs/emulive/htdocs
 //$_SERVER["DOCUMENT_ROOT"] => ''
-//  $p = 'tv2_subdomain';
+//$p = 'tv2_subdomain';
+//if (isset ($_SERVER['DOCUMENT_ROOT']))
+if ($_SERVER['DOCUMENT_ROOT'] != '')
   $p = $_SERVER['DOCUMENT_ROOT'];
-  if (isset ($_SERVER['PWD']))
-    $p = $_SERVER['PWD'];
-  $a = explode ('/', $p); // /home/pwnoogle/htdocs/emulive/htdocs
-  // DEBUG
-//  echo $a[4];
-  return $a[4];
-}
+else if (isset ($_SERVER['PWD']))
+  $p = $_SERVER['PWD'];
+else
+  {
+    echo 'ERROR: $tv2_subdomain'."\n";
+    exit;
+  }
+// DEBUG
+//echo $p;
+//exit;
+$a = explode ('/', $p); // /home/pwnoogle/htdocs/emulive/htdocs
+// DEBUG
+//echo $a[count ($a) - 2];
+$tv2_subdomain = $a[count ($a) - 2];
 
-
-$tv2_subdomain = get_subdomain ();
+//$p = 'tv2_domain';
+if (isset ($_SERVER['SERVER_NAME']))
+  $p = $_SERVER['SERVER_NAME'];
+else if (isset ($_SERVER['HOSTNAME']))
+  $p = $_SERVER['HOSTNAME'];
+else
+  $p = '';
+//  {
+//    echo 'ERROR: $tv2_domain'."\n";
+//    exit;
+//  }
+// DEBUG
+//echo $p;
+$tv2_domain = $p;
 
 
 // compression 1/0
@@ -90,12 +108,32 @@ $tv2_dbhost = 'localhost';
 //$tv2_dbname = 'pwnoogle_emulive'; 
 $tv2_dbuser = 'pwnoogle_db';
 $tv2_dbpass = 'pwn44553';
-//if (stristr ($_SERVER['SERVER_NAME'], 'aa.k.vu'))
-  {
-//    $tv2_dbname = 'pwnoogle_emulive'; 
-//    $tv2_dbuser = 'root';
-//    $tv2_dbpass = 'nb';
-  }
+
+//if ($tv2_subdomain == 'emulive')
+{
+  $tv2_config_xml = 'emulive_config.xml';
+  $tv2_include_php = 'emulive_include.php';
+  $tv2_thumbnails_prefix = '';
+  
+  $tv2_title = 'video games - pwnoogle \:D/';
+  $tv2_logo = 'video games';
+
+  $tv2_link = 'http://emulive.pwnoogle.com/';
+  $tv2_link_static = 'http://emulive.pwnoogle.com/'; // remote static content
+  $tv2_debug_sql = 0;
+  $tv2_enable_search = 1; // allow users to search db?
+
+  $tv2_dbname = 'pwnoogle_jack'; 
+  if ($tv2_domain != 'pwnoogle.com' &&
+      $tv2_domain != 'videos.pwnoogle.com' &&
+      $tv2_domain != 'minecraft.pwnoogle.com' &&
+      $tv2_domain != 'quakelive.pwnoogle.com')
+    {
+      $tv2_dbname = 'pwnoogle_videos'; 
+      $tv2_dbuser = 'root';
+      $tv2_dbpass = 'nb';
+    }
+}
 
 
 if ($tv2_subdomain == 'videos' || $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
@@ -115,8 +153,6 @@ if ($tv2_subdomain == 'videos' || $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
   $tv2_link_static = 'http://videos.pwnoogle.com/'; // static content
   $tv2_debug_sql = 0;
   $tv2_related_search = 0; // make use of related searches (requires keywords)
-
-  $tv2_dbname = 'pwnoogle_jack';
 }
 else if ($tv2_subdomain == 'quakelive')                                                      
 {
@@ -137,8 +173,6 @@ else if ($tv2_subdomain == 'quakelive')
   $tv2_link_static = 'http://videos.pwnoogle.com/'; // static content
   $tv2_debug_sql = 0;
   $tv2_related_search = 0; // make use of related searches (requires keywords)
-
-  $tv2_dbname = 'pwnoogle_jack';
 }
 else if ($tv2_subdomain == 'minecraft')
 {
@@ -159,9 +193,8 @@ else if ($tv2_subdomain == 'minecraft')
   $tv2_link_static = 'http://videos.pwnoogle.com/'; // static content
   $tv2_debug_sql = 0;
   $tv2_related_search = 0; // make use of related searches (requires keywords)
-
-  $tv2_dbname = 'pwnoogle_jack';
 }
+/*
 else if ($tv2_subdomain == 'demos')
 {
   $tv2_config_xml = 'demos_config.xml';
@@ -206,7 +239,7 @@ else if ($tv2_subdomain == 'maps')
   $tv2_use_database = 0;
   $tv2_dbname = 'pwnoogle_maps';
 }
-
+*/
 
 }
 
