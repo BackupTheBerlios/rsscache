@@ -10,6 +10,7 @@ require_once ('misc/misc.php');
 //require_once ('misc/widget.php');
 require_once ('tv2_output.php');
 require_once ('tv2_misc.php');
+require_once ('tv2_lang.php');
 
 
 //$t_ms = time_ms ();
@@ -33,12 +34,10 @@ function
 tv2_body_item ($i, $d_array)
 {
   global $tv2_isnew,
-         $tv2_videos_s,
          $tv2_player_w,
          $tv2_player_h,
          $tv2_preview_w,
-         $tv2_preview_h,
-         $tv2_related_s;
+         $tv2_preview_h;
 
   global $tv2_root,
          $tv2_link,
@@ -50,7 +49,6 @@ tv2_body_item ($i, $d_array)
          $tv2_logo,
          $tv2_title,
          $tv2_search_s,
-         $tv2_videos_s,
          $tv2_cookie_expire,
          $tv2_enable_search,
          $tv2_related_search;
@@ -130,7 +128,7 @@ tv2_body_item ($i, $d_array)
   if ($s)
     {
       $p .= '<div class="embed"><p>';
-        $p .= 'Embed code: '.$s;
+        $p .= '<!-- lang:Embed code -->: '.$s;
       $p .= '</p></div>';
     }
 
@@ -144,7 +142,7 @@ tv2_body_item ($i, $d_array)
 
   // logo
   $p .= '<div class="category">';
-  $p .= 'Category:&nbsp;'.tv2_button ($d_category).'&nbsp;';
+  $p .= '<!-- lang:Category -->:&nbsp;'.tv2_button ($d_category).'&nbsp;';
   $p .= '&nbsp;'.tv2_include_logo ($d).'&nbsp;';
   $p .= '</div>';
 
@@ -182,10 +180,8 @@ function
 tv2_body_player ($i, $d_array)
 {
   global $tv2_isnew,
-         $tv2_videos_s,
          $tv2_player_w,
-         $tv2_player_h,
-         $tv2_related_s;
+         $tv2_player_h;
 
   global $tv2_root,
          $tv2_link,
@@ -197,7 +193,6 @@ tv2_body_player ($i, $d_array)
          $tv2_logo,
          $tv2_title,
          $tv2_search_s,
-         $tv2_videos_s,
          $tv2_cookie_expire,
          $tv2_enable_search,
          $tv2_related_search;
@@ -282,7 +277,7 @@ tv2_body_player ($i, $d_array)
   if ($s)
     {   
       $p .= '<div class="embed"><p>';
-        $p .= 'Embed code: '.$s;
+        $p .= '<!-- lang:Embed code -->: '.$s;
       $p .= '</p></div>';
     }
 
@@ -321,7 +316,7 @@ tv2_body_player ($i, $d_array)
 //            }
     
       $p .= '<br>';
-  $p .= '<span class="tv2_tags">Tags: ';
+  $p .= '<span class="tv2_tags"><!-- lang:Tags -->: ';
   $p .= tv2_keywords ($d);
   $p .= '</span>';  
 
@@ -343,10 +338,8 @@ function
 tv2_body ()
 {
   global $tv2_isnew,
-         $tv2_videos_s,
          $tv2_player_w,
-         $tv2_player_h,
-         $tv2_related_s;
+         $tv2_player_h;
 
   global $tv2_root,
          $tv2_link,
@@ -358,7 +351,6 @@ tv2_body ()
          $tv2_logo,
          $tv2_title,
          $tv2_search_s,
-         $tv2_videos_s,
          $tv2_cookie_expire,
          $tv2_enable_search,
          $tv2_related_search,
@@ -750,22 +742,23 @@ if (file_exists ('images/captcha/'))
 
 $body = tv2_body ();
 $template_replace = array (
-  '<!-- title -->'    => $tv2_title,
-  '<!-- icon -->'     => misc_head_tags ($tv2_icon, 0, $tv2_charset),
-  '<!-- head_seo -->' => misc_seo_description ($body),
-  '<!-- body -->'     => $body,
-  '<!-- body_tag -->' => $tv2_body_tag,
-  '<!-- head_tag -->' => $tv2_head_tag,
-  '<!-- body_end -->' => tv2_include_end (),
+  '<!-- parse:title -->'    => $tv2_title,
+  '<!-- parse:icon -->'     => misc_head_tags ($tv2_icon, 0, $tv2_charset),
+  '<!-- parse:head_seo -->' => misc_seo_description ($body),
+  '<!-- parse:body -->'     => $body,
+  '<!-- parse:body_tag -->' => $tv2_body_tag,
+  '<!-- parse:head_tag -->' => $tv2_head_tag,
+  '<!-- parse:body_end -->' => tv2_include_end (),
 );
 
 if ($tv2_rss_head)  
-  $template_replace['<!-- head_rss -->'] =
+  $template_replace['<!-- parse:head_rss -->'] =
     '<link rel="alternate" type="application/rss+xml"'
    .' title="'.$tv2_title.'"'
    .' href="?'.http_build_query2 (array ('f' => 'rss'), true).'">';
 $template = file_get_contents ('tv2/tv2_index.html');
 $p = misc_template ($template, $template_replace);
+$p = misc_template ($p, $tv2_translate['default']);
 
 
 // the _only_ echo
