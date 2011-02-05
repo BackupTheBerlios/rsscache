@@ -756,9 +756,9 @@ if ($tv2_rss_head)
    .' title="'.$tv2_title.'"'
    .' href="?'.http_build_query2 (array ('f' => 'rss'), true).'">';
 $template = file_get_contents ('tv2/tv2_index.html');
-$p = misc_template ($template, $template_replace);
-$p = misc_template ($p, $tv2_translate['default']);
-
+//$p = misc_template ($template, $template_replace);
+//$p = misc_template ($p, $tv2_translate['default']);
+$p = $template;
 
 // the _only_ echo
 if ($use_gzip == 1)
