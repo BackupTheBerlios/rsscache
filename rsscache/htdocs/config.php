@@ -113,7 +113,7 @@ $tv2_dbpass = 'pwn44553';
 //if ($tv2_subdomain == 'emulive')
 {
   $tv2_config_xml = 'emulive_config.xml';
-  $tv2_include_php = 'emulive_include.php';
+  $tv2_include_php = 'videos_include.php';
   $tv2_thumbnails_prefix = '';
   
   $tv2_title = 'video games - pwnoogle \:D/';
