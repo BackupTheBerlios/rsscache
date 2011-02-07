@@ -23,7 +23,8 @@ if (!defined ('MISC_MISC_PHP'))
 {
 define ('MISC_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
-include ('stemmer.php');
+if (file_exists ('stemmer.php'))
+  include ('stemmer.php');
 
 
 function
