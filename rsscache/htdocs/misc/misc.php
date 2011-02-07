@@ -549,83 +549,71 @@ islocalhost ()
 }
 
 
-function
-misc_get_keywords_alnum ($s, $keyword_size = 3)
-{
-  if (strlen (trim ($s)) < $keyword_size)
-    return false;
-
-  for ($i = 0; $i < strlen ($s); $i++)
-    if (!isalnum ($s[$i]) && $s[$i] != '_' && $s[$i] != '.')
-      return false;
-
-  return true;
-}
-
 
 function
-misc_get_keywords_alpha ($s, $keyword_size = 3)
+strip_tags2 ($s)
 {
-  if (strlen (trim ($s)) < $keyword_size)
-    return false;
-
-  for ($i = 0; $i < strlen ($s); $i++)
-    if (!isalpha ($s[$i]) && $s[$i] != '_' && $s[$i] != '.')
-      return false;
-
-  return true;
+  // so one text does not get glued to another because of strip_tags()
+  return strip_tags (str_replace (array ('>',   '<'), array ('> ', ' <'), $s));
 }
 
 
 function
 misc_get_keywords ($s, $flag = 0) // default = isalnum
 {
-  $s = str_replace (array ('. ', ',', ';', '!', '?', '"'), ' ', $s);
-  $s = str_replace (array ('  ', '  ', '  ', '  ', '  '), ' ', $s);
+  $keyword_size = 3;
 
+  // normalize
+  $s = str_replace (array ('. ', ',', ';', '!', '?', '"'), ' ', strtolower ($s));
+
+  // remove punctuation
   for ($i = 0; $i < strlen ($s); $i++)
     if (ispunct ($s[$i]) && $s[$i] != '_' && $s[$i] != '.')
       $s[$i] = ' ';
 
-  $a = explode (' ', strtolower ($s));
+  // remove eventual html tags
+  $s = strip_tags2 ($s);
+
+  // explode and trim
+  $a = explode (' ', $s);
   for ($i = 0; isset ($a[$i]); $i++)
     $a[$i] = trim ($a[$i], ' .');
 
-  // stemmer.php
-  if (class_exists (stemmer))
-    {
-      $s = new stemmer;
+  // stemmer.php (english only)
+//  if (class_exists (stemmer))
+//    {
+//      $s = new stemmer;
+//
+//      for ($i = 0; isset ($a[$i]); $i++)
+//        $a[$i] = $s->stem ($a[$i]);
+//    }
 
-      for ($i = 0; isset ($a[$i]); $i++)
-        $a[$i] = $s->stem ($a[$i]);
+  $p = '';
+  $func = $flag ? 'isalpha' : 'isalnum';
+  for ($i = 0; isset ($a[$i]); $i++)
+    {
+      $s = $a[$i];
+
+      if (strlen ($s) < $keyword_size)
+        continue;
+
+      for ($j = 0; $j < strlen ($s); $j++)
+        if (!$func ($s[$j]) && $s[$j] != '_' && $s[$j] != '.')
+          continue;
+
+      $p .= trim ($s).' ';
     }
 
-  // TODO: more sensitivity instead of array_filter()
-  $a = array_filter ($a, (!$flag ? 'misc_get_keywords_alnum' : 'misc_get_keywords_alpha'));
-  $a = array_merge (array_unique ($a));
-
   // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($a);
+//  echo $p;
 
-  $s = implode (' ', $a);
-  $s = trim ($s);
-
-  return $s;
+  return trim ($p);
 }
 
 
 function
 misc_get_keywords_html ($s, $flag = 0) // default = isalnum
 {
-  // so one keyword does not get glued to another because of strip_tags()
-//  $s = str_replace ('>', '> ', $s);
-//  $s = str_replace ('<', '< ', $s);
-  $s = str_replace (array ('>',   '<'),
-                    array ('> ', ' <'), $s);
-  $s = str_replace (array ('  ', '  ', '  ', '  ', '  '), ' ', $s);
-  $s = strip_tags ($s);
-
   return misc_get_keywords ($s, $flag);
 }
 
@@ -762,7 +750,7 @@ parse_links ($s, $cached = 1)
 //  $s = eregi_replace("((([ftp://])|(http(s?)://))((:alnum:|[-\%\.\?\=\#\_\:\&\/\~\+\@\,\;])*))","<a href = '\\0' target='_blank'>\\0</a>", $s);
 //  $s = eregi_replace("(([^/])www\.|(^www\.))((:alnum:|[-\%\.\?\=\#\_\:\&\/\~\+\@\,\;])*)", "\\2<a href = 'http://www.\\4'>www.\\4</a>", $s);
 
-  $a = explode (' ', strip_tags ($s));
+  $a = explode (' ', strip_tags2 ($s));
   $a = array_merge (array_unique ($a)); // remove dupes
 
   // find eventual urls
@@ -957,7 +945,7 @@ function
 misc_seo_description ($html_body)
 {
   // generate meta tag from the body
-  $p = strip_tags ($html_body);
+  $p = strip_tags2 ($html_body);
   $p = str_replace (array ('&nbsp;', '&gt;', '&lt;', "\n"), ' ', $p);
   $p = misc_get_keywords ($p, 1);
   return '<meta name="Description" content="'.$p.'">'

@@ -224,7 +224,7 @@ tv2_sql_normalize ($db, $d, $c, $f)
       // strip any tags from the desc
       $p = $d[$i]['rsstool_desc'];
       $p = str_replace ('>', '> ', $p);
-      $p = strip_tags ($p);
+      $p = strip_tags2 ($p);
       $p = str_replace (array ('  ', '  ', '  ', '  ', '  '), ' ', $p);
       $d[$i]['rsstool_desc'] = $p;
       $d[$i]['rsstool_desc'] = str_replace ('youtube.com', '', $d[$i]['rsstool_desc']);
