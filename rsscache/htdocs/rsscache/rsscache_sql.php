@@ -261,7 +261,7 @@ tv2_sql_query2boolean_escape ($s)
     $a[$i] = trim ($a[$i]);
   // TODO: more sensitivity instead of array_filter()
   $a = array_filter ($a, 'tv2_sql_query2boolean_escape_func');
-  $a = array_merge (array_unique ($a));
+  $a = misc_array_unique_merge ($a);
   
   // DEBUG
 //  echo '<pre><tt>';
@@ -357,7 +357,7 @@ tv2_sql_leftjoin_func ($db, $q, $filter)
     return '';
 
   $a = explode (' ', strtolower ($q));
-  $a = array_merge (array_unique ($a));
+  $a = misc_array_unique_merge ($a);
   // DEBUG
 //  echo '<pre><tt>';
 //  print_r ($a);

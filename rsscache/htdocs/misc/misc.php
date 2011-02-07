@@ -26,6 +26,271 @@ define ('MISC_MISC_PHP', 1);
 include ('stemmer.php');
 
 
+function
+misc_array_unique_merge ($a)
+{
+  return array_merge (array_unique ($a));
+}
+
+
+function
+get_ip ($address)
+{
+  // if it isn't a valid IP assume it is a hostname
+  $preg = '#^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'
+         .'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$#';
+  if (!preg_match($preg, $address))
+    {
+      $result = gethostbyname ($address);
+
+      // not a valid host nor IP
+      if ($result === $address)
+        $result = false;
+    }
+  else
+    $result = $address;
+        
+  return $result;
+}
+
+
+function
+scandir4 ($path, $sort)
+{
+  $i = 0;
+  $a = array ();
+
+  $dir = opendir ($path);
+  while (($a[$i] = readdir ($dir)) !== false)
+    $i++;
+  closedir ($dir);
+
+  if ($sort)
+    array_multisort ($a, SORT_DESC);
+  else
+    sort ($a);
+
+  return $a;
+}
+
+
+function
+misc_download ($url, $path)
+{
+  if (!($img = file_get_contents ($url)))
+    return;
+
+  if (!($out = fopen ($path, 'wb')))
+    return;
+ 
+  fwrite ($out, $img);
+  fclose ($out);
+}
+
+
+function
+time_ms ()
+// returns milliseconds since midnight
+{
+  $tv = gettimeofday ();
+
+  if ($tv)
+    {
+      $t = $tv['usec'] / 1000;
+      $t += ($tv['sec'] % 86400) * 1000;
+    }
+
+  return $t;
+}
+
+
+function
+islocalhost ()
+{
+  return $_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR'];
+}
+
+
+
+function
+strip_tags2 ($s)
+{
+  // so one text does not get glued to another because of strip_tags()
+  return strip_tags (str_replace (array ('>',   '<'), array ('> ', ' <'), $s));
+}
+
+
+function
+echo_gzip ($p)
+{
+  ob_start ('ob_gzhandler');
+  echo $p;
+  ob_end_flush ();
+}
+
+
+function
+get_suffix ($filename)
+// get_suffix() never returns NULL
+{
+  $p = basename ($filename);
+  if (!$p)
+    $p = $filename;
+
+  $s = strrchr ($p, '.');
+  if (!$s)
+    $s = strchr ($p, 0);
+  if ($s == $p)
+    $s = strchr ($p, 0);
+
+  return $s;
+}
+
+
+function
+set_suffix ($filename, $suffix)
+{
+  // always use set_suffix() and NEVER the code below
+  return str_replace (get_suffix ($filename), $suffix, $filename);
+}
+
+
+function
+str_shorten ($s, $limit)
+{
+  // Make sure a small or negative limit doesn't cause a negative length for substr().
+  if ($limit < 3)
+    $limit = 3;
+
+  // Now truncate the string if it is over the limit.
+  if (strlen ($s) > $limit)
+    return substr($s, 0, $limit - 3).'..';
+  else
+    return $s;
+}
+
+
+function
+in_tag ($s)
+{
+  // are we inside a tag?
+  return strpos ($s, '>') < strpos ($s, '<');
+}
+
+
+function
+is_url ($s)
+{
+/*
+  // checks if string is a url
+  $is_url = 0;
+
+  if (strlen ($s) > 4 &&
+      isalpha ($s[0]) &&
+      !strstr ($s, '..') &&
+      substr_count ($s, '.') == 2 &&
+      (substr ($s, -4, 1) == '.' || substr ($s, -3, 1) == '.'))
+    $is_url = 1;
+
+  return $is_url;
+*/
+  if (filter_var ($s, FILTER_VALIDATE_URL) == FALSE)
+    return 0;
+  return 1;
+}
+
+
+if (!function_exists('sys_get_temp_dir'))
+{
+function
+sys_get_temp_dir ()
+{
+  if ($temp = getenv ('TMP'))
+    return $temp;
+  if ($temp = getenv ('TEMP'))
+    return $temp;
+  if ($temp = getenv ('TMPDIR'))
+    return $temp;
+  $temp = tempnam (__FILE__, '');
+  if (file_exists ($temp))
+    {
+      unlink ($temp);
+      return dirname ($temp);
+    }
+  return null;
+}
+}
+
+
+if (!function_exists ('sprint_r'))
+{
+function 
+sprint_r ($var)
+{
+  ob_start ();
+
+  print_r ($var);
+
+  $ret = ob_get_contents ();
+
+  ob_end_clean ();
+
+  return $ret;
+}
+}
+
+
+function
+get_cookie ($name)
+{
+  if (isset ($_COOKIE[$name]))
+    return $_COOKIE[$name];
+
+  return NULL;
+}
+
+
+function
+get_request_value ($name)
+{
+//  if (isset ($_POST[$name]))
+//    return $_POST[$name];
+
+//  if (isset ($_GET[$name]))
+//    return $_GET[$name];
+
+  if (isset ($_REQUEST[$name])) // and cookies
+    return $_REQUEST[$name];
+
+  return NULL;
+}
+
+
+function
+http_build_query2 ($args = array(), $use_existing_arguments = false)
+{
+  if ($use_existing_arguments)
+    $a = array_merge ($_GET, $args); // $args overwrites $_GET
+  else
+    $a = $args;
+
+  if (!sizeof ($a))
+    return '';
+
+  return http_build_query ($a);
+} 
+
+
+function
+random_user_agent ()
+{
+  $ua = array('Mozilla','Opera','Microsoft Internet Explorer','ia_archiver');   
+  $op = array('Windows','Windows XP','Linux','Windows NT','Windows 2000','OSX');
+  $agent  = $ua[rand(0,3)].'/'.rand(1,8).'.'.rand(0,9).' ('.$op[rand(0,5)].' '.rand(1,7).'.'.rand(0,9).'; en-US;)';
+  return $agent;
+}
+
+
 function encodemail ($my_mail)
 {
   // light email protection
@@ -260,8 +525,83 @@ check_udp ($address, $port)
   ["A"][0]["HREF"] = "xxx"
 */
 function
-parse_html ($s)
+misc_parse_html ($s)
 {
+/*
+function
+misc_explode_tag ($html_tag)
+{
+  // returns 2d array with tag name and attributes and their values
+  $s = strpos ($html_tag, '<') + 1;
+  $l = strrpos ($html_tag, '>') - $s;
+  $p = substr ($html_tag, $s, $l);
+  $p = trim ($p);
+  // '=      "' to '="'
+  $p = str_replace (array ('= "','=  "'), '="', $p);
+  $p = str_replace (array ('= "','=  "'), '="', $p);
+  $p = str_replace (array ('= "','=  "'), '="', $p);
+  // '      ="' to '="'
+  $p = str_replace (array (' ="','  ="'), '="', $p);
+  $p = str_replace (array (' ="','  ="'), '="', $p);
+  $p = str_replace (array (' ="','  ="'), '="', $p);
+
+  // DEBUG
+//  echo $p;
+
+  $a = explode (' ', $p);
+  $a = misc_array_unique_merge ($a);
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($a);
+
+  $tag = array ();
+  $count = 0;
+  for ($i = 0; isset ($a[$i]); $i++)
+    if (strpos ($a[$i], '=')) // is attribute
+      {
+        $aa = explode ('=', $a[$i], 2);
+
+        $tag[strtolower (trim ($aa[0]))] = '"'.trim (trim ($aa[1]), '"').'"'; // trim first spaces then quotes
+      }
+    else // attribute without value (e.g. tag name)
+      $tag[strtolower (trim ($a[$i]))] = NULL;
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($tag);
+
+  return $tag;
+}
+
+
+function
+misc_gettag ($html_tag, $attr = array(), $use_existing_attr = false)
+{
+  $tag = misc_explode_tag ($html_tag);
+
+  if (!$use_existing_attr)
+    {
+      // BUT keep the attributes without value (e.g. tag name)
+      $attr_keys = array_keys ($tag);
+      for ($i = 0; $attr_keys[$i]; $i++)
+        if ($tag[$attr_keys[$i]] == NULL)
+          $a[$attr_keys[$i]] = $tag[$attr_keys[$i]];
+      $tag = $a;
+    }
+
+  if (!$attr)
+    return misc_implode_tag ($tag);
+
+//  $tag = array_replace ($tag, $attr);
+  $attr_keys = array_keys ($attr);
+  for ($i = 0; $attr_keys[$i]; $i++)
+    if ($attr[$attr_keys[$i]] != NULL)
+      $tag[$attr_keys[$i]] = '"'.trim ($attr[$attr_keys[$i]], '"').'"';
+
+  return misc_implode_tag ($tag);
+}
+*/
   $i_indicatorL = 0;
   $i_indicatorR = 0;
   $s_tagOption = "";
@@ -303,110 +643,6 @@ parse_html ($s)
 }
 
 
-/*
-function
-misc_explode_tag ($html_tag)
-{
-  // returns 2d array with tag name and attributes and their values
-  $s = strpos ($html_tag, '<') + 1;
-  $l = strrpos ($html_tag, '>') - $s;
-  $p = substr ($html_tag, $s, $l);
-  $p = trim ($p);
-  // '=      "' to '="'
-  $p = str_replace (array ('= "','=  "'), '="', $p);
-  $p = str_replace (array ('= "','=  "'), '="', $p);
-  $p = str_replace (array ('= "','=  "'), '="', $p);
-  // '      ="' to '="'
-  $p = str_replace (array (' ="','  ="'), '="', $p);
-  $p = str_replace (array (' ="','  ="'), '="', $p);
-  $p = str_replace (array (' ="','  ="'), '="', $p);
-
-  // DEBUG
-//  echo $p;
-
-  $a = explode (' ', $p);
-  $a = array_merge (array_unique ($a));
-
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($a);
-
-  $tag = array ();
-  $count = 0;
-  for ($i = 0; isset ($a[$i]); $i++)
-    if (strpos ($a[$i], '=')) // is attribute
-      {
-        $aa = explode ('=', $a[$i], 2);
-
-        $tag[strtolower (trim ($aa[0]))] = '"'.trim (trim ($aa[1]), '"').'"'; // trim first spaces then quotes
-      }
-    else // attribute without value (e.g. tag name)
-      $tag[strtolower (trim ($a[$i]))] = NULL;
-
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($tag);
-
-  return $tag;
-}
-
-
-function
-misc_implode_tag ($tag)
-{
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($tag);
-
-  $p = '';
-
-  $p .= '<';
-
-  $a = array_keys ($tag);
-  for ($i = 0; $a[$i]; $i++)
-    {
-      if ($i > 0)
-        $p .= ' ';
-
-      $p .= $a[$i];
-
-      if ($tag[$a[$i]])
-        $p .= '='.$tag[$a[$i]];
-    }
-
-  $p .= '>';
-
-  return $p;
-}
-
-
-function
-misc_gettag ($html_tag, $attr = array(), $use_existing_attr = false)
-{
-  $tag = misc_explode_tag ($html_tag);
-
-  if (!$use_existing_attr)
-    {
-      // BUT keep the attributes without value (e.g. tag name)
-      $attr_keys = array_keys ($tag);
-      for ($i = 0; $attr_keys[$i]; $i++)
-        if ($tag[$attr_keys[$i]] == NULL)
-          $a[$attr_keys[$i]] = $tag[$attr_keys[$i]];
-      $tag = $a;
-    }
-
-  if (!$attr)
-    return misc_implode_tag ($tag);
-
-//  $tag = array_replace ($tag, $attr);
-  $attr_keys = array_keys ($attr);
-  for ($i = 0; $attr_keys[$i]; $i++)
-    if ($attr[$attr_keys[$i]] != NULL)
-      $tag[$attr_keys[$i]] = '"'.trim ($attr[$attr_keys[$i]], '"').'"';
-
-  return misc_implode_tag ($tag);
-}
-*/
 
 
 $ctype__ = array(32,32,32,32,32,32,32,32,32,40,40,40,40,40,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,
@@ -429,77 +665,6 @@ function ispunct ($c){ global $ctype__; return ((($ctype__[( ord($c) )]& 020 ) !
 function isspace ($c){ global $ctype__; return ((($ctype__[( ord($c) )]& 010 ) != 0)?1:0);}
 function isupper ($c){ global $ctype__; return ((($ctype__[( ord($c) )]& 01 ) != 0)?1:0);}
 function isxdigit ($c){ global $ctype__; return ((($ctype__[( ord($c) )]&(0100 | 04 )) != 0)?1:0);}
-
-
-function
-get_ip ($address)
-{
-  // if it isn't a valid IP assume it is a hostname
-  $preg = '#^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'
-         .'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$#';
-  if (!preg_match($preg, $address))
-    {
-      $result = gethostbyname ($address);
-
-      // not a valid host nor IP
-      if ($result === $address)
-        $result = false;
-    }
-  else
-    $result = $address;
-        
-  return $result;
-}
-
-
-function
-scandir4 ($path, $sort)
-{
-  $i = 0;
-  $a = array ();
-
-  $dir = opendir ($path);
-  while (($a[$i] = readdir ($dir)) !== false)
-    $i++;
-  closedir ($dir);
-
-  if ($sort)
-    array_multisort ($a, SORT_DESC);
-  else
-    sort ($a);
-
-  return $a;
-}
-
-
-function
-misc_download ($url, $path)
-{
-  if (!($img = file_get_contents ($url)))
-    return;
-
-  if (!($out = fopen ($path, 'wb')))
-    return;
- 
-  fwrite ($out, $img);
-  fclose ($out);
-}
-
-
-function
-time_ms ()
-// returns milliseconds since midnight
-{
-  $tv = gettimeofday ();
-
-  if ($tv)
-    {
-      $t = $tv['usec'] / 1000;
-      $t += ($tv['sec'] % 86400) * 1000;
-    }
-
-  return $t;
-}
 
 
 function
@@ -539,22 +704,6 @@ time_count ($t_date)
     }
 
   return $p;
-}
-
-
-function
-islocalhost ()
-{
-  return $_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR'];
-}
-
-
-
-function
-strip_tags2 ($s)
-{
-  // so one text does not get glued to another because of strip_tags()
-  return strip_tags (str_replace (array ('>',   '<'), array ('> ', ' <'), $s));
 }
 
 
@@ -612,59 +761,29 @@ misc_get_keywords ($s, $flag = 0) // default = isalnum
 
 
 function
+misc_get_keywords_soundex ($s, $flag = 0) // default = isalnum
+{
+  $p = misc_get_keywords ($s, $flag);
+  $a = explode (' ', $s);
+  $b = array ();
+  for ($i = 0; isset ($a[$i]); $i++)
+    { 
+      $v = soundex ($a[$i]);
+      if ($v != '0000') $b[] = $v;
+    }
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($b);
+
+  return $b;
+}
+
+
+function
 misc_get_keywords_html ($s, $flag = 0) // default = isalnum
 {
   return misc_get_keywords ($s, $flag);
-}
-
-
-function
-echo_gzip ($p)
-{
-  ob_start ('ob_gzhandler');
-  echo $p;
-  ob_end_flush ();
-}
-
-
-function
-get_suffix ($filename)
-// get_suffix() never returns NULL
-{
-  $p = basename ($filename);
-  if (!$p)
-    $p = $filename;
-
-  $s = strrchr ($p, '.');
-  if (!$s)
-    $s = strchr ($p, 0);
-  if ($s == $p)
-    $s = strchr ($p, 0);
-
-  return $s;
-}
-
-
-function
-set_suffix ($filename, $suffix)
-{
-  // always use set_suffix() and NEVER the code below
-  return str_replace (get_suffix ($filename), $suffix, $filename);
-}
-
-
-function
-str_shorten ($s, $limit)
-{
-  // Make sure a small or negative limit doesn't cause a negative length for substr().
-  if ($limit < 3)
-    $limit = 3;
-
-  // Now truncate the string if it is over the limit.
-  if (strlen ($s) > $limit)
-    return substr($s, 0, $limit - 3).'..';
-  else
-    return $s;
 }
 
 
@@ -712,36 +831,6 @@ str_similar ($str1, $str2)
 
 
 function
-in_tag ($s)
-{
-  // are we inside a tag?
-  return strpos ($s, '>') < strpos ($s, '<');
-}
-
-
-function
-is_url ($s)
-{
-/*
-  // checks if string is a url
-  $is_url = 0;
-
-  if (strlen ($s) > 4 &&
-      isalpha ($s[0]) &&
-      !strstr ($s, '..') &&
-      substr_count ($s, '.') == 2 &&
-      (substr ($s, -4, 1) == '.' || substr ($s, -3, 1) == '.'))
-    $is_url = 1;
-
-  return $is_url;
-*/
-  if (filter_var ($s, FILTER_VALIDATE_URL) == FALSE)
-    return 0;
-  return 1;
-}
-
-
-function
 parse_links ($s, $cached = 1)
 {
   // turn plain text urls into links
@@ -751,7 +840,7 @@ parse_links ($s, $cached = 1)
 //  $s = eregi_replace("(([^/])www\.|(^www\.))((:alnum:|[-\%\.\?\=\#\_\:\&\/\~\+\@\,\;])*)", "\\2<a href = 'http://www.\\4'>www.\\4</a>", $s);
 
   $a = explode (' ', strip_tags2 ($s));
-  $a = array_merge (array_unique ($a)); // remove dupes
+  $a = misc_array_unique_merge ($a); // remove dupes
 
   // find eventual urls
   $a_size = sizeof ($a);
@@ -779,46 +868,6 @@ detect_links ($s, $cached = 1)
 {
   // find urls in text and turn them into links
   return parse_links ($s, $cached);
-}
-
-
-if (!function_exists('sys_get_temp_dir'))
-{
-function
-sys_get_temp_dir ()
-{
-  if ($temp = getenv ('TMP'))
-    return $temp;
-  if ($temp = getenv ('TEMP'))
-    return $temp;
-  if ($temp = getenv ('TMPDIR'))
-    return $temp;
-  $temp = tempnam (__FILE__, '');
-  if (file_exists ($temp))
-    {
-      unlink ($temp);
-      return dirname ($temp);
-    }
-  return null;
-}
-}
-
-
-if (!function_exists ('sprint_r'))
-{
-function 
-sprint_r ($var)
-{
-  ob_start ();
-
-  print_r ($var);
-
-  $ret = ob_get_contents ();
-
-  ob_end_clean ();
-
-  return $ret;
-}
 }
 
 
@@ -898,47 +947,6 @@ misc_exec ($cmdline, $debug = 0)
 
   return $p;
 }
-
-
-function
-get_cookie ($name)
-{
-  if (isset ($_COOKIE[$name]))
-    return $_COOKIE[$name];
-
-  return NULL;
-}
-
-
-function
-get_request_value ($name)
-{
-//  if (isset ($_POST[$name]))
-//    return $_POST[$name];
-
-//  if (isset ($_GET[$name]))
-//    return $_GET[$name];
-
-  if (isset ($_REQUEST[$name])) // and cookies
-    return $_REQUEST[$name];
-
-  return NULL;
-}
-
-
-function
-http_build_query2 ($args = array(), $use_existing_arguments = false)
-{
-  if ($use_existing_arguments)
-    $a = array_merge ($_GET, $args); // $args overwrites $_GET
-  else
-    $a = $args;
-
-  if (!sizeof ($a))
-    return '';
-
-  return http_build_query ($a);
-} 
 
 
 function
@@ -1044,16 +1052,6 @@ split_html_content ($html)
 }
 
 
-function
-random_user_agent ()
-{
-  $ua = array('Mozilla','Opera','Microsoft Internet Explorer','ia_archiver');   
-  $op = array('Windows','Windows XP','Linux','Windows NT','Windows 2000','OSX');
-  $agent  = $ua[rand(0,3)].'/'.rand(1,8).'.'.rand(0,9).' ('.$op[rand(0,5)].' '.rand(1,7).'.'.rand(0,9).'; en-US;)';
-  return $agent;
-}
-
-
 /*
 function
 var_xml ($v)
@@ -1064,6 +1062,7 @@ var_xml ($v)
 */
 
 // XML serializer
+/*
 function
 array2xml_func (&$xml, $a)
 {
@@ -1108,62 +1107,8 @@ array2xml ($a, $root_name = 'root')
 
   return '';
 }
- 
- 
-/*
-// XML unserializer
-function 
-xml2array_func (&$a, $xml)
-{
-  // EVIL HACK: flattening out the redundant ['data'] tags from multidimensional PHP arrays
-  for ($i = 0; $xml->data[$i]; $i++)
-    {
-      array_push ($a, (array) $xml->data[$i]);
-
-      $b = array ();
-      for ($j = 0; $j < sizeof ($a[$i]['players']->data); $j++)
-        {
-//          print_r ((array) $a[$i]['players']->data[$j]);
-          $b[$j] = (array) $a[$i]['players']->data[$j];   
-        }
-      $a[$i]['players'] = $b;
-      $a[$i]['players']['nick'] = base64_decode ($a[$i]['players']['nick']);
-      $a[$i]['players']['gq_name'] = base64_decode ($a[$i]['players']['gq_name']);
-    }
-// base64_decode ()
-}
- 
- 
-function
-xml2array ($xml)
-{
-  $a = array ();
-  xml2array_func ($a, $xml);
-
-  //DEBUG
-//  echo '<pre><tt>';
-//  print_r ((array) $a);
-
-  return (array) $a;
-}
-
-
-function
-array2xml_test ()
-{
-  $a = array ("test" => array ("a" => "1", "b" => "2"));
-  print_r ($a);
-  echo "array2xml(): ";
-  $xml = array2xml ($a);
-  echo $xml;
-  echo "<hr>xml2array(): ";
-  $a = xml2array ($xml);
-  print_r ($a);
-}
-
 */
-
-
+ 
 }
 
 
