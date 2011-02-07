@@ -23,6 +23,7 @@ if (!defined ('MISC_MISC_PHP'))
 {
 define ('MISC_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
+include ('stemmer.php');
 
 
 function encodemail ($my_mail)
@@ -589,6 +590,16 @@ misc_get_keywords ($s, $flag = 0) // default = isalnum
   $a = explode (' ', strtolower ($s));
   for ($i = 0; isset ($a[$i]); $i++)
     $a[$i] = trim ($a[$i], ' .');
+
+  // stemmer.php
+  if (class_exists (stemmer))
+    {
+      $s = new stemmer;
+
+      for ($i = 0; isset ($a[$i]); $i++)
+        $a[$i] = $s->stem ($a[$i]);
+    }
+
   // TODO: more sensitivity instead of array_filter()
   $a = array_filter ($a, (!$flag ? 'misc_get_keywords_alnum' : 'misc_get_keywords_alpha'));
   $a = array_merge (array_unique ($a));

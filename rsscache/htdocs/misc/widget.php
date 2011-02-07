@@ -24,7 +24,7 @@ if (!defined ('MISC_WIDGET_PHP'))
 define ('MISC_WIDGET_PHP', 1);  
 //phpinfo ();
 //error_reporting(E_ALL | E_STRICT);
-include_once ('misc.php');
+include ('misc.php');
 include ('embed.php');
 
 /*
