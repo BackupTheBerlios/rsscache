@@ -29,6 +29,7 @@ include ('stemmer.php');
 function
 misc_array_unique_merge ($a)
 {
+  // should be array_unique2()
   return array_merge (array_unique ($a));
 }
 
