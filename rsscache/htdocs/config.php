@@ -128,7 +128,8 @@ $tv2_dbpass = 'pwn44553';
   if ($tv2_domain != 'pwnoogle.com' &&
       $tv2_domain != 'videos.pwnoogle.com' &&
       $tv2_domain != 'minecraft.pwnoogle.com' &&
-      $tv2_domain != 'quakelive.pwnoogle.com')
+      $tv2_domain != 'quakelive.pwnoogle.com' &&
+      $tv2_domain != 'live.pwnoogle.com')
     {
       $tv2_dbname = 'pwnoogle_videos'; 
       $tv2_dbuser = 'root';
@@ -195,52 +196,26 @@ else if ($tv2_subdomain == 'minecraft')
   $tv2_debug_sql = 0;
   $tv2_related_search = 0; // make use of related searches (requires keywords)
 }
-/*
-else if ($tv2_subdomain == 'demos')
+else if ($tv2_subdomain == 'live')
 {
-  $tv2_config_xml = 'demos_config.xml';
-  $tv2_include_php = 'demos_include.php';
+  $tv2_config_xml = 'live_config.xml';
+  $tv2_include_php = 'videos_include.php';
   $tv2_thumbnails_prefix = '';
 
   // localization and style
-  $tv2_title = 'demos - pwnoogle \:D/'; //  - watch your heroes play
-  $tv2_logo = 'pwnoogle/demos';
-  $tv2_videos_s = 'demos';
+  $tv2_title = 'live broadcasts - pwnoogle \:D/';
+  $tv2_logo = 'live broadcasts';
+  $tv2_videos_s = 'broadcasts';
   $tv2_related_s = 'Find related '.$tv2_videos_s;
-
-  $tv2_enable_search = 1; // allow users to search db?
-  $tv2_link = 'http://demos.pwnoogle.com/';
-  $tv2_link_static = 'http://demos.pwnoogle.com/'; // static content
-  $tv2_debug_sql = 0;
-  $tv2_related_search = 0; // make use of related searches (requires keywords)
-
-  $tv2_preview_w = 0;
-  $tv2_preview_h = 0;
-
-  $tv2_dbname = 'pwnoogle_demos';
-}
-else if ($tv2_subdomain == 'maps')
-{
-  $tv2_config_xml = 'maps_config.xml';
-  $tv2_include_php = 'maps_include.php';
-  $tv2_thumbnails_prefix = '';
-
-  // localization and style
-  $tv2_title = 'maps - pwnoogle \:D/';
-  $tv2_logo = 'pwnoogle/maps';
-  $tv2_videos_s = 'maps';
-  $tv2_related_s = 'Find related '.$tv2_videos_s;
+  $tv2_default_category = 'live';
+  $tv2_collapsed = 1;   // collapse categories
 
   $tv2_enable_search = 0; // allow users to search db?
-  $tv2_link = 'http://maps.pwnoogle.com/';
-  $tv2_link_static = 'http://gsdata.pwnoogle.com/'; // static content
+  $tv2_link = 'http://videos.pwnoogle.com/';
+  $tv2_link_static = 'http://videos.pwnoogle.com/'; // static content
   $tv2_debug_sql = 0;
   $tv2_related_search = 0; // make use of related searches (requires keywords)
-
-  $tv2_use_database = 0;
-  $tv2_dbname = 'pwnoogle_maps';
 }
-*/
 
 }
 
