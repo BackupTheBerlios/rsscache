@@ -675,7 +675,7 @@ if ($f == 'rss')
 // sitemap only
 if ($f == 'sitemap')
   {
-    $d = tv2_sql ($c, $q, $f, NULL, $start, $num);
+//    $d = tv2_sql ($c, $q, $f, NULL, $start, $num);
     echo tv2_sitemap ($d);
 
     if ($tv2_use_database)
