@@ -998,6 +998,8 @@ widget_video_youtube_download ($media_url, $tor_enabled)
 //  $p .= '<br>';
 
   // download
+  if (islocalhost ())
+    {
   $p .= '<a href="'.$yt['video_url'].'">Best</a>';
 
   for ($q = 0; isset ($yt[$q]); $q++)
@@ -1012,16 +1014,16 @@ widget_video_youtube_download ($media_url, $tor_enabled)
 //  $p .= ' <a href="'.$yt['ad_eurl'].'">Direct</a>';
 
   $p .= '<br>';
+    }
 
-  // name
   $p .= ''
        .'Name: <input type="text"'
        .' value="'
        .$yt['title']
        .'" readonly="readonly"'
+//       .' style="width:'.($rescue_w - 50).'px;"'
        .'>'
 ;
-
   $p .= '<br>';
 
   // details
