@@ -112,12 +112,12 @@ $tv2_dbpass = 'pwn44553';
 
 //if ($tv2_subdomain == 'emulive')
 {
-  $tv2_config_xml = 'emulive_config.xml';
+  $tv2_config_xml = 'videos_config.xml';
   $tv2_include_php = 'videos_include.php';
   $tv2_thumbnails_prefix = '';
   
-  $tv2_title = 'video games - pwnoogle \:D/';
-  $tv2_logo = 'video games';
+//  $tv2_title = 'video games - pwnoogle \:D/';
+//  $tv2_logo = 'video games';
 
   $tv2_link = 'http://emulive.pwnoogle.com/';
   $tv2_link_static = 'http://emulive.pwnoogle.com/'; // remote static content
@@ -158,7 +158,7 @@ if ($tv2_subdomain == 'videos' || $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
 }
 else if ($tv2_subdomain == 'quakelive')                                                      
 {
-  $tv2_config_xml = 'quakelive_config.xml';
+//  $tv2_config_xml = 'quakelive_config.xml';
   $tv2_include_php = 'videos_include.php';
   $tv2_thumbnails_prefix = '';
 
@@ -178,7 +178,7 @@ else if ($tv2_subdomain == 'quakelive')
 }
 else if ($tv2_subdomain == 'minecraft')
 {
-  $tv2_config_xml = 'minecraft_config.xml';
+//  $tv2_config_xml = 'minecraft_config.xml';
   $tv2_include_php = 'videos_include.php';
   $tv2_thumbnails_prefix = '';
 
@@ -198,7 +198,7 @@ else if ($tv2_subdomain == 'minecraft')
 }
 else if ($tv2_subdomain == 'live')
 {
-  $tv2_config_xml = 'live_config.xml';
+//  $tv2_config_xml = 'live_config.xml';
   $tv2_include_php = 'videos_include.php';
   $tv2_thumbnails_prefix = '';
 
