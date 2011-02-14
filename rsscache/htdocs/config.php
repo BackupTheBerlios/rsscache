@@ -119,10 +119,10 @@ $tv2_dbpass = 'pwn44553';
 //  $tv2_title = 'video games - pwnoogle \:D/';
 //  $tv2_logo = 'video games';
 
-  $tv2_link = 'http://emulive.pwnoogle.com/';
-  $tv2_link_static = 'http://emulive.pwnoogle.com/'; // remote static content
-  $tv2_debug_sql = 0;
-  $tv2_enable_search = 1; // allow users to search db?
+//  $tv2_link = 'http://emulive.pwnoogle.com/';
+//  $tv2_link_static = 'http://emulive.pwnoogle.com/'; // remote static content
+//  $tv2_debug_sql = 0;
+//  $tv2_enable_search = 1; // allow users to search db?
 
   $tv2_dbname = 'pwnoogle_jack'; 
   if ($tv2_domain != 'pwnoogle.com' &&
