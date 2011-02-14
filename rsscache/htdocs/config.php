@@ -51,12 +51,10 @@ else
 //echo $p;
 $tv2_domain = $p;
 
-
 // compression 1/0
 $use_gzip = 1;
 // use memcache? 0 == off
 $memcache_expire = 0;
-
 
 // wget path and options
 $wget_path = '/usr/bin/torify /usr/bin/wget'; // use TOR for greedy RSS feeds
@@ -158,10 +156,6 @@ if ($tv2_subdomain == 'videos' || $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
 }
 else if ($tv2_subdomain == 'quakelive')                                                      
 {
-//  $tv2_config_xml = 'quakelive_config.xml';
-  $tv2_include_php = 'videos_include.php';
-  $tv2_thumbnails_prefix = '';
-
   // localization and style
   $tv2_title = 'quakelive - pwnoogle \:D/';
   $tv2_logo = 'QuakeLive';
@@ -178,10 +172,6 @@ else if ($tv2_subdomain == 'quakelive')
 }
 else if ($tv2_subdomain == 'minecraft')
 {
-//  $tv2_config_xml = 'minecraft_config.xml';
-  $tv2_include_php = 'videos_include.php';
-  $tv2_thumbnails_prefix = '';
-
   // localization and style
   $tv2_title = 'minecraft - pwnoogle \:D/';
   $tv2_logo = '<img src="images/logos/minecraft32.png" border="0">';
@@ -198,10 +188,6 @@ else if ($tv2_subdomain == 'minecraft')
 }
 else if ($tv2_subdomain == 'live')
 {
-//  $tv2_config_xml = 'live_config.xml';
-  $tv2_include_php = 'videos_include.php';
-  $tv2_thumbnails_prefix = '';
-
   // localization and style
   $tv2_title = 'live broadcasts - pwnoogle \:D/';
   $tv2_logo = 'live broadcasts';
