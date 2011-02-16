@@ -122,7 +122,8 @@ $tv2_dbpass = 'pwn44553';
 //  $tv2_debug_sql = 0;
 //  $tv2_enable_search = 1; // allow users to search db?
 
-  $tv2_dbname = 'pwnoogle_jack'; 
+//  $tv2_dbname = 'pwnoogle_jack';
+  $tv2_dbname = 'pwnoogle_videos'; 
   if ($tv2_domain != 'pwnoogle.com' &&
       $tv2_domain != 'videos.pwnoogle.com' &&
       $tv2_domain != 'minecraft.pwnoogle.com' &&
