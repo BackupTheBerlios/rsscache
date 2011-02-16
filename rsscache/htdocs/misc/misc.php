@@ -470,6 +470,26 @@ misc_template ($src, $template_replace)
 
 
 function
+misc_whois ($query)
+{
+  $server = 'whois.verisign-grs.com';
+
+  if (!($fp = fsockopen ($server, 43, $errno, $errstr, 15)))
+    return false;
+
+  fwrite ($fp, $query.'\r\n');
+
+  $p = '';
+  while (!feof($fp))
+    $p .= fgets($fp, 1024);
+
+  fclose($fp);
+
+  return $p;
+}
+
+
+function
 misc_url_exists ($url)
 {
   if (!strncasecmp ($url, 'udp://'))  // check UDP
