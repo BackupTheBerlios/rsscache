@@ -231,12 +231,12 @@ widget_cms_row_func ($s, $i, $logo, $config_xml)
 {
   $category = $config_xml->category[$i];
   $p = '';
-  $p .= $s;
-      // <separate>
+      // <separate>   
       if ($category->separate == 1)
         $p .= '<br>';
       else if ($category->separate == 2)
         $p .= '<hr>';
+  $p .= $s;
   return $p; 
 }
 
@@ -246,17 +246,17 @@ widget_cms_col_func ($s, $i, $logo, $config_xml)
 {
       $category = $config_xml->category[$i];
   $p = '';
+      // <separate>
+      if ($category->separate == 1)
+        $p .= '<br>';
+      else if ($category->separate == 2)
+        $p .= '<hr>';
   $p .= $s;
     $p .= '<br>'
 //         .($logo ? '<img src="'.$logo.'" border="0">' : '')
 //         .'<br>'  
 //         .'<br>'
 ;
-      // <separate>
-      if ($category->separate == 1)
-        $p .= '<br>';
-      else if ($category->separate == 2)
-        $p .= '<hr>';
   return $p; 
 }
 
@@ -274,6 +274,14 @@ widget_cms_rc_func ($s, $i, $logo, $config_xml)
 //         .'border:1px solid #000;'
          .'">';
 
+      // <separate>
+      if ($category->separate > 1)
+        $p .= '</div><div style="float:left;'
+              // DEBUG
+//             .'border:1px solid #000;'
+             .'">';
+      else if ($category->separate > 0)
+        $p .= '<br>';
   $p .= $s;
   $p .= '<br>';
 
@@ -284,14 +292,14 @@ widget_cms_rc_func ($s, $i, $logo, $config_xml)
 
   if ($next != '')
     {
-      // <separate>
-      if ($category->separate > 1)
-        $p .= '</div><div style="float:left;'
-              // DEBUG
-//             .'border:1px solid #000;'
-             .'">';
-      else if ($category->separate > 0)
-        $p .= '<br>';
+//      // <separate>
+//      if ($category->separate > 1)
+//        $p .= '</div><div style="float:left;'
+//              // DEBUG
+////             .'border:1px solid #000;'
+//             .'">';
+//      else if ($category->separate > 0)
+//        $p .= '<br>';
     }
   else
     {
