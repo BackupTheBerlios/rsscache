@@ -4,10 +4,93 @@ if (!defined ('TV2_PHP'))
 define ('TV2_PHP', 1);
 //phpinfo();
 //error_reporting(E_ALL | E_STRICT);
+require_once ('config_lang.php');
+
+
+
+function
+get_subdomain ()
+{
+// apache2
+//$_SERVER['SERVER_NAME'] == 'maps.pwnoogle.com'
+//$_SERVER['USER'] unset
+//$_SERVER["HOSTNAME"] => unset
+//$_SERVER["PWD"] => unset
+//$_SERVER["DOCUMENT_ROOT"] => /home/pwnoogle/htdocs/emulive/htdocs
+// cmdline
+//$_SERVER['SERVER_NAME'] unset
+//$_SERVER['USER'] == 'pwnoogle'
+//$_SERVER["HOSTNAME"] => stan.site5.com
+//$_SERVER["PWD"] => /home/pwnoogle/htdocs/emulive/htdocs
+//$_SERVER["DOCUMENT_ROOT"] => ''
+//  $p = 'tv2_subdomain';
+  $p = $_SERVER['DOCUMENT_ROOT'];
+  if (isset ($_SERVER['PWD']))
+    $p = $_SERVER['PWD'];
+  $a = explode ('/', $p); // /home/pwnoogle/htdocs/emulive/htdocs
+  // DEBUG
+//  echo $a[4];
+  return $a[4];
+}
+
+
+//$tv2_subdomain = get_subdomain ();
+
+
+
+// apache2
+//$_SERVER['SERVER_NAME'] == 'maps.pwnoogle.com'
+//$_SERVER['USER'] unset
+//$_SERVER["HOSTNAME"] => unset
+//$_SERVER["PWD"] => unset
+//$_SERVER["DOCUMENT_ROOT"] => /home/pwnoogle/htdocs/emulive/htdocs
+// cmdline
+//$_SERVER['SERVER_NAME'] unset
+//$_SERVER['USER'] == 'pwnoogle'
+//$_SERVER["HOSTNAME"] => stan.site5.com
+//$_SERVER["PWD"] => /home/pwnoogle/htdocs/emulive/htdocs
+//$_SERVER["DOCUMENT_ROOT"] => ''
+//$p = 'tv2_subdomain';
+//if (isset ($_SERVER['DOCUMENT_ROOT']))
+if ($_SERVER['DOCUMENT_ROOT'] != '')
+  $p = $_SERVER['DOCUMENT_ROOT'];
+else if (isset ($_SERVER['PWD']))
+  $p = $_SERVER['PWD'];
+else
+  {
+    echo 'ERROR: $tv2_subdomain'."\n";
+    exit;
+  }
+// DEBUG
+//echo $p;
+//exit;
+$a = explode ('/', $p); // /home/pwnoogle/htdocs/emulive/htdocs
+// DEBUG
+//echo $a[count ($a) - 2];
+$tv2_subdomain = $a[count ($a) - 2];
+
+//$p = 'tv2_domain';
+if (isset ($_SERVER['SERVER_NAME']))
+  $p = $_SERVER['SERVER_NAME'];
+else if (isset ($_SERVER['HOSTNAME']))
+  $p = $_SERVER['HOSTNAME'];
+else
+  $p = '';
+//  {
+//    echo 'ERROR: $tv2_domain'."\n";
+//    exit;
+//  }
+// DEBUG
+//echo $p;
+$tv2_domain = $p;
+
+
+require_once ('default.cfg');
+require_once ('config.cfg');
 // language settings
 //require_once ('config_lang.php');
-require_once ('default.php');
-require_once ('config.php');
+//require_once ('default.php');
+//require_once ('config.php');
 require_once ('misc/misc.php');
 //require_once ('misc/widget.php');
 require_once ('tv2_output.php');

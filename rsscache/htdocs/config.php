@@ -2,54 +2,7 @@
 if (!defined ('TV2_CONFIG_PHP'))
 {
 define ('TV2_CONFIG_PHP', 1);
-require_once ('config_lang.php');
 
-
-// apache2
-//$_SERVER['SERVER_NAME'] == 'maps.pwnoogle.com'
-//$_SERVER['USER'] unset
-//$_SERVER["HOSTNAME"] => unset
-//$_SERVER["PWD"] => unset
-//$_SERVER["DOCUMENT_ROOT"] => /home/pwnoogle/htdocs/emulive/htdocs
-// cmdline
-//$_SERVER['SERVER_NAME'] unset
-//$_SERVER['USER'] == 'pwnoogle'
-//$_SERVER["HOSTNAME"] => stan.site5.com
-//$_SERVER["PWD"] => /home/pwnoogle/htdocs/emulive/htdocs
-//$_SERVER["DOCUMENT_ROOT"] => ''
-//$p = 'tv2_subdomain';
-//if (isset ($_SERVER['DOCUMENT_ROOT']))
-if ($_SERVER['DOCUMENT_ROOT'] != '')
-  $p = $_SERVER['DOCUMENT_ROOT'];
-else if (isset ($_SERVER['PWD']))
-  $p = $_SERVER['PWD'];
-else
-  {
-    echo 'ERROR: $tv2_subdomain'."\n";
-    exit;
-  }
-// DEBUG
-//echo $p;
-//exit;
-$a = explode ('/', $p); // /home/pwnoogle/htdocs/emulive/htdocs
-// DEBUG
-//echo $a[count ($a) - 2];
-$tv2_subdomain = $a[count ($a) - 2];
-
-//$p = 'tv2_domain';
-if (isset ($_SERVER['SERVER_NAME']))
-  $p = $_SERVER['SERVER_NAME'];
-else if (isset ($_SERVER['HOSTNAME']))
-  $p = $_SERVER['HOSTNAME'];
-else
-  $p = '';
-//  {
-//    echo 'ERROR: $tv2_domain'."\n";
-//    exit;
-//  }
-// DEBUG
-//echo $p;
-$tv2_domain = $p;
 
 // compression 1/0
 $use_gzip = 1;
