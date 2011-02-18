@@ -7,7 +7,7 @@ define ('TV2_PHP', 1);
 require_once ('config_lang.php');
 
 
-
+/*
 function
 get_subdomain ()
 {
@@ -83,6 +83,7 @@ else
 // DEBUG
 //echo $p;
 $tv2_domain = $p;
+*/
 
 
 require_once ('default.php');
