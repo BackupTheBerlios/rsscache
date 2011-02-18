@@ -85,8 +85,8 @@ else
 $tv2_domain = $p;
 
 
-require_once ('default.cfg');
-require_once ('config.cfg');
+require_once ('default.php');
+require_once ('config.php');
 // language settings
 //require_once ('config_lang.php');
 //require_once ('default.php');
