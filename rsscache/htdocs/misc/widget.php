@@ -894,6 +894,23 @@ google maps:
 }
 
 
+function 
+widget_ckeditor ($cols = 80, $rows = 10) 
+{
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($_REQUEST);
+
+  $p = '';
+  $p .= ''
+       .'<script type="text/javascript" src="ckeditor/ckeditor.js"></script>'
+//       .'<script src="ckeditor/_samples/sample.js" type="text/javascript"></script>' 
+//       .'<link href="ckeditor/_samples/sample.css" rel="stylesheet" type="text/css">'
+       .'<textarea class="ckeditor" id="editor1" name="editor1" cols="'.$cols.'" rows="'.$rows.'"></textarea>';
+  return $p;
+} 
+
+
 /*
   In PHP versions earlier than 4.1.0, $HTTP_POST_FILES should be used instead
   of $_FILES. Use phpversion() for version information.
