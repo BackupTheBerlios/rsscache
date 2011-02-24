@@ -7,21 +7,21 @@ require_once ('misc/misc.php');
 require_once ('misc/sql.php');
 
 
-$db = new misc_sql;
+$tv2_sql_db = NULL;
 
 
 function
 tv2_sql_open ()
 {
   // move item to different category
-  global $db;
+  global $tv2_sql_db;
   global $tv2_dbhost,
          $tv2_dbuser,
          $tv2_dbpass,
          $tv2_dbname;
   $debug = 0;
-
-  $db->sql_open ($tv2_dbhost,
+  $tv2_sql_db = new misc_sql;
+  $tv2_sql_db->sql_open ($tv2_dbhost,
                  $tv2_dbuser,
                  $tv2_dbpass,
                  $tv2_dbname);
@@ -31,8 +31,8 @@ tv2_sql_open ()
 function
 tv2_sql_close ()
 {
-  global $db;
-  $db->sql_close ();
+  global $tv2_sql_db;
+  $tv2_sql_db->sql_close ();
 }
 
 
@@ -40,26 +40,26 @@ function
 tv2_sql_move ($rsstool_url_crc32, $new_category)
 {
   // move item to different category
-  global $db;
+  global $tv2_sql_db;
   $debug = 0;
 
-  $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = \''.$db->sql_stresc ($new_category).'\''
-                .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
+  $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = \''.$tv2_sql_db->sql_stresc ($new_category).'\''
+                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32).';';
 
-  $db->sql_write ($sql_query_s, 0, $debug);
+  $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
 }
 
 
 function
 tv2_sql_vote ($rsstool_url_crc32, $new_score)
 {
-  global $db;
+  global $tv2_sql_db;
   $debug = 0;
 
   $sql_query_s = 'SELECT tv2_votes,tv2_score FROM rsstool_table'
-                .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
-  $db->sql_write ($p, 0, $debug);
-  $r = $db->sql_read (1, $debug);
+                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32).';';
+  $tv2_sql_db->sql_write ($p, 0, $debug);
+  $r = $tv2_sql_db->sql_read (1, $debug);
 
   if ($new_score > 0)
     $new_score = ($r[0]['tv2_votes'] * $r[0]['tv2_score'] + $new_score) / ($r[0]['tv2_votes'] + 1);
@@ -67,9 +67,9 @@ tv2_sql_vote ($rsstool_url_crc32, $new_score)
     $new_score = $r[0]['tv2_score'];
 
   $sql_query_s = 'UPDATE rsstool_table SET tv2_votes = '.($r[0]['tv2_votes'] + 1).',tv2_score = '.$new_score
-                .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
+                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32).';';
 
-  $db->sql_write ($p, 1, $debug);
+  $tv2_sql_db->sql_write ($p, 1, $debug);
 }
 
 
@@ -77,20 +77,20 @@ function
 tv2_sql_restore ($rsstool_url_crc32)
 {
   // restore original category
-  global $db;
+  global $tv2_sql_db;
   $debug = 0;
 
   $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = tv2_category'
-                .' WHERE rsstool_url_crc32 = '.$db->sql_stresc ($rsstool_url_crc32).';';
+                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32).';';
 
-  $db->sql_write ($sql_query_s, 0, $debug);
+  $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
 }
 
 
 function
 tv2_sql_stats ($category = NULL)
 {
-  global $db;
+  global $tv2_sql_db;
   $debug = 0;
   $f = get_request_value ('f');
 
@@ -103,8 +103,8 @@ tv2_sql_stats ($category = NULL)
     $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
   $sql_query_s .= ';';
 
-  $db->sql_write ($sql_query_s, 0, $debug);
-  $r = $db->sql_read (0, $debug);
+  $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
+  $r = $tv2_sql_db->sql_read (0, $debug);
 
   $stats['items'] = (int) $r[0][0];
 
@@ -116,8 +116,8 @@ tv2_sql_stats ($category = NULL)
         $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
       $sql_query_s .= ';';
 
-      $db->sql_write ($sql_query_s, 0, $debug);
-      $r = $db->sql_read (0, $debug);
+      $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
+      $r = $tv2_sql_db->sql_read (0, $debug);
 
       $stats['items_today'] = (int) $r[0][0];
 
@@ -128,8 +128,8 @@ tv2_sql_stats ($category = NULL)
         $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
       $sql_query_s .= ';';
 
-      $db->sql_write ($sql_query_s, 0, $debug);
-      $r = $db->sql_read (0, $debug);
+      $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
+      $r = $tv2_sql_db->sql_read (0, $debug);
 
       $stats['items_7_days'] = (int) $r[0][0]; 
 
@@ -140,8 +140,8 @@ tv2_sql_stats ($category = NULL)
         $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
       $sql_query_s .= ';';
 
-      $db->sql_write ($sql_query_s, 0, $debug);
-      $r = $db->sql_read (0, $debug);
+      $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
+      $r = $tv2_sql_db->sql_read (0, $debug);
 
       $stats['items_30_days'] = (int) $r[0][0];
     }
@@ -154,8 +154,8 @@ tv2_sql_stats ($category = NULL)
                    .' LIMIT 1'
                    .';';
 
-  $db->sql_write ($sql_query_s, 0, $debug);
-  $r = $db->sql_read (0, $debug);
+  $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
+  $r = $tv2_sql_db->sql_read (0, $debug);
 
   if (isset ($r[0]))
     $stats['days'] = (int) ((time () - (int) $r[0][0]) / 86400);
@@ -165,7 +165,7 @@ tv2_sql_stats ($category = NULL)
 
 
 function
-tv2_sql_normalize ($db, $d, $c, $f)
+tv2_sql_normalize ($tv2_sql_db, $d, $c, $f)
 {
   global $tv2_root,
          $tv2_link,
@@ -317,7 +317,7 @@ tv2_sql_query2boolean ($q)
 
 
 function
-tv2_sql_match_func ($db, $q, $filter)
+tv2_sql_match_func ($tv2_sql_db, $q, $filter)
 {
   $s = '';
 
@@ -349,7 +349,7 @@ tv2_sql_match_func ($db, $q, $filter)
 
 
 function
-tv2_sql_leftjoin_func ($db, $q, $filter)
+tv2_sql_leftjoin_func ($tv2_sql_db, $q, $filter)
 {
   $debug = 0;
 
@@ -392,7 +392,7 @@ tv2_sql_leftjoin_func ($db, $q, $filter)
 function
 tv2_sql ($c, $q, $f, $v, $start, $num)
 {
-  global $db,
+  global $tv2_sql_db,
          $tv2_isnew,
          $tv2_root,
          $tv2_enable_search,
@@ -403,10 +403,10 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
 //  $debug = 1;
 
   $q = get_request_value ('q'); // we ignore the arg and make sure we get an unescaped one
-  $c = $db->sql_stresc ($c);
-  $v = $db->sql_stresc ($v);
-  $start = $db->sql_stresc ($start);
-  $num = $db->sql_stresc ($num);
+  $c = $tv2_sql_db->sql_stresc ($c);
+  $v = $tv2_sql_db->sql_stresc ($v);
+  $start = $tv2_sql_db->sql_stresc ($start);
+  $num = $tv2_sql_db->sql_stresc ($num);
 
   $sql_query_s = '';
 //  $sql_query_s .= 'EXPLAIN ';
@@ -452,8 +452,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
         }
 
       if ($tv2_enable_search)
-//        $sql_query_s .= tv2_sql_match_func ($db, $q, $filter);
-        $sql_query_s .= tv2_sql_leftjoin_func ($db, $q, $filter);
+//        $sql_query_s .= tv2_sql_match_func ($tv2_sql_db, $q, $filter);
+        $sql_query_s .= tv2_sql_leftjoin_func ($tv2_sql_db, $q, $filter);
 
       // functions
       if ($f == 'new')
@@ -485,11 +485,11 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
 
   // DEBUG
 //  echo $sql_query_s;
-  $db->sql_write ($sql_query_s, 1, $debug);
+  $tv2_sql_db->sql_write ($sql_query_s, 1, $debug);
 
-  $d = $db->sql_read (1, 0 /* $debug */);
+  $d = $tv2_sql_db->sql_read (1, 0 /* $debug */);
 
-  $d = tv2_sql_normalize ($db, $d, $c, $f);
+  $d = tv2_sql_normalize ($tv2_sql_db, $d, $c, $f);
 
   // DEBUG
 //  echo '<tt><pre>';

@@ -469,7 +469,10 @@ if (file_exists ('site_config.xml'))
   $p .= '<br>';
 
   // category buttons
-  $collapsed = $c ? 1 : $tv2_collapsed;
+  if ($tv2_collapsed == 2) // always
+    $collapsed = 0;
+  else
+    $collapsed = $c ? 1 : $tv2_collapsed;
   $p .= ''
        .'<div class="tv2_button">'
 //widget_collapse ($label, $s, $collapsed)
