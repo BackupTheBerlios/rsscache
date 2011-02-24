@@ -35,7 +35,7 @@ get_subdomain ()
 
 
 //$tv2_subdomain = get_subdomain ();
-
+*/
 
 
 // apache2
@@ -83,7 +83,6 @@ else
 // DEBUG
 //echo $p;
 $tv2_domain = $p;
-*/
 
 
 require_once ('default.php');
