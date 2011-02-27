@@ -113,6 +113,31 @@ islocalhost ()
 }
 
 
+function
+strip_notags ($str)
+{
+  // strip everything but tags
+
+  // TODO: remove this lame hack
+  $first = 1;
+  $p = '';
+  for ($i = 0; $i < strlen ($str); $i++)
+    {
+      if (in_tag (substr ($str, $i)))
+        {
+          if ($first)
+            {
+              $p .= '<';
+              $first = 0;
+            }
+          $p .= substr ($str, $i, 1);
+        }
+      else $first = 1;
+    }
+  return $p;
+}
+
+
 
 function
 strip_tags2 ($s)

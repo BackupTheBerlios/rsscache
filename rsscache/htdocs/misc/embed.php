@@ -24,6 +24,7 @@ if (!defined ('MISC_EMBED_PHP'))
 define ('MISC_EMBED_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 //require_once ('wikipedia.php'); // embed wikipedia stuff using wikipedia API
+include ('simple_html_dom.php');
 
 
 define ('ALLOW_DEF', ''
@@ -342,6 +343,26 @@ widget_embed ($src, $flags = 0)
     $p .= widget_embed_local ($src);
 //  else if ($flags == WIDGET_EMBED_JS)
 //    $p .= widget_embed_local_js ($src);
+
+  return $p;
+}
+
+
+function
+widget_embed_stripdir ($src)
+{
+//  $p = file_get_contents ($src);
+//  $html = str_get_html ($p);
+  $html = file_get_html ($src);
+  $a = $html->find ('a');
+  $p = '';
+  foreach ($html->find('a') as $tag)
+    {
+      $p .= '<a href="'.$src.'/'.$tag->href.'">'
+           .$tag->href
+           .'</a>';
+      $p .= '<br>';
+    }
 
   return $p;
 }
