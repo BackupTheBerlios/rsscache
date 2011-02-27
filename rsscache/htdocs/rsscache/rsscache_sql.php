@@ -173,7 +173,7 @@ tv2_sql_normalize ($tv2_sql_db, $d, $c, $f)
   $debug = 0;
 
   // make array contents unique by their title
-  if ($tv2_related_search)
+  if ($tv2_related_search == 1)
   if ($f == 'related')
     for ($i = 0; isset ($d[$i]) && isset ($d[$i + 1]); $i++)
       while (trim ($d[$i]['rsstool_title']) == trim ($d[$i + 1]['rsstool_title']))

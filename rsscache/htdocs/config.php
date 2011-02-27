@@ -41,7 +41,7 @@ $tv2_wall_view_title = 0; // wall view is the default
 $tv2_download_video = 0; // show link for downloading videos
 $tv2_buttons_only = 0;   // use only logos as category buttons
 $tv2_enable_search = 1; // allow users to search db?
-$tv2_related_search = 1; // make use of related searches (requires keywords)
+$tv2_related_search = 0; // make use of related searches (requires keywords)
 
 // player settings
 //$tv2_player_w = 400; // max. width
