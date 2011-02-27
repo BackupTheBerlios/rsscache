@@ -30,15 +30,7 @@ tv2_get_request_value ($name)
 function
 tv2_get_category ()
 {
-//  global $config;
-  $c = tv2_get_request_value ('c'); // category
-
-//  if (!($c)) // default category
-//    for ($i = 0; isset ($config->category[$i]); $i++)
-//      if ($config->category[$i]->default == 1)
-//        return $config->category[$i]->name;
-//  return NULL;
-  return $c;
+  return tv2_get_request_value ('c');
 }
 
 
