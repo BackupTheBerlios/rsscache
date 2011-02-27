@@ -100,7 +100,7 @@ widget_media_object_func ($object, $param, $embed)
     {
       $p .= '<object';
       for ($i = 0; isset ($object[$i]); $i++)
-        $p .= ' '.$object[$i][0].'="'.$object[$i][1].'"';
+        $p .= ' '.$object[$i][0].'=\''.$object[$i][1].'\'';
       $p .= '>';
     }
 
@@ -111,7 +111,7 @@ widget_media_object_func ($object, $param, $embed)
 //      $param[] = array ('wmode', 'transparent');
       for ($i = 0; isset ($param[$i]); $i++)
         $p .= '<param name="'
-             .$param[$i][0].'" value="'.$param[$i][1].'"'
+             .$param[$i][0].'" value=\''.$param[$i][1].'\''
              .'></param>';
     }
   if ($embed)
@@ -121,7 +121,7 @@ widget_media_object_func ($object, $param, $embed)
 //      $embed[] = array ('wmode', 'transparent');      
       $p .= '<embed';
       for ($i = 0; isset ($embed[$i]); $i++)
-        $p .= ' '.$embed[$i][0].'="'.$embed[$i][1].'"';
+        $p .= ' '.$embed[$i][0].'=\''.$embed[$i][1].'\'';
       $p .= '></embed>';
     }
 
@@ -205,7 +205,7 @@ widget_video_html4 ($video_url, $width = 400, $height = 300, $autoplay = 0, $hq 
   $p = array (
 //    array ('movie', 'misc/flowplayer.swf'), // flowplayer
     array ('movie', 'misc/jwplayer.swf'), // jwplayer
-//    array ('allowFullScreen', 'true'),
+    array ('allowFullScreen', 'true'),
 //    array ('allowScriptAccess', 'always'),
 //    array ('flashvars', 'config={"clip":"'.$url.'"}'), // flowplayer
     array ('flashvars', 'file='.$url),   // jwplayer

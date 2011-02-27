@@ -24,10 +24,6 @@ if (!defined ('MISC_EMBED_PHP'))
 define ('MISC_EMBED_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 //require_once ('wikipedia.php'); // embed wikipedia stuff using wikipedia API
-if (file_exists ('widget_media.php'))
-  require_once ('widget_media.php');
-if (file_exists ('simple_html_dom.php'))
-  require_once ('simple_html_dom.php');
 
 
 define ('ALLOW_DEF', ''
@@ -350,27 +346,6 @@ widget_embed ($src, $flags = 0)
   return $p;
 }
 
-
-function
-widget_embed_stripdir ($src)
-{
-//  $p = file_get_contents ($src);
-//  $html = str_get_html ($p);
-  $html = file_get_html ($src);
-  $a = $html->find ('a');
-  $p = '';
-  foreach ($html->find('a') as $tag)
-    {
-      $p .= widget_media ($src.'/'.$tag->href);
-$p .= $src.'/'.$tag->href;
-      $p .= '<a href="'.$src.'/'.$tag->href.'">'
-           .$tag->href
-           .'</a>';
-      $p .= '<br>';
-    }
-
-  return $p;
-}
 
 
 }
