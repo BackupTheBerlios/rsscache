@@ -57,7 +57,7 @@ $tv2_preview_h = 300;
 $tv2_use_database = 1;
 $tv2_dbprefix = '';
 $tv2_dbhost = 'localhost';
-//$tv2_dbname = 'pwnoogle_emulive'; 
+$tv2_dbname = 'pwnoogle_videos';
 $tv2_dbuser = 'pwnoogle_db';
 $tv2_dbpass = 'pwn44553';
 
@@ -84,8 +84,8 @@ $tv2_dbpass = 'pwn44553';
       $tv2_domain != 'live.pwnoogle.com')
     {
       $tv2_dbname = 'pwnoogle_videos'; 
-      $tv2_dbuser = 'root';
-      $tv2_dbpass = 'nb';
+//      $tv2_dbuser = 'root';
+//      $tv2_dbpass = 'nb';
     }
 }
 
@@ -108,7 +108,7 @@ if ($tv2_subdomain == 'videos' || $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
   $tv2_debug_sql = 0;
   $tv2_related_search = 0; // make use of related searches (requires keywords)
 }
-else if ($tv2_subdomain == 'quakelive')                                                      
+else if ($tv2_subdomain == 'quakelive')
 {
   // localization and style
   $tv2_title = 'quakelive - pwnoogle \:D/';
@@ -156,7 +156,6 @@ else if ($tv2_subdomain == 'live')
   $tv2_debug_sql = 0;
   $tv2_related_search = 0; // make use of related searches (requires keywords)
 }
-
 }
 
 
