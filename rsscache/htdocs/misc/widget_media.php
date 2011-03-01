@@ -814,6 +814,15 @@ widget_video_liveleak ($video_url, $width=450, $height=370, $autoplay = 0, $hq =
 
     'vimeo' => array(
         'url'=>'http://vimeo.com/moogaloop.swf?clip_id=$1&;server=vimeo.com&fullscreen=0&show_title=1&show_byline=1&show_portrait=0'
+
+<object width="480" height="386" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000">
+  <param name="flashvars" value="cid=4738711&autoplay=false"/>
+  <param name="allowfullscreen" value="true"/>
+  <param name="allowscriptaccess" value="always"/>
+  <param name="src" value="http://www.ustream.tv/flash/viewer.swf"/>
+  <embed flashvars="cid=4738711&autoplay=false" width="480" height="386" allowfullscreen="true" allowscriptaccess="always" src="http://www.ustream.tv/flash/viewer.swf" type="application/x-shockwave-flash">
+</embed>
+</object>
 */
 
 
