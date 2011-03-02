@@ -84,8 +84,8 @@ $tv2_dbpass = 'pwn44553';
       $tv2_domain != 'live.pwnoogle.com')
     {
       $tv2_dbname = 'pwnoogle_videos'; 
-//      $tv2_dbuser = 'root';
-//      $tv2_dbpass = 'nb';
+      $tv2_dbuser = 'root';
+      $tv2_dbpass = 'nb';
     }
 }
 
