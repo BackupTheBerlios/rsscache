@@ -58,104 +58,52 @@ $tv2_use_database = 1;
 $tv2_dbprefix = '';
 $tv2_dbhost = 'localhost';
 $tv2_dbname = 'pwnoogle_videos';
-$tv2_dbuser = 'pwnoogle_db';
-$tv2_dbpass = 'pwn44553';
-
-//if ($tv2_subdomain == 'emulive')
+if ($tv2_domain == 'debian2')
 {
-  $tv2_config_xml = 'videos_config.xml';
-  $tv2_include_php = 'videos_include.php';
-  $tv2_thumbnails_prefix = '';
-  
-//  $tv2_title = 'video games - pwnoogle \:D/';
-//  $tv2_logo = 'video games';
-
-//  $tv2_link = 'http://emulive.pwnoogle.com/';
-//  $tv2_link_static = 'http://emulive.pwnoogle.com/'; // remote static content
-//  $tv2_debug_sql = 0;
-//  $tv2_enable_search = 1; // allow users to search db?
-
-//  $tv2_dbname = 'pwnoogle_jack';
-  $tv2_dbname = 'pwnoogle_videos'; 
-  if ($tv2_domain != 'pwnoogle.com' &&
-      $tv2_domain != 'videos.pwnoogle.com' &&
-      $tv2_domain != 'minecraft.pwnoogle.com' &&
-      $tv2_domain != 'quakelive.pwnoogle.com' &&
-      $tv2_domain != 'live.pwnoogle.com')
-    {
-      $tv2_dbname = 'pwnoogle_videos'; 
-      $tv2_dbuser = 'root';
-      $tv2_dbpass = 'nb';
-    }
+  $tv2_dbuser = 'root';
+  $tv2_dbpass = 'nb';
+}
+else
+{
+  $tv2_dbuser = 'pwnoogle_db';
+  $tv2_dbpass = 'pwn44553';
 }
 
+$tv2_config_xml = 'videos_config.xml';
+$tv2_include_php = 'videos_include.php';
+$tv2_thumbnails_prefix = '';
+  
 
 if ($tv2_subdomain == 'videos' || $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
 {
-  $tv2_config_xml = 'videos_config.xml';
-  $tv2_include_php = 'videos_include.php';
-  $tv2_thumbnails_prefix = '';
-  
-  $tv2_title = //'&#x2590;&#x2598;&#x2599;&#x2599;&#x258c;&#x259b;&#x259c;'
-    'videos - pwnoogle \:D/';
+  $tv2_title = 'videos - pwnoogle \:D/';
   $tv2_logo = 'pwnoogle';
-  $tv2_videos_s = 'videos';
-  $tv2_related_s = 'Find related '.$tv2_videos_s;
-
-  $tv2_enable_search = 0; // allow users to search db?
-  $tv2_link = 'http://videos.pwnoogle.com/';
-  $tv2_link_static = 'http://videos.pwnoogle.com/'; // static content
-  $tv2_debug_sql = 0;
-  $tv2_related_search = 0; // make use of related searches (requires keywords)
 }
 else if ($tv2_subdomain == 'quakelive')
 {
-  // localization and style
   $tv2_title = 'quakelive - pwnoogle \:D/';
   $tv2_logo = 'QuakeLive';
-  $tv2_videos_s = 'videos';
-  $tv2_related_s = 'Find related '.$tv2_videos_s;
   $tv2_default_category = 'baseqz';
   $tv2_collapsed = 1;   // collapse categories
-
-  $tv2_enable_search = 0; // allow users to search db?
-  $tv2_link = 'http://videos.pwnoogle.com/';
-  $tv2_link_static = 'http://videos.pwnoogle.com/'; // static content
-  $tv2_debug_sql = 0;
-  $tv2_related_search = 0; // make use of related searches (requires keywords)
 }
 else if ($tv2_subdomain == 'minecraft')
 {
-  // localization and style
   $tv2_title = 'minecraft - pwnoogle \:D/';
   $tv2_logo = '<img src="images/logos/minecraft32.png" border="0">';
   $tv2_videos_s = 'videos';
-  $tv2_related_s = 'Find related '.$tv2_videos_s;
-  $tv2_default_category = 'minecraft';
   $tv2_collapsed = 1;   // collapse categories
-
-  $tv2_enable_search = 0; // allow users to search db?
-  $tv2_link = 'http://videos.pwnoogle.com/';
-  $tv2_link_static = 'http://videos.pwnoogle.com/'; // static content
-  $tv2_debug_sql = 0;
-  $tv2_related_search = 0; // make use of related searches (requires keywords)
 }
-else if ($tv2_subdomain == 'live')
-{
-  // localization and style
-  $tv2_title = 'live broadcasts - pwnoogle \:D/';
-  $tv2_logo = 'live broadcasts';
-  $tv2_videos_s = 'broadcasts';
-  $tv2_related_s = 'Find related '.$tv2_videos_s;
-  $tv2_default_category = 'live';
-  $tv2_collapsed = 1;   // collapse categories
 
-  $tv2_enable_search = 0; // allow users to search db?
-  $tv2_link = 'http://videos.pwnoogle.com/';
-  $tv2_link_static = 'http://videos.pwnoogle.com/'; // static content
-  $tv2_debug_sql = 0;
-  $tv2_related_search = 0; // make use of related searches (requires keywords)
-}
+$tv2_related_s = 'Find related '.$tv2_videos_s;
+$tv2_default_category = 'minecraft';
+
+$tv2_enable_search = 0; // allow users to search db?
+$tv2_link = 'http://videos.pwnoogle.com/';
+$tv2_link_static = 'http://videos.pwnoogle.com/'; // static content
+$tv2_debug_sql = 0;
+$tv2_related_search = 0; // make use of related searches (requires keywords)
+
+
 }
 
 
