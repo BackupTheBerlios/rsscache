@@ -58,7 +58,7 @@ $tv2_use_database = 1;
 $tv2_dbprefix = '';
 $tv2_dbhost = 'localhost';
 $tv2_dbname = 'pwnoogle_videos';
-if ($tv2_domain == 'debian2')
+if ($tv2_domain == 'debian2' || $tv2_domain == 'vps24110')
 {
   $tv2_dbuser = 'root';
   $tv2_dbpass = 'nb';
