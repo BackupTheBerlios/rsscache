@@ -418,6 +418,8 @@ if (file_exists ('site_config.xml'))
     return $p.tv2_f_wiki ();
   else if (isset ($category->localwiki))
     return $p.tv2_f_localwiki ();
+  else if (isset ($category->stripdir))
+    return $p.tv2_f_stripdir ();
 
   if ($tv2_use_database == 0)
     return $p;

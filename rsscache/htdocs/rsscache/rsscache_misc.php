@@ -63,13 +63,13 @@ tv2_f_proxy ()
 }
 
 
-function
-tv2_f_index ()
-{
-  $c = tv2_get_request_value ('c');        
-  $config = config_xml_by_category ($c);      
-  return widget_embed ($config->index, WIDGET_EMBED_INDEX);
-}
+//function
+//tv2_f_index ()
+//{
+//  $c = tv2_get_request_value ('c');        
+//  $config = config_xml_by_category ($c);      
+//  return widget_embed ($config->index, WIDGET_EMBED_INDEX);
+//}
 
 
 function
@@ -84,6 +84,15 @@ tv2_f_wiki ()
 
 function
 tv2_f_localwiki ()
+{
+  $c = tv2_get_request_value ('c');        
+  $config = config_xml_by_category ($c);      
+  return widget_embed ($config->localwiki, WIDGET_EMBED_PROXY);
+}
+
+
+function
+tv2_f_stripdir ()
 {
   $c = tv2_get_request_value ('c');        
   $config = config_xml_by_category ($c);      

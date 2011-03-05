@@ -55,7 +55,7 @@ define ('WIDGET_EMBED_PROXY', 1);
 define ('WIDGET_EMBED_IFRAME', 2);  // scales to content size
 define ('WIDGET_EMBED_LOCAL', 3); // embed a local file
 define ('WIDGET_EMBED_JS', 4);
-define ('WIDGET_EMBED_INDEX', 5); // embed ftp with proper index
+//define ('WIDGET_EMBED_INDEX', 5); // embed ftp with proper index
 
 
 function
