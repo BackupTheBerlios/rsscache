@@ -173,7 +173,7 @@ widget_embed_iframe ($src)
   $p .= '<iframe'
 //       .' onload="javascript:autoscaleiframe(this);"' // with js
 //       .' seamless="seamless"'
-       .' scrolling="no"'
+//       .' scrolling="no"'
        .' width="100%"'
 //       .' height="90%"'
        .' height="2000"'
