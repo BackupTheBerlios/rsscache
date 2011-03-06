@@ -138,7 +138,8 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
         $p .= ' class="tv2_selected" style="color:#000;"';
       else
         $p .= ' class="tooltip"';
-      if (!strncasecmp ($query, 'http://', 7))
+//      if (!strncasecmp ($query, 'http://', 7))
+      if (strstr ($query, '://'))
         $p .= ' href="'.$query.'"';
       else
         $p .= ' href="?'.$query.'"';
@@ -895,7 +896,7 @@ google maps:
 
 
 function 
-widget_ckeditor ($cols = 80, $rows = 10) 
+widget_ckeditor ($name, $s = '', $cols = 80, $rows = 10) 
 {
   // DEBUG
 //  echo '<pre><tt>';
@@ -906,7 +907,7 @@ widget_ckeditor ($cols = 80, $rows = 10)
        .'<script type="text/javascript" src="ckeditor/ckeditor.js"></script>'
 //       .'<script src="ckeditor/_samples/sample.js" type="text/javascript"></script>' 
 //       .'<link href="ckeditor/_samples/sample.css" rel="stylesheet" type="text/css">'
-       .'<textarea class="ckeditor" id="editor1" name="editor1" cols="'.$cols.'" rows="'.$rows.'"></textarea>';
+       .'<textarea class="ckeditor" id="'.$name.'" name="'.$name.'" cols="'.$cols.'" rows="'.$rows.'" wrap="soft">'.$s.'</textarea>';
   return $p;
 } 
 

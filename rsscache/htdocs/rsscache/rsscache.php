@@ -4,13 +4,10 @@ if (!defined ('TV2_PHP'))
 define ('TV2_PHP', 1);
 //phpinfo();
 //error_reporting(E_ALL | E_STRICT);
+// language settings
 require_once ('config_lang.php');
 require_once ('default.php');
 require_once ('config.php');
-// language settings
-//require_once ('config_lang.php');
-//require_once ('default.php');
-//require_once ('config.php');
 require_once ('misc/misc.php');
 //require_once ('misc/widget.php');
 require_once ('tv2_output.php');
@@ -384,20 +381,28 @@ if (file_exists ('site_config.xml'))
 //  $p .= '<div class="clear;">';
 //  $p .= '</div>';
 
-  $p .= '<br>';
-  $p .= '<br>';
+//  $p .= '<br>';
+//  $p .= '<br>';
 
   // category buttons
-  if ($tv2_collapsed == 2) // always
-    $collapsed = 0;
-  else
-    $collapsed = $c ? 1 : $tv2_collapsed;
-  $p .= ''
-       .'<div class="tv2_button">'
-//widget_collapse ($label, $s, $collapsed)
-       .widget_collapse ('', widget_cms (NULL, $config, NULL, 8), $collapsed)
-       .'</div>'
+  if ($tv2_collapsed == 2) // never
+    {
+      $p .= ''
+           .'<div class="tv2_button">'
+           .widget_cms (NULL, $config, NULL, 8)
+           .'</div>'
 ;
+    }
+  else if ($tv2_collapsed >= 0)
+    {
+      $collapsed = $c ? 1 : $tv2_collapsed;
+      $p .= ''
+           .'<div class="tv2_button">'
+//widget_collapse ($label, $s, $collapsed)
+           .widget_collapse ('', widget_cms (NULL, $config, NULL, 8), $collapsed)
+           .'</div>'
+;
+    }
 
   $p .= '<br>'  
 //       .'<br>'  
@@ -412,14 +417,14 @@ if (file_exists ('site_config.xml'))
     return $p.tv2_f_iframe ();
   else if (isset ($category->proxy))
     return $p.tv2_f_proxy ();
-  else if (isset ($category->index))
-    return $p.tv2_f_index ();
   else if (isset ($category->wiki))
     return $p.tv2_f_wiki ();
   else if (isset ($category->localwiki))
     return $p.tv2_f_localwiki ();
-  else if (isset ($category->stripdir))
-    return $p.tv2_f_stripdir ();
+  else if (isset ($category->phpbb3))
+    return $p.tv2_f_phpbb3 ();
+  else if ($f == 'extern')
+    return $p.tv2_f_extern ();
 
   if ($tv2_use_database == 0)
     return $p;
@@ -431,11 +436,18 @@ if (file_exists ('site_config.xml'))
         $v = NULL;
       }
 
+  if (isset ($category->index) || isset ($category->stripdir))
+    {
+      $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir);
+    }
+  else
+    {
   // use SQL
   if ($v)
     $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
   else
     $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
+    }
 
   // DEBUG
 //  echo '<pre><tt>';
@@ -765,7 +777,10 @@ if ($tv2_rss_head)
     '<link rel="alternate" type="application/rss+xml"'
    .' title="'.$tv2_title.'"'
    .' href="?'.http_build_query2 (array ('f' => 'rss'), true).'">';
-$template = file_get_contents ('tv2/tv2_index.html');
+if (file_exists ('tv2_index.html'))
+  $template = file_get_contents ('tv2_index.html');
+else
+  $template = file_get_contents ('tv2/tv2_index.html');
 $p = misc_template ($template, $template_replace);
 $p = misc_template ($p, $tv2_translate['default']);
 

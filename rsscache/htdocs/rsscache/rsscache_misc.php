@@ -63,13 +63,13 @@ tv2_f_proxy ()
 }
 
 
-//function
-//tv2_f_index ()
-//{
-//  $c = tv2_get_request_value ('c');        
-//  $config = config_xml_by_category ($c);      
-//  return widget_embed ($config->index, WIDGET_EMBED_INDEX);
-//}
+function
+tv2_f_phpbb3 ()
+{
+  $c = tv2_get_request_value ('c');        
+  $config = config_xml_by_category ($c);      
+  return widget_embed ($config->phpbb3, WIDGET_EMBED_IFRAME);
+}
 
 
 function
@@ -91,12 +91,37 @@ tv2_f_localwiki ()
 }
 
 
+//function
+//tv2_f_index ()
+//{
+//  $c = tv2_get_request_value ('c');        
+//  $config = config_xml_by_category ($c);      
+//  return widget_embed ($config->index, WIDGET_EMBED_INDEX);
+//}
+
+
 function
-tv2_f_stripdir ()
+tv2_stripdir ($url)
 {
-  $c = tv2_get_request_value ('c');        
-  $config = config_xml_by_category ($c);      
-  return widget_embed ($config->localwiki, WIDGET_EMBED_PROXY);
+  global $tv2_tor_enabled;
+
+  if ($tv2_tor_enabled)
+    $s = tor_get_contents ($url);
+  else
+    $s = file_get_contents ($url);
+
+  $html = str_get_html ($s);
+  $a = $html->find ('a');
+  if ($a)
+    foreach ($html->find('a') as $tag)
+      if (widget_media_demux ($v_stripdir.'/'.$tag->href) != 0)
+        $v[] = $v_stripdir.'/'.$tag->href;
+
+  // DEBUG
+  echo '<pre><tt>';
+  print_r ($v);
+
+  return $v;
 }
 
 

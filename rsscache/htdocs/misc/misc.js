@@ -20,6 +20,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 
+function is_iframe ()
+{
+  if (top === self)
+    return 0;
+  return 1;
+}
+
+
 function misc_getwh ()
 {
   var w = screen.width;

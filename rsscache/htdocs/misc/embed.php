@@ -171,9 +171,12 @@ widget_embed_iframe ($src)
 
   $p .= '<a href='.$url.' target="_blank"><img src="images/widget/redirectltr.png" border="0">Open Frame in New Window</a><br>';
   $p .= '<iframe'
-//       .' onload="javascript:autoscaleiframe(this);" scrolling="no"' // with js
+//       .' onload="javascript:autoscaleiframe(this);"' // with js
+//       .' seamless="seamless"'
+       .' scrolling="no"'
        .' width="100%"'
-       .' height="90%"'
+//       .' height="90%"'
+       .' height="2000"'
        .' marginheight="0" marginwidth="0" frameborder="0" src="'
        .$url
        .'"></iframe>';
