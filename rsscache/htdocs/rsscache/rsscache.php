@@ -381,8 +381,8 @@ if (file_exists ('site_config.xml'))
 //  $p .= '<div class="clear;">';
 //  $p .= '</div>';
 
-//  $p .= '<br>';
-//  $p .= '<br>';
+  $p .= '<br>';
+  $p .= '<br>';
 
   // category buttons
   if ($tv2_collapsed == 2) // never
