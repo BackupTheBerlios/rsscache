@@ -426,9 +426,6 @@ if (file_exists ('site_config.xml'))
   else if ($f == 'extern')
     return $p.tv2_f_extern ();
 
-  if ($tv2_use_database == 0)
-    return $p;
-
   if ($captcha)
     if (widget_captcha_check () || islocalhost ())
       {
@@ -438,20 +435,22 @@ if (file_exists ('site_config.xml'))
 
   if (isset ($category->index) || isset ($category->stripdir))
     {
-      $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir);
+      $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
+      return $p.tv2_player_multi ($d_array);
     }
-  else
+  else if ($tv2_use_database == 1)
     {
-  // use SQL
-  if ($v)
-    $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
-  else
-    $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
+      // use SQL
+      if ($v)
+        $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
+      else
+        $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
     }
+  else return $p;
 
   // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($d_array);
+  echo '<pre><tt>';
+  print_r ($d_array);
 
 /*
   if ($category->background || $f == 'fullscreen') // background image and fullscreen
