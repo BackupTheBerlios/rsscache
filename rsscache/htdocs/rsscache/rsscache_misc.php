@@ -91,6 +91,23 @@ tv2_f_localwiki ()
 }
 
 
+/*
+    [0] => Array
+        (
+            [rsstool_url] => http://www.own3d.tv/watch/83483
+            [rsstool_url_crc32] => 2358663608
+            [rsstool_title] => CptWipe [id:32728] Archive (2011-03-07 00:08:21 - 00:11:10)
+            [rsstool_desc] => 
+									 							
+            [rsstool_dl_date] => 1299456810
+            [rsstool_date] => 1299453060
+            [tv2_category] => wow
+            [tv2_moved] => wow
+            [rsstool_media_duration] => 0
+            [rsstool_keywords] => cptwipe 32728 archive 2011
+            [tv2_demux] => 12
+        )
+*/
 function
 tv2_stripdir ($url, $start, $num)
 {

@@ -449,8 +449,8 @@ if (file_exists ('site_config.xml'))
   else return $p;
 
   // DEBUG
-  echo '<pre><tt>';
-  print_r ($d_array);
+//  echo '<pre><tt>';
+//  print_r ($d_array);
 
 /*
   if ($category->background || $f == 'fullscreen') // background image and fullscreen
