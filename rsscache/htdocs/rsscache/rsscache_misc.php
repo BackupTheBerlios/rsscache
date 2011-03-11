@@ -123,7 +123,7 @@ tv2_stripdir ($url, $start, $num)
   $a = $html->find ('a');
   if ($a)
     foreach ($html->find('a') as $tag)
-      if (widget_media_demux ($v_stripdir.'/'.$tag->href) != 0)
+      if (widget_media_demux ($url.'/'.$tag->href) != 0)
         {
           if ($count > $start)
             $v[] = $url.'/'.$tag->href;
