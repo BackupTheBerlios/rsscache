@@ -896,19 +896,32 @@ google maps:
 
 
 function 
-widget_ckeditor ($name, $s = '', $cols = 80, $rows = 10) 
+widget_textarea ($name, $s = '', $cols = 80, $rows = 10, $disabled = 0) 
 {
   // DEBUG
 //  echo '<pre><tt>';
 //  print_r ($_REQUEST);
 
   $p = '';
+
+  if ($diabled == 0)
   $p .= ''
-       .'<script type="text/javascript" src="ckeditor/ckeditor.js"></script>'
+       .'<script type="text/javascript" src="ckeditor/ckeditor.js"></script>';
+
+  $p .= ''
 //       .'<script src="ckeditor/_samples/sample.js" type="text/javascript"></script>' 
 //       .'<link href="ckeditor/_samples/sample.css" rel="stylesheet" type="text/css">'
-       .'<textarea class="ckeditor" id="'.$name.'" name="'.$name.'" cols="'.$cols.'" rows="'.$rows.'" wrap="soft">'.$s.'</textarea>';
+       .'<textarea class="ckeditor" id="'.$name.'" name="'.$name.'" cols="'.$cols.'" rows="'.$rows.'" wrap="soft"'
+       .($disabled == 1 ? ' disabled="disabled"' : '')
+       .'>'.$s.'</textarea>';
   return $p;
+} 
+
+
+function 
+widget_ckeditor ($name, $s = '', $cols = 80, $rows = 10) 
+{
+  return widget_textarea ($name, $s, $cols, $rows, 0);
 } 
 
 
