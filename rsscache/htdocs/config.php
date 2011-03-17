@@ -77,7 +77,7 @@ $tv2_thumbnails_prefix = '';
 if ($tv2_subdomain == 'videos' || $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
 {
   $tv2_title = 'videos - pwnoogle \:D/';
-  $tv2_logo = 'pwnoogle';
+  $tv2_logo = 'pwnoogle <img src="http://plugins.pwnoogle.com/qrcode.php?data=http://videos.pwnoogle.com&size=2" style="vertical-align:top;">';
 }
 else if ($tv2_subdomain == 'quakelive')
 {
