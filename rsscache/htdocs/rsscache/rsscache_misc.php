@@ -113,6 +113,14 @@ tv2_stripdir ($url, $start, $num)
 {
   global $tv2_tor_enabled;
 
+  $v = array ();
+
+  if (widget_media_demux ($url) != 0)
+    {
+      $v[] = $url;
+      return $v;
+    }
+
   if ($tv2_tor_enabled)
     $s = tor_get_contents ($url);
   else

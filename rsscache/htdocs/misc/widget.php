@@ -904,7 +904,7 @@ widget_textarea ($name, $s = '', $cols = 80, $rows = 10, $disabled = 0)
 
   $p = '';
 
-  if ($diabled == 0)
+  if ($disabled == 0)
   $p .= ''
        .'<script type="text/javascript" src="ckeditor/ckeditor.js"></script>';
 
