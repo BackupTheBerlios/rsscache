@@ -381,7 +381,7 @@ if (file_exists ('site_config.xml'))
 //  $p .= '<div class="clear;">';
 //  $p .= '</div>';
 
-  $p .= '<br>';
+//  $p .= '<br>';
   $p .= '<br>';
 
   // category buttons
@@ -404,9 +404,9 @@ if (file_exists ('site_config.xml'))
 ;
     }
 
-  $p .= '<br>'  
+//  $p .= '<br>'  
 //       .'<br>'  
-;  
+//;  
   // category   
   $category = config_xml_by_category (strtolower ($c));
 

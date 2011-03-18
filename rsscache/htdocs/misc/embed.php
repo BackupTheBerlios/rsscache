@@ -143,7 +143,7 @@ widget_embed_proxy ($src, $form_action = '', $form_method = 'GET', $allow = ALLO
 
 
 function
-widget_embed_iframe ($src)
+widget_embed_iframe ($src, $target = '_blank')
 {
   $a = parse_url ($src);
   // DEBUG
@@ -169,7 +169,12 @@ widget_embed_iframe ($src)
   // automatic scale to the content size requires javascript and misc.js
   $p = '';
 
-  $p .= '<a href='.$url.' target="_blank"><img src="images/widget/redirectltr.png" border="0">Open Frame in New Window</a><br>';
+  if ($target == '_blank')
+    $p .= '<a href='.$url.' target="_blank"><img src="images/widget/redirectltr.png" border="0">Open Frame in New Window</a><br>';
+  else if ($target == '_top')
+    $p .= '<a href='.$url.' target="_top"><img src="images/widget/redirectltr.png" border="0">Open Frame in This Window</a><br>';
+  else
+    $p .= '<a href='.$url.' target="'.$target.'"><img src="images/widget/redirectltr.png" border="0">Open Frame</a><br>';
   $p .= '<iframe'
 //       .' onload="javascript:autoscaleiframe(this);"' // with js
 //       .' seamless="seamless"'
@@ -330,7 +335,7 @@ widget_embed ($src, $flags = 0)
       if (!strncasecmp ($src, 'http://', 7))
         {
 //          $p .= widget_embed_proxy ($src);
-          $p .= widget_embed_iframe ($src);
+          $p .= widget_embed_iframe ($src, '_top');
         }
       else
         $p .= widget_embed_local ($src);
