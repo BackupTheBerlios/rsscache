@@ -82,14 +82,14 @@ if ($tv2_subdomain == 'videos' || $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
 else if ($tv2_subdomain == 'quakelive')
 {
   $tv2_title = 'quakelive - pwnoogle \:D/';
-  $tv2_logo = 'QuakeLive';
+  $tv2_logo = 'QuakeLive <img src="http://plugins.pwnoogle.com/qrcode.php?data=http://quakelive.pwnoogle.com&size=2" style="vertical-align:top;">';
   $tv2_default_category = 'baseqz';
   $tv2_collapsed = 1;   // collapse categories
 }
 else if ($tv2_subdomain == 'minecraft')
 {
   $tv2_title = 'minecraft - pwnoogle \:D/';
-  $tv2_logo = '<img src="images/logos/minecraft32.png" border="0">';
+  $tv2_logo = '<img src="images/logos/minecraft32.png" border="0"> <img src="http://plugins.pwnoogle.com/qrcode.php?data=http://minecraft.pwnoogle.com&size=2" style="vertical-align:top;">';
   $tv2_default_category = 'minecraft';
   $tv2_collapsed = 1;   // collapse categories
 }
