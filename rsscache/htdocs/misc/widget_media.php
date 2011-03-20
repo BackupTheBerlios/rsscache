@@ -961,9 +961,9 @@ widget_video_youtube_download ($media_url, $tor_enabled)
 //  $p .= '<br>';
 
   // download
-  if (islocalhost ())
+//  if (islocalhost ())
     {
-  $p .= '<a href="'.$yt['video_url'].'">Best</a>';
+  $p .= 'Download: <a href="'.$yt['video_url'].'">Best</a>';
 
   for ($q = 0; isset ($yt[$q]); $q++)
     {

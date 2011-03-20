@@ -27,16 +27,25 @@ require_once ('misc.php');
 
 
 function
-youtube_get_rss ($q)
+youtube_get_rss ($search, $channel = NULL)
 {
   $q = urlencode ($q);
-//Example: http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
-//         http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
-  $f = file_get_contents ('http://gdata.youtube.com/feeds/api/videos?vq='.$q.'&max-results=50');
+  if ($channel)
+    {
+      // http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
+      $f = file_get_contents ('http://gdata.youtube.com/feeds/api/videos?author='.$channel.'&vq='.$search.'&max-results=50');
+    }
+  else
+    {
+      // http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
+      $f = file_get_contents ('http://gdata.youtube.com/feeds/api/videos?vq='.$search.'&max-results=50');
+    }
   $xml = simplexml_load_string ($f);
+
 // DEBUG
 //echo '<pre><tt>';
 //print_r ($xml);  
+
   return $xml;
 } 
 
@@ -47,34 +56,33 @@ youtube_get_videoid ($url)
   // DEBUG
 //  echo $url."\n";
 
-//  if (strstr ($video_url, '?v='))
-//    $video_url = substr ($video_url, strpos ($video_url, '?v=') + 3);
-//  else
-//    $video_url = substr ($video_url, strpos ($video_url, 'watch') + 12);
-//  $video_url = str_replace ('&feature=youtube_gdata', '', $video_url);
+  $p = urldecode ($url);
+//  $p = str_replace ('&feature=youtube_gdata', '', $p);
 
-//      $start = strpos ($t, 'watch?v=') + 8;
-//      $t = substr ($t, $start);  
-//      $len = strpos ($t, '&');
-//      if ($len)  
-//        $len = substr ($t, 0, $len);
-
-  $p = urldecode ($url);   
-  $start = strpos ($p, 'watch?v=');
-  if ($start)   
-    $start += 8;
-  $p = substr ($p, $start);
-  if (strpos ($p, '&'))
+  $a = array ('watch?v=', '?v=', '/v/');
+  $start = 0;
+  for ($i = 0; isset ($a[$i]); $i++)
     {
-      $len = strpos ($p, '&');  
-      $s = substr ($p, 0, $len);
+      $start = strpos ($p, $a[$i]);
+      if ($start)
+        {
+          $p = substr ($p, $start + strlen ($a[$i]));
+          break;
+        }
     }
-  else $s = $p;
+
+  $len = strpos ($p, '&');
+  if ($len)
+    $p = substr ($p, 0, $len);
+
+  // sanity
+  if (strlen ($p) != 11)
+    $p = '';
 
   // DEBUG
-//  echo $s."\n";
+//  echo $p."\n";
 
-  return $s;
+  return $p;
 }
 
 
