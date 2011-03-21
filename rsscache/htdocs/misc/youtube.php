@@ -196,12 +196,13 @@ youtube_thumbnail ($url, $thumbnails_path, $use_tor = 0)
   if (!strlen ($s))
     return -1;
 
-  for ($i = 1; $i < 4; $i++)
+//  for ($i = 0; $i < 3; $i++)
+$i = 0;
     {
       // download thumbnail
-      $url = 'http://i.ytimg.com/vi/'.$s.'/'.$i.'.jpg';
+      $url = 'http://i.ytimg.com/vi/'.$s.'/'.($i + 1).'.jpg';
 
-      $filename = $s.'_'.$i.'.jpg';
+      $filename = $s.'_'.($i + 1).'.jpg';
       $path = $thumbnails_path.'/'.$filename;
 
       // DEBUG
