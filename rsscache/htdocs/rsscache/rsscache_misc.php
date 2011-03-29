@@ -64,15 +64,6 @@ tv2_f_proxy ()
 
 
 function
-tv2_f_phpbb3 ()
-{
-  $c = tv2_get_request_value ('c');        
-  $config = config_xml_by_category ($c);      
-  return widget_embed ($config->phpbb3, WIDGET_EMBED_IFRAME);
-}
-
-
-function
 tv2_f_wiki ()
 {
   $c = tv2_get_request_value ('c');        

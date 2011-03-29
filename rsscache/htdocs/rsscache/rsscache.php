@@ -433,8 +433,6 @@ if (file_exists ('site_config.xml'))
     return $p.tv2_f_wiki ();
   else if (isset ($category->localwiki))
     return $p.tv2_f_localwiki ();
-  else if (isset ($category->phpbb3))
-    return $p.tv2_f_phpbb3 ();
   else if ($f == 'extern')
     return $p.tv2_f_extern ();
 

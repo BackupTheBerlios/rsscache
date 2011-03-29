@@ -172,7 +172,7 @@ widget_embed_iframe ($src, $target = '_blank')
   if ($target == '_blank')
     $p .= '<a href='.$url.' target="_blank"><img src="images/widget/redirectltr.png" border="0">Open Frame in New Window</a><br>';
   else if ($target == '_top')
-    $p .= '<a href='.$url.' target="_top"><img src="images/widget/redirectltr.png" border="0">Open Frame in This Window</a><br>';
+    $p .= '<a href='.$url.' target="_top"><img src="images/widget/redirectltr.png" border="0">Show Only This Frame</a><br>';
   else
     $p .= '<a href='.$url.' target="'.$target.'"><img src="images/widget/redirectltr.png" border="0">Open Frame</a><br>';
   $p .= '<iframe'
@@ -327,7 +327,7 @@ window.onload = function () {
 
 
 function
-widget_embed ($src, $flags = 0)
+widget_embed ($src, $flags = 0, $target = '_top')
 {
   $p = '';
   if ($flags == 0 || $flags == WIDGET_EMBED_AUTO)
@@ -335,7 +335,7 @@ widget_embed ($src, $flags = 0)
       if (!strncasecmp ($src, 'http://', 7))
         {
 //          $p .= widget_embed_proxy ($src);
-          $p .= widget_embed_iframe ($src, '_top');
+          $p .= widget_embed_iframe ($src);
         }
       else
         $p .= widget_embed_local ($src);
@@ -345,7 +345,7 @@ widget_embed ($src, $flags = 0)
   else if ($flags == WIDGET_EMBED_PROXY)
     $p .= widget_embed_proxy ($src);
   else if ($flags == WIDGET_EMBED_IFRAME)
-    $p .= widget_embed_iframe ($src);
+    $p .= widget_embed_iframe ($src, $target);
   else if ($flags == WIDGET_EMBED_LOCAL)   
     $p .= widget_embed_local ($src);
 //  else if ($flags == WIDGET_EMBED_JS)
