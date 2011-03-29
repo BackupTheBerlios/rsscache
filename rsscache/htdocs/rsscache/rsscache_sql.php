@@ -499,6 +499,107 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
 }
 
 
+function
+tv2_extern_sql ()
+{
+  // like tv2_sql() but uses the youtube db instead ;)
+  global $tv2_feature;
+  global $tv2_player_w;
+  global $tv2_player_h;
+  global $tv2_player_autoplay;
+  global $tv2_player_hq; // high quality
+  global $tv2_results;
+  global $tv2_tor_enabled;
+  global $tv2_maxresults;
+  global $start, $num;
+
+  $v_textarea = get_request_value ('v_textarea');
+  $v_search = get_request_value ('v_search');
+  $v_segments = get_request_value ('v_segments');
+  $v_user = get_request_value ('v_user');
+  $v_playlist_id = get_request_value ('v_playlist_id');
+  $v_stripdir = get_request_value ('v_stripdir');
+
+  $videos_s = '';
+
+  if ($v_textarea)
+    if ($v_textarea != '')
+      $videos_s .= ' '.$v_textarea;
+
+  if ($v_search)
+    if ($v_search != '')
+      {
+        $s = $v_search;
+        if ($v_segments)
+          if ($v_segments != '')
+            {
+              $s .= ' +(part OR pl';
+              for ($i = 0; $i < 20; $i++)
+                $s .= ' OR "'.($i + 1).'/"';
+              $s .= ')';
+            }
+
+        $rss = youtube_get_rss ($s, NULL, NULL, $tv2_tor_enabled);
+
+        for ($i = 0; isset ($rss->channel->item[$i]) && $i < $tv2_maxresults; $i++)
+          if (isset ($rss->channel->item[$i]->link))
+            $videos_s .= ' '.$rss->channel->item[$i]->link;
+      }
+
+  if ($v_user)
+    if ($v_user != '')
+      {
+        $rss = youtube_get_rss ($s, $v_user, NULL, $tv2_tor_enabled);
+
+        for ($i = 0; isset ($rss->channel->item[$i]) && $i < $tv2_maxresults; $i++)
+          if (isset ($rss->channel->item[$i]->link))
+            $videos_s .= ' '.$rss->channel->item[$i]->link;
+      }
+
+  if ($v_playlist_id)
+    if ($v_playlist_id != '')
+      {
+        $rss = youtube_get_rss ('', NULL, $v_playlist_id, $tv2_tor_enabled);
+
+        for ($i = 0; isset ($rss->channel->item[$i]) && $i < $tv2_maxresults; $i++)
+          if (isset ($rss->channel->item[$i]->link))
+            $videos_s .= ' '.$rss->channel->item[$i]->link;
+      }
+
+  if ($v_stripdir)
+    if ($v_stripdir != '')
+      {
+        $a = tv2_stripdir ($v_stripdir, $start, $num);
+        $videos_s .= implode ($a, ' ');
+      }
+
+  // normalize youtube links
+  $v = array ();
+  $videos_s = trim (strip_tags (urldecode ($videos_s)));
+  if ($videos_s == '')
+    $videos_s = $tv2_feature;
+  $a = explode (' ', urldecode ($videos_s));
+  for ($i = 0; isset ($a[$i]); $i++)
+    {
+      $p = trim ($a[$i]);
+      if ($p != '')
+        {
+          $p = youtube_get_videoid ($p);
+          if ($p != '')
+            $v[] = 'http://www.youtube.com/watch?v='.$p;
+        }
+    }
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  echo $video_s;
+//  print_r ($v);
+
+  return $v;
+}
+
+
+
 }
 
 

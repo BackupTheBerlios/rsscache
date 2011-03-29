@@ -27,19 +27,33 @@ require_once ('misc.php');
 
 
 function
-youtube_get_rss ($search, $channel = NULL)
+youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $use_tor = 0)
 {
-  $q = urlencode ($q);
+  $maxresults = 50;
+  $q = urlencode ($search);
+
   if ($channel)
     {
-      // http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
-      $f = file_get_contents ('http://gdata.youtube.com/feeds/api/videos?author='.$channel.'&vq='.$search.'&max-results=50');
+      // OLD: http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
+//    http://gdata.youtube.com/feeds/base/users/'.$v_user.'/uploads?max-results=50
+      $url = 'http://gdata.youtube.com/feeds/base/videos?author='.$channel.'&q='.$q.'&orderby=published&alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
+    }
+  else if ($playlist)
+    {
+      $url = 'http://gdata.youtube.com/feeds/base/playlists/'.$playlist.'?max-results='.$maxresults;
     }
   else
     {
-      // http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
-      $f = file_get_contents ('http://gdata.youtube.com/feeds/api/videos?vq='.$search.'&max-results=50');
+      // OLD: http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
+      // http://gdata.youtube.com/feeds/base/videos?q=SEARCH&orderby=published&alt=rss&client=ytapi-youtube-search&v=2   
+      $url = 'http://gdata.youtube.com/feeds/base/videos?q='.$q.'&orderby=published&alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
     }
+
+  if ($use_tor)
+    $f = tor_get_contents ($url);
+  else
+    $f = file_get_contents ($url);
+
   $xml = simplexml_load_string ($f);
 
 // DEBUG
