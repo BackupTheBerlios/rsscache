@@ -443,12 +443,13 @@ if (file_exists ('site_config.xml'))
         $v = NULL;
       }
 
-  if (isset ($category->index) || isset ($category->stripdir))
-    {
-      $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
-      return $p.tv2_player_multi ($d_array);
-    }
-  else if ($tv2_use_database == 1)
+//  if (isset ($category->index) || isset ($category->stripdir))
+//    {
+//      $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
+//      return $p.tv2_player_multi ($d_array);
+//    }
+//  else
+  if ($tv2_use_database == 1)
     {
       // use SQL
       if ($v)

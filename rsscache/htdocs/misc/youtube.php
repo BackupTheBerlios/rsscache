@@ -40,7 +40,7 @@ youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $use_tor = 0)
     }
   else if ($playlist)
     {
-      $url = 'http://gdata.youtube.com/feeds/base/playlists/'.$playlist.'?max-results='.$maxresults;
+      $url = 'http://gdata.youtube.com/feeds/base/playlists/'.$playlist.'?alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
     }
   else
     {

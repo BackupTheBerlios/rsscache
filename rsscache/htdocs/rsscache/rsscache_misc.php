@@ -100,7 +100,8 @@ tv2_f_localwiki ()
         )
 */
 function
-tv2_stripdir ($url, $start, $num)
+//tv2_stripdir ($url, $start, $num)
+tv2_stripdir ($url)
 {
   global $tv2_tor_enabled;
 
@@ -124,11 +125,11 @@ tv2_stripdir ($url, $start, $num)
     foreach ($html->find('a') as $tag)
       if (widget_media_demux ($url.'/'.$tag->href) != 0)
         {
-          if ($count > $start)
+//          if ($count > $start)
             $v[] = $url.'/'.$tag->href;
           $count++;
-          if ($count - $start > $num)
-            break;
+//          if ($count - $start > $num)
+//            break;
         }
 
   // DEBUG
