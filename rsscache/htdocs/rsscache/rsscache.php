@@ -370,8 +370,20 @@ if (file_exists ('site_config.xml'))
             .'<span class="tv2_site">'
             .widget_cms (NULL, $site_config_xml, NULL, 4)
             .'</span>'
-            .'&nbsp;&nbsp;'
-            .widget_gecko_install ();
+            .'&nbsp;&nbsp;';
+    // form
+    $p .= '<form method="GET" action="?'.http_build_query (array (), true).'"'
+//         .' name="tv2_search_form"'
+         .' style="display:inline;">';
+
+    // select menu
+    $p .= tv2_select ($c, $site_config_xml);
+ 
+    $p .= '&nbsp;&nbsp;';
+    $p .= '</form>';
+
+    $p .= ''
+         .widget_gecko_install ();
   }
 
   // logo  

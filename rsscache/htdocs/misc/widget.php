@@ -324,6 +324,7 @@ widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
 
   // categories  
   for ($i = 0; isset ($config_xml->category[$i]); $i++)
+    if ($config_xml->category[$i]->select < 2)
     {
 //  echo '<pre><tt>';
 //print_r ($config_xml->category[$i]).'<br>';
@@ -413,6 +414,8 @@ widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1)
 {
   $p = '';
   $p .= '<select name="'.$name.'"'.($active == 1 ? '' : ' disabled="disabled"');
+
+  $p .= '' 
 /*
   if ($selected)
     for ($i = 0; isset ($a[$i]); $i++)
@@ -424,12 +427,15 @@ widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1)
                  .'padding-left:18px;'
                  .'"'
 //                 .' onhover="javascript:this.style.backgroundImage=\'none\';"'
+*/
                  .' onchange="javascript:this.form.submit();"'
 ;
+/*
             break;
           }
 */
   $p .= '>';
+
   $sel = 0;
   for ($i = 0; isset ($a[$i]); $i++)
     {
