@@ -390,7 +390,119 @@ tv2_sql_leftjoin_func ($tv2_sql_db, $q, $filter)
 
 
 function
-tv2_sql ($c, $q, $f, $v, $start, $num)
+tv2_sql_extern ($q, $start, $num)
+{
+  // like tv2_sql() but uses the youtube db instead ;)
+  global $tv2_feature;
+  global $tv2_tor_enabled;
+
+  $v_segments = get_request_value ('v_segments');
+  $v_textarea = get_request_value ('v_textarea');
+  $v_user = get_request_value ('v_user');
+  $v_playlist_id = get_request_value ('v_playlist_id');
+  $v_stripdir = get_request_value ('v_stripdir');
+
+  $links = '';
+
+  // links or playlist file contents
+  if ($v_textarea)
+    $links .= ' '.$v_textarea;
+
+  // search
+  if ($q)
+      {
+        $s = $q;
+        if ($v_segments)
+          if ($v_segments != '')
+            {
+              $s .= ' +(part OR pl';
+              for ($i = 0; $i < 20; $i++)
+                $s .= ' OR "'.($i + 1).'/"';
+              $s .= ')';
+            }
+        $rss = youtube_get_rss ($s, NULL, NULL, $tv2_tor_enabled);
+
+        for ($i = 0; isset ($rss->channel->item[$start + $i]) && $i < $num; $i++)
+          if (isset ($rss->channel->item[$start + $i]->link))
+            $links .= ' '.$rss->channel->item[$start + $i]->link;
+      }
+
+  if ($v_user)
+      {
+        $rss = youtube_get_rss ($s, trim ($v_user), NULL, $tv2_tor_enabled);
+
+        for ($i = 0; isset ($rss->channel->item[$start + $i]) && $i < $num; $i++)
+          if (isset ($rss->channel->item[$start + $i]->link))
+            $links .= ' '.$rss->channel->item[$start + $i]->link;
+      }
+
+  if ($v_playlist_id)
+      {
+        $rss = youtube_get_rss ('', NULL, trim ($v_playlist_id), $tv2_tor_enabled);
+
+        for ($i = 0; isset ($rss->channel->item[$start + $i]) && $i < $num; $i++)
+          if (isset ($rss->channel->item[$start + $i]->link))
+            $links .= ' '.$rss->channel->item[$start + $i]->link;
+      }
+
+  if ($v_stripdir)
+      {
+        $a = tv2_stripdir ($v_stripdir, $start, $num);
+        $links .= implode ($a, ' ');
+      }
+
+  // normalize youtube links
+  $links = trim (strip_tags (urldecode ($links)));
+  if ($links == '')
+    $links = $tv2_feature;
+  $a = explode (' ', urldecode ($links));
+  $v = array ();
+  for ($i = 0; isset ($a[$i]); $i++)
+    {
+      $p = trim ($a[$i]);
+      if ($p != '')
+        {
+          $p = youtube_get_videoid ($p);
+          if ($p != '')
+            $v[] = 'http://www.youtube.com/watch?v='.$p;
+        }
+    }
+
+  if ($v_stripdir)
+      {
+        $a = tv2_stripdir ($v_stripdir, $start, $num);
+        for ($i = 0; isset ($a[$start + $i]) && $i < $num; $i++)
+          $v[] = $a[$start + $i];
+      }
+
+/*
+  $sql_query_s .= 'SELECT'
+                  .' rsstool_url,'
+                  .' rsstool_url_crc32,'
+                  .' rsstool_title,'
+                  .' rsstool_desc,'
+                  .' rsstool_dl_date,'
+                  .' rsstool_date,'
+                  .' tv2_category,'
+                  .' tv2_moved,'
+                  .' rsstool_media_duration,'
+                  .' rsstool_keywords'
+//                  .' tv2_votes,'
+//                  .' tv2_score'
+                  .' FROM rsstool_table';
+*/
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  echo $video_s;
+//  print_r ($v);
+
+  return $v;
+}
+
+
+function
+tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
 {
   global $tv2_sql_db,
          $tv2_isnew,
@@ -403,6 +515,22 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
 //  $debug = 1;
 
   $q = get_request_value ('q'); // we ignore the arg and make sure we get an unescaped one
+
+  // extern SQL
+  if ($extern == 1)
+    {
+      $d = tv2_sql_extern ($q, $start, $num);
+
+//  $d = tv2_sql_normalize ($tv2_sql_db, $d, $c, $f);
+
+  // DEBUG
+//  echo '<tt><pre>';
+//  print_r ($d);
+
+      return $d;
+    }
+
+  // local SQL
   $q = $tv2_sql_db->sql_stresc ($q);
   $c = $tv2_sql_db->sql_stresc ($c);
   $v = $tv2_sql_db->sql_stresc ($v);
@@ -499,134 +627,6 @@ tv2_sql ($c, $q, $f, $v, $start, $num)
   return $d;
 }
 
-
-function
-tv2_extern_sql ()
-//tv2_extern_sql ($c, $q, $f, $v, $start, $num)
-//tv2_extern_sql ($channel, $search, $playlist, $start, $num)
-{
-  // like tv2_sql() but uses the youtube db instead ;)
-  global $tv2_feature;
-  global $tv2_tor_enabled;
-  global $tv2_maxresults;
-  global $start, $num;
-
-//  $q = get_request_value ('q'); // we ignore the arg and make sure we get an unescaped one
-//  $q = $tv2_sql_db->sql_stresc ($q);
-//  $c = $tv2_sql_db->sql_stresc ($c);
-//  $v = $tv2_sql_db->sql_stresc ($v);
-//  $start = $tv2_sql_db->sql_stresc ($start);
-//  $num = $tv2_sql_db->sql_stresc ($num);
-
-  $v_textarea = get_request_value ('v_textarea');
-  $v_search = get_request_value ('v_search');
-  $v_segments = get_request_value ('v_segments');
-  $v_user = get_request_value ('v_user');
-  $v_playlist_id = get_request_value ('v_playlist_id');
-  $v_stripdir = get_request_value ('v_stripdir');
-
-  $videos_s = '';
-
-  if ($v_textarea)
-    if ($v_textarea != '')
-      $videos_s .= ' '.$v_textarea;
-
-  if ($v_search)
-    if ($v_search != '')
-      {
-        $s = $v_search;
-        if ($v_segments)
-          if ($v_segments != '')
-            {
-              $s .= ' +(part OR pl';
-              for ($i = 0; $i < 20; $i++)
-                $s .= ' OR "'.($i + 1).'/"';
-              $s .= ')';
-            }
-
-        $rss = youtube_get_rss ($s, NULL, NULL, $tv2_tor_enabled);
-
-        for ($i = 0; isset ($rss->channel->item[$i]) && $i < $tv2_maxresults; $i++)
-          if (isset ($rss->channel->item[$i]->link))
-            $videos_s .= ' '.$rss->channel->item[$i]->link;
-      }
-
-  if ($v_user)
-    if ($v_user != '')
-      {
-        $rss = youtube_get_rss ($s, trim ($v_user), NULL, $tv2_tor_enabled);
-
-        for ($i = 0; isset ($rss->channel->item[$i]) && $i < $tv2_maxresults; $i++)
-          if (isset ($rss->channel->item[$i]->link))
-            $videos_s .= ' '.$rss->channel->item[$i]->link;
-      }
-
-  if ($v_playlist_id)
-    if ($v_playlist_id != '')
-      {
-        $rss = youtube_get_rss ('', NULL, trim ($v_playlist_id), $tv2_tor_enabled);
-
-        for ($i = 0; isset ($rss->channel->item[$i]) && $i < $tv2_maxresults; $i++)
-          if (isset ($rss->channel->item[$i]->link))
-            $videos_s .= ' '.$rss->channel->item[$i]->link;
-      }
-
-  if ($v_stripdir)
-    if ($v_stripdir != '')
-      {
-        $a = tv2_stripdir ($v_stripdir, $start, $num);
-        $videos_s .= implode ($a, ' ');
-      }
-
-  // normalize youtube links
-  $v = array ();
-  $videos_s = trim (strip_tags (urldecode ($videos_s)));
-  if ($videos_s == '')
-    $videos_s = $tv2_feature;
-  $a = explode (' ', urldecode ($videos_s));
-  for ($i = 0; isset ($a[$i]); $i++)
-    {
-      $p = trim ($a[$i]);
-      if ($p != '')
-        {
-          $p = youtube_get_videoid ($p);
-          if ($p != '')
-            $v[] = 'http://www.youtube.com/watch?v='.$p;
-        }
-    }
-
-  if ($v_stripdir)
-    if ($v_stripdir != '')
-      {
-        $a = tv2_stripdir ($v_stripdir, $start, $num);
-        for ($i = $start; isset ($a[$i]) && ($i - $start < $num) ; $i++)
-          $v[] = $a[$i];
-      }
-
-/*
-  $sql_query_s .= 'SELECT'
-                  .' rsstool_url,'
-                  .' rsstool_url_crc32,'
-                  .' rsstool_title,'
-                  .' rsstool_desc,'
-                  .' rsstool_dl_date,'
-                  .' rsstool_date,'
-                  .' tv2_category,'
-                  .' tv2_moved,'
-                  .' rsstool_media_duration,'
-                  .' rsstool_keywords'
-//                  .' tv2_votes,'
-//                  .' tv2_score'
-                  .' FROM rsstool_table';
-*/
-
-  // DEBUG
-//  echo '<pre><tt>';
-//  echo $video_s;
-//  print_r ($v);
-
-  return $v;
-}
 
 
 

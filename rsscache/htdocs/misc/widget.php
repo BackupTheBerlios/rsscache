@@ -924,13 +924,6 @@ widget_textarea ($name, $s = '', $cols = 80, $rows = 10, $disabled = 0)
 } 
 
 
-function 
-widget_ckeditor ($name, $s = '', $cols = 80, $rows = 10) 
-{
-  return widget_textarea ($name, $s, $cols, $rows, 0);
-} 
-
-
 /*
   In PHP versions earlier than 4.1.0, $HTTP_POST_FILES should be used instead
   of $_FILES. Use phpversion() for version information.

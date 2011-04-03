@@ -56,9 +56,9 @@ tv2_body_item ($i, $d_array)
   global $config;
   global $f, $c, $q, $v, $start, $num, $captcha;
 
-  $p = '';
-
   $d = $d_array[$i];
+
+  $p = '';
 
   // output
   $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
@@ -200,9 +200,10 @@ tv2_body_player ($i, $d_array)
   global $config;
   global $f, $c, $q, $v, $start, $num, $captcha;
 
+  $d = $d_array[$i];
+
   $p = '';
 
-      $d = $d_array[$i];
       // output
       $d_category = config_xml_by_category (strtolower ($d['tv2_moved'])); // for logo
     
@@ -362,6 +363,11 @@ tv2_body ()
 
   $p = '';
 
+
+
+
+  // body header
+
 // site links at the top
 if (file_exists ('site_config.xml'))
   {
@@ -419,37 +425,57 @@ if (file_exists ('site_config.xml'))
   $p .= '<br>'  
 //       .'<br>'  
 ;  
+
+  $p .= '<div style="display:inline;">';
+
+  // logo
+//  $p .= tv2_logo_func ();
+
+  if ($f != 'mirror')
+    {
+      if ($tv2_enable_search)
+        {
+          $p .= '&nbsp;<nobr>';
+          $p .= tv2_search_form ();
+          $p .= '</nobr>';
+        }
+    }
+
+  $p .= '</div>';
+
+
+
+
+
+  // body main
+
   // category   
   $category = config_xml_by_category (strtolower ($c));
+  $d_array = NULL;
 
-  // embed another page
   if (isset ($category->local))
-    return $p.tv2_f_local ();
+    $p .= tv2_f_local ();
   else if (isset ($category->iframe))
-    return $p.tv2_f_iframe ();
+    $p .= tv2_f_iframe ();
   else if (isset ($category->proxy))
-    return $p.tv2_f_proxy ();
+    $p .= tv2_f_proxy ();
   else if (isset ($category->wiki))
-    return $p.tv2_f_wiki ();
+    $p .= tv2_f_wiki ();
   else if (isset ($category->localwiki))
-    return $p.tv2_f_localwiki ();
+    $p .= tv2_f_localwiki ();
+  else if (isset ($category->index) || isset ($category->stripdir))
+    {
+      $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
+      $p .= tv2_player_multi ($d_array);
+//      return $p;
+    }
   else if ($f == 'extern')
-    return $p.tv2_f_extern ();
-
-  if ($captcha)
-    if (widget_captcha_check () || islocalhost ())
-      {
-        tv2_sql_move ($v, $c);
-        $v = NULL;
-      }
-
-//  if (isset ($category->index) || isset ($category->stripdir))
-//    {
-//      $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
-//      return $p.tv2_player_multi ($d_array);
-//    }
-//  else
-  if ($tv2_use_database == 1)
+    {
+      $s = tv2_search_extern ($d_array);
+      $p .= widget_collapse ('Advanced search', $s, 1);
+      $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num, 1); // 1 == extern SQL
+    }
+  else if ($tv2_use_database == 1)
     {
       // use SQL
       if ($v)
@@ -459,120 +485,71 @@ if (file_exists ('site_config.xml'))
     }
   else return $p;
 
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($d_array);
-
-/*
-  if ($category->background || $f == 'fullscreen') // background image and fullscreen
+  if ($d_array)
     {
-      $p .= '<style type="text/css">'."\n"
-           .'body {';
+      // DEBUG
+//      echo '<pre><tt>';
+//      print_r ($d_array);
 
-      if ($category->background)
-        $p .= 'background-image:url(\''.$category->background.'\');'
-             .'background-attachment:fixed;'
-             .'background-repeat:no-repeat;'
-             .'background-position:left center;';
-
-      if ($f == 'fullscreen')
-        $p .= 'background-color:#000;';
-
-      $p .= "}\n"
-           .'</style>';
-    }
-*/
-
-  // just fullscreen
-  if ($v)
-    {
-      if (strlen ($tv2_title))
-        $tv2_title .= ' - ';
-      $tv2_title .= $d_array[0]['rsstool_title'];
-
-      if ($f == 'fullscreen')
+      if (isset ($d_array[0]))
         {
-          $p .= tv2_player ($d_array[0])
-               .'<br>';
-          return $p;
+          if ($v)
+            {
+              if (strlen ($tv2_title))
+                $tv2_title .= ' - ';
+              $tv2_title .= $d_array[0]['rsstool_title'];
+            }
+
+          // show page-wise navigation (top)
+          if (!$v && $f != 'mirror')
+            $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
+
+          if (file_exists ('func_config.xml'))
+            {
+              $func_config_xml = simplexml_load_file ('func_config.xml');
+              $p .= ''
+                   .'<div class="tv2_func">'
+                   .widget_cms (NULL, $func_config_xml, http_build_query2 (array (), true), 4)
+                   .'</div>'
+;
+              $p .= '<div class="clear"></div>';
+            }
         }
+      else
+        $p .= '<br><br>:(';
+
+      $p .= '<br>'
+//           .'<br>'
+;
     }
-
-  $p .= '<div style="display:inline;">';
-
-  // logo
-//  $p .= tv2_logo_func ();
-
-  if ($f != 'mirror')
-    {
-      // search
-      if ($tv2_enable_search)
-        {
-          $p .= '&nbsp;<nobr>';
-          $p .= tv2_search_form ();
-          $p .= '</nobr>';
-        }
-    
-//      // stats and version
-//      $p .= '<br>'.tv2_stats ();
-    }
-
-  $p .= '</div>';
-
-  // show stats of RSS downloads
-  if ($f == 'stats')
+  else if ($f == 'stats') // show stats of RSS downloads
     {
       $p .= '<br>'
            .'<br>'
 ;
       $p .= tv2_f_stats ();
-
-      return $p;
     }
-
-  // show page-wise navigation (top)
-  if (!$v && $f != 'mirror')
-    $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
-
-  if (file_exists ('func_config.xml'))
+  else if ($f == 'fullscreen') // just fullscreen
     {
-      $func_config_xml = simplexml_load_file ('func_config.xml');
-      $p .= ''
-           .'<div class="tv2_func">'
-           .widget_cms (NULL, $func_config_xml, http_build_query2 (array (), true), 4)
-           .'</div>'
-;
-      $p .= '<div class="clear"></div>';
+      $p .= tv2_player ($d_array[0])
+           .'<br>';
     }
-
-  if (sizeof ($d_array) == 0)
-    $p .= '<br><br>:(';
-
-  $p .= '<br>'
-//       .'<br>'
-;
-
-  // show as cloud
-  if ($f == 'cloud' || $f == 'wall')
+  else if ($f == 'cloud' || $f == 'wall') // show as cloud
     {
       for ($i = 0; isset ($d_array[$i]); $i++)
-        {
-          $d = $d_array[$i];
-          $p .= tv2_thumbnail ($d, 120, 1).' ';
-        }
-
-      return $p;
+        $p .= tv2_thumbnail ($d_array[$i], 120, 1).' ';
     }
-
-  // playlist
-  if ($f == 'playall')
+  else if ($f == 'playall') // playlist
     {
       $p .= tv2_player_playlist ($d_array);
-      return $p;
     }
-
-  // media player
-  if ($v)
+  else if ($f == 'extern')
+    {
+      $p .= tv2_player_multi ($d_array);
+//      for ($i = 0; isset ($d_array[$i]); $i++)
+//        $p .= tv2_body_player ($i, $d_array);
+    }
+  else if ($v)
     {
       $p .= tv2_body_player (0, $d_array);
     }
@@ -591,6 +568,11 @@ if (file_exists ('site_config.xml'))
     }
   $p .= '<br>';
  
+
+
+
+  // body footer
+
   // logo
   $p .= '<nobr>'; 
   $p .= tv2_logo_func ();
@@ -650,6 +632,14 @@ if (!($num))
       $num = $tv2_results;
   }
 
+
+if ($tv2_use_database)
+if ($captcha)
+  if (widget_captcha_check () || islocalhost ())
+    {
+      tv2_sql_move ($v, $c);
+      $v = NULL;
+    }
 
 if ($f == 'read' ||
     $f == 'write')
