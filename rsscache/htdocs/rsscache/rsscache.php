@@ -558,10 +558,10 @@ tv2_body ()
     }
   else if ($f == 'extern')
     {
+      $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num, 1); // 1 == extern SQL
       $s = tv2_search_extern ($d_array);
 //      $p .= widget_collapse ('Advanced search', $s, 0);
       $p .= $s;
-      $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num, 1); // 1 == extern SQL
     }
   else if ($tv2_use_database == 1)
     {

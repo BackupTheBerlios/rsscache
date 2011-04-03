@@ -475,26 +475,8 @@ tv2_sql_extern ($q, $start, $num)
           $v[] = $a[$start + $i];
       }
 
-/*
-  $sql_query_s .= 'SELECT'
-                  .' rsstool_url,'
-                  .' rsstool_url_crc32,'
-                  .' rsstool_title,'
-                  .' rsstool_desc,'
-                  .' rsstool_dl_date,'
-                  .' rsstool_date,'
-                  .' tv2_category,'
-                  .' tv2_moved,'
-                  .' rsstool_media_duration,'
-                  .' rsstool_keywords'
-//                  .' tv2_votes,'
-//                  .' tv2_score'
-                  .' FROM rsstool_table';
-*/
-
   // DEBUG
 //  echo '<pre><tt>';
-//  echo $video_s;
 //  print_r ($v);
 
   return $v;
