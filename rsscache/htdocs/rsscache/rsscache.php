@@ -426,14 +426,13 @@ if (file_exists ('site_config.xml'))
   // logo
 //  $p .= tv2_logo_func ();
 
-  if ($f != 'mirror')
+  if ($f != 'mirror' && 
+      $tv2_enable_search &&
+      $tv2_use_database)
     {
-      if ($tv2_enable_search)
-        {
-          $p .= '&nbsp;<nobr>';
-          $p .= tv2_search_form ();
-          $p .= '</nobr>';
-        }
+      $p .= '&nbsp;<nobr>';
+      $p .= tv2_search_form ();
+      $p .= '</nobr>';
     }
 
   $p .= '</div>';
@@ -562,6 +561,8 @@ tv2_body ()
       $s = tv2_search_extern ($d_array);
 //      $p .= widget_collapse ('Advanced search', $s, 0);
       $p .= $s;
+      $p .= '<br>';
+      $p .= '<br>';
     }
   else if ($tv2_use_database == 1)
     {
