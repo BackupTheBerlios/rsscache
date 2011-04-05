@@ -398,8 +398,11 @@ widget_select_option ($icon, $value, $label, $tooltip, $selected = 0)
          .'padding-left:18px;'
           .'"';
 
-  $p .= '>'
-       .$label
+//  $p .= ' onchange="javascript:this.form.submit();"';
+
+  $p .= '>';
+
+  $p .= $label
        .'</option>';
 
   return $p;
@@ -410,30 +413,14 @@ widget_select_option ($icon, $value, $label, $tooltip, $selected = 0)
   $a = array (array ('value', 'label', 'logo.png'))
 */
 function
-widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1)
+widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1, $do_submit = 0)
 {
   $p = '';
   $p .= '<select name="'.$name.'"'.($active == 1 ? '' : ' disabled="disabled"');
 
-  $p .= '' 
-/*
-  if ($selected)
-    for ($i = 0; isset ($a[$i]); $i++)
-      if ($a[$i][2])
-        if (!strcasecmp ($a[$i][0], $selected))
-          {
-            $p .= ' style="background-image:url('.$a[$i][2].');'
-                 .'background-repeat:no-repeat;background-position:left;'
-                 .'padding-left:18px;'
-                 .'"'
-//                 .' onhover="javascript:this.style.backgroundImage=\'none\';"'
-*/
-                 .' onchange="javascript:this.form.submit();"'
-;
-/*
-            break;
-          }
-*/
+  if ($do_submit == 1)
+    $p .= ' onchange="javascript:this.form.submit();"';
+
   $p .= '>';
 
   $sel = 0;
