@@ -180,8 +180,8 @@ widget_embed_iframe ($src, $target = '_blank')
 //       .' seamless="seamless"'
 //       .' scrolling="no"'
        .' width="100%"'
-//       .' height="90%"'
-       .' height="2000"'
+       .' height="75%"'
+//       .' height="2000"'
        .' marginheight="0" marginwidth="0" frameborder="0" src="'
        .$url
        .'"></iframe>';

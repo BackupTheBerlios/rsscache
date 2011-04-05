@@ -382,10 +382,10 @@ if (file_exists ('site_config.xml'))
  
     $p .= '&nbsp;&nbsp;';
     $p .= '</form>';
-
-    $p .= ''
-         .widget_gecko_install ();
   }
+
+  $p .= ''
+       .widget_gecko_install ();
 
   // logo  
 //  $p .= '<div style="float:right;">';
@@ -427,12 +427,15 @@ if (file_exists ('site_config.xml'))
 //  $p .= tv2_logo_func ();
 
   if ($f != 'mirror' && 
-      $tv2_enable_search &&
-      $tv2_use_database)
+      $tv2_enable_search)
     {
-      $p .= '&nbsp;<nobr>';
       $p .= tv2_search_form ();
-      $p .= '</nobr>';
+      $p .= '<br>';
+      $s = tv2_search_extern ($d_array);
+//      $p .= widget_collapse ('Advanced search', $s, 0);
+      $p .= $s;
+      $p .= '<br>';
+      $p .= '<br>';
     }
 
   $p .= '</div>';
@@ -473,18 +476,18 @@ tv2_body_footer ()
   $p = ''; 
 
   // logo
-  $p .= '<nobr>'; 
-  $p .= tv2_logo_func ();
-  $p .= '</nobr>';
+//  $p .= '<nobr>'; 
+//  $p .= tv2_logo_func ();
+//  $p .= '</nobr>';
 
   if ($f != 'mirror')  
     {
       // search
       if ($tv2_enable_search)
         {
-          $p .= '&nbsp;<nobr>';
-          $p .= tv2_search_form ();
-          $p .= '</nobr>';  
+//          $p .= '&nbsp;<nobr>';
+//          $p .= tv2_search_form ();
+//          $p .= '</nobr>';  
         }
 
       // show page-wise navigation (bottom)
@@ -531,13 +534,26 @@ tv2_body ()
 
   $p = '';
 
-  $p .= tv2_body_header ();
-
-  // body main
-
   // category   
   $category = config_xml_by_category (strtolower ($c));
   $d_array = NULL;
+
+  if (isset ($category->index) || isset ($category->stripdir))
+    {
+      $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
+    }
+  else if ($f == 'extern')
+    {
+      $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num, 1); // 1 == extern SQL
+    }
+  else if ($tv2_use_database == 1)
+    {
+      // use SQL
+      if ($v)
+        $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
+      else
+        $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
+    }
 
   if (isset ($category->local))
     $p .= tv2_f_local ();
@@ -551,29 +567,7 @@ tv2_body ()
     $p .= tv2_f_localwiki ();
   else if ($f == 'stats') // show stats of RSS downloads
     $p .= tv2_f_stats ();
-  else if (isset ($category->index) || isset ($category->stripdir))
-    {
-      $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
-    }
-  else if ($f == 'extern')
-    {
-      $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num, 1); // 1 == extern SQL
-      $s = tv2_search_extern ($d_array);
-//      $p .= widget_collapse ('Advanced search', $s, 0);
-      $p .= $s;
-      $p .= '<br>';
-      $p .= '<br>';
-    }
-  else if ($tv2_use_database == 1)
-    {
-      // use SQL
-      if ($v)
-        $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
-      else
-        $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
-    }
-
-  if ($d_array)
+  else if ($d_array)
     {
       // DEBUG
 //      echo '<pre><tt>';
@@ -638,8 +632,6 @@ tv2_body ()
     }
 
   $p .= '<br>';
-
-  $p .= tv2_body_footer ();
 
   return $p;
 }
@@ -800,13 +792,15 @@ if (file_exists ('images/captcha/'))
 
 $body = tv2_body ();
 $template_replace = array (
-  '<!-- parse:title -->'    => $tv2_title,
-  '<!-- parse:icon -->'     => misc_head_tags ($tv2_icon, 0, $tv2_charset),
-  '<!-- parse:head_seo -->' => misc_seo_description ($body),
-  '<!-- parse:body -->'     => $body,
-  '<!-- parse:body_tag -->' => $tv2_body_tag,
-  '<!-- parse:head_tag -->' => $tv2_head_tag,
-  '<!-- parse:body_end -->' => tv2_include_end (),
+  '<!-- parse:title -->'       => $tv2_title,
+  '<!-- parse:icon -->'        => misc_head_tags ($tv2_icon, 0, $tv2_charset),
+  '<!-- parse:head_seo -->'    => misc_seo_description ($body),
+  '<!-- parse:body_header -->' => tv2_body_header (),
+  '<!-- parse:body -->'        => $body,
+  '<!-- parse:body_footer -->' => tv2_body_footer (),
+  '<!-- parse:body_tag -->'    => $tv2_body_tag,
+  '<!-- parse:head_tag -->'    => $tv2_head_tag,
+  '<!-- parse:body_end -->'    => tv2_include_end (),
 );
 
 if ($tv2_rss_head)  
