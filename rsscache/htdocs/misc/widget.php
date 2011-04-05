@@ -392,11 +392,12 @@ widget_select_option ($icon, $value, $label, $tooltip, $selected = 0)
        .($tooltip ? ' title="'.$tooltip.'"' : '')
        .' value="'.$value.'"';
 
-  if ($icon)
+  if ($icon != '')
     $p .= ' style="background-image:url('.$icon.');'
          .'background-repeat:no-repeat;background-position:left;'
          .'padding-left:18px;'
-          .'"';
+         .'height:16px;'
+         .'"';
 
 //  $p .= ' onchange="javascript:this.form.submit();"';
 
