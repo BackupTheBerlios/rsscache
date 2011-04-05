@@ -42,6 +42,7 @@ $tv2_download_video = 0; // show link for downloading videos
 $tv2_buttons_only = 0;   // use only logos as category buttons
 $tv2_enable_search = 1; // allow users to search db?
 $tv2_related_search = 0; // make use of related searches (requires keywords)
+$tv2_use_dl_date = 1;
 
 // player settings
 //$tv2_player_w = 400; // max. width
