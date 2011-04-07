@@ -211,7 +211,7 @@ youtube_thumbnail ($url, $thumbnails_path, $use_tor = 0)
     return -1;
 
 //  for ($i = 0; $i < 3; $i++)
-$i = 0;
+  for ($i = 0; $i < 1; $i++)
     {
       // download thumbnail
       $url = 'http://i.ytimg.com/vi/'.$s.'/'.($i + 1).'.jpg';
