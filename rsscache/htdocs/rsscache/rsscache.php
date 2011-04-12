@@ -639,7 +639,7 @@ tv2_body ()
 
 // main ()
 
-if ($tv2_use_database)
+if ($tv2_use_database == 1)
   tv2_sql_open ();
 $config = config_xml ();
 $f = get_request_value ('f'); // function
@@ -662,7 +662,7 @@ if (!($num))
   }
 
 
-if ($tv2_use_database)
+if ($tv2_use_database == 1)
 if ($captcha)
   if (widget_captcha_check () || islocalhost ())
     {
@@ -694,7 +694,7 @@ if ($f == 'read' ||
 //    header ('refresh: 0; url='.get_cookie ('rw'));
 //    header ('location:'.get_cookie ('rw'));
 
-    if ($tv2_use_database)
+    if ($tv2_use_database == 1)
       tv2_sql_close ();
 
     exit;
@@ -709,12 +709,12 @@ if ($f == 'fullscreen')
 */
 
 // RSS only
+    if ($tv2_use_database == 1)
 if ($f == 'rss')
   {
     $d = tv2_sql ($c, $q, $f, NULL, $start, $num);
     echo tv2_rss ($d);
 
-    if ($tv2_use_database)
       tv2_sql_close ();
 
     exit;
@@ -722,12 +722,12 @@ if ($f == 'rss')
 
 
 // sitemap only
+    if ($tv2_use_database == 1)
 if ($f == 'sitemap')
   {
 //    $d = tv2_sql ($c, $q, $f, NULL, $start, $num);
     echo tv2_sitemap ($d);
 
-    if ($tv2_use_database)
       tv2_sql_close ();
 
     exit;
@@ -735,11 +735,11 @@ if ($f == 'sitemap')
 
 
 // robots.txt only
+    if ($tv2_use_database == 1)
 if ($f == 'robots')
   {
     echo tv2_robots ();
 
-    if ($tv2_use_database)
       tv2_sql_close ();
 
     exit;
@@ -752,6 +752,7 @@ if ($f == 'mirror')
   }
 
 
+    if ($tv2_use_database == 1)
 if ($memcache_expire > 0)
   {
     $memcache = new Memcache;
@@ -769,7 +770,6 @@ if ($memcache_expire > 0)
 
             echo $p;
 
-            if ($tv2_use_database)
               tv2_sql_close ();
 
             exit;
@@ -779,7 +779,6 @@ if ($memcache_expire > 0)
       {
         echo 'ERROR: could not connect to memcached';
 
-        if ($tv2_use_database)
           tv2_sql_close ();
 
         exit; 
@@ -820,7 +819,7 @@ if ($use_gzip == 1)
   echo_gzip ($p);
 else echo $p;
 
-if ($tv2_use_database)
+    if ($tv2_use_database == 1)
   tv2_sql_close ();
 
 // use memcache
