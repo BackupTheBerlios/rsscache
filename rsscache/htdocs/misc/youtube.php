@@ -104,10 +104,7 @@ function
 youtube_download_single ($video_id, $use_tor = 0, $debug = 0)
 {
   // normalize
-  if (strpos ($video_id, '?v='))
-    $video_id = substr ($video_id, strpos ($video_id, '?v=') + 3);
-  if (strpos ($video_id, '&'))
-    $video_id = substr ($video_id, 0, strpos ($video_id, '&'));
+  $video_id = youtube_get_videoid ($video_id);
 
   // DEBUG
 //  echo $video_id;
@@ -154,7 +151,8 @@ youtube_download_single ($video_id, $use_tor = 0, $debug = 0)
 
   $a = array_merge ($a, $b);
 
-  $url = urldecode ($b[0]);
+//  $url = urldecode ($b[0]); // high quality
+  $url = urldecode ($b[max (0, count ($b) - 1)]); // low quality
   $url = substr ($url, strrpos ($url, 'http://'));
   $a['video_url'] = $url;
 
