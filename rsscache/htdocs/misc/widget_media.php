@@ -368,6 +368,38 @@ http://www.youtube.com/v/<somecode>
 }
 
 
+function
+widget_video_justintv ($video_url, $width=400, $height=300, $autoplay = 0, $hq = 0, $loop = 0)
+{
+/*
+<object type="application/x-shockwave-flash" height="300" width="400" id="live_embed_player_flash" data="http://www.justin.tv/widgets/live_embed_player.swf?channel=cybersportsnetwork" bgcolor="#000000">
+<param name="allowFullScreen" value="true" />
+<param name="allowScriptAccess" value="always" />
+<param name="allowNetworking" value="all" />
+<param name="movie" value="http://www.justin.tv/widgets/live_embed_player.swf" />
+<param name="flashvars" value="channel=cybersportsnetwork&auto_play=false&start_volume=25" />
+</object>
+*/
+  $channel = 'cybersportsnetwork';
+  $o = array (
+    array ('type', 'application/x-shockwave-flash'),  
+    array ('width', $width),  
+    array ('height', $height),
+    array ('id', 'live_embed_player_flash'),
+    array ('data', 'http://www.justin.tv/widgets/live_embed_player.swf?channel='.$channel),
+  );
+  $p = array (
+    array ('movie', $url),
+//    array ('allowFullScreen', 'true'),
+//    array ('allowScriptAccess', 'always'),
+      array ('allowNetworking', 'all'),
+      array ('movie', 'http://www.justin.tv/widgets/live_embed_player.swf'),
+      array ('flashvars', 'channel='.$channel.'&auto_play=false&start_volume=25'),
+  );
+
+  return widget_media_object_func ($o, $p, NULL);
+}
+
 
 function
 widget_video_dailymotion ($video_url, $width=420, $height=336, $autoplay = 0, $hq = 0, $loop = 0)
