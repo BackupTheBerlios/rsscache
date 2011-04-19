@@ -43,6 +43,8 @@ $tv2_buttons_only = 0;   // use only logos as category buttons
 $tv2_enable_search = 1; // allow users to search db?
 $tv2_related_search = 0; // make use of related searches (requires keywords)
 $tv2_use_dl_date = 1;
+$tv2_item_ttl = 1000; // time to life of an item in the db (in days)
+
 
 // player settings
 //$tv2_player_w = 400; // max. width

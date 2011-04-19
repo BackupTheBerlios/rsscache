@@ -770,6 +770,18 @@ widget_video_liveleak ($video_url, $width=450, $height=370, $autoplay = 0, $hq =
                         # [metacafe] By JockeTF.
 <embed src="http://www.metacafe.com/fplayer/\\1.swf" width="400" height="345" wmode="transparent" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> </embed>';
 
+<div style="background:#000000;width:440px;height:272px">
+<embed flashVars="playerVars=showStats=yes|autoPlay=no|videoTitle=Study: Indoor Marijuana Cultivation Bad for the Environment" src="http://www.metacafe.com/fplayer/6274472/study_indoor_marijuana_cultivation_bad_for_the_environment.swf" width="440" height="272" wmode="transparent" allowFullScreen="true" allowScriptAccess="always" name="Metacafe_6274472" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash">
+</embed>
+</div>
+<div style="font-size:12px;">
+<a href="http://www.metacafe.com/watch/6274472/study_indoor_marijuana_cultivation_bad_for_the_environment/#">
+Study: Indoor Marijuana Cultivation Bad for the Environment</a>
+ - <a href="http://www.metacafe.com/">
+Funny videos are here</a>
+</div>
+
+
     'funnyordie' => array(
         'url' =>
             'http://www.funnyordie.com/v1/flvideo/fodplayer.swf?file='.
