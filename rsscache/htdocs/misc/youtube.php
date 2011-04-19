@@ -32,15 +32,15 @@ youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $use_tor = 0)
   $maxresults = 50;
   $q = urlencode ($search);
 
-  if ($channel)
+  if ($playlist)
+    {
+      $url = 'http://gdata.youtube.com/feeds/base/playlists/'.$playlist.'?alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
+    }
+  else if ($channel)
     {
       // OLD: http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
 //    http://gdata.youtube.com/feeds/base/users/'.$v_user.'/uploads?max-results=50
       $url = 'http://gdata.youtube.com/feeds/base/videos?author='.$channel.'&q='.$q.'&orderby=published&alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
-    }
-  else if ($playlist)
-    {
-      $url = 'http://gdata.youtube.com/feeds/base/playlists/'.$playlist.'?alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
     }
   else
     {

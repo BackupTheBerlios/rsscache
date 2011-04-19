@@ -755,7 +755,7 @@ time_count ($t_date)
 
 
 function
-misc_get_keywords ($s, $flag = 0) // default = isalnum
+misc_get_keywords ($s, $flag = 0) // default: isalnum()
 {
   $keyword_size = 3;
 
@@ -808,7 +808,7 @@ misc_get_keywords ($s, $flag = 0) // default = isalnum
 
 
 function
-misc_get_keywords_soundex ($s, $flag = 0) // default = isalnum
+misc_get_keywords_soundex ($s, $flag = 0) // default: isalnum()
 {
   $p = misc_get_keywords ($s, $flag);
   $a = explode (' ', $s);
@@ -827,11 +827,13 @@ misc_get_keywords_soundex ($s, $flag = 0) // default = isalnum
 }
 
 
+/*
 function
 misc_get_keywords_html ($s, $flag = 0) // default = isalnum
 {
   return misc_get_keywords ($s, $flag);
 }
+*/
 
 
 function
