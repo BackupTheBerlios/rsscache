@@ -827,15 +827,6 @@ misc_get_keywords_soundex ($s, $flag = 0) // default: isalnum()
 }
 
 
-/*
-function
-misc_get_keywords_html ($s, $flag = 0) // default = isalnum
-{
-  return misc_get_keywords ($s, $flag);
-}
-*/
-
-
 function
 str_similar ($str1, $str2)
 {
