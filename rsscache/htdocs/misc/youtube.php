@@ -151,8 +151,8 @@ youtube_download_single ($video_id, $use_tor = 0, $debug = 0)
 
   $a = array_merge ($a, $b);
 
-//  $url = urldecode ($b[0]); // high quality
-  $url = urldecode ($b[max (0, count ($b) - 1)]); // low quality
+  $url = urldecode ($b[0]); // high quality
+//  $url = urldecode ($b[max (0, count ($b) - 1)]); // low quality
   $url = substr ($url, strrpos ($url, 'http://'));
   $a['video_url'] = $url;
 
