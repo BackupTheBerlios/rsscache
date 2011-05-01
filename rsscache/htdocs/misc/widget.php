@@ -25,7 +25,8 @@ define ('MISC_WIDGET_PHP', 1);
 //phpinfo ();
 //error_reporting(E_ALL | E_STRICT);
 include ('misc.php');
-include ('embed.php');
+if (file_exists ('embed.php'))
+  include ('embed.php');
 
 /*
 CSS: canvas image

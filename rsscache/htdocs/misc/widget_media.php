@@ -23,9 +23,9 @@ if (!defined ('MISC_WIDGET_MEDIA_PHP'))
 {
 define ('MISC_WIDGET_MEDIA_PHP', 1);  
 //error_reporting(E_ALL | E_STRICT);
-include_once ('misc/misc.php');
-include_once ('misc/widget.php');
-include_once ('misc/youtube.php');
+include_once ('misc.php');
+include_once ('widget.php');
+include_once ('youtube.php');
 
 
 function
