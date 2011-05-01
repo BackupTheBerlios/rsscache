@@ -96,6 +96,13 @@ else if ($tv2_subdomain == 'minecraft')
   $tv2_default_category = 'minecraft';
   $tv2_collapsed = 1;   // collapse categories
 }
+else if ($tv2_subdomain == 'counterstrike')
+{
+  $tv2_title = 'Counter-Strike - pwnoogle \:D/';
+  $tv2_logo = 'Counter-Strike <img src="images/counterstrike.png" style="vertical-align:top;" border="0"> <img src="http://plugins.pwnoogle.com/qrcode.php?data=http://minecraft.pwnoogle.com&size=2" style="vertical-align:top;">';
+  $tv2_default_category = 'css';
+  $tv2_collapsed = 1;   // collapse categories
+}
 
   $tv2_videos_s = 'videos';
 $tv2_related_s = 'Find related '.$tv2_videos_s;
