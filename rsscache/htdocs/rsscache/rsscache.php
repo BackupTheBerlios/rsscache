@@ -360,7 +360,6 @@ tv2_body_header ()
          $tv2_collapsed;
   global $config;
   global $f, $c, $q, $v, $start, $num, $captcha;
-  global $d_array;
 
   $p = '';
 
@@ -444,7 +443,7 @@ if (file_exists ('site_config.xml'))
           // show page-wise navigation (top)
 //          if (!$v && $f != 'mirror')
 //            $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
-      if (!$v)
+//      if (!$v)
         {
           $s = ' '.tv2_page ($start, $num, sizeof ($d_array));
           if ($s)
@@ -479,7 +478,6 @@ tv2_body_footer ()
          $tv2_collapsed;
   global $config;
   global $f, $c, $q, $v, $start, $num, $captcha;
-  global $d_array; 
 
   $p = ''; 
 
@@ -539,12 +537,12 @@ tv2_body ()
          $tv2_collapsed;
   global $config;
   global $f, $c, $q, $v, $start, $num, $captcha;
-  global $d_array; 
 
   $p = '';
 
   // category   
   $category = config_xml_by_category (strtolower ($c));
+  $d_array = NULL;
 
   if (isset ($category->index) || isset ($category->stripdir))
     {
@@ -668,7 +666,6 @@ if (!($num))
     else
       $num = $tv2_results;
   }
-$d_array = NULL;
 
 
 if ($tv2_use_database == 1)
