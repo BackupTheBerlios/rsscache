@@ -441,8 +441,14 @@ if (file_exists ('site_config.xml'))
   $p .= '</div>';
 
           // show page-wise navigation (top)
-          if (!$v && $f != 'mirror')
-            $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
+//          if (!$v && $f != 'mirror')
+//            $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
+//      if (!$v)
+        {
+          $s = ' '.tv2_page ($start, $num, sizeof ($d_array));
+          if ($s)
+            $p .= $s;   
+        }
 
   return $p;
 }
@@ -491,7 +497,7 @@ tv2_body_footer ()
         }
 
       // show page-wise navigation (bottom)
-      if (!$v)
+//      if (!$v)
         {
           $s = ' '.tv2_page ($start, $num, sizeof ($d_array));
           if ($s)
