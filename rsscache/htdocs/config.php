@@ -77,7 +77,8 @@ $tv2_include_php = 'videos_include.php';
 $tv2_thumbnails_prefix = '';
   
 
-if ($tv2_subdomain == 'videos' || $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
+if ($tv2_subdomain == 'videos' || $tv2_subdomain == ''  || $tv2_subdomain == 'www' ||
+    $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
 {
   $tv2_title = 'videos - pwnoogle \:D/';
   $tv2_logo = 'pwnoogle <img src="http://plugins.pwnoogle.com/qrcode.php?data=http://videos.pwnoogle.com&size=2" style="vertical-align:top;">';
