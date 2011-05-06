@@ -311,12 +311,24 @@ http_build_query2 ($args = array(), $use_existing_arguments = false)
 function
 random_user_agent ()
 {
-  $ua = array('Mozilla','Opera','Microsoft Internet Explorer','ia_archiver');   
-  $op = array('Windows','Windows XP','Linux','Windows NT','Windows 2000','OSX');
-//  $agent  = $ua[rand(0,count ($ua) - 1)].'/'.rand(1,8).'.'.rand(0,9)
-//           .' ('.$op[rand(0, count ($op) - 1)].' '.rand(1,7).'.'.rand(0,9).'; en-US;)';
-  $agent  = $ua[rand(0,count ($ua) - 1)].'/'.rand(4,8).'.0'
-           .' ('.$op[rand(0, count ($op) - 1)].' '.rand(4,7).'.0; en-US;)';
+  $ua = array (
+    array ('Mozilla', 3, 6),
+    array ('Opera', 4, 6),
+    array ('Microsoft Internet Explorer', 6, 9),
+    array ('ia_archiver', 0, 9),
+);
+  $op = array (
+    array ('Windows', 4, 4),
+    array ('Windows XP', 6, 6),
+    array ('Linux', 2, 2),
+    array ('Windows NT', 4, 4),
+    array ('Windows 2000', 5, 5),
+    array ('OSX', 9, 9),
+);
+  $a =  $ua[rand (0,count ($ua) - 1)];
+  $agent  = $a[0].'/'.rand ($a[1],$a[2]).'.0';
+  $a = $op[rand (0,count ($op) - 1)];
+  $agent .= ' ('.$a[0].' '.rand ($a[1],$a[2]).'.0; en-US;)';
   return $agent;
 }
 
