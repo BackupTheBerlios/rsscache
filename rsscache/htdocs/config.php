@@ -14,6 +14,9 @@ $wget_path = '/usr/bin/torify /usr/bin/wget'; // use TOR for greedy RSS feeds
 //$wget_path = '/usr/bin/wget';
 // rsstool path and options
 $rsstool_path = '/usr/local/bin/rsstool';
+$wget_opts = '-q --limit-rate=100000';
+$rsstool_opts = '--hack-google --hack-event --sbin --shtml';
+
 
 // localization and style
 $tv2_icon = 'images/icon.png';
