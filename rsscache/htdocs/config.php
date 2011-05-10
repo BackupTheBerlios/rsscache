@@ -15,7 +15,7 @@ $wget_path = '/usr/bin/torify /usr/bin/wget'; // use TOR for greedy RSS feeds
 // rsstool path and options
 $rsstool_path = '/usr/local/bin/rsstool';
 $wget_opts = '-q --limit-rate=100000';
-$rsstool_opts = '--hack-google --hack-event --sbin --shtml';
+$rsstool_opts = '--hack-google --sbin --shtml';
 
 
 // localization and style
@@ -45,7 +45,7 @@ $tv2_download_video = 0; // show link for downloading videos
 $tv2_buttons_only = 0;   // use only logos as category buttons
 $tv2_enable_search = 1; // allow users to search db?
 $tv2_related_search = 0; // make use of related searches (requires keywords)
-$tv2_use_dl_date = 1;
+$tv2_use_dl_date = 0;
 $tv2_item_ttl = 1000; // time to life of an item in the db (in days)
 
 

@@ -223,7 +223,7 @@ youtube_thumbnail ($url, $thumbnails_path, $use_tor = 0)
       if (file_exists ($path)) // do not overwrite existing files
         {
           echo 'WARNING: file '.$path.' exists, skipping'."\n";
-          return -1;
+          return 1;
         }
       else
         {
