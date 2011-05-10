@@ -402,7 +402,7 @@ if (file_exists ('site_config.xml'))
     {
       $p .= ''
            .'<div class="tv2_button">'
-           .widget_cms (NULL, $config, NULL, 8)
+           .widget_cms (NULL, $config, http_build_query (array ('f' => $f), false), 8)
            .'</div>'
 ;
     }
@@ -412,7 +412,7 @@ if (file_exists ('site_config.xml'))
       $p .= ''
            .'<div class="tv2_button">'
 //widget_collapse ($label, $s, $collapsed)
-           .widget_collapse ('', widget_cms (NULL, $config, NULL, 8), $collapsed)
+           .widget_collapse ('', widget_cms (NULL, $config, http_build_query (array ('f' => $f), false), 8), $collapsed)
            .'</div>'
 ;
     }
@@ -587,7 +587,7 @@ tv2_body ()
               $func_config_xml = simplexml_load_file ('func_config.xml');
               $p .= ''
                    .'<div class="tv2_func">'
-                   .widget_cms (NULL, $func_config_xml, http_build_query2 (array (), true), 4)
+                   .widget_cms (NULL, $func_config_xml, http_build_query (array ('f' => $f, 'c' => $c), false), 4)
                    .'</div>'
 ;
               $p .= '<div class="clear"></div>';
