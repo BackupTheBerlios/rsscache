@@ -76,17 +76,84 @@ scandir4 ($path, $sort)
 }
 
 
+// recursive scandir
 function
-misc_download ($url, $path)
+scandir5 ($directory, $recursive = true)
 {
-  if (!($img = file_get_contents ($url)))
-    return;
+  $result = array ();
+  $handle =  opendir ($directory);
+  while ($datei = readdir ($handle))
+    if (($datei != '.') && ($datei != '..'))
+      {
+        $file = $directory.$datei;
+        if (is_dir ($file))
+          {
+            if ($recursive)
+              $result = array_merge ($result, scandir5 ($file.'/', $recursive));
+          }
+        else
+          $result[] = $file;
+      }
+  closedir ($handle);
+  return $result;
+}
+
+
+function
+misc_dirmtime ($directory, $recursive = true)
+{
+  $a = scandir5 ($directory, $recursive);
+  $max = 0;
+  foreach ($a as $val)
+    {
+      $v = filemtime ($val);
+      if ($v > $max) $max = $v;
+    }
+  // DEBUG
+//  echo date ('misc_dirmtime(): Y-m-d H:i:s'."\n", $max);
+  return $max;
+}
+
+
+function
+misc_download ($url, $path, $use_tor = 0)
+{
+  if ($use_tor == 1)
+    {
+      if (!($img = tor_get_contents ($url)))
+        return -1;
+    }
+  else if (!($img = file_get_contents ($url)))
+    return -1;
 
   if (!($out = fopen ($path, 'wb')))
-    return;
+    return -1;
  
   fwrite ($out, $img);
   fclose ($out);
+
+  // error
+  if (!file_exists ($path))
+    return -1;
+  return 0;
+}
+
+
+function
+misc_download_noclobber ($url, $path, $use_tor = 0)
+{
+  // DEBUG
+//  echo $url."\n";
+
+  if (file_exists ($path)) // do not overwrite existing files
+    {
+      echo 'WARNING: file '.$path.' exists, skipping'."\n";
+      return 1;
+    }
+  // DEBUG
+//  echo $path."\n";
+
+  return misc_download ($url, $path, $use_tor);
 }
 
 
@@ -410,6 +477,7 @@ file_post_contents ($url, $vars, $timeout = 300)
 }
 
 
+// use torify instead
 function
 tor_get_contents ($url, $tor_proxy_host = '127.0.0.1', $tor_proxy_port = 9050, $timeout = 300)
 {

@@ -27,6 +27,21 @@ require_once ('misc.php');
 
 
 function
+youtube_get_thumbnail_urls ($url)
+{
+  $video_id = youtube_get_videoid ($url);
+  $a = array ();
+  for ($i = 0; $i < 4; $i++)
+    {
+      $a[] = 'http://i.ytimg.com/vi/'.$video_id.'/'.($i + 1).'.jpg';
+    }
+  // DEBUG
+//  print_r ($a);
+  return $a;
+}
+
+
+function
 youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $use_tor = 0)
 {
   $maxresults = 50;
@@ -105,6 +120,9 @@ youtube_download_single ($video_id, $use_tor = 0, $debug = 0)
 {
   // normalize
   $video_id = youtube_get_videoid ($video_id);
+
+  if ($video_id = '')
+    return NULL;
 
   // DEBUG
 //  echo $video_id;
@@ -195,50 +213,6 @@ youtube_download ($video_id, $use_tor = 0, $debug = 0)
     $a[0] = youtube_download_single ($video_id, $use_tor, $debug);
 
   return $a;
-}
-
-
-function
-youtube_thumbnail ($url, $thumbnails_path, $use_tor = 0)
-{
-//      echo 'wget -nc "'.$url.'" -O "'.$filename.'"'."\n"; // -N?
-//      echo 'rm "'.$filename.'"'."\n"; // remove old thumbs
-  $s = youtube_get_videoid ($url);
-
-  if (!strlen ($s))
-    return -1;
-
-//  for ($i = 0; $i < 3; $i++)
-  for ($i = 0; $i < 1; $i++)
-    {
-      // download thumbnail
-      $url = 'http://i.ytimg.com/vi/'.$s.'/'.($i + 1).'.jpg';
-
-      $filename = $s.'_'.($i + 1).'.jpg';
-      $path = $thumbnails_path.'/'.$filename;
-
-      // DEBUG
-//      echo $url."\n";
-
-      if (file_exists ($path)) // do not overwrite existing files
-        {
-          echo 'WARNING: file '.$path.' exists, skipping'."\n";
-          return 1;
-        }
-      else
-        {
-          // DEBUG
-          echo $path."\n";
-        }
-
-      misc_download ($url, $path);
-
-      // skip on error
-      if (!file_exists ($path))
-        break;
-    }
-
-  return 0;
 }
 
 
