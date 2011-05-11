@@ -89,7 +89,7 @@ scandir5 ($directory, $recursive = true)
         if (is_dir ($file))
           {
             if ($recursive)
-              $result = array_merge ($result, scandir5 ($file.'/', $recursive));
+              $result = array_merge ($result, scandir5 ($file.'/'));
           }
         else
           $result[] = $file;
@@ -102,13 +102,13 @@ scandir5 ($directory, $recursive = true)
 function
 misc_dirmtime ($directory, $recursive = true)
 {
-  $a = scandir5 ($directory, $recursive);
+//  $a = scandir5 ($directory, $recursive);
   $max = 0;
-  foreach ($a as $val)
-    {
-      $v = filemtime ($val);
-      if ($v > $max) $max = $v;
-    }
+//  foreach ($a as $val)
+//    {
+//      $v = filemtime ($val);
+//      if ($v > $max) $max = $v;
+//    }
   // DEBUG
 //  echo date ('misc_dirmtime(): Y-m-d H:i:s'."\n", $max);
   return $max;
