@@ -194,7 +194,11 @@ $tv2_collapsed = 2; // collapse categories? 0 == no, 1 == yes, 2 == never
 
 }
 
+
+//required_once ($tv2_subdomain.'_config.php');
+
 }
+
 
 
 ?>
