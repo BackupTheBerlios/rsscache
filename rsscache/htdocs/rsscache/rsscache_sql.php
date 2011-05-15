@@ -577,7 +577,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
       else if ($f == '10_min')
         $sql_query_s .= ' AND ( rsstool_media_duration > 600 )';
       else if ($f == 'cloud' || $f == 'wall')
-        $sql_query_s .= ' AND ( rsstool_url LIKE \'%youtube%\' )'; // TODO: thumbnails of all videos
+//        $sql_query_s .= ' AND ( rsstool_url LIKE \'%youtube%\' )'; // TODO: thumbnails of all videos
+        $sql_query_s .= '';
 
       // sort
       if ($tv2_related_search && $f == 'related') // we sort related by title for playlist

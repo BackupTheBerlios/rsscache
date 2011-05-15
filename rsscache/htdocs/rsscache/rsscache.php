@@ -81,6 +81,7 @@ tv2_body_item ($i, $d_array)
   $s = tv2_link ($d);
   // link as title  
   $p .= '<h2 style="font-size:16px;">';
+//widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   $p .= widget_button (NULL, $s, str_shorten ($d['rsstool_title'], 80), $d['rsstool_title']);
     
   // is new?
@@ -337,7 +338,7 @@ tv2_body_player ($i, $d_array)
 
 
 function
-tv2_body_header ()
+tv2_body_header ($d_array)
 {
   global $tv2_isnew,
          $tv2_player_w,
@@ -449,7 +450,7 @@ if (file_exists ('site_config.xml'))
 
 
 function
-tv2_body_footer ()
+tv2_body_footer ($d_array)
 {
   global $tv2_isnew, 
          $tv2_player_w,
@@ -491,11 +492,9 @@ tv2_body_footer ()
         }
 
       // show page-wise navigation (bottom)
-      if (!$v)
+      if (!$v && $f != 'mirror')
         {
-          $s = ' '.tv2_page ($start, $num, sizeof ($d_array));
-          if ($s)
-            $p .= $s;
+          $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
         }
 
       // stats and version
@@ -508,7 +507,7 @@ tv2_body_footer ()
 
 
 function
-tv2_body ()
+tv2_body ($d_array)
 {
   global $tv2_isnew,
          $tv2_player_w,
@@ -534,26 +533,6 @@ tv2_body ()
 
   $p = '';
 
-  // category   
-  $category = config_xml_by_category (strtolower ($c));
-  $d_array = NULL;
-
-  if (isset ($category->index) || isset ($category->stripdir))
-    {
-      $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
-    }
-  else if ($f == 'extern')
-    {
-      $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num, 1); // 1 == extern SQL
-    }
-  else if ($tv2_use_database == 1)
-    {
-      // use SQL
-      if ($v)
-        $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
-      else
-        $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
-    }
 
   if (isset ($category->local))
     $p .= tv2_f_local ();
@@ -661,6 +640,31 @@ if (!($num))
     else
       $num = $tv2_results;
   }
+
+
+if ($tv2_use_database == 1)
+{
+  // category   
+  $category = config_xml_by_category (strtolower ($c));
+  $d_array = NULL;
+
+  if (isset ($category->index) || isset ($category->stripdir))
+    {
+      $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
+    }
+  else if ($f == 'extern')
+    {
+      $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num, 1); // 1 == extern SQL
+    }
+  else if ($tv2_use_database == 1)
+    {
+      // use SQL
+      if ($v)
+        $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
+      else
+        $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
+    }
+}
 
 
 if ($tv2_use_database == 1)
@@ -790,17 +794,17 @@ $tv2_captcha = '';
 if (file_exists ('images/captcha/'))
   $tv2_captcha = widget_captcha ('images/captcha/');
 
-$body = tv2_body ();
+$body = tv2_body ($d_array);
 $template_replace = array (
   '<!-- parse:title -->'       => $tv2_title,
   '<!-- parse:icon -->'        => misc_head_tags ($tv2_icon, 0, $tv2_charset),
   '<!-- parse:head_seo -->'    => misc_seo_description ($body),
-  '<!-- parse:body_header -->' => tv2_body_header (),
+  '<!-- parse:body_header -->' => tv2_body_header ($d_array),
   '<!-- parse:body -->'        => $body,
-  '<!-- parse:body_footer -->' => tv2_body_footer (),
+  '<!-- parse:body_footer -->' => tv2_body_footer ($d_array),
   '<!-- parse:body_tag -->'    => $tv2_body_tag,
   '<!-- parse:head_tag -->'    => $tv2_head_tag,
-  '<!-- parse:body_end -->'    => tv2_include_end (),
+  '<!-- parse:body_end -->'    => tv2_include_end ($d_array),
 );
 
 if ($tv2_rss_head)  
@@ -813,7 +817,7 @@ if (file_exists ('tv2_index.html'))
 else
   $template = file_get_contents ('tv2/tv2_index.html');
 $p = misc_template ($template, $template_replace);
-$p = misc_template ($p, $tv2_translate['default']);
+$p = misc_template ($p, $tv2_translate[$tv2_language ? $tv2_language : 'default']);
 
 // the _only_ echo
 if ($use_gzip == 1)
