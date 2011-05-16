@@ -642,29 +642,25 @@ if (!($num))
   }
 
 
-if ($tv2_use_database == 1)
-{
-  // category   
-  $category = config_xml_by_category (strtolower ($c));
-  $d_array = NULL;
-
-  if (isset ($category->index) || isset ($category->stripdir))
-    {
-      $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
-    }
-  else if ($f == 'extern')
-    {
-      $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num, 1); // 1 == extern SQL
-    }
-  else if ($tv2_use_database == 1)
-    {
-      // use SQL
-      if ($v)
-        $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
-      else
-        $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
-    }
-}
+$d_array = NULL;
+// category   
+$category = config_xml_by_category (strtolower ($c));
+if (isset ($category->index) || isset ($category->stripdir))
+  {
+    $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
+  }
+else if ($f == 'extern')
+  {
+    $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num, 1); // 1 == extern SQL
+  }
+else if ($tv2_use_database == 1)
+  {
+    // use SQL
+    if ($v)
+      $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
+    else
+      $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
+  }
 
 
 if ($tv2_use_database == 1)
