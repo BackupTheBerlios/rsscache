@@ -118,7 +118,7 @@ else if ($tv2_subdomain == 'counterstrike')
   $tv2_default_category = 'css';
   $tv2_collapsed = 1;   // collapse categories
 }
-else if ($tv2_subdomain == 'lifestyle');
+else if ($tv2_subdomain == 'lifestyle')
 {
 
 // localization and style
