@@ -531,9 +531,10 @@ tv2_body ($d_array)
   global $config;
   global $f, $c, $q, $v, $start, $num, $captcha;
 
+  // category   
+  $category = config_xml_by_category (strtolower ($c));
+
   $p = '';
-
-
   if (isset ($category->local))
     $p .= tv2_f_local ();
   else if (isset ($category->iframe))
