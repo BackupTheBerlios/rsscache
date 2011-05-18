@@ -121,13 +121,15 @@ youtube_download_single ($video_id, $use_tor = 0, $debug = 0)
   // normalize
   $video_id = youtube_get_videoid ($video_id);
 
-  if ($video_id = '')
-    return NULL;
-
   // DEBUG
 //  echo $video_id;
 
-  $url = 'http://www.youtube.com/get_video_info?&video_id='.$video_id;
+  if ($video_id == '')
+    return NULL;
+
+  $url = 'http://www.youtube.com/get_video_info?video_id='.$video_id;
+  // DEBUG
+//  echo $url."\n";
 
 /*
   if (misc_url_exists ($url) === true)
@@ -145,6 +147,9 @@ youtube_download_single ($video_id, $use_tor = 0, $debug = 0)
     $page = tor_get_contents ($url);
   else
     $page = file_get_contents ($url);
+  // DEBUG
+  echo $page;
+
   $a = array ();
   parse_str ($page, $a);
 
