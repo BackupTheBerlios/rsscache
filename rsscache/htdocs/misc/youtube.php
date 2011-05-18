@@ -148,7 +148,7 @@ youtube_download_single ($video_id, $use_tor = 0, $debug = 0)
   else
     $page = file_get_contents ($url);
   // DEBUG
-  echo $page;
+//  echo $page;
 
   $a = array ();
   parse_str ($page, $a);
