@@ -493,9 +493,7 @@ tv2_body_footer ($d_array)
 
       // show page-wise navigation (bottom)
       if (!$v && $f != 'mirror')
-        {
-          $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
-        }
+        $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
 
       // stats and version
       if ($tv2_use_database)
