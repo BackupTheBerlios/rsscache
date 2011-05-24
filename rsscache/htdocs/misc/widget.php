@@ -140,7 +140,8 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
       else
         $p .= ' class="tooltip"';
 //      if (!strncasecmp ($query, 'http://', 7))
-      if (strstr ($query, '://'))
+      if (strstr ($query, '://') ||
+          !strncasecmp ($query, 'mailto:', 7))
         $p .= ' href="'.$query.'"';
       else
         $p .= ' href="?'.$query.'"';
@@ -1199,206 +1200,179 @@ widget_captcha_check ()
 }
 
 
-/*
-  PR (public relation) widgets
-
-UNUSED:  widget_pr_diggit()
-  widget_pr_share()
-UNUSED:  widget_pr_bookmark()
-UNUSED:  widget_pr_startpage()
-UNUSED:  widget_pr_rssfeed()
-UNUSED:  widget_pr_donate()
-  widget_pr_social()
-  widget_pr_berlios ()
-  widget_pr_sf ()
-*/
+// public relation widget
 function
-widget_pr_share ($title, $url)
-{
-  $title = trim ($title);
-  $url = trim ($url);
-  $p = '';
-
-  $p .= '<img src="images/widget/widget_relate_tellafriend.png" border="0">'
-       .'<a href="mailto:?body='
-       .$url
-       .'&subject='
-       .$title
-       .'"'
-       .'>Share</a>'
-;
-  return $p;
-}
-
-
-/*
-function
-widget_pr_diggit ($title, $url)
-{
-  $title = trim ($title);
-  $url = trim ($url);
-  $p = '';
-
-  // digg this button
-  $p .= '<script><!--'."\n"
-       .'digg_url = \''
-       .$url
-       .'\';'
-       .'//--></script>'
-       .'<script type="text/javascript" src="http://digg.com/api/diggthis.js"></script>'
-;
-  return $p;
-}
-
-
-function
-widget_pr_bookmark ($title, $url)
-{
-  $title = trim ($title);
-  $url = trim ($url);
-
-  // add browser bookmark
-  $p = '';
-  $p .= '<img src="images/widget/widget_relate_star.png" border="0">'
-       .'<a href="javascript:js_bookmark (\''
-       .$url
-       .'\', \''
-       .$title
-       .'\');"'
-       .' border="0">Bookmark</a>'
-;
-  return $p;
-}
-
-
-function
-widget_pr_startpage ($title, $url)
-{
-  $title = trim ($title);
-  $url = trim ($url);
-  $p = '';
-
-  // use as startpage
-  $p .= '<img src="images/widget/widget_relate_home.png" border="0">'
-       .'<a href="http://"'
-       .' onclick="this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'http://torrent-finder.com\');"'
-       .'>'
-       .'Make us your start page</a>'
-;
-  return $p;
-}
-
-
-function
-widget_pr_rssfeed ($title, $url, $rss_feed_url)
-{
-  $title = trim ($title);
-  $url = trim ($url);
-  $p = '';
-
-  // generate rss feed
-  $p .= '<img src="images/widget/widget_relate_rss.png" border="0">'
-       .'<a href="'
-       .$rss_feed_url
-       .'"'
-       .' border="0">RSS feed</a>'
-;
-  return $p;
-}
-
-
-function
-widget_pr_donate ($title, $url)
-{
-  $title = trim ($title);
-  $url = trim ($url);
-  $p = '';  
-
-  // donate
-  $p .= '<img src="images/widget/widget_relate_paypal.png" border="0">'
-       .'<a href="http://paypal.com">Donate</a>'
-       .'<pre>* * *   D O N A T I O N S   A R E   A C C E P T E D   * * *</pre><br>'
-       .'<br>'
-       .'<img src="images/widget_relate_refrigator.jpg" border="0"><br>'
-       .'<br>'
-       .'Individuals and companies can now donate funds to support me and keep me from<br>'
-       .'writing proprietary software.<br>'
-       .'<br>'
-       .'Thank You!<br>'
-       .'<br>'
-       .'<pre>* * *   D O N A T I O N S   A R E   A C C E P T E D   * * *</pre><br-->'
-       .'search widget to include in other pages'
-;
-  return $p;
-}
-*/
-
-
-function
-widget_pr_berlios ()
-{
-  return '<a href="http://developer.berlios.de"><img src="http://developer.berlios.de/bslogo.php?group_id=0" width="124" height="32" border="0" alt="BerliOS Logo" /></a><br>';
-}
-
-
-function
-widget_pr_sf ()
-{
-  return '<a href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=0" width="88" height="31" border="0" alt="SourceForge Logo"></a><br>';
-}
-
-
-function
-widget_pr_social ($title, $url)
-{
-  $title = trim ($title);
-  $url = trim ($url);
-  $p = '';
-
-  // social bookmarks
-      $a = array (
-        array ('Digg',			'digg.png', 'http://digg.com/submit?phase=2&url=', '&bodytext=&tags=&title='),
-//        array ('Digg',		'digg.png', 'http://digg.com/submit?phase=2&url=', '&title='),
-        array ('Twitter',               'twitter.png', 'http://twitter.com/home?status=', NULL),
-        array ('Facebook',              'facebook.png', 'http://www.facebook.com/sharer.php?u=', NULL),
-        array ('StumbleUpon',           'stumbleupon.png', 'http://www.stumbleupon.com/submit?url=', '&title=')
-//http://twitter.com/home?status=Hardware+Companies+Team+Up+To+Fight+Mobile+Linux+Fragmentation%3A+http%3A%2F%2Fbit.ly%2Fd9DXNF
-//http://www.facebook.com/sharer.php?u=http://linux.slashdot.org/story/10/06/05/1327228/Hardware-Companies-Team-Up-To-Fight-Mobile-Linux-Fragmentation
-      );
-
-      $i_max = sizeof ($a);
-      for ($i = 0; $i < $i_max; $i++)
-        $p .= '<a href="'
-             .$a[$i][2]
-             .urlencode ($url)
-             .($a[$i][3] ? $a[$i][3].urlencode ($title) : '')
-             .'" alt="Add to '
-             .$a[$i][0]
-             .'" title="Add to '
-             .$a[$i][0]
-             .'">'
-             .'<img src="images/widget/widget_relate_'
-             .$a[$i][1]
-             .'" border="0"></a>';
-
-  return $p; 
-}
-
-
-function
-widget_relate ($title, $url = NULL)
+widget_relate ($title, $url = NULL, $rss_feed_url = NULL)
 {
   if (!($url))
     {
       $url = 'http://'.$_SERVER['HTTP_HOST'];
-      $url .= $_SERVER["REQUEST_URI"];
+      $url .= $_SERVER["REQUEST_URI"];   
 //      if (strncmp ($_SERVER['SCRIPT_NAME'], '/index.', 7))
 //        $url .= $_SERVER['SCRIPT_NAME'];
       $url = urlencode ($url);
     }
+
+  $title = urlencode (trim ($title));
+  $url = urlencode (trim ($url));
+  $relate_config_xml = '<?xml version="1.0" encoding="UTF-8"?>
+<categories>
+  <category>
+    <title>Share</title>
+    <tooltip></tooltip>
+    <separate>0</separate>
+    <buttononly>0</buttononly>
+    <logo>images/widget/widget_relate_tellafriend.png</logo>
+    <query>mailto:?body='.$url.'&amp;subject='.$title.'</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <!-- category>
+    <title>Bookmark</title>
+    <tooltip></tooltip>   
+    <separate>0</separate>
+    <buttononly>1</buttononly>
+    <logo>images/widget/widget_relate_star.png</logo>
+    <query>javascript:js_bookmark (\''.$url.'\', \''.$title.'\');</query>
+    <button>1</button>
+    <select>1</select>  
+    <movable>0</movable>  
+    <voteable>0</voteable>
+  </category -->
+  <!-- category>
+    <title>Make us your start page</title>
+    <tooltip></tooltip>
+    <separate>0</separate>
+    <buttononly>1</buttononly>
+    <logo>images/widget/widget_relate_home.png</logo>
+    <query>this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'http://torrent-finder.com\');</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>  
+    <voteable>0</voteable>
+  </category -->
+  <!-- category>
+    <title>RSS feed</title>
+    <tooltip></tooltip>
+    <separate>0</separate>
+    <buttononly>1</buttononly>
+    <logo>images/widget/widget_relate_rss.png</logo>
+    <query>'.$rss_feed_url.'</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category -->
+  <!-- category>
+    <title>Donate</title>
+    <tooltip>* * *   D O N A T I O N S   A R E   A C C E P T E D   * * *
+
+images/widget_relate_refrigator.jpg
+
+Individuals and companies can now donate funds to support me and keep me from
+writing proprietary software
+
+Thank You!
+
+* * *   D O N A T I O N S   A R E   A C C E P T E D   * * *</tooltip>
+    <separate>0</separate>
+    <buttononly>1</buttononly>
+    <logo>images/widget/widget_relate_paypal.png</logo>
+    <query>http://paypal.com</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category -->
+  <!-- category>
+    <title>BerliOS</title>
+    <tooltip></tooltip>
+    <separate>0</separate>
+    <buttononly>1</buttononly>
+    <logo>http://developer.berlios.de/bslogo.php?group_id=0</logo>
+    <query>http://developer.berlios.de</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category -->
+  <!-- category>
+    <title>SourceForge</title>
+    <tooltip></tooltip>
+    <separate>0</separate>
+    <buttononly>1</buttononly>
+    <logo>http://sourceforge.net/sflogo.php?group_id=0</logo>
+    <query>http://sourceforge.net</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category -->
+  <category>
+    <title>Digg</title>
+    <tooltip>Add to Digg</tooltip>
+    <separate>0</separate>
+    <buttononly>1</buttononly>
+    <logo>images/widget/widget_relate_digg.png</logo>
+    <query>http://digg.com/submit?phase=2&amp;url='.$url.'&amp;bodytext=&amp;tags=&amp;title='.$title.'</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <title>Twitter</title>
+    <tooltip>Add to Twitter</tooltip>
+    <separate>0</separate>
+    <buttononly>1</buttononly>
+    <logo>images/widget/widget_relate_twitter.png</logo>
+    <query>http://twitter.com/home?status='.$url.'</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <title>Facebook</title>
+    <tooltip>Add to Facebook</tooltip>
+    <separate>0</separate>
+    <buttononly>1</buttononly>
+    <logo>images/widget/widget_relate_facebook.png</logo>
+    <query>http://www.facebook.com/sharer.php?u='.$url.'</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <title>StumbleUpon</title>
+    <tooltip>Add to StumbleUpon</tooltip>
+    <separate>0</separate>
+    <buttononly>1</buttononly>
+    <logo>images/widget/widget_relate_stumbleupon.png</logo>
+    <query>http://www.stumbleupon.com/submit?url='.$url.'&amp;title='.$title.'</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+</categories>';
+
+//http://twitter.com/home?status=Hardware+Companies+Team+Up+To+Fight+Mobile+Linux+Fragmentation%3A+http%3A%2F%2Fbit.ly%2Fd9DXNF
+//http://www.facebook.com/sharer.php?u=http://linux.slashdot.org/story/10/06/05/1327228/Hardware-Companies-Team-Up-To-Fight-Mobile-Linux-Fragmentation
+
+  // DEBUG
+//  echo $relate_config_xml;
+//  exit;
+  $config_xml = simplexml_load_string ($relate_config_xml);
+
   $p = '';
-  $p .= widget_pr_share ($title, $url);
-  $p .= widget_pr_social ($title, $url);
+
+//widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
+  $p = widget_cms (NULL, $config_xml);
+
   return $p;
 }
 
