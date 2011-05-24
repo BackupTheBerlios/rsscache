@@ -4,12 +4,22 @@ if (!defined ('TV2_PHP'))
 define ('TV2_PHP', 1);
 //phpinfo();
 //error_reporting(E_ALL | E_STRICT);
-// language settings
-require_once ('config_lang.php');
 require_once ('default.php');
 require_once ('config.php');
 require_once ('misc/misc.php');
 //require_once ('misc/widget.php');
+// language settings
+if (isset ($tv2_lang_php)) 
+//  if (file_exists ($tv2_lang_php))
+    include ($tv2_lang_php);
+else
+  include ('tv2/tv2_lang.php');
+// includes AKA hooks
+if (isset ($tv2_include_php))
+//  if (file_exists ($tv2_include_php))
+    include ($tv2_include_php);
+else
+  include ('tv2/tv2_include.php');
 require_once ('tv2_output.php');
 require_once ('tv2_misc.php');
 
