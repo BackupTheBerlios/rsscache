@@ -442,18 +442,22 @@ if (file_exists ('site_config.xml'))
     {
       $p .= tv2_search_form ();
       $p .= '<br>';
+    }
+
+  if ($f != 'mirror' &&
+      $tv2_enable_search_extern)
+    {
       $s = tv2_search_extern ($d_array);
 //      $p .= widget_collapse ('Advanced search', $s, 0);
       $p .= $s;
-      $p .= '<br>';
       $p .= '<br>';
     }
 
   $p .= '</div>';
 
-          // show page-wise navigation (top)
-          if (!$v && $f != 'mirror')
-            $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
+  // show page-wise navigation (top)
+  if (!$v && $f != 'mirror')
+    $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
 
   return $p;
 }
