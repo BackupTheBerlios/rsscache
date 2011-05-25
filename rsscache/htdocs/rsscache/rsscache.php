@@ -368,7 +368,8 @@ tv2_body_header ($d_array)
          $tv2_enable_search,
          $tv2_related_search,
          $tv2_use_database,
-         $tv2_collapsed;
+         $tv2_collapsed,
+         $tv2_enable_search_extern;
   global $config;
   global $f, $c, $q, $v, $start, $num, $captcha;
 
