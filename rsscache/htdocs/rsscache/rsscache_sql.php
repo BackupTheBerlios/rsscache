@@ -173,62 +173,17 @@ tv2_sql_normalize ($tv2_sql_db, $d, $c, $f)
   $debug = 0;
 
   // make array contents unique by their title
-  if ($tv2_related_search == 1)
-  if ($f == 'related')
-    for ($i = 0; isset ($d[$i]) && isset ($d[$i + 1]); $i++)
-      while (trim ($d[$i]['rsstool_title']) == trim ($d[$i + 1]['rsstool_title']))
-        $d = array_splice ($d, $i + 1, 1);
+//  if ($tv2_related_search == 1)
+//    if ($f == 'related')
+//      if (isset ($d[0]))
+//        for ($i = 0; isset ($d[$i + 1]); $i++)
+//          while (trim ($d[$i]['rsstool_title']) == trim ($d[$i + 1]['rsstool_title']))
+//            $d = array_splice ($d, $i + 1, 1);
 
   for ($i = 0; isset ($d[$i]); $i++)
     {
-      // HACK: fix garbage coming from the database
-      if (strstr ($d[$i]['rsstool_url'], 'www.google.com'))
-        {
-          // remove eventual google redirect
-          $offset = strpos ($d[$i]['rsstool_url'], '?q=') + 3;
-          $len = strpos ($d[$i]['rsstool_url'], '&source=') - $offset;
-          $d[$i]['rsstool_url'] = substr ($d[$i]['rsstool_url'], $offset, $len);
-
-          // desc
-          $offset = 0;
-          $len = strrpos ($d[$i]['rsstool_desc'], '<div ');
-          if ($len)
-            $d[$i]['rsstool_desc'] = substr ($d[$i]['rsstool_desc'], $offset, $len);
-        }
-      else if (strstr ($d[$i]['rsstool_url'], 'news.google.com'))
-        {
-          // remove eventual google redirect
-          $offset = strpos ($d[$i]['rsstool_url'], '&url=') + 5;
-          $len = strpos ($d[$i]['rsstool_url'], '&usg=') - $offset;
-          $d[$i]['rsstool_url'] = substr ($d[$i]['rsstool_url'], $offset, $len);
-        }
-      else if (strstr ($d[$i]['rsstool_url'], 'www.youtube.com'))
-        {
-          $d[$i]['rsstool_url'] = str_replace ('&feature=youtube_gdata', '', $d[$i]['rsstool_url']);
-        }
-      if (strstr ($d[$i]['rsstool_url'], '.xvideos.com'))
-        {
-          $d[$i]['rsstool_desc'] = '';
-        }
-
-      // HACK: fix
-      $d[$i]['tv2_category'] = trim ($d[$i]['tv2_category']);
-      $d[$i]['tv2_moved'] = trim ($d[$i]['tv2_moved']);
-
       // demux
       $d[$i]['tv2_demux'] = widget_media_demux ($d[$i]['rsstool_url']);
-
-      // HACK: keywords
-//      if ($d[$i]['rsstool_keywords'] = '')
-//        $d[$i]['rsstool_keywords'] = misc_get_keywords ($d[$i]['rsstool_title'].' '.$d[$i]['rsstool_desc']);
-
-      // strip any tags from the desc
-      $p = $d[$i]['rsstool_desc'];
-      $p = str_replace ('>', '> ', $p);
-      $p = strip_tags2 ($p);
-      $p = str_replace (array ('  ', '  ', '  ', '  ', '  '), ' ', $p);
-      $d[$i]['rsstool_desc'] = $p;
-      $d[$i]['rsstool_desc'] = str_replace ('youtube.com', '', $d[$i]['rsstool_desc']);
 
       // TODO: search highlights
 //      $d[$i]['highlight'] = array ();

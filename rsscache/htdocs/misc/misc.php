@@ -31,7 +31,18 @@ function
 misc_array_unique_merge ($a)
 {
   // should be array_unique2()
-  return array_merge (array_unique ($a));
+//  return array_merge (array_unique ($a));
+  $b = array ();
+  for ($i = 0; isset ($a[$i]); $i++)
+    {
+      $t = trim ($a[$i]);
+      if (in_array ($t, $b)
+|| $t == ''
+)
+        continue;
+      $b[] = $t;
+    }
+  return $b;
 }
 
 
@@ -853,10 +864,16 @@ misc_get_keywords ($s, $flag = 0) // default: isalnum()
   // remove eventual html tags
   $s = strip_tags2 ($s);
 
+  // strtolower()
+//  $s = strtolower ($s);
+
   // explode and trim
   $a = explode (' ', $s);
   for ($i = 0; isset ($a[$i]); $i++)
     $a[$i] = trim ($a[$i], ' .');
+
+  // unify
+  $a = misc_array_unique_merge ($a);
 
   // stemmer.php (english only)
 //  if (class_exists (stemmer))
