@@ -1213,8 +1213,8 @@ widget_relate ($title, $url = NULL, $rss_feed_url = NULL)
       $url = urlencode ($url);
     }
 
-  $title = urlencode (trim ($title));
-  $url = urlencode (trim ($url));
+  $title = htmlentities (trim ($title));
+  $url = htmlentities (trim ($url));
   $relate_config_xml = '<?xml version="1.0" encoding="UTF-8"?>
 <categories>
   <category>
