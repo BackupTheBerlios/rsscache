@@ -1373,7 +1373,8 @@ Thank You!
 //widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
   $p = widget_cms (NULL, $config_xml);
 
-  return $p;
+//  return $p;
+  return '';
 }
 
 
