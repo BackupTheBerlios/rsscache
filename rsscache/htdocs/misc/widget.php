@@ -1204,6 +1204,7 @@ widget_captcha_check ()
 function
 widget_relate ($title, $url = NULL, $rss_feed_url = NULL)
 {
+/*
   if (!($url))
     {
       $url = 'http://'.$_SERVER['HTTP_HOST'];
@@ -1373,7 +1374,8 @@ Thank You!
 //widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
   $p = widget_cms (NULL, $config_xml);
 
-//  return $p;
+  return $p;
+*/
   return '';
 }
 
