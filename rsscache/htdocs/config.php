@@ -3,14 +3,14 @@
 //{
 //define ('TV2_CONFIG_PHP', 1);
 
-// php apache2
+// apache2
 //$_SERVER['SERVER_NAME'] == 'maps.pwnoogle.com'
 //$_SERVER['USER'] unset
 //$_SERVER["HOSTNAME"] => unset
 //$_SERVER["PWD"] => unset
 //$_SERVER["DOCUMENT_ROOT"] => /home/pwnoogle/htdocs/emulive/htdocs
 
-// php cmdline
+// cmdline
 //$_SERVER['SERVER_NAME'] unset
 //$_SERVER['USER'] == 'pwnoogle'
 //$_SERVER["HOSTNAME"] => stan.site5.com
@@ -21,7 +21,9 @@
 function
 get_hostname ()
 {
-//  $p = 'tv2_domain';
+  // default
+  $p = 'tv2_domain';
+
 //  if (isset ($_SERVER['SERVER_NAME']))
 //    $p = $_SERVER['SERVER_NAME'];
 //  else if (isset ($_SERVER['HOSTNAME']))
@@ -40,7 +42,20 @@ $tv2_domain = get_hostname ();
 function
 get_subdomain ()
 {
-//  $p = 'tv2_subdomain';
+  // default
+  $p = 'tv2_subdomain';
+
+  // apache2
+  if (isset ($_SERVER['SERVER_NAME']))
+    if (trim ($_SERVER['SERVER_NAME']) != '')
+    {
+      $p = substr ($_SERVER['SERVER_NAME'], 0, strpos ($_SERVER['SERVER_NAME'], '.'));
+      // DEBUG
+//      echo $p;
+      return $p;
+    }
+
+  // cmdline
   $p = $_SERVER['DOCUMENT_ROOT'];
   if (isset ($_SERVER['PWD']))
     $p = $_SERVER['PWD'];

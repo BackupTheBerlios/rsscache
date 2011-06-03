@@ -147,12 +147,12 @@ tv2_sql_stats ($category = NULL)
     }
 
   // total items downloaded...
-  $sql_query_s = 'SELECT rsstool_dl_date FROM rsstool_table WHERE 1';
-  if ($category)
-    $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
-  $sql_query_s .= ' ORDER BY rsstool_dl_date ASC'
-                   .' LIMIT 1'
-                   .';';
+//  $sql_query_s = 'SELECT rsstool_dl_date FROM rsstool_table WHERE 1';
+//  if ($category)
+//    $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
+//  $sql_query_s .= ' ORDER BY rsstool_dl_date ASC'
+//                   .' LIMIT 1'
+//                   .';';
 
   $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
   $r = $tv2_sql_db->sql_read (0, $debug);
