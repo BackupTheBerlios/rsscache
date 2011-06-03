@@ -749,6 +749,13 @@ if ($f == 'sitemap')
   }
 
 
+if ($f == 'qrcode')
+  {
+//    tv2_qrcode ($tv2_domain);
+    exit;
+  }
+
+
 // robots.txt only
     if ($tv2_use_database == 1)
 if ($f == 'robots')
