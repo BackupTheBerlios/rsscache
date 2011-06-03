@@ -163,7 +163,7 @@ function
 config_xml_normalize ($config)
 {
   global $tv2_use_database;
-/*
+
   if ($tv2_use_database == 1)
     {
       $stats = tv2_sql_stats ();
@@ -192,7 +192,7 @@ config_xml_normalize ($config)
               }
           }
     }
-*/
+
   for ($i = 0; isset ($config->category[$i]); $i++)
     {
       $category = $config->category[$i];

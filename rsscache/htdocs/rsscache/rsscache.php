@@ -511,8 +511,8 @@ tv2_body_footer ($d_array)
         $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
 
       // stats and version
-//      if ($tv2_use_database)
-//        $p .= '<br><div style="width:100%;text-align:right;">'.tv2_stats ().'</div>';
+      if ($tv2_use_database)
+        $p .= '<br><div style="width:100%;text-align:right;">'.tv2_stats ().'</div>';
     }
 
   return $p; 
@@ -558,8 +558,8 @@ tv2_body ($d_array)
     $p .= tv2_f_wiki ();
   else if (isset ($category->localwiki))
     $p .= tv2_f_localwiki ();
-//  else if ($f == 'stats') // show stats of RSS downloads
-//    $p .= tv2_f_stats ();
+  else if ($f == 'stats') // show stats of RSS downloads
+    $p .= tv2_f_stats ();
   else if ($d_array)
     {
       // DEBUG
