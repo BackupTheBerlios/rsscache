@@ -444,17 +444,14 @@ The formats are as follows. Exactly the components shown here must be present, w
 function
 tv2_qrcode ($data, $size = 2, $level = 'L')
 {
-/*
     // set it to writable location, a place for temp generated PNG files
-    $PNG_TEMP_DIR = '../phpqrcode/temp/';
+    $PNG_TEMP_DIR = 'cache';
     
     //html PNG location prefix
-    $PNG_WEB_DIR = 'phpqrcode/temp/';
+    $PNG_WEB_DIR = 'cache';
 
     // create temp dir
-    if (!file_exists($PNG_TEMP_DIR))
-        mkdir($PNG_TEMP_DIR);
-    $filename = $PNG_TEMP_DIR.'test.png';
+    $filename = $PNG_TEMP_DIR.'/test.png';
     
     $errorCorrectionLevel = 'L';
     if (in_array($level, array('L','M','Q','H')))
@@ -465,14 +462,13 @@ tv2_qrcode ($data, $size = 2, $level = 'L')
     $data = trim ($data);
 
     // user data
-    $filename = $PNG_TEMP_DIR.'test'.md5($data.'|'.$errorCorrectionLevel.'|'.$matrixPointSize).'.png';
+    $filename = $PNG_TEMP_DIR.'/test'.md5($data.'|'.$errorCorrectionLevel.'|'.$matrixPointSize).'.png';
     QRcode::png($data, $filename, $errorCorrectionLevel, $matrixPointSize, 2);    
 
     header ('Content-type: image/png');
 
     //display generated file
-    echo file_get_contents ($PNG_WEB_DIR.basename($filename));
-*/
+    echo file_get_contents ($PNG_WEB_DIR.'/'.basename($filename));
 }
 
 

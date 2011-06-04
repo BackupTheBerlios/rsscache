@@ -36,10 +36,14 @@ misc_array_unique_merge ($a)
   for ($i = 0; isset ($a[$i]); $i++)
     {
       $t = trim ($a[$i]);
-      if (in_array ($t, $b)
-|| $t == ''
-)
+
+      if ($t == '')
         continue;
+
+      if (isset ($b[0]))
+        if (in_array ($t, $b))
+          continue;
+
       $b[] = $t;
     }
   return $b;

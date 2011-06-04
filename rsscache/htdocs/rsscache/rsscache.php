@@ -402,7 +402,7 @@ if (file_exists ('site_config.xml'))
   // logo  
 //  $p .= '<div style="float:right;">';
   $p .= tv2_logo_func ();
-  $p .= tv2_qrcode ('http://'.$_SERVER['SERVER_NAME'], 2);
+  $p .= '<img src="?f=qrcode&q=http://videos.pwnoogle.com" style="vertical-align:top;">';
 //  $p .= '</div>';
 //  $p .= '<div class="clear;">';
 //  $p .= '</div>';
@@ -752,7 +752,7 @@ if ($f == 'sitemap')
 
 if ($f == 'qrcode')
   {
-//    tv2_qrcode ($tv2_domain);
+    tv2_qrcode ($q, 2);
     exit;
   }
 
