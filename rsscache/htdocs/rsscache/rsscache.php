@@ -402,6 +402,7 @@ if (file_exists ('site_config.xml'))
   // logo  
 //  $p .= '<div style="float:right;">';
   $p .= tv2_logo_func ();
+  $p .= tv2_qrcode ('http://'.$_SERVER['SERVER_NAME'], 2);
 //  $p .= '</div>';
 //  $p .= '<div class="clear;">';
 //  $p .= '</div>';

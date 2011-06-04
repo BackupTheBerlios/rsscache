@@ -442,33 +442,27 @@ The formats are as follows. Exactly the components shown here must be present, w
 
 
 function
-tv2_qrcode ($s)
+tv2_qrcode ($data, $size = 2, $level = 'L')
 {
+/*
     // set it to writable location, a place for temp generated PNG files
     $PNG_TEMP_DIR = '../phpqrcode/temp/';
     
     //html PNG location prefix
     $PNG_WEB_DIR = 'phpqrcode/temp/';
 
-    require_once ('phpqrcode/qrlib.php');
-    
     // create temp dir
     if (!file_exists($PNG_TEMP_DIR))
         mkdir($PNG_TEMP_DIR);
     $filename = $PNG_TEMP_DIR.'test.png';
     
     $errorCorrectionLevel = 'L';
-    if (isset($_REQUEST['level']) && in_array($_REQUEST['level'], array('L','M','Q','H')))
-        $errorCorrectionLevel = $_REQUEST['level'];    
+    if (in_array($level, array('L','M','Q','H')))
+        $errorCorrectionLevel = $level;
 
-    $matrixPointSize = 4;
-    if (isset($_REQUEST['size']))
-        $matrixPointSize = min(max((int)$_REQUEST['size'], 1), 10);
+    $matrixPointSize = min (max ((int) $size, 1), 10);
 
-    $data = '';
-    if (isset($_REQUEST['data']))
-      if (trim($_REQUEST['data']) != '')
-        $data = $_REQUEST['data'];
+    $data = trim ($data);
 
     // user data
     $filename = $PNG_TEMP_DIR.'test'.md5($data.'|'.$errorCorrectionLevel.'|'.$matrixPointSize).'.png';
@@ -478,6 +472,7 @@ tv2_qrcode ($s)
 
     //display generated file
     echo file_get_contents ($PNG_WEB_DIR.basename($filename));
+*/
 }
 
 
