@@ -1,4 +1,4 @@
-
+<?php
 if (!defined ('TV2_PHP'))
 {
 define ('TV2_PHP', 1);
