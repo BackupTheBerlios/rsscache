@@ -1,4 +1,4 @@
-<?php
+
 if (!defined ('TV2_PHP'))
 {
 define ('TV2_PHP', 1);
@@ -402,7 +402,7 @@ if (file_exists ('site_config.xml'))
   // logo  
 //  $p .= '<div style="float:right;">';
   $p .= tv2_logo_func ();
-  $p .= '<img src="?f=qrcode&q=http://videos.pwnoogle.com" style="vertical-align:top;">';
+  $p .= ' <img src="?f=qrcode&q=http://'.$_SERVER['SERVER_NAME'].'" style="vertical-align:top;">';
 //  $p .= '</div>';
 //  $p .= '<div class="clear;">';
 //  $p .= '</div>';
