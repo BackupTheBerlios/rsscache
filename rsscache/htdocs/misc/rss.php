@@ -161,12 +161,6 @@ parse_rss_from_url ($rss_url)
 }
 
 
-function
-parse_rss_from_file ($rss_file)
-{
-}
-
-
 }
 
 ?>

@@ -7,6 +7,7 @@ define ('TV2_PHP', 1);
 require_once ('default.php');
 require_once ('config.php');
 require_once ('misc/misc.php');
+//require_once ('misc/rss.php');
 //require_once ('misc/widget.php');
 // language settings
 if (isset ($tv2_lang_php)) 
@@ -88,11 +89,11 @@ tv2_body_item ($i, $d_array)
     $p .= '<div class="desc">';
     
   // link
-  $s = tv2_link ($d);
+  $l = tv2_link ($d);
   // link as title  
   $p .= '<h2 style="font-size:16px;">';
 //widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
-  $p .= widget_button (NULL, $s, str_shorten ($d['rsstool_title'], 80), $d['rsstool_title']);
+  $p .= widget_button (NULL, $l, str_shorten ($d['rsstool_title'], 80), $d['rsstool_title']);
     
   // is new?
   if (time () - $d[$f == 'new' ? 'rsstool_dl_date' : 'rsstool_date'] < $tv2_isnew && $f != 'mirror')
@@ -128,7 +129,7 @@ tv2_body_item ($i, $d_array)
     $p .= '<span class="desctext"><p>';
 
   // description
-  $d['rsstool_desc'] = tv2_highlight ($d['rsstool_desc']);
+//  $d['rsstool_desc'] = tv2_highlight ($d['rsstool_desc']);
   $p .= tv2_include ($d);
 
   $p .= '&nbsp;</p></span>';
@@ -143,6 +144,9 @@ tv2_body_item ($i, $d_array)
         $p .= '<!-- lang:Embed code -->: '.$s;
       $p .= '</p></div>';
     }
+//widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
+  $p .= widget_button ('?f=qrcode&q='.$d['rsstool_url'], $l, NULL, NULL);
+//  $p .= ' <img src="?f=qrcode&q='.$d['rsstool_url'].'" style="vertical-align:top;">';
 
   if (isset ($d['movable']))
     if ($d['movable'] == 1 && $f != 'mirror')
@@ -249,11 +253,11 @@ tv2_body_player ($i, $d_array)
         $p .= '<img src="images/new.png" border="0" alt="New!"> ';
     
       // link
-      $s = tv2_link ($d);
+      $l = tv2_link ($d);
     
       // link as title  
       $p .= '<b style="font-size:16px;">'
-           .widget_button (NULL, $s, str_shorten ($d['rsstool_title'], 80), $d['rsstool_title'])
+           .widget_button (NULL, $l, str_shorten ($d['rsstool_title'], 80), $d['rsstool_title'])
            .'</b>';
     
       // duration
@@ -293,6 +297,9 @@ tv2_body_player ($i, $d_array)
         $p .= '<!-- lang:Embed code -->: '.$s;
       $p .= '</p></div>';
     }
+//widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
+  $p .= widget_button ('?f=qrcode&q='.$d['rsstool_url'], $l, NULL, NULL);
+//  $p .= ' <img src="?f=qrcode&q='.$d['rsstool_url'].'" style="vertical-align:top;">';
 
       if (isset ($d['movable']))
       if ($d['movable'] == 1 && $f != 'mirror')
@@ -342,6 +349,8 @@ tv2_body_player ($i, $d_array)
     }
 
   $p .= '</div>';
+
+  $p .= widget_relate ($d['rsstool_title']);
 
   return $p;
 }
@@ -402,6 +411,8 @@ if (file_exists ('site_config.xml'))
   // logo  
 //  $p .= '<div style="float:right;">';
   $p .= tv2_logo_func ();
+//widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
+//  $p .= widget_button ('?f=qrcode&q=http://'.$_SERVER['SERVER_NAME'], 'http://'.$_SERVER['SERVER_NAME'], NULL, NULL);
   $p .= ' <img src="?f=qrcode&q=http://'.$_SERVER['SERVER_NAME'].'" style="vertical-align:top;">';
 //  $p .= '</div>';
 //  $p .= '<div class="clear;">';
@@ -634,12 +645,20 @@ tv2_body ($d_array)
 
 // main ()
 
+$f = get_request_value ('f'); // function
+$q = get_request_value ('q'); // search query
+
+// QR code image
+if ($f == 'qrcode')
+  {
+    tv2_qrcode ($q, 2);
+    exit;
+  }
+
 if ($tv2_use_database == 1)
   tv2_sql_open ();
 $config = config_xml ();
-$f = get_request_value ('f'); // function
 $c = tv2_get_category (); // category
-$q = get_request_value ('q'); // search query
 $v = get_request_value ('v'); // own video
 $captcha = get_request_value ('captcha'); // is request with captcha
 $start = get_request_value ('start'); // offset
@@ -655,7 +674,6 @@ if (!($num))
     else
       $num = $tv2_results;
   }
-
 
 $d_array = NULL;
 // category   
@@ -750,13 +768,6 @@ if ($f == 'sitemap')
   }
 
 
-if ($f == 'qrcode')
-  {
-    tv2_qrcode ($q, 2);
-    exit;
-  }
-
-
 // robots.txt only
     if ($tv2_use_database == 1)
 if ($f == 'robots')
@@ -817,19 +828,15 @@ $template_replace = array (
   '<!-- parse:title -->'       => $tv2_title,
   '<!-- parse:icon -->'        => misc_head_tags ($tv2_icon, 0, $tv2_charset),
   '<!-- parse:head_seo -->'    => misc_seo_description ($body),
+  '<!-- parse:head_tag -->'    => $tv2_head_tag,
+  '<!-- parse:body_tag -->'    => $tv2_body_tag,
   '<!-- parse:body_header -->' => tv2_body_header ($d_array),
   '<!-- parse:body -->'        => $body,
   '<!-- parse:body_footer -->' => tv2_body_footer ($d_array),
-  '<!-- parse:body_tag -->'    => $tv2_body_tag,
-  '<!-- parse:head_tag -->'    => $tv2_head_tag,
-  '<!-- parse:body_end -->'    => tv2_include_end ($d_array),
+  '<!-- parse:head_rss -->'    =>
+    ($tv2_rss_head ? misc_head_rss ($tv2_title, '?'.http_build_query2 (array ('f' => 'rss'), true)) : '')
 );
 
-if ($tv2_rss_head)  
-  $template_replace['<!-- parse:head_rss -->'] =
-    '<link rel="alternate" type="application/rss+xml"'
-   .' title="'.$tv2_title.'"'
-   .' href="?'.http_build_query2 (array ('f' => 'rss'), true).'">';
 if (file_exists ('tv2_index.html'))
   $template = file_get_contents ('tv2_index.html');
 else

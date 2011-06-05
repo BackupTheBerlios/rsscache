@@ -1133,6 +1133,17 @@ misc_head_tags ($icon, $refresh = 0, $charset = 'UTF-8')
 }
 
 
+function
+misc_head_rss ($title, $url)
+{
+  $p = '';
+  $p .= '<link rel="alternate" type="application/rss+xml"'
+       .' title="'.$title.'"'
+       .' href="'.$url.'">';
+  return $p;
+}
+
+
 /*
   split html into an array with content separated by tags
     returns an array

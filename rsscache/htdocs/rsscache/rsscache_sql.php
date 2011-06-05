@@ -496,54 +496,52 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
 
   if ($v) // direct
     {
-      $sql_query_s .= ' WHERE ( rsstool_url_crc32 = '.$v.' )';
+      $sql_query_s .= ' WHERE rsstool_url_crc32 = '.$v.'';
       $sql_query_s .= ' LIMIT 1';
     }
   else
     {
-      $sql_query_s .= ' WHERE 1';
-
+      $a = array ();
       // category
       if ($c)
-        $sql_query_s .= ' AND ( tv2_moved = \''.$c.'\' )';
+        $a[] = 'tv2_moved = \''.$c.'\'';
 
       // filter
-      $filter = NULL;
-      if ($c)
-        {
-          $category = config_xml_by_category ($c);
+//      $filter = NULL;
+//      if ($c)
+//        {
+//          $category = config_xml_by_category ($c);
+//
+//          if ($category)
+//            if ($category->filter)
+//              if (strlen ($category->filter))
+//                $filter = $category->filter;
+//        }
 
-          if ($category)
-            if ($category->filter)
-              if (strlen ($category->filter))
-                $filter = $category->filter;
-        }
-
-      if ($tv2_enable_search)
+//      if ($tv2_enable_search)
 //        $sql_query_s .= tv2_sql_match_func ($tv2_sql_db, $q, $filter);
-        $sql_query_s .= tv2_sql_leftjoin_func ($tv2_sql_db, $q, $filter);
+//        $sql_query_s .= tv2_sql_leftjoin_func ($tv2_sql_db, $q, $filter);
 
       // functions
       if ($f == 'new')
-        $sql_query_s .= ' AND ( rsstool_dl_date > '.(time () - $tv2_isnew).' )';
+        $a[] = 'rsstool_dl_date > '.(time () - $tv2_isnew).'';
       else if ($f == '0_5min')
-        $sql_query_s .= ' AND ( rsstool_media_duration > 0 && rsstool_media_duration < 301 )';
+        $a[] = 'rsstool_media_duration BETWEEN 0 AND 301';
       else if ($f == '5_10min')
-        $sql_query_s .= ' AND ( rsstool_media_duration > 300 && rsstool_media_duration < 601 )';
+        $a[] = 'rsstool_media_duration BETWEEN 300 AND 601';
       else if ($f == '10_min')
-        $sql_query_s .= ' AND ( rsstool_media_duration > 600 )';
-      else if ($f == 'cloud' || $f == 'wall')
-//        $sql_query_s .= ' AND ( rsstool_url LIKE \'%youtube%\' )'; // TODO: thumbnails of all videos
-        $sql_query_s .= '';
+        $a[] = 'rsstool_media_duration > 600';
+
+      if (isset ($a[0]))
+        $sql_query_s .= ' WHERE ( '.implode (' AND ', $a).' )';
 
       // sort
-      if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
-        $sql_query_s .= ' ORDER BY rsstool_title ASC';
-      else if ($f == 'score')
-        $sql_query_s .= ' ORDER BY tv2_score ASC';
-      else if ($f == 'new')
-        $sql_query_s .= ' ORDER BY rsstool_dl_date DESC';
-      else if ($tv2_use_dl_date)
+//      if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
+//        $sql_query_s .= ' ORDER BY rsstool_title ASC';
+//      else if ($f == 'score')
+//        $sql_query_s .= ' ORDER BY tv2_score ASC';
+//      else
+ if ($f == 'new' || $tv2_use_dl_date)
         $sql_query_s .= ' ORDER BY rsstool_dl_date DESC';
       else
         $sql_query_s .= ' ORDER BY rsstool_date DESC';

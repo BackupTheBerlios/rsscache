@@ -444,31 +444,25 @@ The formats are as follows. Exactly the components shown here must be present, w
 function
 tv2_qrcode ($data, $size = 2, $level = 'L')
 {
-    // set it to writable location, a place for temp generated PNG files
-    $PNG_TEMP_DIR = 'cache';
-    
-    //html PNG location prefix
-    $PNG_WEB_DIR = 'cache';
+  global $tv2_cache_dir;
+  global $tv2_cache_web;
 
-    // create temp dir
-    $filename = $PNG_TEMP_DIR.'/test.png';
-    
-    $errorCorrectionLevel = 'L';
-    if (in_array($level, array('L','M','Q','H')))
-        $errorCorrectionLevel = $level;
+  // error correction level
+  if (!in_array ($level, array ('L', 'M', 'Q', 'H')))
+    $level = 'L';
 
-    $matrixPointSize = min (max ((int) $size, 1), 10);
+  // matrix point size
+  $size = min (max ((int) $size, 1), 10);
 
-    $data = trim ($data);
+  $data = trim ($data);
 
-    // user data
-    $filename = $PNG_TEMP_DIR.'/test'.md5($data.'|'.$errorCorrectionLevel.'|'.$matrixPointSize).'.png';
-    QRcode::png($data, $filename, $errorCorrectionLevel, $matrixPointSize, 2);    
+  $f = 'qrcode_'.md5 ($data.'_'.$level.'_'.$size).'.png';
 
-    header ('Content-type: image/png');
+  if (!file_exists ($tv2_cache_dir.'/'.$f))
+    QRcode::png ($data, $tv2_cache_dir.'/'.$f, $level, $size, 2);    
 
-    //display generated file
-    echo file_get_contents ($PNG_WEB_DIR.'/'.basename($filename));
+  header ('Content-type: image/png');
+  echo file_get_contents ($tv2_cache_web.'/'.$f);
 }
 
 

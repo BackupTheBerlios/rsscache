@@ -1240,13 +1240,14 @@ widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autopla
   if ($func)
       {
         $c = $func ($media_url, $width, $height, $autoplay, $hq, $loop);
-        if ($blackbg)
+//        if ($blackbg == 1)
           $p .= ''
-               .'<div width="'.$bg_width.'" height="'.$height.'" style="background-color:#000;text-align:center;">'
+               .'<div width="'.$bg_width.'" height="'.$height.'" style="background-color:#'.($blackbg ? '000' : 'fff').';text-align:center;">'
                .$c
                .'</div>'
-;       else
-          $p .= $c;
+;
+//        else
+//          $p .= $c;
       }
 
   if ($scale)
