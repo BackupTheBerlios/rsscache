@@ -452,6 +452,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
   global $tv2_debug_sql;
   $debug = $tv2_debug_sql;
 //  $debug = 1;
+  $num = 10;
 
   $q = get_request_value ('q'); // we ignore the arg and make sure we get an unescaped one
 
@@ -486,7 +487,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
                   .' rsstool_desc,'
                   .' rsstool_dl_date,'
                   .' rsstool_date,'
-                  .' tv2_category,'
+//                  .' tv2_category,'
                   .' tv2_moved,'
                   .' rsstool_media_duration,'
                   .' rsstool_keywords'
