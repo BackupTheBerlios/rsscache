@@ -531,29 +531,26 @@ widget_collapse ($label, $s, $collapsed = 0)
 {
   $r = rand ();
 
-  $p = '';
-
-  $p .= ''
-       .'<span style="font-family:monospace;">'
-       .'[<a id="_'.$r.'" href="javascript:void(0);" onclick="javascript:'
-//       .'document.getElementById(\''.$r.'\').style.display=(document.getElementById(\''.$r.'\').style.display==\'none\'?\'block\':\'none\');'
-//       .'document.getElementById(\'_'.$r.'\').innerHTML=(document.getElementById(\''.$r.'\').style.display==\'none\'?\''.'+'.'\':\''.'-'.'\');'
+  $s = 'javascript:'
        .'e=document.getElementById(\''.$r.'\');'
        .'f=document.getElementById(\'_'.$r.'\');'
-//       .'e.style.display=(e.style.display==\'none\'?\'block\':\'none\');'
-//       .'document.getElementById(\'_'.$r.'\').innerHTML=(e.style.display==\'none\'?\'+\':\'-\');'
        .'if(e.style.display==\'none\'){'
        .'e.style.display=\'block\';'
        .'f.innerHTML=\'-\';'
        .'}else{'
        .'e.style.display=\'none\';'
        .'f.innerHTML=\'+\';'
-       .'}'
-       .'">'.($collapsed ? '+' : '-').'</a>]'
-       .'</span>'
+       .'}';
+
+  $p = '';
+
+  $p .= ''
+//       .'<span style="font-family:monospace;">'
+       .'[<a id="_'.$r.'" href="javascript:void(0);" onclick="'.$s.'">'.($collapsed ? '+' : '-').'</a>]'
+//       .'</span>'
 ;
   if ($label != '')
-    $p .= ' '.$label.':';
+    $p .= ' <a href="javascript:void(0);" onclick="'.$s.'">'.$label.'</a>:';
 
   $p .= '<br>';
 
