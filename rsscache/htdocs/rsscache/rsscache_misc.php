@@ -448,6 +448,10 @@ tv2_qrcode ($data, $size = 2, $level = 'L')
   global $tv2_cache_web;
 
   // error correction level
+  //   L - smallest
+  //   M
+  //   Q
+  //   H - best
   if (!in_array ($level, array ('L', 'M', 'Q', 'H')))
     $level = 'L';
 

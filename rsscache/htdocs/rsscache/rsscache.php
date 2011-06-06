@@ -317,8 +317,8 @@ tv2_body_player ($i, $d_array)
           $p .= '</nobr>';
         }
     
-    //      $p .= tv2_prev_video_button ($d);
-    //      $p .= tv2_next_video_button ($d);
+    //      $p .= tv2_prev_item_button ($d);
+    //      $p .= tv2_next_item_button ($d);
     
           if ($d_category->voteable == 1)   
             { 
