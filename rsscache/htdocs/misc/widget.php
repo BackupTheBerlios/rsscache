@@ -531,7 +531,7 @@ widget_collapse ($label, $s, $collapsed = 0)
 {
   $r = rand ();
 
-  $s = 'javascript:'
+  $j = 'javascript:'
        .'e=document.getElementById(\''.$r.'\');'
        .'f=document.getElementById(\'_'.$r.'\');'
        .'if(e.style.display==\'none\'){'
@@ -546,11 +546,11 @@ widget_collapse ($label, $s, $collapsed = 0)
 
   $p .= ''
 //       .'<span style="font-family:monospace;">'
-       .'[<a id="_'.$r.'" href="javascript:void(0);" onclick="'.$s.'">'.($collapsed ? '+' : '-').'</a>]'
+       .'[<a id="_'.$r.'" href="javascript:void(0);" onclick="'.$j.'">'.($collapsed ? '+' : '-').'</a>]'
 //       .'</span>'
 ;
   if ($label != '')
-    $p .= ' <a href="javascript:void(0);" onclick="'.$s.'">'.$label.'</a>:';
+    $p .= ' <a href="javascript:void(0);" onclick="'.$j.'">'.$label.'</a>:';
 
   $p .= '<br>';
 
