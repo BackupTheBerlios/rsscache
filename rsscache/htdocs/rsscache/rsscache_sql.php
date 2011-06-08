@@ -44,7 +44,7 @@ tv2_sql_move ($rsstool_url_crc32, $new_category)
   $debug = 0;
 
   $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = \''.$tv2_sql_db->sql_stresc ($new_category).'\''
-                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32).';';
+                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32);
 
   $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
 }
@@ -57,7 +57,7 @@ tv2_sql_vote ($rsstool_url_crc32, $new_score)
   $debug = 0;
 
   $sql_query_s = 'SELECT tv2_votes,tv2_score FROM rsstool_table'
-                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32).';';
+                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32);
   $tv2_sql_db->sql_write ($p, 0, $debug);
   $r = $tv2_sql_db->sql_read (1, $debug);
 
@@ -67,7 +67,7 @@ tv2_sql_vote ($rsstool_url_crc32, $new_score)
     $new_score = $r[0]['tv2_score'];
 
   $sql_query_s = 'UPDATE rsstool_table SET tv2_votes = '.($r[0]['tv2_votes'] + 1).',tv2_score = '.$new_score
-                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32).';';
+                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32);
 
   $tv2_sql_db->sql_write ($p, 1, $debug);
 }
@@ -81,7 +81,7 @@ tv2_sql_restore ($rsstool_url_crc32)
   $debug = 0;
 
   $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = tv2_category'
-                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32).';';
+                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32);
 
   $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
 }
@@ -96,70 +96,63 @@ tv2_sql_stats ($category = NULL)
 
   $stats = array ('items' => 0, 'items_today' => 0, 'items_7_days' => 0, 'items_30_days' => 0, 'days' => 0);
 
-  // downloaded items since...
-  // ...always
-/*
-  $sql_query_s = 'SELECT COUNT(*) FROM rsstool_table WHERE 1';
+  $a = array ();
   if ($category)
-    $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
-  $sql_query_s .= ';';
+    $a[] = 'tv2_moved = \''.$category.'\'';
+
+  // downloaded items since start
+  $sql_query_s = 'SELECT COUNT(1) AS tv2_rows FROM rsstool_table';
+  if (isset ($a[0]))
+    $sql_query_s .= ' WHERE ( '.implode (' AND ', $a).' )';
 
   $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
   $r = $tv2_sql_db->sql_read (0, $debug);
+  if (isset ($r[0]))
+    $stats['items'] = (int) $r[0][0];
 
-  $stats['items'] = (int) $r[0][0];
-
-  if ($f == 'stats')
-    {
-      // ...today
-      $sql_query_s = 'SELECT COUNT(*) FROM rsstool_table WHERE rsstool_dl_date > '.mktime (0, 0, 0);
-      if ($category)
-        $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
-      $sql_query_s .= ';';
-
-      $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
-      $r = $tv2_sql_db->sql_read (0, $debug);
-
-      $stats['items_today'] = (int) $r[0][0];
-
-
-      // ...last 7 days
-      $sql_query_s = 'SELECT COUNT(*) FROM rsstool_table WHERE rsstool_dl_date > '.mktime (0, 0, 0, date ('n'), date ('j') - 7);
-      if ($category)
-        $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
-      $sql_query_s .= ';';
-
-      $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
-      $r = $tv2_sql_db->sql_read (0, $debug);
-
-      $stats['items_7_days'] = (int) $r[0][0]; 
-
-
-      // ...last 30 days
-      $sql_query_s = 'SELECT COUNT(*) FROM rsstool_table WHERE rsstool_dl_date > '.mktime (0, 0, 0, date ('n'), date ('j') - 30);
-      if ($category)
-        $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
-      $sql_query_s .= ';';
-
-      $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
-      $r = $tv2_sql_db->sql_read (0, $debug);
-
-      $stats['items_30_days'] = (int) $r[0][0];
-    }
-
-  // total items downloaded...
-  $sql_query_s = 'SELECT rsstool_dl_date FROM rsstool_table WHERE 1';
-  if ($category)
-    $sql_query_s .= ' AND tv2_moved = \''.$category.'\'';
-  $sql_query_s .= ' ORDER BY rsstool_dl_date ASC'
-                   .' LIMIT 1'
-                   .';';
+  // days since start
+  $sql_query_s = 'SELECT MIN(rsstool_dl_date) FROM rsstool_table';
+  if (isset ($a[0]))
+    $sql_query_s .= ' WHERE ( '.implode (' AND ', $a).' )';
 
   $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
   $r = $tv2_sql_db->sql_read (0, $debug);
-
   if (isset ($r[0]))
     $stats['days'] = (int) ((time () - (int) $r[0][0]) / 86400);
+
+/*
+  if ($category)
+  if ($f == 'stats')
+    {
+      $p = 'SELECT COUNT(1) FROM rsstool_table';
+
+      // downloaded items today
+      $a[1] = 'rsstool_dl_date > '.mktime (0, 0, 0);
+      $sql_query_s = $p.' WHERE ( '.implode (' AND ', $a).' )';
+
+      $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
+      $r = $tv2_sql_db->sql_read (0, $debug);
+      if (isset ($r[0]))
+        $stats['items_today'] = (int) $r[0][0];
+
+      // downloaded items last 7 days
+      $a[1] = 'rsstool_dl_date > '.mktime (0, 0, 0, date ('n'), date ('j') - 7);
+      $sql_query_s = $p.' WHERE ( '.implode (' AND ', $a).' )';
+
+      $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
+      $r = $tv2_sql_db->sql_read (0, $debug);
+      if (isset ($r[0]))
+        $stats['items_7_days'] = (int) $r[0][0]; 
+
+      // downloaded items last 30 days
+      $a[1] = 'rsstool_dl_date > '.mktime (0, 0, 0, date ('n'), date ('j') - 30);
+      $sql_query_s = $p.' WHERE ( '.implode (' AND ', $a).' )';
+
+      $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
+      $r = $tv2_sql_db->sql_read (0, $debug);
+      if (isset ($r[0]))
+        $stats['items_30_days'] = (int) $r[0][0];
+    }
 */
   return $stats;
 }
