@@ -379,15 +379,21 @@ tv2_robots ()
 
 
 function
-tv2_sitemap_video_func ($d_array)
+tv2_sitemap_video_func ($category_name, $d_array)
 {
+  global $tv2_link;
+  global $tv2_thumbnails_prefix;
   $p = '';
+
   for ($i = 0; isset ($d_array[$i]); $i++)
+    if ($category_name == $d_array[$i]['tv2_moved'])
     {
       $d = $d_array[$i];
       $p .= '<video:video>'."\n";
       $p .= ''
-           .'<video:thumbnail_loc>http://'.$_SERVER['SERVER_NAME'].'/thumbnails/tv2/'.$d['rsstool_url_crc32'].'.png</video:thumbnail_loc>'."\n"
+           .'<video:thumbnail_loc>'
+           .tv2_link_normalize ($tv2_link.'/thumbnails/'.$tv2_thumbnails_prefix.'tv2/'.$d['rsstool_url_crc32'].'.jpg')
+           .'</video:thumbnail_loc>'."\n"
            .'<video:title>'.$d['rsstool_title'].'</video:title>'."\n"
            .'<video:description>'.$d['rsstool_desc'].'</video:description>'."\n"
            .'<video:duration>'.$d['rsstool_media_duration'].'</video:duration>'."\n"
@@ -419,7 +425,7 @@ tv2_sitemap ($d_array)
        .'>'."\n";
 
   for ($i = 0; isset ($config_xml->category[$i]); $i++)
-    if ($config_xml->category[$i]->name[0])
+    if (trim ($config_xml->category[$i]->name) != '')
     $p .= '<url>'."\n"
          .'  <loc>http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml->category[$i]->name.'</loc>'."\n"
 /*
@@ -440,7 +446,7 @@ The formats are as follows. Exactly the components shown here must be present, w
 */
          .'<lastmod>'.strftime ('%F' /* 'T%T%Z' */).'</lastmod>'."\n"
          .'<changefreq>always</changefreq>'."\n"
-         .tv2_sitemap_video_func ($d_array)
+         .tv2_sitemap_video_func ($config_xml->category[$i]->name, $d_array)
          .'</url>'."\n";
   $p .= '</urlset>';
 
