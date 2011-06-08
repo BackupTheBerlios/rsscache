@@ -379,15 +379,22 @@ tv2_robots ()
 
 
 function
-tv2_sitemap_video ($d_array)
+tv2_sitemap_video_func ($d_array)
 {
   $p = '';
-//  $p .= '<video:video>'."\n"
-//       .'<video:thumbnail_loc>'.''.'</video:thumbnail_loc>'."\n"
-//       .'<video:title>'.''.'</video:title>'."\n"
-//       .'<video:description>'.''.'</video:description>'."\n"
-//       .'</video:video>'."\n"
-//;
+
+  $p .= '<video:video>'."\n";
+  for ($i = 0; isset ($d_array[$i]); $i++)
+    {
+      $d = $d_array[$i];
+      $p .= ''
+           .'<video:thumbnail_loc>http://'.$_SERVER['SERVER_NAME'].'/thumbnails/tv2/'.$d['rsstool_url_crc32'].'.png</video:thumbnail_loc>'."\n"
+           .'<video:title>'.$d['rsstool_title'].'</video:title>'."\n"
+           .'<video:description>'.$d['rsstool_desc'].'</video:description>'."\n"
+;
+    }
+  $p .= '</video:video>'."\n"
+
   return $p;
 }
 
@@ -433,7 +440,7 @@ The formats are as follows. Exactly the components shown here must be present, w
 */
          .'<lastmod>'.strftime ('%F' /* 'T%T%Z' */).'</lastmod>'."\n"
          .'<changefreq>always</changefreq>'."\n"
-         .tv2_sitemap_video ($d_array)
+         .tv2_sitemap_video_func ($d_array)
          .'</url>'."\n";
   $p .= '</urlset>';
 
