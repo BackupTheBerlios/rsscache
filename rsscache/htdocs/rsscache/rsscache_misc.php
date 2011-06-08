@@ -381,21 +381,19 @@ tv2_robots ()
 function
 tv2_sitemap_video_func ($d_array)
 {
-  if (!isset ($d_array[0]))
-    return '';
-
   $p = '';
-  $p .= '<video:video>'."\n";
   for ($i = 0; isset ($d_array[$i]); $i++)
     {
       $d = $d_array[$i];
+      $p .= '<video:video>'."\n";
       $p .= ''
            .'<video:thumbnail_loc>http://'.$_SERVER['SERVER_NAME'].'/thumbnails/tv2/'.$d['rsstool_url_crc32'].'.png</video:thumbnail_loc>'."\n"
            .'<video:title>'.$d['rsstool_title'].'</video:title>'."\n"
            .'<video:description>'.$d['rsstool_desc'].'</video:description>'."\n"
+           .'<video:duration>'.$d['rsstool_media_duration'].'</video:duration>'."\n"
 ;
+      $p .= '</video:video>'."\n";
     }
-  $p .= '</video:video>'."\n"
 
   return $p;
 }
@@ -417,7 +415,7 @@ tv2_sitemap ($d_array)
   $p = '';
   $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n"
        .'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'
-//       .' xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"'
+       .' xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"'
        .'>'."\n";
 
   for ($i = 0; isset ($config_xml->category[$i]); $i++)
