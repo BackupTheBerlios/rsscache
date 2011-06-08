@@ -445,7 +445,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
   global $tv2_debug_sql;
   $debug = $tv2_debug_sql;
 //  $debug = 1;
-  $num = 10;
+//  $num = 10;
 
   $q = get_request_value ('q'); // we ignore the arg and make sure we get an unescaped one
 
