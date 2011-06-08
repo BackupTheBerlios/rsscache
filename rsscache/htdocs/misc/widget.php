@@ -363,12 +363,15 @@ widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
             }
           $s .= $category->title;
         }
-      // <new>
+
+      // <status>
       if ($category->status == 1)
         $s .= '&nbsp;<img src="images/new.png">';
       else if ($category->status == 2)
         $s .= '&nbsp;<img src="images/soon.png">';
       else if ($category->status == 3)
+        $s .= '&nbsp;<img src="images/preview.png">';
+      else if ($category->status == 4)
         $s .= '&nbsp;<img src="images/update.png">';
 
       $s .= '&nbsp;&nbsp;';

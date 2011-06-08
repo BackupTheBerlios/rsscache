@@ -381,8 +381,10 @@ tv2_robots ()
 function
 tv2_sitemap_video_func ($d_array)
 {
-  $p = '';
+  if (!isset ($d_array[0]))
+    return '';
 
+  $p = '';
   $p .= '<video:video>'."\n";
   for ($i = 0; isset ($d_array[$i]); $i++)
     {
