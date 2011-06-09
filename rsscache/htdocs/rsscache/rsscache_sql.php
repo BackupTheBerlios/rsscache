@@ -525,6 +525,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
         $a[] = 'rsstool_media_duration BETWEEN 300 AND 601';
       else if ($f == '10_min')
         $a[] = 'rsstool_media_duration > 600';
+      else if ($f == '1_h')
+        $a[] = 'rsstool_media_duration > 3600';
 
       if (isset ($a[0]))
         $sql_query_s .= ' WHERE ( '.implode (' AND ', $a).' )';
