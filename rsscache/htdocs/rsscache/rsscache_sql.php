@@ -167,12 +167,12 @@ tv2_sql_normalize ($tv2_sql_db, $d, $c, $f)
   $debug = 0;
 
   // make array contents unique by their title
-//  if ($tv2_related_search == 1)
-//    if ($f == 'related')
-//      if (isset ($d[0]))
-//        for ($i = 0; isset ($d[$i + 1]); $i++)
-//          while (trim ($d[$i]['rsstool_title']) == trim ($d[$i + 1]['rsstool_title']))
-//            $d = array_splice ($d, $i + 1, 1);
+  if ($tv2_related_search == 1)
+    if ($f == 'related')
+      if (isset ($d[0]))
+        for ($i = 0; isset ($d[$i + 1]); $i++)
+          while (trim ($d[$i]['rsstool_title']) == trim ($d[$i + 1]['rsstool_title']))
+            $d = array_splice ($d, $i + 1, 1);
 
   for ($i = 0; isset ($d[$i]); $i++)
     {
@@ -184,117 +184,6 @@ tv2_sql_normalize ($tv2_sql_db, $d, $c, $f)
     }
 
   return $d;
-}
-
-
-
-function
-tv2_sql_query2boolean_escape_func ($s)
-{
-  if (strlen (trim ($s, ' +-')) < 4)
-//  if (strlen (trim ($s)) < 4)
-    return false;
-
-  for ($i = 0; $i < strlen ($s); $i++)
-    if (!isalnum ($s[$i]) && !in_array ($s[$i], array ('-', '+', /* '(', ')', '"' */)))
-      return false;
- 
-  return true;
-}
-  
-
-function
-tv2_sql_query2boolean_escape ($s)
-{
-  $a = explode (' ', strtolower ($s));
-  for ($i = 0; isset ($a[$i]); $i++)
-    $a[$i] = trim ($a[$i]);
-  // TODO: more sensitivity instead of array_filter()
-  $a = array_filter ($a, 'tv2_sql_query2boolean_escape_func');
-  $a = misc_array_unique_merge ($a);
-  
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($a);
-
-  $s = implode (' ', $a);
-  $s = trim ($s);
-
-  return $s;
-}
-
-
-function
-tv2_sql_query2boolean ($q)
-{
-  /*
-    parses google style search query into
-      boolean full-text search query
-
-    IMPORTANT: replaces mysql_real_escape_string()
-  */
-
-  global $tv2_debug_sql;
-  $debug = $tv2_debug_sql;
-
-  /*
-    google style
-
-    ALL of these words: test1 test2
-    the exact wording or phrase: "test3  " "test4  "
-    ONE OR MORE of these words: test5 OR test6
-    ANY of these unwanted words: -test7 -test8
-
-    1) test1 test2 test5 OR test6 "test3  " "test4  " -test7 -test8
-
-    2) http://www.google.com/search?q=test1+test2+test5+OR+test6+%22test3++%22+%22test4++%22+-test7+-test8
-  */
-
-  $p = str_ireplace (' OR ', ' ', $q);
-  $p = str_ireplace ('\\', '', $p); // unescape query
-  $p = tv2_sql_query2boolean_escape ($p); 
-  $match = $p;
-
-  // DEBUG
-  if ($debug)
-    echo '<pre><tt>'
-        .'query: "'.$q.'"'."\n"
-//        .sprint_r ($a)."\n"
-        .'match: \''.$match.'\''."\n";
-
-  return $match;
-}
-
-
-function
-tv2_sql_match_func ($tv2_sql_db, $q, $filter)
-{
-  $s = '';
-
-  // filter
-  if ($filter)
-    $s .= $filter.' '; // boolean full-text search query
-
-  // query
-  if ($q)
-    $s .= '+('.tv2_sql_query2boolean ($q).')';
-
-  $s = trim ($s);
-
-  if (!strlen ($s))
-    return '';
-
-  $p = '';
-
-  $p .= ' AND MATCH ('
-       .' rsstool_keywords'
-       .' ) AGAINST (\''
-       .$s
-       .'\''
-       .' IN BOOLEAN MODE'
-       .' )';
-
-  return $p;
 }
 
 
@@ -350,7 +239,8 @@ tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL)
       $p .= ' ) temp';
   $p .= ' )';
       // DEBUG
-      echo 'require: '.$p.' )<br><br>';
+      if ($debug == 1)
+        echo 'require: '.$p.' )<br><br>';
     }
   else if (trim ($any) != '')
     {
@@ -368,7 +258,8 @@ tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL)
       $p .= ' )';
   $p .= ' )';
       // DEBUG
-      echo 'any: '.$p.' )<br><br>';
+      if ($debug == 1)
+        echo 'any: '.$p.' )<br><br>';
     }
 
   // DEBUG
@@ -473,6 +364,84 @@ tv2_sql_extern ($q, $start, $num)
 
 
 function
+tv2_sql_query2boolean_escape_func ($s)
+{
+  if (strlen (trim ($s, ' +-')) < 4)
+//  if (strlen (trim ($s)) < 4)
+    return false;
+
+  for ($i = 0; $i < strlen ($s); $i++)
+    if (!isalnum ($s[$i]) && !in_array ($s[$i], array ('-', '+', /* '(', ')', '"' */)))
+      return false;
+ 
+  return true;
+}
+  
+
+function
+tv2_sql_query2boolean_escape ($s)
+{
+  $a = explode (' ', strtolower ($s));
+  for ($i = 0; isset ($a[$i]); $i++)
+    $a[$i] = trim ($a[$i]);
+  // TODO: more sensitivity instead of array_filter()
+  $a = array_filter ($a, 'tv2_sql_query2boolean_escape_func');
+  $a = misc_array_unique_merge ($a);
+  
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($a);
+
+  $s = implode (' ', $a);
+  $s = trim ($s);
+
+  return $s;
+}
+
+
+function
+tv2_sql_query2boolean ($q)
+{
+  /*
+    parses google style search query into
+      boolean full-text search query
+
+    IMPORTANT: replaces mysql_real_escape_string()
+  */
+
+  global $tv2_debug_sql;
+  $debug = $tv2_debug_sql;
+
+  /*
+    google style
+
+    ALL of these words: test1 test2
+    the exact wording or phrase: "test3  " "test4  "
+    ONE OR MORE of these words: test5 OR test6
+    ANY of these unwanted words: -test7 -test8
+
+    1) test1 test2 test5 OR test6 "test3  " "test4  " -test7 -test8
+
+    2) http://www.google.com/search?q=test1+test2+test5+OR+test6+%22test3++%22+%22test4++%22+-test7+-test8
+  */
+
+  $p = str_ireplace (' OR ', ' ', $q);
+  $p = str_ireplace ('\\', '', $p); // unescape query
+  $p = tv2_sql_query2boolean_escape ($p); 
+  $match = $p;
+
+  // DEBUG
+  if ($debug)
+    echo '<pre><tt>'
+        .'query: "'.$q.'"'."\n"
+//        .sprint_r ($a)."\n"
+        .'match: \''.$match.'\''."\n";
+
+  return $match;
+}
+
+
+function
 tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
 {
   global $tv2_sql_db,
@@ -484,10 +453,13 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
   global $tv2_debug_sql;
   $debug = $tv2_debug_sql;
 //  $debug = 1;
-//  $num = 10;
 
-  $q = get_request_value ('q'); // we ignore the arg and make sure we get an unescaped one
   $v_segments = get_request_value ('v_segments');
+//  $q = get_request_value ('q'); // we ignore the arg and make sure we get an unescaped one
+//  $c = $tv2_sql_db->sql_stresc ($c);
+//  $v = $tv2_sql_db->sql_stresc ($v);
+//  $start = $tv2_sql_db->sql_stresc ($start);
+//  $num = $tv2_sql_db->sql_stresc ($num);
 
   // extern SQL
   if ($extern == 1)
@@ -504,12 +476,6 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
     }
 
   // local SQL
-  $q = $tv2_sql_db->sql_stresc ($q);
-  $c = $tv2_sql_db->sql_stresc ($c);
-  $v = $tv2_sql_db->sql_stresc ($v);
-  $start = $tv2_sql_db->sql_stresc ($start);
-  $num = $tv2_sql_db->sql_stresc ($num);
-
   $sql_query_s = '';
 //  $sql_query_s .= 'EXPLAIN ';
 //  $sql_query_s .= 'SELECT * FROM rsstool_table WHERE 1';
@@ -526,20 +492,23 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
                   .' rsstool_keywords'
 //                  .' tv2_votes,'
 //                  .' tv2_score'
-                  .' FROM rsstool_table';
+                  .' FROM rsstool_table'
+;
 
+  $a = array ();
   if ($v) // direct
     {
-      $sql_query_s .= ' WHERE rsstool_url_crc32 = '.$v.'';
-      $sql_query_s .= ' LIMIT 1';
+      $sql_query_s .= ' WHERE rsstool_url_crc32 = '.$v
+                     .' LIMIT 1';
     }
   else
     {
-      $a = array ();
       // category
       if ($c)
         $a[] = 'tv2_moved = \''.$c.'\'';
-
+//}
+//  if ($q)
+//    {
       // filter
 // TODO: merge filter with require, exclude code, etc.
       $filter = NULL;
@@ -561,7 +530,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
           $v_exclude = '';
           $s = trim ($q.($filter ? ' '.$filter : ''));
           // DEBUG
-          echo 'search: '.$s.'<br>';
+          if ($debug == 1)
+            echo 'search: '.$s.'<br>';
           $b = explode (' ', $s);
           for ($i = 0; isset ($b[$i]); $i++)
             {
@@ -580,7 +550,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
               $v_require .= ' part';
 
           // DEBUG
-          echo 'any: '.$v_any.'<br>require: '.$v_require.'<br>exclude: '.$v_exclude.'<br>';
+//          if ($debug == 1)
+            echo 'any: '.$v_any.'<br>require: '.$v_require.'<br>exclude: '.$v_exclude.'<br>';
           // keyword_search
           $s = tv2_sql_keyword_func ($v_any, $v_require, $v_exclude);
           if ($s != NULL)
@@ -603,12 +574,11 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
         $sql_query_s .= ' WHERE ( '.implode (' AND ', $a).' )';
 
       // sort
-//      if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
-//        $sql_query_s .= ' ORDER BY rsstool_title ASC';
+      if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
+        $sql_query_s .= ' ORDER BY rsstool_date DESC';
 //      else if ($f == 'score')
 //        $sql_query_s .= ' ORDER BY tv2_score ASC';
-//      else
- if ($f == 'new' || $tv2_use_dl_date)
+      else if ($f == 'new' || $tv2_use_dl_date)
         $sql_query_s .= ' ORDER BY rsstool_dl_date DESC';
       else
         $sql_query_s .= ' ORDER BY rsstool_date DESC';
@@ -618,7 +588,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
     }
 
   // DEBUG
-  echo $sql_query_s;
+//  if ($debug == 1)
+//    echo $sql_query_s;
   $tv2_sql_db->sql_write ($sql_query_s, 1, $debug);
 
   $d = $tv2_sql_db->sql_read (1, 0 /* $debug */);

@@ -167,12 +167,12 @@ tv2_body_item ($i, $d_array)
   $p .= '</span>';
 
   // related
-  if ($tv2_related_search)
-    {
-      $p .= '<div class="tv2_related">';
-      $p .= tv2_related_search ($d);
-      $p .= '</div>';
-    }
+//  if ($tv2_related_search)
+//    {
+//      $p .= '<div class="tv2_related">';
+//      $p .= tv2_related_search ($d);
+//      $p .= '</div>';
+//    }
 
   $p .= '</div>'; // desc
 
@@ -283,8 +283,16 @@ tv2_body_player ($i, $d_array)
 
 //      $p .= '<br>';
 
+  // related
+  if ($tv2_related_search)
+    {
+      $p .= '<div class="tv2_related">';
+      $p .= tv2_related_search ($d);
+      $p .= '</div>';
+    }
+
       // description
-      $d['rsstool_desc'] = tv2_highlight ($d['rsstool_desc']);
+//      $d['rsstool_desc'] = tv2_highlight ($d['rsstool_desc']);
       $p .= tv2_include ($d);
 
       $p .= '<br>';
@@ -339,14 +347,6 @@ tv2_body_player ($i, $d_array)
   $p .= '<span class="tv2_tags"><!-- lang:Tags -->: ';
   $p .= tv2_keywords ($d);
   $p .= '</span>';  
-
-  // related
-  if ($tv2_related_search)
-    {
-      $p .= '<div class="tv2_related">';
-      $p .= tv2_related_search ($d);
-      $p .= '</div>';
-    }
 
   $p .= '</div>';
 

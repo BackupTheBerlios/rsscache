@@ -932,9 +932,15 @@ misc_get_keywords ($s, $flag = 0) // default: isalnum()
       if (strlen ($s) < $keyword_size)
         continue;
 
+      $found = 0;
       for ($j = 0; $j < strlen ($s); $j++)
-        if (!$func ($s[$j]) && $s[$j] != '_' && $s[$j] != '.')
-          continue;
+        if (!($func ($s[$j])) && $s[$j] != '_' && $s[$j] != '.')
+          {
+            $found = 1;
+            break;
+          }
+      if ($found == 1)
+        continue;
 
       $p .= trim ($s).' ';
     }
