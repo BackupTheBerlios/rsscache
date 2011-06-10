@@ -51,6 +51,41 @@ misc_array_unique_merge ($a)
 
 
 function
+misc_crc16 ($s, $crc = 0)
+{
+  $len = strlen ($s);
+  for ($i = 0; $i < $len; $i++)
+    {
+      $crc ^= ord ($s[$i]);
+      for ($j = 0; $j < 8; $j++)
+        if (($crc & 1) == 1)
+          $crc = ($crc >> 1) ^ 0xa001;
+        else
+          $crc >>= 1;
+    }
+
+  return $crc;
+}
+
+
+function
+misc_crc24 ($s, $crc = 0xb704ce)
+{
+  for ($n = 0; $n < strlen ($s); $n++)
+    {
+      $crc ^= (ord($s[$n]) & 0xff) << 0x10;
+      for ($i = 0; $i < 8; $i++)
+        {
+          $crc <<= 1;
+          if ($crc & 0x1000000) $crc ^= 0x1864cfb;
+        }
+    }
+
+  return ((($crc >> 0x10) & 0xff) << 16) | ((($crc >> 0x8) & 0xff) << 8) | ($crc & 0xff);
+}
+
+
+function
 get_ip ($address)
 {
   // if it isn't a valid IP assume it is a hostname
@@ -911,6 +946,7 @@ misc_get_keywords ($s, $flag = 0) // default: isalnum()
 }
 
 
+/*
 function
 misc_get_keywords_soundex ($s, $flag = 0) // default: isalnum()
 {
@@ -929,6 +965,7 @@ misc_get_keywords_soundex ($s, $flag = 0) // default: isalnum()
 
   return $b;
 }
+*/
 
 
 function

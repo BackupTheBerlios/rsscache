@@ -439,13 +439,13 @@ widget_select ($a, $name = 'wselect', $selected = NULL, $active = 1, $do_submit 
       if ($selected)
         if (!strcasecmp ($a[$i][0], $selected) && $sel == 0)
           $sel = 1;
-      // DEBUG
-//      echo $sel.' '.$selected.' '.$a[$i][0].'<br>';
 
       $p .= widget_select_option ($a[$i][2], $a[$i][0], $a[$i][1], '', $sel == 1 ? 1 : 0);
 
       if ($sel == 1)
         $sel = 2;
+      // DEBUG
+//      echo $sel.' '.$selected.' '.$a[$i][0].'<br>';
     }
   $p .= '</select>';
 
