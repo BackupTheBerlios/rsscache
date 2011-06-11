@@ -551,7 +551,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
 
           // DEBUG
 //          if ($debug == 1)
-            echo 'any: '.$v_any.'<br>require: '.$v_require.'<br>exclude: '.$v_exclude.'<br>';
+//            echo 'any: '.$v_any.'<br>require: '.$v_require.'<br>exclude: '.$v_exclude.'<br>';
           // keyword_search
           $s = tv2_sql_keyword_func ($v_any, $v_require, $v_exclude);
           if ($s != NULL)
