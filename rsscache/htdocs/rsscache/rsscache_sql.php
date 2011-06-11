@@ -95,7 +95,7 @@ tv2_sql_stats ($category = NULL)
   $f = get_request_value ('f');
 
   $stats = array ('items' => 0, 'items_today' => 0, 'items_7_days' => 0, 'items_30_days' => 0, 'days' => 0);
-
+/*
   $a = array ();
   if ($category)
     $a[] = 'tv2_moved = \''.$category.'\'';
@@ -119,7 +119,7 @@ tv2_sql_stats ($category = NULL)
   $r = $tv2_sql_db->sql_read (0, $debug);
   if (isset ($r[0]))
     $stats['days'] = (int) ((time () - (int) $r[0][0]) / 86400);
-
+*/
 /*
   if ($category)
   if ($f == 'stats')
