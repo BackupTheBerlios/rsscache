@@ -952,28 +952,6 @@ misc_get_keywords ($s, $flag = 0) // default: isalnum()
 }
 
 
-/*
-function
-misc_get_keywords_soundex ($s, $flag = 0) // default: isalnum()
-{
-  $p = misc_get_keywords ($s, $flag);
-  $a = explode (' ', $s);
-  $b = array ();
-  for ($i = 0; isset ($a[$i]); $i++)
-    { 
-      $v = soundex ($a[$i]);
-      if ($v != '0000') $b[] = $v;
-    }
-
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($b);
-
-  return $b;
-}
-*/
-
-
 function
 str_similar ($str1, $str2)
 {
