@@ -51,6 +51,28 @@ misc_array_unique_merge ($a)
 
 
 function
+misc_crc8 ($s, $crc = 0)
+{
+  $polynomial = (0x1070 << 3);
+
+  $len = strlen ($s);
+  for ($i = 0; $i < $len; $i++)
+    {
+      $crc ^= ord ($s[$i]);
+      $crc <<= 8;
+      for ($j = 0; $j < 8; $j++)
+        {
+          if (($crc & 0x8000) != 0)
+            $crc ^= $polynomial;
+          $crc <<= 1;
+        }
+      $crc = ($crc >> 8) & 0xff;
+    }
+  return $crc;
+}
+
+
+function
 misc_crc16 ($s, $crc = 0)
 {
   $len = strlen ($s);
@@ -71,7 +93,8 @@ misc_crc16 ($s, $crc = 0)
 function
 misc_crc24 ($s, $crc = 0xb704ce)
 {
-  for ($n = 0; $n < strlen ($s); $n++)
+  $len = strlen ($s);
+  for ($n = 0; $n < $len; $n++)
     {
       $crc ^= (ord($s[$n]) & 0xff) << 0x10;
       for ($i = 0; $i < 8; $i++)
