@@ -744,15 +744,15 @@ if (isset ($category->index) || isset ($category->stripdir))
   }
 else if ($f == 'extern')
   {
-    $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num, 1); // 1 == extern SQL
+//    $d_array = tv2_sql_extern ($c, $q, $f, NULL, $start, $num);
   }
 else if ($tv2_use_database == 1)
   {
     // use SQL
     if ($v)
-      $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, 0);
+      $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, $category->table_suffix);
     else
-      $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
+      $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, $category->table_suffix);
   }
 
 
@@ -806,7 +806,7 @@ if ($f == 'fullscreen')
     if ($tv2_use_database == 1)
 if ($f == 'rss')
   {
-//    $d = tv2_sql ($c, $q, $f, NULL, $start, $num);
+//    $d = tv2_sql ($c, $q, $f, NULL, $start, $num, $category->table_suffix);
     echo tv2_rss ($d_array);
 
       tv2_sql_close ();
@@ -819,7 +819,7 @@ if ($f == 'rss')
     if ($tv2_use_database == 1)
 if ($f == 'sitemap')
   {
-//    $d = tv2_sql ($c, $q, $f, NULL, $start, $num);
+//    $d = tv2_sql ($c, $q, $f, NULL, $start, $num, $category->table_suffix);
     echo tv2_sitemap ($d_array);
 
       tv2_sql_close ();

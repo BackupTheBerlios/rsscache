@@ -442,7 +442,7 @@ tv2_sql_query2boolean ($q)
 
 
 function
-tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
+tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 {
   global $tv2_sql_db,
          $tv2_isnew,
@@ -463,20 +463,6 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
 //  $start = $tv2_sql_db->sql_stresc ($start);
 //  $num = $tv2_sql_db->sql_stresc ($num);
 
-  // extern SQL
-  if ($extern == 1)
-    {
-      $d = tv2_sql_extern ($q, $start, $num);
-
-//  $d = tv2_sql_normalize ($tv2_sql_db, $d, $c, $f);
-
-  // DEBUG
-//  echo '<tt><pre>';
-//  print_r ($d);
-
-      return $d;
-    }
-
   // local SQL
   $sql_query_s = '';
 //  $sql_query_s .= 'EXPLAIN ';
@@ -494,8 +480,12 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
                   .' rsstool_keywords'
 //                  .' tv2_votes,'
 //                  .' tv2_score'
-                  .' FROM rsstool_table'
 ;
+  $p = ' FROM rsstool_table';
+  if ($table_suffix)
+    if (trim ($table_suffix) != '')
+      $p = ' FROM rsstool_table_'.$table_suffix;
+  $sql_query_s .= $p;
 
   $a = array ();
   if ($v) // direct

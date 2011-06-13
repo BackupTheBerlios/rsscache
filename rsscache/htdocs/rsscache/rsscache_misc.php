@@ -277,7 +277,7 @@ config_xml_by_category ($category)
 {
   $config = config_xml ();
 
-  for ($i = 0; $config->category[$i]; $i++)
+  for ($i = 0; isset ($config->category[$i]); $i++)
     if ($config->category[$i]->name == $category)
       return $config->category[$i];
 
