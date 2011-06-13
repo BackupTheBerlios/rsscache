@@ -80,44 +80,6 @@ generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_d
 }
 
 
-/*
-function
-rsstool_table_insert ($db, $url, $title, $desc, $site, $dl_url, $date, $dl_date)
-{
-  $p = sprintf ("INSERT INTO `rsstool_table` ("
-      ." `rsstool_url`, `rsstool_url_md5`, `rsstool_url_crc32`,"
-      ." `rsstool_dl_url`, `rsstool_dl_url_md5`, `rsstool_dl_url_crc32`,"
-      ." `rsstool_title`, `rsstool_title_md5`, `rsstool_title_crc32`,"
-      ." `rsstool_site`, `rsstool_desc`, `rsstool_date`, `rsstool_dl_date`) VALUES ('"
-      .$db->sql_stresc ($url)
-      ."', '"
-      .md5 ($url, FALSE)
-      ."', %u, '"
-      .$db->sql_stresc ($dl_url)
-      ."', '"
-      .md5 ($dl_url, FALSE)
-      ."', %u, '"
-      .$db->sql_stresc ($title)
-      ."', '"
-      .md5 ($title, FALSE)
-      ."', %u, '"
-      .$db->sql_stresc ($site)
-      ."', '"
-      .$db->sql_stresc ($desc)
-      ."', '"
-      .$db->sql_stresc ($date)
-      ."', '"
-      .$db->sql_stresc ($dl_date)
-      ."');", crc32 ($url),
-              crc32 ($dl_url),
-              crc32 ($title));
-
-  $db->sql_write ($p, 0);
-// return $p;
-}
-*/
-
-
 function
 rss_to_array ($tag, $array, $url)
 {
