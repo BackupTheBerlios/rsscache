@@ -36,31 +36,6 @@ tv2_get_category ()
 
 
 function
-tv2_related_id_sort ($a, $b)
-{
-  return strlen ($b) - strlen ($a);
-}
-
-
-function
-tv2_related_id ($s)
-{
-  $t = misc_get_keywords ($s, 0); // isalnum
-  $a = explode (' ', $t);
-  usort ($a, 'tv2_related_id_sort');
-
-  // fabricate 32bit id from 4 longest keywords
-  $id = 0; 
-  for ($i = 0; isset ($a[$i]) && $i < 4; $i++)
-    {
-      $id <<= 8;
-      $id |= misc_crc8 ($a[$i]) & 0xff;
-    }
-  return $id & 0xffffffff;
-}
-
-
-function
 tv2_f_local ()
 {
   $c = tv2_get_request_value ('c');

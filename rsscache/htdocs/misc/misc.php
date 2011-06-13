@@ -109,6 +109,31 @@ misc_crc24 ($s, $crc = 0xb704ce)
 
 
 function
+misc_related_string_id_sort ($a, $b)
+{
+  return strlen ($b) - strlen ($a);
+}
+
+
+function
+misc_related_string_id ($s)
+{
+  $t = misc_get_keywords ($s, 0); // isalnum
+  $a = explode (' ', $t);
+  usort ($a, 'misc_related_string_sort');
+
+  // fabricate 32bit id from 4 longest keywords
+  $id = 0;
+  for ($i = 0; isset ($a[$i]) && $i < 4; $i++)
+    {
+      $id <<= 8;
+      $id |= misc_crc8 ($a[$i]) & 0xff;
+    }   
+  return $id & 0xffffffff;
+}
+
+
+function
 get_ip ($address)
 {
   // if it isn't a valid IP assume it is a hostname

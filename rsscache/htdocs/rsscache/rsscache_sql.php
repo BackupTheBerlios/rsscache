@@ -524,7 +524,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
 
       // search
       if ($tv2_related_search && $f == 'related')
-        $a[] = 'rsstool_related_id = '.tv2_related_id ($q);
+        $a[] = 'rsstool_related_id = '.misc_related_string_id ($q); // super fast
       else if ($tv2_enable_search)
         {
           $v_any = '';
