@@ -120,7 +120,7 @@ misc_related_string_id ($s)
 {
   $t = misc_get_keywords ($s, 0); // isalnum
   $a = explode (' ', $t);
-  usort ($a, 'misc_related_string_sort');
+  usort ($a, 'misc_related_string_id_sort');
 
   // fabricate 32bit id from 4 longest keywords
   $id = 0;
