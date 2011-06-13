@@ -167,12 +167,12 @@ tv2_sql_normalize ($tv2_sql_db, $d, $c, $f)
   $debug = 0;
 
   // make array contents unique by their title
-  if ($tv2_related_search == 1)
-    if ($f == 'related')
-      if (isset ($d[0]))
-        for ($i = 0; isset ($d[$i + 1]); $i++)
-          while (trim ($d[$i]['rsstool_title']) == trim ($d[$i + 1]['rsstool_title']))
-            $d = array_splice ($d, $i + 1, 1);
+//  if ($tv2_related_search == 1)
+//    if ($f == 'related')
+//      if (isset ($d[0]))
+//        for ($i = 0; isset ($d[$i + 1]); $i++)
+//          while (trim ($d[$i]['rsstool_title']) == trim ($d[$i + 1]['rsstool_title']))
+//            $d = array_splice ($d, $i + 1, 1);
 
   for ($i = 0; isset ($d[$i]); $i++)
     {
@@ -523,7 +523,9 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
         }
 
       // search
-      if ($tv2_enable_search)
+      if ($tv2_related_search && $f == 'related')
+        $a[] = 'rsstool_related_id = '.tv2_related_id ($q);
+      else if ($tv2_enable_search)
         {
           $v_any = '';
           $v_require = '';
@@ -585,12 +587,16 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
         $sql_query_s .= ' ORDER BY rsstool_date DESC';
 
       // limit
-      $sql_query_s .= ' LIMIT '.$start.','.$num;
+      if ($tv2_related_search && $f == 'related')
+        {
+        }
+      else
+        $sql_query_s .= ' LIMIT '.$start.','.$num;
     }
 
   // DEBUG
 //  if ($debug == 1)
-//    echo $sql_query_s;
+//    echo $sql_query_s.'<br>';
   $tv2_sql_db->sql_write ($sql_query_s, 1, $debug);
 
   $d = $tv2_sql_db->sql_read (1, 0 /* $debug */);
