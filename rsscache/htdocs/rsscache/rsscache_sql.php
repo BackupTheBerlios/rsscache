@@ -449,7 +449,9 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
          $tv2_root,
          $tv2_enable_search,
          $tv2_related_search,
-         $tv2_use_dl_date;
+         $tv2_use_dl_date,
+         $tv2_wall_results,
+         $tv2_cloud_results;
   global $tv2_debug_sql;
   $debug = $tv2_debug_sql;
 //  $debug = 1;
@@ -589,6 +591,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $extern = 0)
       // limit
       if ($tv2_related_search && $f == 'related')
         {
+          $sql_query_s .= ' LIMIT '.$tv2_wall_results;
         }
       else
         $sql_query_s .= ' LIMIT '.$start.','.$num;

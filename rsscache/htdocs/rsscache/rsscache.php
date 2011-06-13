@@ -643,7 +643,67 @@ tv2_body ($d_array)
 }
 
 
+function
+tv2_body_maintenance ()
+{
+if (file_exists ('site_config.xml'))
+  {
+    $site_config_xml = simplexml_load_file ('site_config.xml');
+    $p .= ''
+            .'<span class="tv2_site">'
+            .widget_cms (NULL, $site_config_xml, NULL, 4)
+            .'</span>'
+            .'&nbsp;&nbsp;';
+    // form
+    $p .= '<form method="GET" action="?'.http_build_query (array (), true).'"'
+//         .' name="tv2_search_form"' 
+         .' style="display:inline;">';
+
+    // select menu
+    $p .= tv2_select ($c, $site_config_xml);
+
+    $p .= '&nbsp;&nbsp;';
+    $p .= '</form>';
+  }
+
+  $p .= ''
+       .widget_gecko_install ();
+
+  // logo  
+//  $p .= '<div style="float:right;">';
+  $p .= tv2_logo_func ();
+//widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
+//  $p .= widget_button ('?f=qrcode&q=http://'.$_SERVER['SERVER_NAME'], 'http://'.$_SERVER['SERVER_NAME'], NULL, NULL);
+  $p .= ' <img src="?f=qrcode&q=http://'.$_SERVER['SERVER_NAME'].'" style="vertical-align:top;">';
+//  $p .= '</div>'; 
+//  $p .= '<div class="clear;">';
+//  $p .= '</div>';
+
+//  $p .= '<br>';   
+  $p .= '<br>';
+  return $p;
+}
+
+
+
 // main ()
+
+
+// maintenance?
+$p = $tv2_subdomain;
+if ($p == '' || $p == 'www' || $p == 'pwnoogle')
+  $p = 'videos'; // default subdomain 
+$p = $_SERVER['DOCUMENT_ROOT'].'/maintenance_'.$p.'.tmp';
+//echo $p;
+if (file_exists ($p))
+  {
+//    $body = tv2_body_maintenance ();
+//    echo tv2_body_maintenance ();
+    echo 'maintenance - please come back';
+    exit;
+  }
+else
+  {
 
 $f = get_request_value ('f'); // function
 $q = get_request_value ('q'); // search query
@@ -824,6 +884,9 @@ if (file_exists ('images/captcha/'))
   $tv2_captcha = widget_captcha ('images/captcha/');
 
 $body = tv2_body ($d_array);
+}
+
+
 $template_replace = array (
   '<!-- parse:title -->'       => $tv2_title,
   '<!-- parse:icon -->'        => misc_head_tags ($tv2_icon, 0, $tv2_charset),
