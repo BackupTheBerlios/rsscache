@@ -856,9 +856,9 @@ allowfullscreen="true" >
 function
 widget_media_demux ($media_url)
 {
-  $s = strtolower ($s);
+  $s = strtolower ($media_url);
 
-  if (strstr ($s, 'youtube.com'))
+  if (strstr ($s, '.youtube.com'))
     return 1;
   else if (strstr ($s, 'dailymotion.'))
     return 2;
