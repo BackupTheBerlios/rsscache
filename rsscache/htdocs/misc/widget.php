@@ -405,7 +405,6 @@ widget_select_option ($icon, $value, $label, $tooltip, $selected = 0)
     $p .= ' style="background-image:url('.$icon.');'
          .'background-repeat:no-repeat;background-position:left;'
          .'padding-left:18px;'
-//         .'width:16px;'
          .'height:16px;'
          .'"';
 
