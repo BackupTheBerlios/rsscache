@@ -40,7 +40,7 @@ has_webm()
 
 
 function
-playlist_parser ($playlist)
+playlist_parser ($playlist_s)
 {
   // parse m3u, pls, xspf, wpl and return url array
   $a = array ();
@@ -767,98 +767,69 @@ widget_video_liveleak ($video_url, $width=450, $height=370, $autoplay = 0, $hq =
 
 /*
 
-                        # [metacafe] By JockeTF.
-<embed src="http://www.metacafe.com/fplayer/\\1.swf" width="400" height="345" wmode="transparent" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> </embed>';
+// metacafe
+<embed src="http://www.metacafe.com/fplayer/\\1.swf"
+width="400"
+height="345"
+wmode="transparent"
+pluginspage="http://www.macromedia.com/go/getflashplayer"
+type="application/x-shockwave-flash"> </embed>';
 
-<div style="background:#000000;width:440px;height:272px">
-<embed flashVars="playerVars=showStats=yes|autoPlay=no|videoTitle=Study: Indoor Marijuana Cultivation Bad for the Environment" src="http://www.metacafe.com/fplayer/6274472/study_indoor_marijuana_cultivation_bad_for_the_environment.swf" width="440" height="272" wmode="transparent" allowFullScreen="true" allowScriptAccess="always" name="Metacafe_6274472" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash">
+// metacafe 2
+<embed flashVars="playerVars=showStats=yes|autoPlay=no|videoTitle=Study: Indoor Marijuana Cultivation Bad for the Environment"
+src="http://www.metacafe.com/fplayer/6274472/study_indoor_marijuana_cultivation_bad_for_the_environment.swf"
+width="440"
+height="272"
+wmode="transparent"
+allowFullScreen="true"
+allowScriptAccess="always"
+name="Metacafe_6274472"
+pluginspage="http://www.macromedia.com/go/getflashplayer"
+type="application/x-shockwave-flash">
 </embed>
-</div>
-<div style="font-size:12px;">
-<a href="http://www.metacafe.com/watch/6274472/study_indoor_marijuana_cultivation_bad_for_the_environment/#">
-Study: Indoor Marijuana Cultivation Bad for the Environment</a>
- - <a href="http://www.metacafe.com/">
-Funny videos are here</a>
-</div>
 
-
-    'funnyordie' => array(
-        'url' =>
-            'http://www.funnyordie.com/v1/flvideo/fodplayer.swf?file='.
-            'http://funnyordie.vo.llnwd.net/o16/$1.flv&autoStart=false',
-        'default_width'=>425,
-        'default_ratio'=>425/350
-
-
-    'edutopia' => array(
-        'extern' =>
-            '<object id="flashObj" width="$3" height="$4">' .
-                '<param name="movie" value="http://c.brightcove.com/services/viewer/federated_f9?isVid=1&isUI=1" />' .
-                '<param name="flashVars" value="videoId=$2&playerID=85476225001&domain=embed&dynamicStreaming=true" />' .
-                '<param name="base" value="http://admin.brightcove.com" />' .
-                '<param name="allowScriptAccess" value="always" />' .
-                '<embed src="http://c.brightcove.com/services/viewer/federated_f9?isVid=1&isUI=1" ' .
-                    'flashVars="videoId=$2&playerID=85476225001&domain=embed&dynamicStreaming=true" '.
-                    'base="http://admin.brightcove.com" name="flashObj" width="$3" height="$4" '.
-                    'seamlesstabbing="false" type="application/x-shockwave-flash" allowFullScreen="true" ' .
-                    'allowScriptAccess="always" swLiveConnect="true" ' .
-                    'pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash">' .
-                '</embed>' .
-            '</object>',
-        'default_width' => 326,
-        'default_ratio' => 326/399,
-
+// divshare
     'divshare' => array(
         'url' => 'http://www.divshare.com/flash/video2?myId=$1',
         'default_width'=>425,
         'default_ratio'=>425/350
 
-    'interia' => array(
-        'url' => 'http://video.interia.pl/i/players/iVideoPlayer.05.swf?vid=$1',
-        'default_width'=>425,
-        'default_ratio'=>425/350
-
+// revver
     'revver' => array(
         'url' => 'http://flash.revver.com/player/1.0/player.swf?mediaId=$1',
         'default_width'=>425,
         'default_ratio'=>425/350
-                        # [revver] By JockeTF.
-<embed type="application/x-shockwave-flash" src="http://flash.revver.com/player/1.0/player.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" scale="noScale" salign="TL" bgcolor="#000000" flashvars="mediaId=\\1&affiliateId=0&allowFullScreen=true" allowfullscreen="true" height="392" width="480">
 
+// revver 2 
+<embed type="application/x-shockwave-flash"
+src="http://flash.revver.com/player/1.0/player.swf"
+pluginspage="http://www.macromedia.com/go/getflashplayer"
+scale="noScale"
+salign="TL"
+bgcolor="#000000"
+flashvars="mediaId=\\1&affiliateId=0&allowFullScreen=true"
+allowfullscreen="true"
+height="392"
+width="480"></embed>
+
+// sevenload
     'sevenload' => array(
         'url' => 'http://page.sevenload.com/swf/en_GB/player.swf?id=$1',
         'default_width'=>425,
         'default_ratio'=>425/350
 
-    'teachertube' => array(
-        'extern' =>
-            '<embed src="http://www.teachertube.com/embed/player.swf" ' .
-                'width="$3" ' .
-                'height="$4" ' .
-                'bgcolor="undefined" ' .
-                'allowscriptaccess="always" ' .
-                'allowfullscreen="true" ' .
-                'flashvars="file=http://www.teachertube.com/embedFLV.php?pg=video_$2' .
-                    '&menu=false' .
-                    '&frontcolor=ffffff&lightcolor=FF0000' .
-                    '&logo=http://www.teachertube.com/www3/images/greylogo.swf' .
-                    '&skin=http://www.teachertube.com/embed/overlay.swf volume=80' .
-                    '&controlbar=over&displayclick=link' .
-                    '&viral.link=http://www.teachertube.com/viewVideo.php?video_id=$2' .
-                    '&stretching=exactfit&plugins=viral-2' .
-                    '&viral.callout=none&viral.onpause=false' .
-                '"' .
-            '/>',
-
-
+// youtubehd
     'youtubehd' => array(
         'url' => 'http://www.youtube.com/v/$1&ap=%2526fmt%3D22',
         'default_width' => 720,
         'default_ratio' => 16/9
 
+// vimeo
     'vimeo' => array(
         'url'=>'http://vimeo.com/moogaloop.swf?clip_id=$1&;server=vimeo.com&fullscreen=0&show_title=1&show_byline=1&show_portrait=0'
 
+
+// ustream 
 <object width="480" height="386" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000">
   <param name="flashvars" value="cid=4738711&autoplay=false"/>
   <param name="allowfullscreen" value="true"/>
@@ -867,6 +838,17 @@ Funny videos are here</a>
   <embed flashvars="cid=4738711&autoplay=false" width="480" height="386" allowfullscreen="true" allowscriptaccess="always" src="http://www.ustream.tv/flash/viewer.swf" type="application/x-shockwave-flash">
 </embed>
 </object>
+
+// blip tv
+<embed src="http://blip.tv/play/AYLB6yAC"
+type="application/x-shockwave-flash"
+width="480"
+height="300"
+wmode="transparent"
+allowscriptaccess="always"
+allowfullscreen="true" >
+</embed>
+
 */
 
 
@@ -874,49 +856,57 @@ Funny videos are here</a>
 function
 widget_media_demux ($media_url)
 {
-  if (strstr ($media_url, '.youtube.com'))
-    return 1;
-  else if (strstr ($media_url, '.dailymotion.'))
-    return 2;
-  else if (strstr ($media_url, '.xfire.com'))
-    return 3;
-  else if (in_array (strtolower (get_suffix ($media_url)), array ('.flv', '.mp4', '.mp3')))
-    return 4; // jwplayer or flowplayer
-  else if (in_array (strtolower (get_suffix ($media_url)), array ('.webm', '.ogg')))
-    return 5; // <video>
-  else if (in_array (strtolower (get_suffix ($media_url)), array ('.weba', '.wav')))
-    return 6; // <audio>
-  else if (strstr ($media_url, '.veoh.com'))
-    return 7;
-  else if (strstr ($media_url, 'xvideos.com'))
-    return 8;
-  else if (strstr ($media_url, 'xxxbunker.com'))
-    return 9;
-  else if (strstr ($media_url, 'video.google'))
-    return 10;
-  else if (strstr ($media_url, 'tnaflix.com'))
-    return 11;
-  else if (strstr ($media_url, 'own3d.tv'))
-    return 12;
-  else if (strstr ($media_url, 'archive.org'))
-    return 13;
-  else if (in_array (strtolower (get_suffix ($media_url)), array ('.jpg', '.png', '.webp', '.gif')))
-    return 14; // <img>
-  else if (strstr ($media_url, 'liveleak.com'))
-    return 15;
-//    'divshare' => array(
-//    'edutopia' => array(
-//    'funnyordie' => array(
-//    'interiavideo' => array(
-//    'interia' => array(
-//    'revver' => array(
-//    'sevenload' => array(
-//    'teachertube' => array(
-//    'youtubehd' => array(
-//    'vimeo' => array(
-//    # [metacafe] By JockeTF.
+  $s = strtolower ($s);
 
-  return 0;
+  if (strstr ($s, 'youtube.com'))
+    return 1;
+  else if (strstr ($s, 'dailymotion.'))
+    return 2;
+  else if (strstr ($s, 'xfire.com'))
+    return 3;
+  else if (in_array (get_suffix ($s), array ('.flv', '.mp4', '.mp3')))
+    return 4; // jwplayer or flowplayer
+  else if (in_array (get_suffix ($s), array ('.webm', '.ogg')))
+    return 5; // <video>
+  else if (in_array (get_suffix ($s), array ('.weba', '.wav')))
+    return 6; // <audio>
+  else if (strstr ($s, 'veoh.com'))
+    return 7;
+  else if (strstr ($s, 'xvideos.com'))
+    return 8;
+  else if (strstr ($s, 'xxxbunker.com'))
+    return 9;
+  else if (strstr ($s, 'video.google'))
+    return 10;
+  else if (strstr ($s, 'tnaflix.com'))
+    return 11;
+  else if (strstr ($s, 'own3d.tv'))
+    return 12;
+  else if (strstr ($s, 'archive.org'))
+    return 13;
+  else if (in_array (get_suffix ($s), array ('.jpg', '.png', '.webp', '.gif')))
+    return 14; // <img>
+  else if (strstr ($s, 'liveleak.com'))
+    return 15;
+  else if (strstr ($s, 'justin.tv'))
+    return 16;
+/*
+  else if (strstr ($s, 'metacafe.com'))
+    return 17;
+  else if (strstr ($s, 'divshare.com'))
+    return 18;
+  else if (strstr ($s, 'revver.com'))
+    return 19;
+  else if (strstr ($s, 'sevenload.com'))
+    return 20;
+  else if (strstr ($s, 'vimeo.com'))
+    return 21;
+  else if (strstr ($s, 'ustream.tv'))
+    return 22;
+  else if (strstr ($s, 'blip.tv'))
+    return 23;
+*/
+  return 0; // not supported
 }
 
 
@@ -942,6 +932,18 @@ widget_media_demux_func ($media_url)
          'widget_video_archive',
          'widget_image_html4',
          'widget_video_liveleak',
+
+         'widget_video_justintv',
+/*
+         'widget_video_metacafe',
+         'widget_video_divshare',  
+         'widget_video_revver',
+         'widget_video_sevenload',
+
+         'widget_video_vimeo',
+         'widget_video_ustreamtv',  
+         'widget_video_bliptv',
+*/
 );
   if ($demux > 0)
     if (isset ($a[$demux - 1])) 
