@@ -36,7 +36,7 @@ get_hostname ()
 
 $tv2_domain = get_hostname ();
 // DEBUG
-//echo '$tv2_domain=='.$tv2_domain."<br>\n";
+echo '$tv2_domain=='.$tv2_domain."<br>\n";
 
 
 function
