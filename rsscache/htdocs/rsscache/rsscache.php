@@ -379,15 +379,17 @@ tv2_body_header ($d_array)
          $tv2_use_database,
          $tv2_collapsed,
          $tv2_enable_search_extern;
+  global $tv2_site_config_xml;
   global $config;
   global $f, $c, $q, $v, $start, $num, $captcha;
 
   $p = '';
 
 // site links at the top
-if (file_exists ('site_config.xml'))
+if ($tv2_site_config_xml)
+if (file_exists ($tv2_site_config_xml))
   {
-    $site_config_xml = simplexml_load_file ('site_config.xml');
+    $site_config_xml = simplexml_load_file ($tv2_site_config_xml);
     $p .= ''
             .'<span class="tv2_site">'
             .widget_cms (NULL, $site_config_xml, NULL, 4)
@@ -553,6 +555,7 @@ tv2_body ($d_array)
          $tv2_related_search,
          $tv2_use_database,
          $tv2_collapsed;
+  global $tv2_func_config_xml;
   global $config;
   global $f, $c, $q, $v, $start, $num, $captcha;
 
@@ -587,9 +590,10 @@ tv2_body ($d_array)
               $tv2_title .= $d_array[0]['rsstool_title'];
             }
 
-          if (file_exists ('func_config.xml'))
+          if ($tv2_func_config_xml)
+          if (file_exists ($tv2_func_config_xml))
             {
-              $func_config_xml = simplexml_load_file ('func_config.xml');
+              $func_config_xml = simplexml_load_file ($tv2_func_config_xml);
               $p .= ''
                    .'<div class="tv2_func">'
                    .widget_cms (NULL, $func_config_xml, http_build_query (array ('f' => $f, 'c' => $c), false), 4)
@@ -643,49 +647,6 @@ tv2_body ($d_array)
 }
 
 
-function
-tv2_body_maintenance ()
-{
-if (file_exists ('site_config.xml'))
-  {
-    $site_config_xml = simplexml_load_file ('site_config.xml');
-    $p .= ''
-            .'<span class="tv2_site">'
-            .widget_cms (NULL, $site_config_xml, NULL, 4)
-            .'</span>'
-            .'&nbsp;&nbsp;';
-    // form
-    $p .= '<form method="GET" action="?'.http_build_query (array (), true).'"'
-//         .' name="tv2_search_form"' 
-         .' style="display:inline;">';
-
-    // select menu
-    $p .= tv2_select ($c, $site_config_xml);
-
-    $p .= '&nbsp;&nbsp;';
-    $p .= '</form>';
-  }
-
-  $p .= ''
-       .widget_gecko_install ();
-
-  // logo  
-//  $p .= '<div style="float:right;">';
-  $p .= tv2_logo_func ();
-//widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
-//  $p .= widget_button ('?f=qrcode&q=http://'.$_SERVER['SERVER_NAME'], 'http://'.$_SERVER['SERVER_NAME'], NULL, NULL);
-  $p .= ' <img src="?f=qrcode&q=http://'.$_SERVER['SERVER_NAME'].'" style="vertical-align:top;">';
-//  $p .= '</div>'; 
-//  $p .= '<div class="clear;">';
-//  $p .= '</div>';
-
-//  $p .= '<br>';   
-  $p .= '<br>';
-  return $p;
-}
-
-
-
 // main ()
 
 
@@ -697,8 +658,6 @@ $p = $_SERVER['DOCUMENT_ROOT'].'/maintenance_'.$p.'.tmp';
 //echo $p;
 if (file_exists ($p))
   {
-//    $body = tv2_body_maintenance ();
-//    echo tv2_body_maintenance ();
     echo 'maintenance - please come back';
     exit;
   }
