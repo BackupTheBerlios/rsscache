@@ -121,7 +121,9 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
             $selected = 0;
     }
 
+/*
   if ($link_suffix)
+    if (trim ($link_suffix) != '')
     {
        $t = array ();
        parse_str ($query, $t[0]);
@@ -129,6 +131,7 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
        $a = array_merge ($t[1], $t[0]);
        $query = http_build_query2 ($a, false);
     }
+*/
 
 //  if ($selected)
 //    $p .= '<span class="tooltip"';
@@ -140,8 +143,7 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
       else
         $p .= ' class="tooltip"';
 //      if (!strncasecmp ($query, 'http://', 7))
-      if (strstr ($query, '://') ||
-          !strncasecmp ($query, 'mailto:', 7))
+      if (strstr ($query, '://') || !strncasecmp ($query, 'mailto:', 7))
         $p .= ' href="'.$query.'"';
       else
         $p .= ' href="?'.$query.'"';

@@ -590,6 +590,11 @@ tv2_body ($d_array)
               $tv2_title .= $d_array[0]['rsstool_title'];
             }
 
+if ($f == 'fullscreen' || $f == 'popout')
+  {
+  }
+else
+  {
           if ($tv2_func_config_xml)
           if (file_exists ($tv2_func_config_xml))
             {
@@ -601,8 +606,8 @@ tv2_body ($d_array)
 ;
               $p .= '<div class="clear"></div>';
             }
-
-      if ($f == 'fullscreen') // just fullscreen
+  }
+      if ($f == 'fullscreen' || $f == 'popout') // just the player
         $p .= tv2_player ($d_array[0]);
       else if ($f == 'cloud' || $f == 'wall') // show as cloud
         {
@@ -661,8 +666,6 @@ if (file_exists ($p))
     echo 'maintenance - please come back';
     exit;
   }
-else
-  {
 
 $f = get_request_value ('f'); // function
 $q = get_request_value ('q'); // search query
@@ -752,14 +755,6 @@ if ($f == 'read' ||
 
     exit;
   }
-/*
-if ($f == 'fullscreen')
-  {
-    $a = misc_get_browser_config ();
-    setcookie ('w', $a['w'], $tv2_cookie_expire);
-    setcookie ('h', $a['h'], $tv2_cookie_expire);
-  }
-*/
 
 // RSS only
     if ($tv2_use_database == 1)
@@ -843,9 +838,30 @@ if (file_exists ('images/captcha/'))
   $tv2_captcha = widget_captcha ('images/captcha/');
 
 $body = tv2_body ($d_array);
-}
+if ($f == 'fullscreen' || $f == 'popout')
+  {
+$template_replace = array (
+  '<!-- parse:title -->'       => $tv2_title,
+  '<!-- parse:icon -->'        => misc_head_tags ($tv2_icon, 0, $tv2_charset),
+  '<!-- parse:head_seo -->'    => misc_seo_description ($body),
+  '<!-- parse:head_tag -->'    => $tv2_head_tag,
+  '<!-- parse:body_tag -->'    => $tv2_body_tag,
+  '<!-- parse:body_header -->' => '',
+  '<!-- parse:body -->'        => $body,
+  '<!-- parse:body_footer -->' => '',
+  '<!-- parse:head_rss -->'    =>
+    ($tv2_rss_head ? misc_head_rss ($tv2_title, '?'.http_build_query2 (array ('f' => 'rss'), true)) : '')
+);
 
-
+if (file_exists ('tv2_popout.html'))
+  $template = file_get_contents ('tv2_popout.html');
+else
+  $template = file_get_contents ('tv2/tv2_popout.html');
+$p = misc_template ($template, $template_replace);
+$p = misc_template ($p, $tv2_translate[$tv2_language ? $tv2_language : 'default']);
+  }
+else
+  {
 $template_replace = array (
   '<!-- parse:title -->'       => $tv2_title,
   '<!-- parse:icon -->'        => misc_head_tags ($tv2_icon, 0, $tv2_charset),
@@ -865,6 +881,8 @@ else
   $template = file_get_contents ('tv2/tv2_index.html');
 $p = misc_template ($template, $template_replace);
 $p = misc_template ($p, $tv2_translate[$tv2_language ? $tv2_language : 'default']);
+  }
+
 
 // the _only_ echo
 if ($use_gzip == 1)
