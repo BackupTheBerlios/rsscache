@@ -559,7 +559,7 @@ widget_collapse ($label, $s, $collapsed = 0)
 //       .'</span>'
 ;
   if ($label != '')
-    $p .= ' <a href="javascript:void(0);" onclick="'.$j.'">'.$label.'</a>:';
+    $p .= ' <a href="javascript:void(0);" onclick="'.$j.'">'.$label.'</a>';
 
   $p .= '<br>';
 

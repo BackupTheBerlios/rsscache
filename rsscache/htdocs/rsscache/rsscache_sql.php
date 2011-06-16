@@ -118,7 +118,7 @@ tv2_sql_stats ($category = NULL)
   $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
   $r = $tv2_sql_db->sql_read (0, $debug);
   if (isset ($r[0]))
-    $stats['days'] = (int) ((time () - (int) $r[0][0]) / 86400);
+    $stats['days'] = (int) (($tv2_time - (int) $r[0][0]) / 86400);
 */
 /*
   if ($category)
@@ -159,7 +159,7 @@ tv2_sql_stats ($category = NULL)
 
 
 function
-tv2_sql_normalize ($tv2_sql_db, $d, $c, $f)
+tv2_sql_normalize ($d)
 {
   global $tv2_root,
          $tv2_link,
@@ -462,7 +462,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 
       // functions
       if ($f == 'new')
-        $a[] = 'rsstool_dl_date > '.(time () - $tv2_isnew).'';
+        $a[] = 'rsstool_dl_date > '.($tv2_time - $tv2_isnew).'';
       else if ($f == '0_5min')
         $a[] = 'rsstool_media_duration BETWEEN 0 AND 301';
       else if ($f == '5_10min')
@@ -488,9 +488,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 
       // limit
       if ($tv2_related_search && $f == 'related')
-        {
-          $sql_query_s .= ' LIMIT '.$tv2_wall_results;
-        }
+        $sql_query_s .= ' LIMIT '.$tv2_wall_results;
       else
         $sql_query_s .= ' LIMIT '.$start.','.$num;
     }
@@ -502,7 +500,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 
   $d = $tv2_sql_db->sql_read (1, 0 /* $debug */);
 
-  $d = tv2_sql_normalize ($tv2_sql_db, $d, $c, $f);
+  $d = tv2_sql_normalize ($d);
 
   // DEBUG
 //  echo '<tt><pre>';
@@ -578,31 +576,51 @@ tv2_sql_extern ($q, $start, $num)
   $links = trim (strip_tags (urldecode ($links)));
   if ($links == '')
     $links = $tv2_feature;
-  $a = explode (' ', urldecode ($links));
-  $v = array ();
+  $links = str_replace ("\n", ' ', $links);
+  $a = explode (' ', $links);
+  $d = array ();
   for ($i = 0; isset ($a[$i]); $i++)
     {
       $p = trim ($a[$i]);
-      if ($p != '')
-        {
+      if ($p == '')
+        continue;
+
           $p = youtube_get_videoid ($p);
-          if ($p != '')
-            $v[] = 'http://www.youtube.com/watch?v='.$p;
-        }
+            $d[] = array ('rsstool_url' => 'http://www.youtube.com/watch?v='.$p,
+                          'rsstool_url_crc32' => sprintf ("%u", crc32 ('http://www.youtube.com/watch?v='.$p)),
+                          'rsstool_title' => 'title',
+                          'rsstool_desc' => 'desc',
+                          'rsstool_dl_date' => $tv2_time,
+                          'rsstool_date' => $tv2_time,
+                          'tv2_moved' => '',
+                          'rsstool_media_duration' => 0,
+                          'rsstool_keywords' => '',
+);
     }
 
   if ($v_stripdir)
-      {
-        $a = tv2_stripdir ($v_stripdir, $start, $num);
-        for ($i = 0; isset ($a[$start + $i]) && $i < $num; $i++)
-          $v[] = $a[$start + $i];
-      }
+    {
+      $a = tv2_stripdir ($v_stripdir, $start, $num);
+      for ($i = 0; isset ($a[$start + $i]) && $i < $num; $i++)
+        $d[] = array ('rsstool_url' => $a[$start + $i],
+                      'rsstool_url_crc32' => sprintf ("%u", crc32 ($a[$start + $i])),
+                      'rsstool_title' => 'title',
+                      'rsstool_desc' => 'desc',
+                      'rsstool_dl_date' => $tv2_time,
+                      'rsstool_date' => $tv2_time,
+                      'tv2_moved' => '',
+                      'rsstool_media_duration' => 0,
+                      'rsstool_keywords' => '',
+);
+    }
+
+  $d = tv2_sql_normalize ($d);
 
   // DEBUG
 //  echo '<pre><tt>';
-//  print_r ($v);
+//  print_r ($d);
 
-  return $v;
+  return $d;
 }
 
 
