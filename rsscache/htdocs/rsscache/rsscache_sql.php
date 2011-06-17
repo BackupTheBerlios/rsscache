@@ -420,7 +420,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 
   // DEBUG
 //  if ($debug == 1)
-    echo $sql_query_s.'<br>';
+//    echo $sql_query_s.'<br>';
   $tv2_sql_db->sql_write ($sql_query_s, 1, $debug);
 
   $debug = 0;
