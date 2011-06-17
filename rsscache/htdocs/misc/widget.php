@@ -121,18 +121,6 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
             $selected = 0;
     }
 
-/*
-  if ($link_suffix)
-    if (trim ($link_suffix) != '')
-    {
-       $t = array ();
-       parse_str ($query, $t[0]);
-       parse_str ($link_suffix, $t[1]);
-       $a = array_merge ($t[1], $t[0]);
-       $query = http_build_query2 ($a, false);
-    }
-*/
-
 //  if ($selected)
 //    $p .= '<span class="tooltip"';
 //  else
@@ -146,7 +134,18 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
       if (strstr ($query, '://') || !strncasecmp ($query, 'mailto:', 7))
         $p .= ' href="'.$query.'"';
       else
-        $p .= ' href="?'.$query.'"';
+        {
+  if ($link_suffix)
+    {
+       $t = array ();
+       parse_str ($query, $t[0]);
+       parse_str ($link_suffix, $t[1]);
+       $a = array_merge ($t[1], $t[0]);
+       $query = http_build_query2 ($a, false);
+    }
+
+          $p .= ' href="?'.$query.'"';
+        }
 
       $p .= ''
 //           .' title="'.$tooltip.'"'
@@ -173,8 +172,8 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 //      if (!($selected))
 //        $s .= ' style="opacity:0.5;"';
 
-      if ($flags & WIDGET_BUTTON_SMALL)
-        $s .= ' height="16"';
+//      if ($flags & WIDGET_BUTTON_SMALL)
+//        $s .= ' height="16"';
       $s .= ''
            .' onerror="this.parentNode.removeChild(this);"'
            .'>';
@@ -358,7 +357,7 @@ widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
             {
               $s .= '<img src="'.$category->logo.'" border="0" alt=""';
 //              if ($flags & WIDGET_BUTTON_SMALL)
-                $s .= ' height="16"';
+//                $s .= ' height="16"';
               $s .= ''
                    .' onerror="this.parentNode.removeChild(this);"'
                    .'>';

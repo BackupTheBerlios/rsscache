@@ -568,8 +568,8 @@ tv2_body ($d_array)
     $p .= tv2_f_wiki ();
   else if (isset ($category->localwiki))
     $p .= tv2_f_localwiki ();
-//  else if ($f == 'stats') // show stats of RSS downloads
-//    $p .= tv2_f_stats ();
+  else if ($f == 'stats')
+    $p .= tv2_stats_rss ();
   else if ($d_array)
     {
       // DEBUG
@@ -871,6 +871,24 @@ $template_replace = array (
   '<!-- parse:body_footer -->' => tv2_body_footer ($d_array),
   '<!-- parse:head_rss -->'    =>
     ($tv2_rss_head ? misc_head_rss ($tv2_title, '?'.http_build_query2 (array ('f' => 'rss'), true)) : '')
+//   .($tv2_rss_head ? misc_head_rss ('stats', '?'.http_build_query2 (array ('f' => 'stats'), true)) : '')
+/*
+  $config = config_xml ();
+
+  $p = '';
+
+  // items total
+  $p .= ''  
+       .'<a href="?'.http_build_query2 (array ('f' => 'stats'), true).'">'
+//       .'<span style="color:#bbb;">'
+       .$config->items.' <!-- lang:items -->';
+
+  // days total
+  $p .= '&nbsp;&nbsp;'.$config->days.' <!-- lang:days -->'
+     .'</a>'
+;
+
+*/
 );
 
 if (file_exists ('tv2_index.html'))

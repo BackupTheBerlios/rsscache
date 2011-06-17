@@ -301,6 +301,34 @@ tv2_normalize ($category)
 
 
 function
+tv2_stats_rss ()
+{
+  $config = config_xml ();
+
+  $s = '<img src="images/new.png" border="0">';
+
+  $p = '';
+
+  for ($i = 0; isset ($config->category[$i]); $i++)
+    if ($config->category[$i]->name != '' &&
+        (isset ($config->category[$i]->feed[0]->link[0]) || isset ($config->category[$i]->feed[0]->link_prefix)))
+      {
+      $category = $config->category[$i];
+      $p .= '<div style="text-align:left;width:50%;">'
+           .tv2_button ($category).'<br>'
+           .$category->items.' <!-- lang:items --><br>'
+           .$category->items_today.' <!-- lang:items --> <!-- lang:today -->'.($category->items_today > 0 ? ' '.$s : '').'<br>'
+           .$category->items_7_days.' <!-- lang:items --> <!-- lang:last --> 7 <!-- lang:days --><br>'
+           .$category->items_30_days.' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
+           .$category->days.' <!-- lang:days --> <!-- lang:since creation of category --><br><br>'
+           .'</div>'
+;
+      }
+  return $p;
+}
+
+
+function
 tv2_rss ($d_array)
 {
   global $tv2_link;

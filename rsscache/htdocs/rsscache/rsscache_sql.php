@@ -425,6 +425,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
       // search
       if ($tv2_related_search && $f == 'related')
         $a[] = 'rsstool_related_id = '.misc_related_string_id ($q); // super fast
+/*
       else if ($tv2_enable_search)
         {
           $v_any = '';
@@ -459,7 +460,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
           if ($s != NULL)
             $a[] = $s;
         }
-
+*/
       // functions
       if ($f == 'new')
         $a[] = 'rsstool_dl_date > '.($tv2_time - $tv2_isnew).'';
