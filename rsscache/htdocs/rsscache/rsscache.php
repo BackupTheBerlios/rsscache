@@ -11,35 +11,16 @@ require_once ('misc/misc.php');
 //require_once ('misc/widget.php');
 // language settings
 if (isset ($tv2_lang_php)) 
-//  if (file_exists ($tv2_lang_php))
-    include ($tv2_lang_php);
+  include ($tv2_lang_php);
 else
   include ('tv2/tv2_lang.php');
 // includes AKA hooks
 if (isset ($tv2_include_php))
-//  if (file_exists ($tv2_include_php))
-    include ($tv2_include_php);
+  include ($tv2_include_php);
 else
   include ('tv2/tv2_include.php');
 require_once ('tv2_output.php');
 require_once ('tv2_misc.php');
-
-
-//$t_ms = time_ms ();
-
-
-function
-tv2_highlight ($s)
-{
-//  $q = get_request_value ('q');
-  // highlight search words
-//  $a = explode (array (' ', '+'), $q);
-  // DEBUG
-//  print_r ($a);
-//  for ($i = 0; isset ($a[$i]); $i++)
-//    $s = str_ireplace ($a[$i], '<span class="tv2_highlight">'.$a[$i].'</span>', $s);
-  return $s;
-}
 
 
 function
@@ -420,8 +401,9 @@ if (file_exists ($tv2_site_config_xml))
 //  $p .= '<div class="clear;">';
 //  $p .= '</div>';
 
-//  $p .= '<br>';
-  $p .= '<br>';
+  $p .= '<br>'
+//       .'<br>'
+;  
 
   // category buttons
   if ($tv2_collapsed == 2) // never
@@ -450,24 +432,24 @@ if (file_exists ($tv2_site_config_xml))
   // logo
 //  $p .= tv2_logo_func ();
 
-  if ($f != 'mirror' && 
-      $tv2_enable_search)
+  if ($f != 'mirror')
     {
-      $p .= tv2_search_form ();
-    }
+      if ($tv2_enable_search == 1)
+        $p .= tv2_search_form ();
 
-  if ($f != 'mirror' &&
-      $tv2_enable_search_extern)
-    {
-      $s = tv2_search_extern ($d_array);
-      $p .= widget_collapse ('Advanced search', $s, 1);
-      $p .= '<br>';
+      if ($tv2_enable_search_extern == 1)
+        $p .= widget_collapse ('<!-- lang:Extern search -->', tv2_search_extern ($d_array), 1);
+      else if ($tv2_enable_search_extern == 2)
+        $p .= '<br>'.tv2_search_extern ($d_array);
     }
-//  $p .= '<br>';
+  $p .= '<br>';
 
   // show page-wise navigation (top)
-  if (!$v && $f != 'mirror')
-    $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
+  if ($f != 'mirror') 
+    {
+      if (!$v)
+        $p .= ' '.tv2_page ($start, $num, sizeof ($d_array));
+    }
 
   return $p;
 }
@@ -905,7 +887,7 @@ if ($use_gzip == 1)
   echo_gzip ($p);
 else echo $p;
 
-    if ($tv2_use_database == 1)
+if ($tv2_use_database == 1)
   tv2_sql_close ();
 
 // use memcache

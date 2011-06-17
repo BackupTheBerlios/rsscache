@@ -301,6 +301,20 @@ tv2_normalize ($category)
 
 
 function
+tv2_highlight ($s)
+{
+//  $q = get_request_value ('q');
+  // highlight search words
+//  $a = explode (array (' ', '+'), $q);
+  // DEBUG
+//  print_r ($a);
+//  for ($i = 0; isset ($a[$i]); $i++)
+//    $s = str_ireplace ($a[$i], '<span class="tv2_highlight">'.$a[$i].'</span>', $s);
+  return $s;
+}
+
+
+function
 tv2_stats_rss ()
 {
   $config = config_xml ();

@@ -39,6 +39,7 @@ tv2_sql_close ()
 function
 tv2_sql_move ($rsstool_url_crc32, $new_category)
 {
+/*
   // move item to different category
   global $tv2_sql_db;
   $debug = 0;
@@ -47,12 +48,14 @@ tv2_sql_move ($rsstool_url_crc32, $new_category)
                 .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32);
 
   $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
+*/
 }
 
 
 function
 tv2_sql_vote ($rsstool_url_crc32, $new_score)
 {
+/*
   global $tv2_sql_db;
   $debug = 0;
 
@@ -70,12 +73,14 @@ tv2_sql_vote ($rsstool_url_crc32, $new_score)
                 .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32);
 
   $tv2_sql_db->sql_write ($p, 1, $debug);
+*/
 }
 
 
 function
 tv2_sql_restore ($rsstool_url_crc32)
 {
+/*
   // restore original category
   global $tv2_sql_db;
   $debug = 0;
@@ -84,6 +89,7 @@ tv2_sql_restore ($rsstool_url_crc32)
                 .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32);
 
   $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
+*/
 }
 
 
@@ -166,21 +172,10 @@ tv2_sql_normalize ($d)
          $tv2_related_search;
   $debug = 0;
 
-  // make array contents unique by their title
-//  if ($tv2_related_search == 1)
-//    if ($f == 'related')
-//      if (isset ($d[0]))
-//        for ($i = 0; isset ($d[$i + 1]); $i++)
-//          while (trim ($d[$i]['rsstool_title']) == trim ($d[$i + 1]['rsstool_title']))
-//            $d = array_splice ($d, $i + 1, 1);
-
   for ($i = 0; isset ($d[$i]); $i++)
     {
       // demux
       $d[$i]['tv2_demux'] = widget_media_demux ($d[$i]['rsstool_url']);
-
-      // TODO: search highlights
-//      $d[$i]['highlight'] = array ();
     }
 
   return $d;
@@ -270,86 +265,16 @@ tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL)
 
 
 function
-tv2_sql_query2boolean_escape_func ($s)
-{
-  if (strlen (trim ($s, ' +-')) < 4)
-//  if (strlen (trim ($s)) < 4)
-    return false;
-
-  for ($i = 0; $i < strlen ($s); $i++)
-    if (!isalnum ($s[$i]) && !in_array ($s[$i], array ('-', '+', /* '(', ')', '"' */)))
-      return false;
- 
-  return true;
-}
-  
-
-function
-tv2_sql_query2boolean_escape ($s)
-{
-  $a = explode (' ', strtolower ($s));
-  for ($i = 0; isset ($a[$i]); $i++)
-    $a[$i] = trim ($a[$i]);
-  // TODO: more sensitivity instead of array_filter()
-  $a = array_filter ($a, 'tv2_sql_query2boolean_escape_func');
-  $a = misc_array_unique_merge ($a);
-  
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($a);
-
-  $s = implode (' ', $a);
-  $s = trim ($s);
-
-  return $s;
-}
-
-
-function
-tv2_sql_query2boolean ($q)
-{
-  /*
-    parses google style search query into
-      boolean full-text search query
-
-    IMPORTANT: replaces mysql_real_escape_string()
-  */
-
-  global $tv2_debug_sql;
-  $debug = $tv2_debug_sql;
-
-  /*
-    google style
-
-    ALL of these words: test1 test2
-    the exact wording or phrase: "test3  " "test4  "
-    ONE OR MORE of these words: test5 OR test6
-    ANY of these unwanted words: -test7 -test8
-
-    1) test1 test2 test5 OR test6 "test3  " "test4  " -test7 -test8
-
-    2) http://www.google.com/search?q=test1+test2+test5+OR+test6+%22test3++%22+%22test4++%22+-test7+-test8
-  */
-
-  $p = str_ireplace (' OR ', ' ', $q);
-  $p = str_ireplace ('\\', '', $p); // unescape query
-  $p = tv2_sql_query2boolean_escape ($p); 
-  $match = $p;
-
-  // DEBUG
-  if ($debug)
-    echo '<pre><tt>'
-        .'query: "'.$q.'"'."\n"
-//        .sprint_r ($a)."\n"
-        .'match: \''.$match.'\''."\n";
-
-  return $match;
-}
-
-
-function
 tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 {
+  /*
+    $c == category
+    $q == query
+    $f == function
+    $v == video (rsstool_url_crc32)
+    LIMIT $start, $num
+    $table_suffix is optional and set in config.xml
+  */
   global $tv2_sql_db,
          $tv2_isnew,
          $tv2_root,
@@ -410,7 +335,6 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 //  if ($q)
 //    {
       // filter
-// TODO: merge filter with require, exclude code, etc.
       $filter = NULL;
       if ($c)
         {
@@ -496,10 +420,11 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 
   // DEBUG
 //  if ($debug == 1)
-//    echo $sql_query_s.'<br>';
+    echo $sql_query_s.'<br>';
   $tv2_sql_db->sql_write ($sql_query_s, 1, $debug);
 
-  $d = $tv2_sql_db->sql_read (1, 0 /* $debug */);
+  $debug = 0;
+  $d = $tv2_sql_db->sql_read (1, $debug);
 
   $d = tv2_sql_normalize ($d);
 
@@ -514,7 +439,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 function
 tv2_sql_extern ($q, $start, $num)
 {
-  // like tv2_sql() but uses the youtube db instead ;)
+  // wrapper for searching other websites
+  //   interchangeable with tv2_sql()
   global $tv2_feature;
   global $tv2_tor_enabled;
 
@@ -532,30 +458,33 @@ tv2_sql_extern ($q, $start, $num)
 
   // search
   if ($q)
-      {
-        $s = $q;
-        if ($v_segments)
-          if ($v_segments != '')
-            {
-              $s .= ' +(part OR pl';
-              for ($i = 0; $i < 20; $i++)
-                $s .= ' OR "'.($i + 1).'/"';
-              $s .= ')';
-            }
-        $rss = youtube_get_rss ($s, NULL, NULL, $tv2_tor_enabled);
+    {
+      $s = $q;
+      if ($v_segments)
+        if ($v_segments != '')
+          {
+            $s .= ' +(part OR pl';
+            for ($i = 0; $i < 20; $i++)
+              $s .= ' OR "'.($i + 1).'/"';
+            $s .= ')';
+          }
+      $rss = youtube_get_rss ($s, NULL, NULL, $tv2_tor_enabled);
 
-        for ($i = 0; isset ($rss->channel->item[$start + $i]) && $i < $num; $i++)
-          if (isset ($rss->channel->item[$start + $i]->link))
-            $links .= ' '.$rss->channel->item[$start + $i]->link;
-      }
+      for ($i = 0; isset ($rss->channel->item[$start + $i]) && $i < $num; $i++)
+        if (isset ($rss->channel->item[$start + $i]->link))
+          $links .= ' '.$rss->channel->item[$start + $i]->link;
+    }
 
   if ($v_user)
       {
-        $rss = youtube_get_rss ($s, trim ($v_user), NULL, $tv2_tor_enabled);
-
+        $rss = youtube_get_rss (NULL, trim ($v_user), NULL, $tv2_tor_enabled);
+  // DEBUG
+//  echo '<pre><tt>';
+//print_r ($rss);
         for ($i = 0; isset ($rss->channel->item[$start + $i]) && $i < $num; $i++)
           if (isset ($rss->channel->item[$start + $i]->link))
             $links .= ' '.$rss->channel->item[$start + $i]->link;
+//echo $start;
       }
 
   if ($v_playlist_id)
@@ -618,13 +547,11 @@ tv2_sql_extern ($q, $start, $num)
   $d = tv2_sql_normalize ($d);
 
   // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($d);
+  echo '<pre><tt>';
+  print_r ($d);
 
   return $d;
 }
-
-
 
 
 }
