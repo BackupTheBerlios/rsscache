@@ -44,7 +44,8 @@ tv2_body_item ($i, $d_array)
          $tv2_search_s,
          $tv2_cookie_expire,
          $tv2_enable_search,
-         $tv2_related_search;
+         $tv2_related_search,
+         $tv2_time;
   global $config;
   global $f, $c, $q, $v, $start, $num, $captcha;
 
@@ -192,7 +193,8 @@ tv2_body_player ($i, $d_array)
          $tv2_search_s,
          $tv2_cookie_expire,
          $tv2_enable_search,
-         $tv2_related_search;
+         $tv2_related_search,
+         $tv2_time;
   global $config;
   global $f, $c, $q, $v, $start, $num, $captcha;
 
@@ -550,8 +552,6 @@ tv2_body ($d_array)
     $p .= tv2_f_wiki ();
   else if (isset ($category->localwiki))
     $p .= tv2_f_localwiki ();
-  else if ($f == 'stats')
-    $p .= tv2_stats_rss ();
   else if ($d_array)
     {
       // DEBUG
@@ -578,14 +578,14 @@ else
               $func_config_xml = simplexml_load_file ($tv2_func_config_xml);
               $p .= ''
                    .'<div class="tv2_func">'
-                   .widget_cms (NULL, $func_config_xml, http_build_query (array ('f' => $f, 'c' => $c), false), 4)
+                   .widget_cms (NULL, $func_config_xml, http_build_query (array ('f' => $f, 'c' => $c, 'v' => $v), false), 4)
                    .'</div>'
 ;
               $p .= '<div class="clear"></div>';
             }
   }
       if ($f == 'fullscreen' || $f == 'popout') // just the player
-        $p .= tv2_player ($d_array[0]);
+        $p .= widget_popout (tv2_player ($d_array[0]));
       else if ($f == 'cloud' || $f == 'wall') // show as cloud
         {
           for ($i = 0; isset ($d_array[$i]); $i++)
@@ -656,10 +656,6 @@ if ($f == 'qrcode')
     exit;
   }
 
-if ($tv2_use_database == 1)
-  tv2_sql_open ();
-$config = config_xml ();
-$c = tv2_get_category (); // category
 $v = get_request_value ('v'); // own video
 $captcha = get_request_value ('captcha'); // is request with captcha
 $start = get_request_value ('start'); // offset
@@ -675,6 +671,10 @@ if (!($num))
     else
       $num = $tv2_results;
   }
+if ($tv2_use_database == 1)
+  tv2_sql_open ();
+$config = config_xml ();
+$c = tv2_get_category (); // category
 
 $d_array = NULL;
 
@@ -687,7 +687,8 @@ if (isset ($category->index) || isset ($category->stripdir))
   }
 else if ($f == 'extern')
   {
-    $d_array = tv2_sql_extern ($c, $q, $f, NULL, $start, $num);
+//tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)          
+    $d_array = tv2_sql ($c, $q, 'extern', NULL, $start, $num);
   }
 else if ($tv2_use_database == 1)
   {
@@ -740,11 +741,18 @@ if ($f == 'read' || $f == 'write')
 if ($tv2_use_database == 1)
   if ($f == 'rss')
   {
-//    $d = tv2_sql ($c, $q, $f, NULL, $start, $num, $category->table_suffix);
     echo tv2_rss ($d_array);
-
     tv2_sql_close ();
+    exit;
+  }
 
+
+// stats RSS
+if ($tv2_use_database == 1)
+  if ($f == 'stats')
+  {
+    echo tv2_stats_rss ();
+    tv2_sql_close ();
     exit;
   }
 
@@ -753,11 +761,8 @@ if ($tv2_use_database == 1)
 if ($tv2_use_database == 1)
   if ($f == 'sitemap')
   {
-//    $d = tv2_sql ($c, $q, $f, NULL, $start, $num, $category->table_suffix);
     echo tv2_sitemap ($d_array);
-
     tv2_sql_close ();
-
     exit;
   }
 
@@ -767,9 +772,7 @@ if ($tv2_use_database == 1)
   if ($f == 'robots')
   {
     echo tv2_robots ();
-
     tv2_sql_close ();
-
     exit;
   }
 
@@ -818,6 +821,8 @@ if (file_exists ('images/captcha/'))
   $tv2_captcha = widget_captcha ('images/captcha/');
 
 $body = tv2_body ($d_array);
+$head_rss = ($tv2_rss_head ? misc_head_rss ($tv2_title, '?'.http_build_query2 (array ('f' => 'rss'), true))
+                    .misc_head_rss ('Statistics', '?'.http_build_query2 (array ('f' => 'stats'), true)) : '');
 if ($f == 'fullscreen' || $f == 'popout')
   {
 $template_replace = array (
@@ -829,8 +834,9 @@ $template_replace = array (
   '<!-- parse:body_header -->' => '',
   '<!-- parse:body -->'        => $body,
   '<!-- parse:body_footer -->' => '',
-  '<!-- parse:head_rss -->'    =>
-    ($tv2_rss_head ? misc_head_rss ($tv2_title, '?'.http_build_query2 (array ('f' => 'rss'), true)) : '')
+  '<!-- parse:head_rss -->'    => $head_rss,
+  '<!-- parse:small_stats -->' => $config->items.' <!-- lang:items -->&nbsp;&nbsp;'
+                                 .$config->days.' <!-- lang:days -->',
 );
 
 if (file_exists ('tv2_popout.html'))
@@ -851,26 +857,9 @@ $template_replace = array (
   '<!-- parse:body_header -->' => tv2_body_header ($d_array),
   '<!-- parse:body -->'        => $body,
   '<!-- parse:body_footer -->' => tv2_body_footer ($d_array),
-  '<!-- parse:head_rss -->'    =>
-    ($tv2_rss_head ? misc_head_rss ($tv2_title, '?'.http_build_query2 (array ('f' => 'rss'), true)) : '')
-//   .($tv2_rss_head ? misc_head_rss ('stats', '?'.http_build_query2 (array ('f' => 'stats'), true)) : '')
-/*
-  $config = config_xml ();
-
-  $p = '';
-
-  // items total
-  $p .= ''  
-       .'<a href="?'.http_build_query2 (array ('f' => 'stats'), true).'">'
-//       .'<span style="color:#bbb;">'
-       .$config->items.' <!-- lang:items -->';
-
-  // days total
-  $p .= '&nbsp;&nbsp;'.$config->days.' <!-- lang:days -->'
-     .'</a>'
-;
-
-*/
+  '<!-- parse:head_rss -->'    => $head_rss,
+  '<!-- parse:small_stats -->' => $config->items.' <!-- lang:items -->&nbsp;&nbsp;'
+                                 .$config->days.' <!-- lang:days -->',
 );
 
 if (file_exists ('tv2_index.html'))

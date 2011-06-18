@@ -30,13 +30,12 @@ generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_d
 //     .'    <dc:date>%ld</dc:date>'
 ;
 
-  $i_max = sizeof ($item_title_array);
   if ($version == 1)
     {
       $p .= '<items>'."\n"
            .'<rdf:Seq>'."\n";
 
-      for ($i = 0; $i < $i_max; $i++)
+      for ($i = 0; isset ($item_link_array[$i]); $i++)
         $p .= "\n".'        <rdf:li rdf:resource="'
              .htmlspecialchars ($item_link_array[$i], ENT_QUOTES)
              .'"/>';
@@ -46,7 +45,7 @@ generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_d
            .'</channel>'."\n";
     }
 
-  for ($i = 0; $i < $i_max; $i++)
+  for ($i = 0; isset ($item_link_array[$i]); $i++)
     {
       if ($version == 1)
         $p .= '<item rdf:about="'
@@ -117,7 +116,7 @@ parse_rss_from_url ($rss_url)
   );
   $rss_item_tag = 'item';
     
-  $rssfeed = rss_to_array($rss_item_tag, $rss_tags, $rss_url);
+  $rssfeed = rss_to_array ($rss_item_tag, $rss_tags, $rss_url);
     
   return $rssfeed;
 }

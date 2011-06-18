@@ -166,29 +166,38 @@ config_xml_normalize ($config)
 
   if ($tv2_use_database == 1)
     {
-      $stats = tv2_sql_stats ();
+//tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
+      $stats = tv2_sql (NULL, NULL, 'stats', NULL);
+      // DEBUG
+//echo '<pre><tt>';
+//print_r ($stats);
 
       // add new variables
-      $config->items = $stats['items'];
-      $config->items_today = $stats['items_today'];
-      $config->items_7_days = $stats['items_7_days'];
-      $config->items_30_days = $stats['items_30_days'];
-      $config->days = $stats['days'];
+      for ($j = 0; isset ($stats[$j]); $j++)
+        {
+          $config->items += $stats[$j]['items'];
+          $config->items_today += $stats[$j]['items_today'];
+          $config->items_7_days += $stats[$j]['items_7_days'];
+          $config->items_30_days += $stats[$j]['items_30_days'];
+          $config->days += $stats[$j]['days'];
+        }
 
       for ($i = 0; isset ($config->category[$i]); $i++)
         if ($config->category[$i]->query)
           {
             $a = array();
             parse_str ($config->category[$i]->query, $a);
+
             if (isset ($a['c']))
+              for ($j = 0; isset ($stats[$j]); $j++)
+                if ($stats[$j]['category'] == $config->category[$i]->name)
               {
-                $stats = tv2_sql_stats ($config->category[$i]->name);
-    
-                $config->category[$i]->items = $stats['items'];
-                $config->category[$i]->items_today = $stats['items_today'];
-                $config->category[$i]->items_7_days = $stats['items_7_days'];
-                $config->category[$i]->items_30_days = $stats['items_30_days'];
-                $config->category[$i]->days = $stats['days'];
+                $config->category[$i]->items = $stats[$j]['items'];
+                $config->category[$i]->items_today = $stats[$j]['items_today'];
+                $config->category[$i]->items_7_days = $stats[$j]['items_7_days'];
+                $config->category[$i]->items_30_days = $stats[$j]['items_30_days'];
+                $config->category[$i]->days = $stats[$j]['days'];
+                break;
               }
           }
     }
@@ -208,6 +217,10 @@ config_xml_normalize ($config)
 //          $category->query = htmlentities (http_build_query2 ($n, false));
 //        }
     }
+  // DEBUG
+//echo '<pre><tt>';
+//print_r ($config);
+
   return $config;
 }
 
@@ -317,28 +330,55 @@ tv2_highlight ($s)
 function
 tv2_stats_rss ()
 {
+  global $tv2_link;
+  global $tv2_title;
+  global $tv2_translate;
+  global $tv2_language;
+
+//    header ('Content-type: text/xml');
+    header ('Content-type: application/xml');
+//    header ('Content-type: text/xml-external-parsed-entity');
+//    header ('Content-type: application/xml-external-parsed-entity');
+//    header ('Content-type: application/xml-dtd');
+
   $config = config_xml ();
 
-  $s = '<img src="images/new.png" border="0">';
+  $rss_title_array = array ();
+  $rss_link_array = array ();
+  $rss_desc_array = array ();
 
-  $p = '';
+  $s = '<img src="images/new.png" border="0">';
 
   for ($i = 0; isset ($config->category[$i]); $i++)
     if ($config->category[$i]->name != '' &&
         (isset ($config->category[$i]->feed[0]->link[0]) || isset ($config->category[$i]->feed[0]->link_prefix)))
       {
-      $category = $config->category[$i];
-      $p .= '<div style="text-align:left;width:50%;">'
-           .tv2_button ($category).'<br>'
-           .$category->items.' <!-- lang:items --><br>'
-           .$category->items_today.' <!-- lang:items --> <!-- lang:today -->'.($category->items_today > 0 ? ' '.$s : '').'<br>'
-           .$category->items_7_days.' <!-- lang:items --> <!-- lang:last --> 7 <!-- lang:days --><br>'
-           .$category->items_30_days.' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
-           .$category->days.' <!-- lang:days --> <!-- lang:since creation of category --><br><br>'
-           .'</div>'
+        $category = $config->category[$i];
+        $p = ''
+            .'<img src="'.$config->category[$i]->logo.'" border="0"><br>'
+            .($category->items * 1).' <!-- lang:items --><br>'
+            .($category->items_today * 1).' <!-- lang:items --> <!-- lang:today -->'
+                                     .(($category->items_today * 1) > 0 ? ' '.$s : '').'<br>'
+            .($category->items_7_days * 1).' <!-- lang:items --> <!-- lang:last --> 7 <!-- lang:days --><br>'
+            .($category->items_30_days * 1).' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
+            .($category->days * 1).' <!-- lang:days --> <!-- lang:since creation of category -->'
 ;
+        $p = misc_template ($p, $tv2_translate[$tv2_language ? $tv2_language : 'default']);
+
+        $rss_title_array[] = $category->title;
+        $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'].'/?'.$category->query;
+        $rss_desc_array[] = $p;
       }
-  return $p;
+
+  // DEBUG
+//  print_r ($rss_title_array);
+//  print_r ($rss_link_array);
+//  print_r ($rss_desc_array);
+
+  return generate_rss ($tv2_title,
+                       $tv2_link,
+                       'Statistics',
+                       $rss_title_array, $rss_link_array, $rss_desc_array);
 }
 
 
@@ -346,7 +386,6 @@ function
 tv2_rss ($d_array)
 {
   global $tv2_link;
-  global $tv2_name;
   global $tv2_title;
 
 //    header ('Content-type: text/xml');
@@ -379,9 +418,9 @@ tv2_rss ($d_array)
 //  print_r ($rss_link_array);
 //  print_r ($rss_desc_array);
 
-  return generate_rss ($tv2_name,
+  return generate_rss ($tv2_title,
                      $tv2_link,
-                     $tv2_title,
+                     '',
                      $rss_title_array, $rss_link_array, $rss_desc_array);
 }
 

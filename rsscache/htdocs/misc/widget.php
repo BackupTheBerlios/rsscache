@@ -69,6 +69,72 @@ widget_filename_escape ($s)
 
 
 function
+widget_popout ($s)
+{
+/*
+function misc_window_open (url, fullscreen, window_name)
+{
+// https://developer.mozilla.org/en/Gecko_DOM_Reference
+// https://developer.mozilla.org/en/DOM/window.open
+  var w = screen.width;
+  var h = screen.height;
+//  var win=
+  if (fullscreen)
+    window.open (url, window_name,
+      'top=0'
+     +',left=0'
+//     +',width='+w
+//     +',height='+h
+     +',fullscreen'
+//     +',menubars'
+     +',status=0'
+//     +',toolbar'
+     +',location=0'
+//     +',menubar=no'
+//     +',directories=no'
+//     +',resizable=no'
+//     +',scrollbars=no'
+//     +',copyhistory'
+).focus ();
+  else
+    window.open (url, window_name,
+      'width=400'
+     +',height=300'
+     +',status=no'
+     +',toolbar=no'
+     +',location=no'
+     +',menubar=no'
+     +',directories=no'
+     +',resizable=yes'
+     +',scrollbars=yes'
+     +',copyhistory=yes'
+).focus();
+
+//window.opener = top; // this will close opener in ie only (not Firefox)
+
+if (fullscreen)
+  window.moveTo (0, 0);
+  
+// changing bar states on the existing window
+//netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserWrite");
+window.locationbar.visible = 0;
+window.statusbar.visible = 0;
+
+if (document.all)
+  window.resizeTo (screen.width, screen.height);
+else if (document.layers || document.getElementById)
+  if (window.outerHeight < screen.height || window.outerWidth < screen.width)
+    {
+      window.outerHeight = screen.height;
+      window.outerWidth = screen.width;
+    }
+}
+*/
+  return $s;
+}
+
+
+function
 widget_count_steps ()
 {
   global $widget_step_count;

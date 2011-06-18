@@ -130,15 +130,12 @@ sql_read ($assoc = 0, $debug = 0)
 
   if ($debug == 1)
     {
-      $p = '<tt>';
-      $i_max = sizeof ($a);
-      for ($i = 0; $i < $i_max; $i++)
-        {
-          $p .= implode (' ', $a[$i]);
-          $p .= '</tt><br>';
-        }
-
+      $p = '';
+//      echo '<pre><tt>';
+      for ($i = 0; isset ($a[$i]); $i++)
+        $p .= implode (' ', $a[$i]).'<br>';
       echo $p;
+//      echo '</tt></pre>';
     }
 
   return $a;
@@ -181,11 +178,12 @@ sql_getrow ($row, $assoc = 0, $debug = 0)
 
   if ($debug == 1)
     {
-      $p = '<tt>';
-      $p .= implode (' ', $a);
-      $p .= '</tt><br>';
-
+      $p = '';
+//      echo '<pre><tt>';
+      for ($i = 0; isset ($a[$i]); $i++)
+        $p .= implode (' ', $a[$i]).'<br>';
       echo $p;
+//      echo '</tt></pre>';
     }
 
   return $a;
@@ -316,7 +314,8 @@ sql_query2boolean_escape_func ($s)
 //  if (strlen (trim ($s)) < 4)
     return false;
 
-  for ($i = 0; $i < strlen ($s); $i++)
+  $l = strlen ($s);
+  for ($i = 0; $i < $l; $i++)
     if (!isalnum ($s[$i]) && !in_array ($s[$i], array ('-', '+', /* '(', ')', '"' */)))
       return false;
  
