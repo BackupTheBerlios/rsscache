@@ -422,7 +422,7 @@ if (file_exists ($tv2_site_config_xml))
       $p .= ''
            .'<div class="tv2_button">'
 //widget_collapse ($label, $s, $collapsed)
-           .widget_collapse ('', widget_cms (NULL, $config, http_build_query (array ('f' => $f), false), 8), $collapsed)
+           .widget_collapse ('<!-- lang:Category -->', widget_cms (NULL, $config, http_build_query (array ('f' => $f), false), 8), $collapsed)
            .'</div>'
 ;
     }
