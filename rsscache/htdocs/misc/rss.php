@@ -69,7 +69,7 @@ generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_d
            .'</pubDate>'."\n";
       if ($item_media_duration_array)
         if (isset ($item_media_duration_array[$i]))
-          $p .= '<media:duration>'.$item_media_duration_array[$i].'</media:duration>';
+          $p .= '      <media:duration>'.$item_media_duration_array[$i].'</media:duration>'."\n";
       $p .= '    </item>'."\n";
     }
 
