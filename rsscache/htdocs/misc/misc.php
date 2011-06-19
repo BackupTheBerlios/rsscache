@@ -28,6 +28,48 @@ if (file_exists ('stemmer.php'))
 
 
 function
+misc_substr2 ($t, $left, $cont, $right = NULL)
+{
+  // $left='a' $cont='b' $right=NULL
+  // --a->]--b->[...
+
+  // $left='a' $cont=NULL $right='b'
+  // --a->]   [<-b--
+
+  // $left=NULL $cont='b' $right='a'
+  // ...]<-b--[<-a--
+
+  $s = false;
+  $l = false;
+  if ($right == NULL)
+    {
+      $s = strpos ($t, $left) + strlen ($left);
+      $l = strpos (substr ($t, $s), $cont);
+    }
+  else if ($cont == NULL)
+    {
+      $s = strpos ($t, $left) + strlen ($left);
+      $l = strpos (substr ($t, $s), $cont);
+    }
+  else if ($left == NULL)
+    {
+      $s = strpos ($t, $left) + strlen ($left);
+      $l = strpos (substr ($t, $s), $cont);
+    }
+  if ($s == false || $l == false)
+    return '';
+  return substr ($t, $s, $l);
+}
+
+
+function
+misc_substr2_array ($t, $a)
+{
+  return misc_substr2 ($t, $a[0], $a[1], $a[2]);
+}
+
+
+function
 misc_array_unique_merge ($a)
 {
   // should be array_unique2()
@@ -1274,6 +1316,28 @@ split_html_content ($html)
 //print_r ($a);
 
   return $a;
+}
+
+
+function
+simplexml_load_file2 ($xml_file)
+{
+  // wrapper that normalizes XML
+  $p = file_get_contents ($xml_file);
+
+  // HACK: remove unknown special chars
+  $a = array ();
+  for ($i = 0; $i < 30; $i++)
+    $a[] = '&#'.$i.';';
+  $p = str_replace ($a, '', $p);
+
+  // re-read as XML
+  $xml = simplexml_load_string ($p);
+
+// DEBUG
+//print_r ($xml);
+//exit;
+  return $xml;
 }
 
 

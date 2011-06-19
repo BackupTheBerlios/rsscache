@@ -5,7 +5,7 @@ define ('MISC_RSS_PHP', 1);
 
 
 function
-generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_desc_array)
+generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_desc_array, $item_media_duration_array = NULL)
 {
   $version = 2; // RSS2.0
 
@@ -66,8 +66,11 @@ generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_d
            .'      <pubDate>'
            .strftime ("%Y%m%d %H:%M:%S", time ())
 //           .time ()
-           .'</pubDate>'."\n"
-           .'    </item>'."\n";
+           .'</pubDate>'."\n";
+      if ($item_media_duration_array)
+        if (isset ($item_media_duration_array[$i]))
+          $p .= '<media:duration>'.$item_media_duration_array[$i].'</media:duration>';
+      $p .= '    </item>'."\n";
     }
 
   if ($version == 2)
