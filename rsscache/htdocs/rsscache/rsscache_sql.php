@@ -347,6 +347,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 //                  .' tv2_votes,'
 //                  .' tv2_score'
 ;
+
 //FROM (
 //  SELECT SQL_CACHE DISTINCT rsstool_url_crc32
 //  FROM keyword_table
@@ -359,29 +360,41 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 //WHERE ( rsstool_media_duration BETWEEN 0 AND 301 )
 //ORDER BY rsstool_date DESC
 //LIMIT 0,10
-//  $sql_query_s .= ' FROM '.$rsstool_table
 
-
-
-
-  $sql_query_s .= ' FROM '.$rsstool_table
-;
-
+  $a = array ();
   if ($v) // direct
     {
+      $sql_query_s .= ' FROM '.$rsstool_table;
       $sql_query_s .= ' WHERE rsstool_url_crc32 = '.$v
                      .' LIMIT 1';
     }
-  else
+  else if ($tv2_related_search && $f == 'related')
     {
-      $a = array ();
+      $sql_query_s .= ' FROM '.$rsstool_table;
 
       // category
       if ($c)
         $a[] = 'tv2_moved = \''.$c.'\'';
-//}
-//  if ($q)
-//    {
+
+      $a[] = 'rsstool_related_id = '.misc_related_string_id ($q); // super fast
+
+      if (isset ($a[0]))
+        $sql_query_s .= ' WHERE ( '.implode (' AND ', $a).' )';
+
+      // we sort related by title for playlist
+      $sql_query_s .= ' ORDER BY rsstool_title ASC';
+
+      // limit
+      $sql_query_s .= ' LIMIT '.$tv2_wall_results;
+    }
+  else if ($tv2_enable_search && $q) // search
+    {
+      $sql_query_s .= ' FROM '.$rsstool_table;
+
+      // category
+      if ($c)
+        $a[] = 'tv2_moved = \''.$c.'\'';
+
       // filter
       $filter = NULL;
       if ($c)
@@ -394,12 +407,6 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
                 $filter = $category->filter;
         }
 
-      // search
-      if ($tv2_related_search && $f == 'related')
-        $a[] = 'rsstool_related_id = '.misc_related_string_id ($q); // super fast
-/*
-      else if ($tv2_enable_search)
-        {
           $v_any = '';
           $v_require = '';
           $v_exclude = '';
@@ -431,8 +438,18 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
           $s = tv2_sql_keyword_func ($v_any, $v_require, $v_exclude);
           if ($s != NULL)
             $a[] = $s;
-        }
-*/
+
+      if (isset ($a[0]))
+        $sql_query_s .= ' WHERE ( '.implode (' AND ', $a).' )';
+    }
+  else // default
+    {
+      $sql_query_s .= ' FROM '.$rsstool_table;   
+
+      // category
+      if ($c)
+        $a[] = 'tv2_moved = \''.$c.'\'';
+
       // functions
       if ($f == 'new')
         $a[] = 'rsstool_dl_date > '.($tv2_time - $tv2_isnew).'';
@@ -449,21 +466,16 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
         $sql_query_s .= ' WHERE ( '.implode (' AND ', $a).' )';
 
       // sort
-      if ($tv2_related_search && $f == 'related') // we sort related by title for playlist
-//        $sql_query_s .= ' ORDER BY rsstool_date DESC';
-        $sql_query_s .= ' ORDER BY rsstool_title ASC';
-//      else if ($f == 'score')
+//      if ($f == 'score')
 //        $sql_query_s .= ' ORDER BY tv2_score ASC';
-      else if ($f == 'new' || $tv2_use_dl_date)
+//      else
+if ($f == 'new' || $tv2_use_dl_date)
         $sql_query_s .= ' ORDER BY rsstool_dl_date DESC';
       else
         $sql_query_s .= ' ORDER BY rsstool_date DESC';
 
       // limit
-      if ($tv2_related_search && $f == 'related')
-        $sql_query_s .= ' LIMIT '.$tv2_wall_results;
-      else
-        $sql_query_s .= ' LIMIT '.$start.','.$num;
+      $sql_query_s .= ' LIMIT '.$start.','.$num;
     }
 
   // DEBUG
