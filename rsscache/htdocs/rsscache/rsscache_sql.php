@@ -43,7 +43,7 @@ tv2_sql_query ($sql_query_s)
 
   // DEBUG
 //  if ($debug == 1)
-//    echo $sql_query_s.'<br>';
+    echo $sql_query_s.'<br>';
   $tv2_sql_db->sql_write ($sql_query_s, 1, $debug);
 
   $debug = 0;
@@ -277,7 +277,12 @@ tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table_suff
   $s = misc_get_keywords ($q, 0); // isalnum()
   $a = explode (' ', $s);
   $a = misc_array_unique_merge ($a);   
-  $p .= tv2_sql_keyword_func_func ($a);
+//  $p .= tv2_sql_keyword_func_func ($a);
+//  $func = 'crc32'; // 0xffffffff keywords
+//  $func = 'misc_crc24'; // 0xffffff keywords
+  $func = 'misc_crc16'; // 0xffff keywords
+  $a = array_filter ($a, $func);
+  $p .= implode (', ', $a);
 
   $p .= ' )'
        .' GROUP BY rsstool_url_crc32'
