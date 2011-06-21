@@ -43,7 +43,7 @@ tv2_sql_query ($sql_query_s)
 
   // DEBUG
 //  if ($debug == 1)
-    echo $sql_query_s.'<br>';
+//    echo $sql_query_s.'<br>';
   $tv2_sql_db->sql_write ($sql_query_s, 1, $debug);
 
   $debug = 0;
@@ -140,7 +140,7 @@ tv2_sql_stats ($db, $category = NULL)
   global $tv2_time;
 
   $debug = 0;
-//$category = 'amiga';
+
   $stats = array ();
 
   // total items and days since creation
@@ -197,6 +197,7 @@ tv2_sql_stats ($db, $category = NULL)
 //echo '<pre><tt>';
 //print_r ($stats);
 //exit;
+
   return $stats;
 }
 
@@ -220,27 +221,6 @@ tv2_sql_normalize ($d)
 
 
 function
-tv2_sql_keyword_func_func ($a)
-{
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($a);
-
-  $p = '';
-//  $func = 'crc32'; // 0xffffffff keywords
-//  $func = 'misc_crc24'; // 0xffffff keywords
-  $func = 'misc_crc16'; // 0xffff keywords
-  for ($i = 0; isset ($a[$i]); $i++)
-    {
-      if ($i > 0)
-        $p .= ', ';
-      $p .= $func ($a[$i]).'';
-    }
-  return $p;
-}
-
-
-function
 tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table_suffix = NULL)
 {
   $debug = 0;
@@ -259,7 +239,7 @@ tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table_suff
 //      $keyword_table .= '_'.$table_suffix;
       }
 
-  // HACK: any == require since result is sorted by number of matches
+  // HACK: merge $any & $require since result is sorted by number of matches
   $q = $any.' '.$require;
 
   $p = '';
@@ -277,23 +257,22 @@ tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table_suff
   $s = misc_get_keywords ($q, 0); // isalnum()
   $a = explode (' ', $s);
   $a = misc_array_unique_merge ($a);   
-//  $p .= tv2_sql_keyword_func_func ($a);
-//  $func = 'crc32'; // 0xffffffff keywords
-//  $func = 'misc_crc24'; // 0xffffff keywords
   $func = 'misc_crc16'; // 0xffff keywords
-  $a = array_filter ($a, $func);
+//  $func = 'misc_crc24'; // 0xffffff keywords
+//  $func = 'crc32'; // 0xffffffff keywords
+  $a = array_map ($func, $a);
   $p .= implode (', ', $a);
 
   $p .= ' )'
        .' GROUP BY rsstool_url_crc32'
-//       .' HAVING tv2_rows = '.count ($a)
+//       .' HAVING tv2_rows = '.count ($a) // required
        .' ORDER BY tv2_rows DESC'
 //       .' LIMIT 1024'
        .' LIMIT 256'
 //       .' LIMIT 64'
        .' )'
        .' AS temp'
-       .' JOIN rsstool_table ON rsstool_table.rsstool_url_crc32 = temp.rsstool_url_crc32';
+       .' JOIN '.$rsstool_table.' ON '.$rsstool_table.'.rsstool_url_crc32 = temp.rsstool_url_crc32';
 
   // DEBUG
 //  echo $p;
@@ -303,8 +282,25 @@ tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table_suff
 
 
 function
-tv2_sql_query2boolean ($q)
+tv2_sql_query2boolean ($q, $c = NULL)
 {
+  $debug = 0;
+
+  // filter
+  $filter = '';
+  if ($c)
+    {
+      $category = config_xml_by_category ($c);
+      if ($category)
+        if ($category->filter)
+          $filter = $category->filter;
+    }
+
+  $q = trim ($q.' '.$filter);
+  // DEBUG
+  if ($debug == 1)
+    echo 'search: '.$q.'<br>';
+
   $a = explode (' ', $q);
   $b = array ('any' => '',
               'require' => '',
@@ -389,21 +385,21 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 
   $sql_query_s = '';
   $sql_query_s .= ''
-//                  .'EXPLAIN ';
-                  .'SELECT'
-//                  .' SQL_CACHE'
-                  .' rsstool_url,'
-                  .' '.$rsstool_table.'.rsstool_url_crc32,'
-                  .' rsstool_title,'
-                  .' rsstool_desc,'
-                  .' rsstool_dl_date,'
-                  .' rsstool_date,'
-//                  .' tv2_category,'
-                  .' tv2_moved,'
-                  .' rsstool_media_duration,'
-                  .' rsstool_keywords'
-//                  .' tv2_votes,'
-//                  .' tv2_score'
+//                 .'EXPLAIN ';
+                 .'SELECT'
+//                 .' SQL_CACHE'
+                 .' rsstool_url,'
+                 .' '.$rsstool_table.'.rsstool_url_crc32,'
+                 .' rsstool_title,'
+                 .' rsstool_desc,'
+                 .' rsstool_dl_date,'
+                 .' rsstool_date,'
+//                 .' tv2_category,'
+                 .' tv2_moved,'
+                 .' rsstool_media_duration,'
+                 .' rsstool_keywords'
+//                 .' tv2_votes,'
+//                 .' tv2_score'
 ;
 
   // direct
@@ -453,26 +449,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
     {
       $sql_query_s .= ' FROM ';
 
-      // filter
-      $filter = NULL;
-//      if ($c)
-//        {
-//          $category = config_xml_by_category ($c);
-//
-//          if ($category)
-//            if ($category->filter)
-//              if (strlen ($category->filter))
-//                $filter = $category->filter;
-//        }
-
-      $v_any = '';
-      $v_require = '';
-      $v_exclude = '';
-      $s = trim ($q.($filter ? ' '.$filter : ''));
-      // DEBUG
-      if ($debug == 1)
-        echo 'search: '.$s.'<br>';
-      $b = tv2_sql_query2boolean ($s);
+      $b = tv2_sql_query2boolean ($s, $c);
       $v_any = $b['any'];
       $v_require = $b['require'];
       $v_exclude = $b['exclude'];
