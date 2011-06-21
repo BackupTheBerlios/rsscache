@@ -227,11 +227,8 @@ tv2_sql_keyword_func_func ($a)
 //  print_r ($a);
 
   $p = '';
-//  $p .= ' keyword_table.rsstool_keyword_crc32 IN ( ';
-//    $func = 'crc32'; // 0xffffffff keywords
-//  $p .= ' keyword_table.rsstool_keyword_crc24 IN ( ';
+//  $func = 'crc32'; // 0xffffffff keywords
 //  $func = 'misc_crc24'; // 0xffffff keywords
-  $p .= ' keyword_table.rsstool_keyword_crc16 IN ( ';
   $func = 'misc_crc16'; // 0xffff keywords
   for ($i = 0; isset ($a[$i]); $i++)
     {
@@ -244,66 +241,14 @@ tv2_sql_keyword_func_func ($a)
 
 
 function
-tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL)
+tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table_suffix = NULL)
 {
   $debug = 0;
 
-  $p = '';
-  if (trim ($require) != '')
-    {
-  $p .= ' rsstool_table.rsstool_url_crc32'
-       .' IN ( ';
-      $p .= ' SELECT temp.rsstool_url_crc32'
-           .' FROM ('
-           .' SELECT keyword_table.rsstool_url_crc32, COUNT( keyword_table.rsstool_url_crc32 ) AS \'found\''
-           .' FROM keyword_table'
-           .' WHERE';
-
-      $s = misc_get_keywords ($require, 0); // isalnum()
-      $a = explode (' ', $s);
-      $a = misc_array_unique_merge ($a);
-      $p .= tv2_sql_keyword_func_func ($a);
-
-      $p .= ' )'
-           .' GROUP BY keyword_table.rsstool_url_crc32'
-           .' HAVING found = '.count ($a)
-           .' ORDER BY found DESC';
-      $p .= ' ) temp';
-  $p .= ' )';
-      // DEBUG
-      if ($debug == 1)
-        echo 'require: '.$p.' )<br><br>';
-    }
-  else if (trim ($any) != '')
-    {
-  $p .= ' rsstool_table.rsstool_url_crc32'
-       .' IN ( ';
-      $p .= ' SELECT DISTINCT rsstool_url_crc32'
-           .' FROM keyword_table'
-           .' WHERE';
-
-      $s = misc_get_keywords ($any, 0); // isalnum()
-      $a = explode (' ', $s);
-      $a = misc_array_unique_merge ($a);
-      $p .= tv2_sql_keyword_func_func ($a);
-
-      $p .= ' )';
-  $p .= ' )';
-      // DEBUG
-      if ($debug == 1)
-        echo 'any: '.$p.' )<br><br>';
-    }
-
   // DEBUG
-//  echo $p;
-//exit;
-  return $p;
-}
+  if ($debug == 1)
+    echo 'any: '.$v_any.'<br>require: '.$v_require.'<br>exclude: '.$v_exclude.'<br>';
 
-
-function
-tv2_sql_keyword_func2 ($any = NULL, $require = NULL, $exclude = NULL, $table_suffix = NULL)
-{
   $rsstool_table = 'rsstool_table';
   $keyword_table = 'keyword_table';
   if ($table_suffix)
@@ -314,17 +259,19 @@ tv2_sql_keyword_func2 ($any = NULL, $require = NULL, $exclude = NULL, $table_suf
 //      $keyword_table .= '_'.$table_suffix;
       }
 
-  $debug = 0;
-
+  // HACK: any == require since result is sorted by number of matches
   $q = $any.' '.$require;
 
   $p = '';
   $p .= ' ('
-       .' SELECT SQL_CACHE rsstool_url_crc32, COUNT(*) AS rows'
+       .' SELECT'
+//       .' DISTINCT'
+       .' SQL_CACHE rsstool_url_crc32, COUNT(*) AS tv2_rows'
        .' FROM keyword_table'
-       .' WHERE '
-//       .'rsstool_keyword_crc16'
-//       .' IN ( '
+       .' WHERE keyword_table.rsstool_keyword_crc16'
+//       .' WHERE keyword_table.rsstool_keyword_crc24'
+//       .' WHERE keyword_table.rsstool_keyword_crc32'
+       .' IN ( '
 ;
 
   $s = misc_get_keywords ($q, 0); // isalnum()
@@ -334,7 +281,8 @@ tv2_sql_keyword_func2 ($any = NULL, $require = NULL, $exclude = NULL, $table_suf
 
   $p .= ' )'
        .' GROUP BY rsstool_url_crc32'
-       .' ORDER BY rows DESC'
+//       .' HAVING tv2_rows = '.count ($a)
+       .' ORDER BY tv2_rows DESC'
 //       .' LIMIT 1024'
        .' LIMIT 256'
 //       .' LIMIT 64'
@@ -527,14 +475,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
         if ($v_segments != '')
           $v_require .= ' part';
 
-      // DEBUG
-      if ($debug == 1)
-        echo 'any: '.$v_any.'<br>require: '.$v_require.'<br>exclude: '.$v_exclude.'<br>';
       // keyword_search
-//      $s = tv2_sql_keyword_func ($v_any, $v_require, $v_exclude);  
-//      if ($s != NULL)
-//        $a[] = $s;   
-      $s = tv2_sql_keyword_func2 ($v_any, $v_require, $v_exclude, $table_suffix);
+      $s = tv2_sql_keyword_func ($v_any, $v_require, $v_exclude, $table_suffix);
       if ($s != NULL)
         $sql_query_s .= $s;
     }
