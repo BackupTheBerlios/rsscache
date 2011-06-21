@@ -43,7 +43,7 @@ tv2_sql_query ($sql_query_s)
 
   // DEBUG
 //  if ($debug == 1)
-    echo $sql_query_s.'<br>';
+//    echo $sql_query_s.'<br>';
   $tv2_sql_db->sql_write ($sql_query_s, 1, $debug);
 
   $debug = 0;
@@ -440,7 +440,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
                   .'SELECT'
 //                  .' SQL_CACHE'
                   .' rsstool_url,'
-                  .' '.$rsstool_table.'.rsstool_url_crc32,'
+                  .' rsstool_table.rsstool_url_crc32,'
                   .' rsstool_title,'
                   .' rsstool_desc,'
                   .' rsstool_dl_date,'
