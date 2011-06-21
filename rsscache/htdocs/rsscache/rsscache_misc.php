@@ -167,7 +167,7 @@ config_xml_normalize ($config)
   if ($tv2_use_database == 1)
     {
 //tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
-      $stats = tv2_sql (NULL, NULL, 'stats', NULL);
+      $stats = tv2_sql (NULL, NULL, 'stats', NULL, 0, count ($config->category));
       // DEBUG
 //echo '<pre><tt>';
 //print_r ($stats);
