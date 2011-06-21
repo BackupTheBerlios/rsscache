@@ -440,7 +440,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
                   .'SELECT'
 //                  .' SQL_CACHE'
                   .' rsstool_url,'
-                  .' rsstool_table.rsstool_url_crc32,'
+                  .' '.$rsstool_table.'.rsstool_url_crc32,'
                   .' rsstool_title,'
                   .' rsstool_desc,'
                   .' rsstool_dl_date,'
