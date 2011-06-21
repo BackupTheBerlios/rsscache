@@ -43,7 +43,7 @@ tv2_sql_query ($sql_query_s)
 
   // DEBUG
 //  if ($debug == 1)
-//    echo $sql_query_s.'<br>';
+    echo $sql_query_s.'<br>';
   $tv2_sql_db->sql_write ($sql_query_s, 1, $debug);
 
   $debug = 0;
@@ -302,8 +302,18 @@ tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL)
 
 
 function
-tv2_sql_keyword_func2 ($any = NULL, $require = NULL, $exclude = NULL)
+tv2_sql_keyword_func2 ($any = NULL, $require = NULL, $exclude = NULL, $table_suffix = NULL)
 {
+  $rsstool_table = 'rsstool_table';
+  $keyword_table = 'keyword_table';
+  if ($table_suffix)
+    if (trim ($table_suffix) != '')
+      {
+        $rsstool_table .= '_'.$table_suffix;
+        // TODO
+//      $keyword_table .= '_'.$table_suffix;
+      }
+
   $debug = 0;
 
   $q = $any.' '.$require;
@@ -408,16 +418,14 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 //  $start = $tv2_sql_db->sql_stresc ($start);
 //  $num = $tv2_sql_db->sql_stresc ($num);
 
-//SELECT rsstool_table.*
-
   $rsstool_table = 'rsstool_table';
   $keyword_table = 'keyword_table';
   if ($table_suffix)
     if (trim ($table_suffix) != '')
       {
-        $rsstool_table = 'rsstool_table_'.$table_suffix;
-  // TODO
-//      $keyword_table = 'keyword_table_'.$table_suffix;
+        $rsstool_table .= '_'.$table_suffix;
+        // TODO
+//      $keyword_table .= '_'.$table_suffix;
       }
 
   if ($f == 'stats')
@@ -432,7 +440,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
                   .'SELECT'
 //                  .' SQL_CACHE'
                   .' rsstool_url,'
-                  .' rsstool_table.rsstool_url_crc32,'
+                  .' '.$rsstool_table.'.rsstool_url_crc32,'
                   .' rsstool_title,'
                   .' rsstool_desc,'
                   .' rsstool_dl_date,'
@@ -526,7 +534,7 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 //      $s = tv2_sql_keyword_func ($v_any, $v_require, $v_exclude);  
 //      if ($s != NULL)
 //        $a[] = $s;   
-      $s = tv2_sql_keyword_func2 ($v_any, $v_require, $v_exclude);
+      $s = tv2_sql_keyword_func2 ($v_any, $v_require, $v_exclude, $table_suffix);
       if ($s != NULL)
         $sql_query_s .= $s;
     }
