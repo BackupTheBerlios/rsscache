@@ -800,6 +800,26 @@ type="application/x-shockwave-flash">
         'default_width'=>425,
         'default_ratio'=>425/350
 
+// MLG
+http://tv.majorleaguegaming.com/video/community-video/830444301001-halo-3-montage-finals-2nd
+http://tv.majorleaguegaming.com/gameplay/community-video.rss?q=&tags[game-title]=Halo%3A+Combat+Evolved
+http://tv.majorleaguegaming.com/gameplay/mlg-video.rss?q=&tags[game-title]=Halo+3
+
+
+<object id="flashObj" width="486" height="412" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,47,0">
+<param name="movie" value="http://c.brightcove.com/services/viewer/federated_f9?isVid=1" />
+<param name="bgcolor" value="#FFFFFF" />
+<param name="flashVars" value="videoId=830444301001&linkBaseURL=http%3A%2F%2Ftv.majorleaguegaming.com%2Fvideo%2Fcommunity-video%2F830444301001-halo-3-montage-finals-2nd&playerID=63791254001&playerKey=AQ~~,AAAADtnNG8E~,Ya7HVG73U426MUvIr82Cx3rrc1nz-6TJ&domain=embed&dynamicStreaming=true" />
+<param name="base" value="http://admin.brightcove.com" />
+<param name="seamlesstabbing" value="false" />
+<param name="allowFullScreen" value="true" />
+<param name="swLiveConnect" value="true" />
+<param name="allowScriptAccess" value="always" />
+<embed src="http://c.brightcove.com/services/viewer/federated_f9?isVid=1" bgcolor="#FFFFFF" flashVars="videoId=830444301001&linkBaseURL=http%3A%2F%2Ftv.majorleaguegaming.com%2Fvideo%2Fcommunity-video%2F830444301001-halo-3-montage-finals-2nd&playerID=63791254001&playerKey=AQ~~,AAAADtnNG8E~,Ya7HVG73U426MUvIr82Cx3rrc1nz-6TJ&domain=embed&dynamicStreaming=true" base="http://admin.brightcove.com" name="flashObj" width="486" height="412" seamlesstabbing="false" type="application/x-shockwave-flash" allowFullScreen="true" swLiveConnect="true" allowScriptAccess="always" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash">
+</embed>
+</object>
+
+
 // revver 2 
 <embed type="application/x-shockwave-flash"
 src="http://flash.revver.com/player/1.0/player.swf"
