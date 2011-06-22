@@ -1229,6 +1229,88 @@ widget_upload ($name, $upload_path, $max_files = 1, $max_file_size = -1, $mime_t
 }
 
 
+define ('WIDGET_EMBED_CODE_IMG', 0);
+define ('WIDGET_EMBED_CODE_JS', 2);
+define ('WIDGET_EMBED_CODE_LINK', 3);
+define ('WIDGET_EMBED_CODE_PLUGIN', 4);
+define ('WIDGET_EMBED_CODE_IFRAME', 5);
+$widget_embed_code_once = 0;
+
+
+function
+widget_embed_code ($link, $title, $flags)
+{
+  global $server_url;
+  global $widget_embed_code_once;
+
+  $p = '';
+  $p .= '<br>';
+
+  if ($widget_embed_code_once == 0)
+    {
+      $p .= widget_count_steps ();
+      $widget_embed_code_once = 1;
+    }
+
+  $p .= '<table><tr><td width="160" valign="top">';
+  $p .= 'Embed';
+
+  // type
+  if ($flags == WIDGET_EMBED_CODE_IMG)
+    $p .= ' Image';
+  else if ($flags == WIDGET_EMBED_CODE_JS)
+    $p .= ' JavaScript';
+  else if ($flags == WIDGET_EMBED_CODE_LINK)
+    $p .= ' Link';
+  else if ($flags == WIDGET_EMBED_CODE_PLUGIN)
+    $p .= ' JavaScript<br>Requires <a href="http://widget.pwnoogle.com/?q=udp">UDP socket plugin</a>';
+  else if ($flags == WIDGET_EMBED_CODE_IFRAME)
+    $p .= ' IFRAME';
+
+  $p .= '</td><td>'; 
+
+  // textarea disabled
+  $p .= '<textarea rows=5 cols=80 readonly>';
+
+  if ($flags == WIDGET_EMBED_CODE_IMG)
+    $p .= '&lt;img src="'.$server_url.$link.'"&gt';
+  else if ($flags == WIDGET_EMBED_CODE_JS)
+    $p .= '&lt;script type="text/javascript" src="'.$server_url.$link.'&js=1'.'"&gt;'."\n"
+         .'// '.$title."\n"
+         .'&lt;/script&gt;';
+  else if ($flags == WIDGET_EMBED_CODE_LINK)
+    $p .= '&lt;a href="'.$server_url.$link.'"&gt;'.$title.'&lt/a&gt';
+  else if ($flags == WIDGET_EMBED_CODE_PLUGIN)
+    $p .= '&lt;script type="text/javascript" src="'.$server_url.$link.'&plugin=1'.'"&gt;'."\n"
+         .'// '.$title."\n"
+         .'&lt;/script&gt;';
+  else if ($flags == WIDGET_EMBED_CODE_IFRAME)
+    $p .= '&lt;iframe src="'.$link.'" width="700" height="550" scrolling="no" frameborder="0"&gt;'
+         .'&lt;/iframe&gt;'; 
+
+  $p .= '</textarea>';
+
+  // link
+  if ($flags == WIDGET_EMBED_CODE_LINK)
+    $p .= '<br><a href="'.$server_url.$link.'">'.$title.'</a>';
+  $p .= '</td></tr></table>';
+
+  // example
+  if ($flags == WIDGET_EMBED_CODE_IMG)
+    $p .= '<img src="'.$server_url.$link.'">';
+  else if ($flags == WIDGET_EMBED_CODE_JS)
+    $p .= '<script type="text/javascript" src="'
+         .$server_url.urldecode ($link).'&js=1'
+         .'">'."\n"
+         .'// '.$title."\n"
+         .'</script>';
+  else if ($flags == WIDGET_EMBED_CODE_IFRAME)
+    $p .= '<iframe src="'.$link.'" width="700" height="550" scrolling="no" frameborder="0"></iframe>';
+
+  return $p;
+}
+
+
 function
 widget_captcha ($captcha_path)
 {

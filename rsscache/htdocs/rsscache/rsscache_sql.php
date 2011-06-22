@@ -239,7 +239,7 @@ tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table_suff
 //      $keyword_table .= '_'.$table_suffix;
       }
 
-  // HACK: merge $any & $require since result is sorted by number of matches
+  // HACK: merge any and require since result is sorted by number of matches
   $q = $any.' '.$require;
 
   $p = '';
@@ -265,7 +265,7 @@ tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table_suff
 
   $p .= ' )'
        .' GROUP BY rsstool_url_crc32'
-//       .' HAVING tv2_rows = '.count ($a) // required
+//       .' HAVING tv2_rows = '.count ($a)
        .' ORDER BY tv2_rows DESC'
 //       .' LIMIT 1024'
        .' LIMIT 256'
