@@ -144,6 +144,7 @@ widget_image_html4 ($image_url, $width = NULL, $height = NULL, $autoplay = 0, $h
        .' alt=""'
        .' border="0"'
 //       .' style="background-color:#000;"'
+            .' onerror="this.parentNode.removeChild(this);"'
        .'>';
   return $p;
 //  return '';
