@@ -221,13 +221,69 @@ tv2_sql_normalize ($d)
 
 
 function
+tv2_sql_query2boolean ($q, $c = NULL)
+{
+  $debug = 0;
+
+  // filter
+  $filter = '';
+  if ($c)
+    {
+      $category = config_xml_by_category ($c);
+      if ($category)
+        if ($category->filter)
+          $filter = $category->filter;
+    }
+
+  $q = trim ($q.' '.$filter);
+  // DEBUG
+  if ($debug == 1)
+    echo 'search: '.$q.'<br>';
+
+  $a = explode (' ', $q);
+  $b = array ('any' => '',
+              'require' => '',
+              'exclude' => '');
+
+  for ($i = 0; isset ($a[$i]); $i++)
+    {
+      $s = trim ($a[$i]);
+
+      if ($s == '')
+        continue;
+
+      if ($s[0] == '+')
+        $b['require'] .= ' '.substr ($s, 1);
+      else if ($s[0] == '-')
+        $b['exclude'] .= ' '.substr ($s, 1);
+      else
+        $b['any'] .= ' '.$s;
+    }
+/*
+  $b['any'] = trim ($b['any']);
+  if ($b['any'] == '')
+    $b['any'] = NULL;
+
+  $b['require'] = trim ($b['require']);
+  if ($b['require'] == '')
+    $b['require'] = NULL;
+
+  $b['exclude'] = trim ($b['exclude']);
+  if ($b['exclude'] == '')
+    $b['exclude'] = NULL;
+*/
+  return $b;
+}
+
+
+function
 tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table_suffix = NULL)
 {
   $debug = 0;
 
   // DEBUG
-  if ($debug == 1)
-    echo 'any: '.$v_any.'<br>require: '.$v_require.'<br>exclude: '.$v_exclude.'<br>';
+//  if ($debug == 1)
+//    echo 'any: '.$any.'<br>require: '.$require.'<br>exclude: '.$exclude.'<br>';
 
   $rsstool_table = 'rsstool_table';
   $keyword_table = 'keyword_table';
@@ -278,62 +334,6 @@ tv2_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table_suff
 //  echo $p;
 //exit;
   return $p;
-}
-
-
-function
-tv2_sql_query2boolean ($q, $c = NULL)
-{
-  $debug = 0;
-
-  // filter
-  $filter = '';
-  if ($c)
-    {
-      $category = config_xml_by_category ($c);
-      if ($category)
-        if ($category->filter)
-          $filter = $category->filter;
-    }
-
-  $q = trim ($q.' '.$filter);
-  // DEBUG
-  if ($debug == 1)
-    echo 'search: '.$q.'<br>';
-
-  $a = explode (' ', $q);
-  $b = array ('any' => '',
-              'require' => '',
-              'exclude' => '');
-
-  for ($i = 0; isset ($a[$i]); $i++)
-    {
-      $s = trim ($a[$i]);
-
-      if ($s == '')
-        continue;
-
-      if ($s[0] == '+')
-        $b['require'] .= ' '.substr ($s, 1);
-      else if ($s[0] == '-')
-        $b['exclude'] .= ' '.substr ($s, 1);
-      else
-        $b['any'] .= ' '.$s;
-    }
-
-  $b['any'] = trim ($b['any']);
-  if ($b['any'] == '')
-    $b['any'] = NULL;
-
-  $b['require'] = trim ($b['require']);
-  if ($b['require'] == '')
-    $b['require'] = NULL;
-
-  $b['exclude'] = trim ($b['exclude']);
-  if ($b['exclude'] == '')
-    $b['exclude'] = NULL;
-
-  return $b;
 }
 
 
@@ -444,23 +444,14 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
       return $d;
     }
 
-  // search
+  // keyword search
   if ($tv2_enable_search && $q) // search
     {
-      $sql_query_s .= ' FROM ';
-
-      $b = tv2_sql_query2boolean ($s, $c);
-      $v_any = $b['any'];
-      $v_require = $b['require'];
-      $v_exclude = $b['exclude'];
       if ($v_segments)
-        if ($v_segments != '')
-          $v_require .= ' part';
-
-      // keyword_search
-      $s = tv2_sql_keyword_func ($v_any, $v_require, $v_exclude, $table_suffix);
-      if ($s != NULL)
-        $sql_query_s .= $s;
+        if (trim ($v_segments) != '')
+          $q .= ' +part';
+      $b = tv2_sql_query2boolean ($q, $c);
+      $sql_query_s .= ' FROM '.tv2_sql_keyword_func ($b['any'], $b['require'], $b['exclude'], $table_suffix);
     }
   else // default
     {
