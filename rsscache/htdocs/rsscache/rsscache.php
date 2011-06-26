@@ -127,7 +127,7 @@ if ($f == 'read' || $f == 'write')
 
 
 // generate embeddable banner for item
-if ($tv2_banner == 0)
+if ($tv2_banner == 1)
   if ($v && $f == 'banner')
   {
     tv2_draw_banner ($d_array[0]);
