@@ -15,6 +15,7 @@ else
 require_once ('tv2_output.php');
 require_once ('tv2_output_body.php');
 require_once ('tv2_misc.php');
+require_once ('tv2_draw.php');
 
 
 // main ()
@@ -126,9 +127,9 @@ if ($f == 'read' || $f == 'write')
 
 
 // banner
-if ($f == 'banner')
+if ($v && $f == 'banner')
   {
-    tv2_draw_banner ();
+    tv2_draw_banner ($d_array[0]);
     exit;
   }
 
