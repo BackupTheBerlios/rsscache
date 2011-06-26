@@ -48,6 +48,10 @@ youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $use_tor = 0)
   $q = urlencode ($search);
   if ($playlist)
     {
+      // normalize
+      if (strtolower (substr ($playlist, 0, 2)) == 'pl')
+        $playlist = substr ($playlist, 2);
+
       $url = 'http://gdata.youtube.com/feeds/base/playlists/'.$playlist.'?alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
     }
   else if ($channel)
