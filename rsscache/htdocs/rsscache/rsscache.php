@@ -59,8 +59,8 @@ if ($tv2_use_database == 1)
 $config = config_xml ();
 $c = tv2_get_category (); // category
 
-$d_array = NULL;
 
+$d_array = NULL;
 
 // category   
 $category = config_xml_by_category (strtolower ($c));
