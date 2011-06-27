@@ -3,6 +3,7 @@ if (!defined ('TV2_PHP'))
 {
 define ('TV2_PHP', 1);
 //phpinfo();
+//exit;
 //error_reporting(E_ALL | E_STRICT);
 require_once ('default.php');
 require_once ('config.php');
@@ -22,7 +23,10 @@ require_once ('tv2_draw.php');
 
 
 // maintenance?
+$tv2_maintenance = 0;
 if (file_exists ($_SERVER['DOCUMENT_ROOT'].'/maintenance_'.$tv2_subdomain.'.tmp'))
+  $tv2_maintenance = 1;
+if ($tv2_maintenance == 1)
   {
 //    echo 'maintenance - please come back';
 //    exit;
@@ -217,9 +221,15 @@ $tv2_captcha = '';
 if (file_exists ('images/captcha/'))
   $tv2_captcha = widget_captcha ('images/captcha/');
 
-$body = tv2_body ($d_array);
 $head_rss = ($tv2_rss_head ? misc_head_rss ($tv2_title, '?'.http_build_query2 (array ('f' => 'rss'), true))
                     .misc_head_rss ('Statistics', '?'.http_build_query2 (array ('f' => 'stats'), true)) : '');
+if ($tv2_maintenance == 1)
+  {
+    $body = '<br><br><b>maintenance - please come back or wait a few seconds</b><br><br><br>';
+    $tv2_head_tag .= '<meta http-equiv="refresh" content="3;URL=http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'">';
+  }
+else
+  $body = tv2_body ($d_array);
 if ($f == 'fullscreen' || $f == 'popout')
   {
 $template_replace = array (
