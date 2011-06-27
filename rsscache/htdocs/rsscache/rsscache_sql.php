@@ -19,6 +19,11 @@ tv2_sql_open ()
          $tv2_dbuser,
          $tv2_dbpass,
          $tv2_dbname;
+  global $tv2_use_database;
+
+  if ($tv2_use_database == 0)
+    return;
+
   $tv2_sql_db = new misc_sql;
   $tv2_sql_db->sql_open ($tv2_dbhost,
                  $tv2_dbuser,
@@ -31,6 +36,11 @@ function
 tv2_sql_close ()
 {
   global $tv2_sql_db;
+  global $tv2_use_database;
+
+  if ($tv2_use_database == 0)
+    return;
+
   $tv2_sql_db->sql_close ();
 }
 
@@ -357,6 +367,11 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
          $tv2_wall_results,
          $tv2_cloud_results;
   global $tv2_debug_sql;
+  global $tv2_use_database;
+
+  if ($tv2_use_database == 0)
+    return NULL;
+
   $debug = $tv2_debug_sql;
 //  $debug = 1;
 
