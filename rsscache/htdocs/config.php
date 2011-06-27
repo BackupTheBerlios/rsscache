@@ -1,7 +1,7 @@
 <?php
-//if (!defined ('TV2_CONFIG_PHP'))
-//{
-//define ('TV2_CONFIG_PHP', 1);
+if (!defined ('_TV2_CONFIG_PHP'))
+{
+define ('_TV2_CONFIG_PHP', 1);
 
 // apache2
 //$_SERVER['SERVER_NAME'] == 'maps.pwnoogle.com'
@@ -34,10 +34,6 @@ get_hostname ()
 //  return gethostname ();
 }
 
-$tv2_domain = get_hostname ();
-// DEBUG
-//echo '$tv2_domain=='.$tv2_domain."<br>\n";
-
 
 function
 get_subdomain ()
@@ -68,14 +64,21 @@ get_subdomain ()
 }
 
 
+$tv2_domain = get_hostname ();
 $tv2_subdomain = get_subdomain ();
+
+
 // DEBUG
+//echo '$tv2_domain=='.$tv2_domain."<br>\n";
 //echo '$tv2_subdomain=='.$tv2_subdomain."<br>\n";
 
+// HACK
+if (in_array ($tv2_subdomain, array ('', 'www', 'pwnoogle')))
+  $tv2_subdomain = 'videos';
 
 require_once ($tv2_subdomain.'_config.php');
 
-//}
+}
 
 
 ?>

@@ -22,15 +22,11 @@ require_once ('tv2_draw.php');
 
 
 // maintenance?
-$p = $tv2_subdomain;
-if ($p == '' || $p == 'www' || $p == 'pwnoogle')
-  $p = 'videos'; // default subdomain 
-$p = $_SERVER['DOCUMENT_ROOT'].'/maintenance_'.$p.'.tmp';
-//echo $p;
-if (file_exists ($p))
+if (file_exists ($_SERVER['DOCUMENT_ROOT'].'/maintenance_'.$tv2_subdomain.'.tmp'))
   {
-    echo 'maintenance - please come back';
-    exit;
+//    echo 'maintenance - please come back';
+//    exit;
+    $tv2_use_database = 0;
   }
 
 $f = get_request_value ('f'); // function
