@@ -1537,6 +1537,351 @@ Thank You!
 }
 
 
+/*
+      $a = array (
+        array ('Digg',			'digg.png', 'http://digg.com/submit?phase=2&url=', '&bodytext=&tags=&title='),
+//        array ('Digg',		'digg.png', 'http://digg.com/submit?phase=2&url=', '&title='),
+        array ('Twitter',               'twitter.png', 'http://twitter.com/home?status=', NULL),
+        array ('Facebook',              'facebook.png', 'http://www.facebook.com/sharer.php?u=', NULL),
+        array ('StumbleUpon',           'stumbleupon.png', 'http://www.stumbleupon.com/submit?url=', '&title=')
+
+//http://twitter.com/home?status=Hardware+Companies+Team+Up+To+Fight+Mobile+Linux+Fragmentation%3A+http%3A%2F%2Fbit.ly%2Fd9DXNF
+//http://www.facebook.com/sharer.php?u=http://linux.slashdot.org/story/10/06/05/1327228/Hardware-Companies-Team-Up-To-Fight-Mobile-Linux-Fragmentation
+
+/*
+//        array ('30 Day Tags',		'30_day_tags.png', NULL, NULL),
+//        array ('AddToAny',		'addtoany.png', NULL, NULL),
+//        array ('Ask',			'ask.png', NULL, NULL),
+//        array ('BM Access',		'bm_access.png', NULL, NULL),
+        array ('Backflip',		'backflip.png', 'http://www.backflip.com/add_page_pop.ihtml?url=', '&title='),
+//        array ('BlinkBits',		'blinkbits.png', 'http://www.blinkbits.com/bookmarklets/save.php?v=1&source_url=', '&title='),
+        array ('BlinkBits',		'blinkbits.png', 'http://www.blinkbits.com/bookmarklets/save.php?v=1&source_image_url=&rss_feed_url=&rss_feed_url=&rss2member=&body=&source_url=', '&title='),
+        array ('Blinklist',		'blinklist.png', 'http://www.blinklist.com/index.php?Action=Blink/addblink.php&Description=&Tag=&Url=', '&Title='),
+//        array ('Bloglines',		'bloglines.png', NULL, NULL),
+        array ('BlogMarks',		'blogmarks.png', 'http://blogmarks.net/my/new.php?mini=1&simple=1&url=', '&content=&public-tags=&title='),
+//        array ('BlogMarks',		'blogmarks.png', 'http://blogmarks.net/my/new.php?mini=1&simple=1&url=', '&title='),
+        array ('Blogmemes',		'blogmemes.png', 'http://www.blogmemes.net/post.php?url=', '&title='),
+//        array ('Blue Dot',		'blue_dot.png', NULL, NULL),
+        array ('Buddymarks',		'buddymarks.png', 'http://buddymarks.com/s_add_bookmark.php?bookmark_url=', '&bookmark_title='),
+//        array ('CiteULike',		'citeulike.png', NULL, NULL),
+        array ('Complore',		'complore.png', 'http://complore.com/?q=node/add/flexinode-5&url=', '&title='),
+//        array ('Connotea',		'connotea.png', NULL, NULL),
+        array ('Del.icio.us',		'del.icio.us.png', 'http://del.icio.us/post?v=2&url=', '&notes=&tags=&title='),
+//        array ('Del.icio.us',		'del.icio.us.png', 'http://del.icio.us/post?v=2&url=', '&title='),
+//        array ('Del.icio.us',		'del.icio.us.png', 'http://del.icio.us/post?url=', '&title='),
+        array ('De.lirio.us',		'de.lirio.us.png', 'http://de.lirio.us/bookmarks/sbmtool?action=add&address=', '&title='),
+        array ('Digg',			'digg.png', 'http://digg.com/submit?phase=2&url=', '&bodytext=&tags=&title='),
+//        array ('Digg',		'digg.png', 'http://digg.com/submit?phase=2&url=', '&title='),
+        array ('Diigo',			'diigo.png', 'http://www.diigo.com/post?url=', '&tag=&comments=&title='),
+//        array ('Dogear',		'dogear.png', NULL, NULL),
+//        array ('Dotnetkicks',		'dotnetkicks.png', 'http://www.dotnetkicks.com/kick/?url=', '&title='),
+//        array ('Dude, Check This Out',	'dude_check_this_out.png', NULL, NULL),
+//        array ('Dzone',		'dzone.png', NULL, NULL),
+//        array ('Eigology',		'eigology.png', NULL, NULL),
+        array ('Fark',			'fark.png', 'http://cgi.fark.com/cgi/fark/edit.pl?new_url=', '&title='),
+//        array ('Favoor',		'favoor.png', NULL, NULL),
+//        array ('FeedMeLinks',		'feedmelinks.png', NULL, NULL),
+//        array ('Feedmarker',		'feedmarker.png', NULL, NULL),
+        array ('Folkd',			'folkd.png', 'http://www.folkd.com/submit/', NULL),
+//        array ('Freshmeat',		'freshmeat.png', NULL, NULL)
+        array ('Furl',			'furl.png', 'http://www.furl.net/storeIt.jsp?u=', '&keywords=&t='),
+//        array ('Furl',		'furl.png', 'http://www.furl.net/storeIt.jsp?u=', '&t='),
+//        array ('Furl',		'furl.png', 'http://www.furl.net/store?s=f&to=0&u=', '&ti='),
+//        array ('Givealink',		'givealink.png', NULL, NULL),
+        array ('Google',		'google.png', 'http://www.google.com/bookmarks/mark?op=add&hl=en&bkmk=', '&annotation=&labels=&title='),
+//        array ('Google',		'google.png', 'http://www.google.com/bookmarks/mark?op=add&bkmk=', '&title='),
+//        array ('Humdigg',		'humdigg.png', NULL, NULL),
+//        array ('HLOM (Hyperlinkomatic)',		'hlom.png', NULL, NULL),
+//        array ('I89.us',		'i89.us.png', NULL, NULL),
+        array ('Icio',			'icio.png', 'http://www.icio.de/add.php?url=', NULL),
+//        array ('Igooi',		'igooi.png', NULL, NULL),
+//        array ('Jots',		'jots.png', NULL, NULL),
+//        array ('Link Filter',		'link_filter.png', NULL, NULL),
+//        array ('Linkagogo',		'linkagogo.png', NULL, NULL),
+        array ('Linkarena',		'linkarena.png', 'http://linkarena.com/bookmarks/addlink/?url=', '&desc=&tags=&title='),
+//        array ('Linkatopia',		'linkatopia.png', NULL, NULL),
+//        array ('Linklog',		'linklog.png', NULL, NULL),
+//        array ('Linkroll',		'linkroll.png', NULL, NULL),
+//        array ('Listable',		'listable.png', NULL, NULL),
+//        array ('Live',		'live.png', 'https://favorites.live.com/quickadd.aspx?marklet=1&mkt=en-us&url=', '&title='),
+//        array ('Lookmarks',		'lookmarks.png', NULL, NULL),
+        array ('Ma.Gnolia',		'ma.gnolia.png', 'http://ma.gnolia.com/bookmarklet/add?url=', '&description=&tags=&title='),
+//        array ('Ma.Gnolia',		'ma.gnolia.png', 'http://ma.gnolia.com/bookmarklet/add?url=', '&title='),
+//        array ('Maple',		'maple.png', NULL, NULL),
+//        array ('MrWong',		'mrwong.png', NULL, NULL),
+//        array ('Mylinkvault',		'mylinkvault.png', NULL, NULL),
+        array ('Netscape',		'netscape.png', 'http://www.netscape.com/submit/?U=', '&T='),
+        array ('NetVouz',		'netvouz.png', 'http://netvouz.com/action/submitBookmark?url=', '&popup=yes&description=&tags=&title='),
+//        array ('NetVouz',		'netvouz.png', 'http://netvouz.com/action/submitBookmark?url=', '&title='),
+        array ('Newsvine',		'newsvine.png', 'http://www.newsvine.com/_tools/seed&save?u=', '&h='),
+//        array ('Newsvine',		'newsvine.png', 'http://www.newsvine.com/_wine/save?popoff=1&u=', '&tags=&blurb='),
+//        array ('Nextaris',		'nextaris.png', NULL, NULL),
+//        array ('Nowpublic',		'nowpublic.png', NULL, NULL),
+//        array ('Oneview',		'oneview.png', 'http://beta.oneview.de:80/quickadd/neu/addBookmark.jsf?URL=', '&title='),
+//        array ('Onlywire',		'onlywire.png', NULL, NULL),
+//        array ('Pligg',		'pligg.png', NULL, NULL),
+//        array ('Portachi',		'portachi.png', NULL, NULL),
+//        array ('Protopage',		'protopage.png', NULL, NULL),
+        array ('RawSugar',		'rawsugar.png', 'http://www.rawsugar.com/pages/tagger.faces?turl=', '&tttl='),
+        array ('Reddit',		'reddit.png', 'http://reddit.com/submit?url=', '&title='),
+//        array ('Rojo',		'rojo.png', NULL, NULL),
+        array ('Scuttle',		'scuttle.png', 'http://www.scuttle.org/bookmarks.php/maxpower?action=add&address=', '&description='),
+//        array ('Searchles',		'searchles.png', NULL, NULL),
+        array ('Shadows',		'shadows.png', 'http://www.shadows.com/features/tcr.htm?url=', '&title='),
+//        array ('Shadows',		'shadows.png', 'http://www.shadows.com/bookmark/saveLink.rails?page=', '&title='),
+//        array ('Shoutwire',		'shoutwire.png', NULL, NULL),
+        array ('Simpy',			'simpy.png', 'http://simpy.com/simpy/LinkAdd.do?href=', '&tags=&note=&title='),
+//        array ('Simpy',		'simpy.png', 'http://simpy.com/simpy/LinkAdd.do?href=', '&title='),
+        array ('Slashdot',		'slashdot.png', 'http://slashdot.org/bookmark.pl?url=', '&title='),
+        array ('Smarking',		'smarking.png', 'http://smarking.com/editbookmark/?url=', '&tags=&description='),
+//        array ('Spurl',		'spurl.png', 'http://www.spurl.net/spurl.php?url=', '&title='),
+        array ('Spurl',			'spurl.png', 'http://www.spurl.net/spurl.php?v=3&tags=&url=', '&title='),
+//        array ('Spurl',		'.png', 'http://www.spurl.net/spurl.php?v=3&url=', '&title='),
+//        array ('Squidoo',		'squidoo.png', NULL, NULL),
+        array ('StumbleUpon',		'stumbleupon.png', 'http://www.stumbleupon.com/submit?url=', '&title='),
+//        array ('Tabmarks',		'tabmarks.png', NULL, NULL),
+//        array ('Taggle',		'taggle.png', NULL, NULL),
+//        array ('Tag Hop',		'taghop.png', NULL, NULL),
+//        array ('Taggly',		'taggly.png', NULL, NULL),
+//        array ('Tagtooga',		'tagtooga.png', NULL, NULL),
+//        array ('TailRank',		'tailrank.png', NULL, NULL),
+        array ('Technorati',		'technorati.png', 'http://technorati.com/faves?tag=&add=', NULL),
+//        array ('Technorati',		'technorati.png', 'http://technorati.com/faves?add=', '&title='),
+//        array ('Tutorialism',		'tutorialism.png', NULL, NULL),
+//        array ('Unalog',		'unalog.png', NULL, NULL),
+//        array ('Wapher',		'wapher.png', NULL, NULL),
+        array ('Webnews',		'webnews.png', 'http://www.webnews.de/einstellen?url=', '&title='),
+//        array ('Whitesoap',		'whitesoap.png', NULL, NULL),
+//        array ('Wink',		'wink.png', NULL, NULL),
+//        array ('WireFan',		'wirefan.png', NULL, NULL),
+        array ('Wists',			'wists.png', 'http://wists.com/r.php?c=&r=', '&title='),
+//        array ('Wists',		'wists.png', 'http://www.wists.com/?action=add&url=', '&title='),
+        array ('Yahoo',			'yahoo.png', 'http://myweb2.search.yahoo.com/myresults/bookmarklet?u=', '&d=&tag=&t='),
+//        array ('Yahoo',		'yahoo.png', 'http://myweb2.search.yahoo.com/myresults/bookmarklet?u=', '&t='),
+//        array ('Yahoo',		'yahoo.png', 'http://myweb.yahoo.com/myresults/bookmarklet?u=', '&t='),
+        array ('Yigg',			'yigg.png', 'http://yigg.de/neu?exturl=', NULL),
+//        array ('Zumaa',		'zumaa.png', NULL, NULL),
+//        array ('Zurpy',		'zurpy.png', NULL, NULL),
+
+  .'http://myjeeves.ask.com/mysearch/BookmarkIt?v=1.2&t=webpages&title='+encodeURIComponent(document.title)+'&url='+encodeURIComponent(location.href)+'" title="bookmark to Jeeves" ><img src="http://yotoshi.com/image/96479491.png" alt="askjeeves"  height="16" width="16" /></a>');
+  .'http://www.blinklist.com/index.php?Action=Blink/addblink.php&Url='+encodeURIComponent(location.href)+'&Title='+encodeURIComponent(document.title)+'" title="Add To BlinkList"><img src="http://yotoshi.com/image/89442389.png" alt="BlinkList"  height="16" width="16" /></a>');
+  .'http://blogmarks.net/my/new.php?mini=1&title='+encodeURIComponent(document.title)+'&url='+encodeURIComponent(location.href)+'" title="Bookmark This to Blogmarks"><img src="http://yotoshi.com/image/7577931.png" alt="Blogmarks"  height="16" width="16" /></a>');
+   .'http://buddymarks.com/add_bookmark.php?bookmark_title='+encodeURIComponent(document.title)+'&bookmark_url='+encodeURIComponent(location.href)+'" title="bookmark to Buddymarks" ><img src="http://yotoshi.com/image/69894407.png" alt="Buddymarks"  height="16" width="16" /></a>');
+  .'http://del.icio.us/post?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'" title="Bookmark This to del.icio.us"><img src="http://yotoshi.com/image/65682475.png" alt="del.icio.us"  height="16" width="16" /></a>');
+  .'http://digg.com/submit?phase=2&url='+encodeURIComponent(location.href)+'" title="Digg This!"><img src="http://yotoshi.com/image/61822091.png" alt="digg"  height="16" width="16" /></a>');
+  .'http://www.feedmarker.com/admin.php?do=bookmarklet_mark&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+';" title="Add to feedmarker" ><img src="http://yotoshi.com/image/95971882.png"alt="Feedmarker"  height="16" width="16" /></a>');
+  .'http://www.furl.net/storeIt.jsp?u='+encodeURIComponent(location.href)+'&t='+encodeURIComponent(document.title)+'" title="Bookmark To Furl"><img src=http://www.furl.net/i/favicon.gif alt="Furl button"  height="16" width="16" /></a>');
+  .'http://www.google.com/bookmarks/mark?op=add&bkmk='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'" title="Bookmark to Google"><img src="http://yotoshi.com/image/35814433.png" alt="Google"  height="16" width="16" /></a>');
+   .'http://www.hyperlinkomatic.com/lm2/add.html?LinkTitle='+encodeURIComponent(document.title)+'&LinkUrl='+encodeURIComponent(location.href)+'" title="Add to HLOM" ><img src="http://yotoshi.com/image/67303319.png" alt="HOLM" height="15" width="15" /></a>');
+  .'http://ma.gnolia.com/bookmarklet/add?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'" title="Add to ma.gnolia"><img src="http://yotoshi.com/image/44917000.png" alt="ma.gnolia"  height="16" width="16" /></a>');
+  .'http://www.netvouz.com/action/submitBookmark?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&popup=no" title="Bookmark to Netvouz"><img src="http://yotoshi.com/image/1073885.png" alt="Netvouz"  height="16" width="16" /></a>');
+   .'http://www.newsvine.com/_tools/seed&save?u='+encodeURIComponent(location.href)+'&h='+encodeURIComponent(document.title)+'" title="Bookmark to Newsvine" ><img src="http://yotoshi.com/image/61968867.png" alt="Newsvine"  height="16" width="16" /></a>');
+    .'http://www.nextaris.com/servlet/com.surfwax.Nextaris.Bookmarklets?cmd=addurlrequest&v=1&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'"><img src="http://yotoshi.com/image/92909732.png" alt="Nextaris"  height="16" width="16" /></a>');
+  .'http://view.nowpublic.com/?src='+encodeURIComponent(location.href)+'&t='+encodeURIComponent(document.title)+'"><img src="http://yotoshi.com/image/38451081.png" alt="Nowpublic"  height="16" width="16" /></a>');
+  .'http://reddit.com/submit?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'" title="Add to reddit"><img src="http://yotoshi.com/image/33092456.png" alt="reddit"  height="16" width="16" /></a>');
+  .'http://www.rawsugar.com/pages/tagger.faces?turl='+encodeURIComponent(location.href)+'&tttl='+encodeURIComponent(document.title)+'" title="Bookmark to RawSugar"><img src="http://yotoshi.com/image/56440303.png" alt="rawsugar"  height="16" width="16" /></a>');
+  .'http://scuttle.org/bookmarks.php/pass?action=add&address='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'" title="Bookmark to Scuttle"><img src="http://yotoshi.com/image/50964829.png" alt="Scuttle"  height="16" width="16" /></a>');
+  .'http://www.shadows.com/features/tcr.htm?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'" title="Tag to Shadows"><img src="http://yotoshi.com/image/30177473.png" alt="Shadows"  height="16" width="16" /></a>');
+  .'http://www.simpy.com/simpy/LinkAdd.do?href='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'" title="Add to Simpy"><img src="http://yotoshi.com/image/70286063.png" alt="Simpy"  height="16" width="16" /></a>');
+  .'http://smarking.com/editbookmark/?url='+encodeURIComponent(location.href)+'&description='+encodeURIComponent(document.title)+'"  title="Bookmark This to Smarking"><img src="http://yotoshi.com/image/21598036.png" alt="Smarking"  height="16" width="16" /></a>');
+  .'http://www.spurl.net/spurl.php?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'" title="Spurl This!"><img src="http://yotoshi.com/image/83344081.png" alt="Spurl"  height="16" width="16" /></a>');
+   .'http://www.squidoo.com/lensmaster/bookmark?'+encodeURIComponent(location.href)+'"><img src="http://yotoshi.com/image/53248495.png" alt="Squidoo"  height="16" width="16" /></a>');
+  .'http://tailrank.com/share/?text=&link_href='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'"><img src="http://yotoshi.com/image/47382617.png" alt="Tailrank"  height="16" width="16" /></a>');
+  .'http://technorati.com/faves?add='+encodeURIComponent(location.href)+'" title="Add to Technorati Favorites" ><img src="http://yotoshi.com/image/78708502.png" alt="Technorati"  height="16" width="16" /></a>');
+  .'http://unalog.com/my/stack/link?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'" title="Add to Unalog" ><img src="http://yotoshi.com/image/19300886.png" alt="Unalog"  height="16" width="16" /></a>');
+  .'http://www.wink.com/_/tag?url='+encodeURIComponent(location.href)+'&doctitle='+encodeURIComponent(document.title)+'" title="Wink This!"><img src="http://yotoshi.com/image/95672969.png" alt="Wink"  height="16" width="16" /></a>');
+  .'http://myweb2.search.yahoo.com/myresults/bookmarklet?t='+encodeURIComponent(document.title)+'&u='+encodeURIComponent(location.href)+'" title="Bookmark To Yahoo! MyWeb"><img src="http://yotoshi.com/image/41626225.png" alt="Yahoo! Myweb"  height="16" width="16" /></a>');
+   .'http://www.addtoany.com/? linkname='+encodeURIComponent(document.title)+'&linkurl='+encodeURIComponent(location.href)+' &type=page"><img src="http://yotoshi.com/image/10418375.png" alt="AddToAny" height="16" width="16" /></a>');
+  .'http://www.onlywire.com/b/?u='+encodeURIComponent(location.href)+'&t='+encodeURIComponent(document.title)+'" title="Bookmark with Onlywire" ><img src="http://yotoshi.com/image/2315000.png" alt="onlywire" height="16" width="16" /></a>');
+  .'http://myjeeves.ask.com/mysearch/BookmarkIt?v=1.2&amp;t=webpages&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine&amp;url=http%3A%2F%2Fwww.yotoshi.com%2F" title="bookmark to Jeeves">
+
+<a href="http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Url=http%3A%2F%2Fwww.yotoshi.com%2F&amp;Title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Add To BlinkList">
+<a href="http://blogmarks.net/my/new.php?mini=1&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine&amp;url=http%3A%2F%2Fwww.yotoshi.com%2F" title="Bookmark This to Blogmarks">
+<a href="http://buddymarks.com/add_bookmark.php?bookmark_title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine&amp;bookmark_url=http%3A%2F%2Fwww.yotoshi.com%2F" title="bookmark to Buddymarks">
+<a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.yotoshi.com%2F&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Bookmark This to del.icio.us">
+<a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.yotoshi.com%2F" title="Digg This!">
+<a href="http://www.feedmarker.com/admin.php?do=bookmarklet_mark&amp;url=http%3A%2F%2Fwww.yotoshi.com%2F&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine;" title="Add to feedmarker">
+<a href="http://www.furl.net/storeIt.jsp?u=http%3A%2F%2Fwww.yotoshi.com%2F&amp;t=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Bookmark To Furl">
+<a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.yotoshi.com%2F&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Bookmark to Google">
+<a href="http://www.hyperlinkomatic.com/lm2/add.html?LinkTitle=Yotoshi%20%3A%20Bittorrent%20Search%20Engine&amp;LinkUrl=http%3A%2F%2Fwww.yotoshi.com%2F" title="Add to HLOM">
+<a href="http://ma.gnolia.com/bookmarklet/add?url=http%3A%2F%2Fwww.yotoshi.com%2F&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Add to ma.gnolia">
+<a href="http://www.netvouz.com/action/submitBookmark?url=http%3A%2F%2Fwww.yotoshi.com%2F&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine&amp;popup=no" title="Bookmark to Netvouz">
+<a href="http://www.newsvine.com/_tools/seed&amp;save?u=http%3A%2F%2Fwww.yotoshi.com%2F&amp;h=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Bookmark to Newsvine">
+<a href="http://www.nextaris.com/servlet/com.surfwax.Nextaris.Bookmarklets?cmd=addurlrequest&amp;v=1&amp;url=http%3A%2F%2Fwww.yotoshi.com%2F&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine">
+<a href="http://view.nowpublic.com/?src=http%3A%2F%2Fwww.yotoshi.com%2F&amp;t=Yotoshi%20%3A%20Bittorrent%20Search%20Engine">
+<a href="http://reddit.com/submit?url=http%3A%2F%2Fwww.yotoshi.com%2F&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Add to reddit">
+<a href="http://www.rawsugar.com/pages/tagger.faces?turl=http%3A%2F%2Fwww.yotoshi.com%2F&amp;tttl=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Bookmark to RawSugar">
+<a href="http://scuttle.org/bookmarks.php/pass?action=add&amp;address=http%3A%2F%2Fwww.yotoshi.com%2F&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Bookmark to Scuttle">
+<a href="http://www.shadows.com/features/tcr.htm?url=http%3A%2F%2Fwww.yotoshi.com%2F&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Tag to Shadows">
+<a href="http://www.simpy.com/simpy/LinkAdd.do?href=http%3A%2F%2Fwww.yotoshi.com%2F&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Add to Simpy">
+<a href="http://smarking.com/editbookmark/?url=http%3A%2F%2Fwww.yotoshi.com%2F&amp;description=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Bookmark This to Smarking">
+<a href="http://www.spurl.net/spurl.php?url=http%3A%2F%2Fwww.yotoshi.com%2F&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Spurl This!">
+<a href="http://www.squidoo.com/lensmaster/bookmark?http%3A%2F%2Fwww.yotoshi.com%2F">
+<a href="http://tailrank.com/share/?text=&amp;link_href=http%3A%2F%2Fwww.yotoshi.com%2F&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine">
+<a href="http://technorati.com/faves?add=http%3A%2F%2Fwww.yotoshi.com%2F" title="Add to Technorati Favorites">
+<a href="http://unalog.com/my/stack/link?url=http%3A%2F%2Fwww.yotoshi.com%2F&amp;title=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Add to Unalog">
+<a href="http://www.wink.com/_/tag?url=http%3A%2F%2Fwww.yotoshi.com%2F&amp;doctitle=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Wink This!">
+<a href="http://myweb2.search.yahoo.com/myresults/bookmarklet?t=Yotoshi%20%3A%20Bittorrent%20Search%20Engine&amp;u=http%3A%2F%2Fwww.yotoshi.com%2F" title="Bookmark To Yahoo! MyWeb">
+<a href="http://www.addtoany.com/?%20linkname=Yotoshi%20%3A%20Bittorrent%20Search%20Engine&amp;linkurl=http%3A%2F%2Fwww.yotoshi.com%2F%20&amp;type=page">
+<a href="http://www.onlywire.com/b/?u=http%3A%2F%2Fwww.yotoshi.com%2F&amp;t=Yotoshi%20%3A%20Bittorrent%20Search%20Engine" title="Bookmark with Onlywire">
+
+
+<strong>Primarily CPM Based Ad Networks</strong>
+<a href="http://www.121media.com/">121Media</a>
+<a href="http://www.247realmedia.com/">24/7 RealMedia</a> </li>
+<a href="http://www.accelerator-media.com/">Accelerator-Media </a>
+<a href="http://www.asn.com/">Ad Solutions Network </a>
+<a href="http://www.adworldnetwork.com/">Ad World Network</a>
+<a href="http://www.adagency1.com/">AdAgency1</a>
+<a href="http://www.adbonus.com/">AdBonus</a>
+<a href="http://www.addynamix.com/">AdDynamix / Pennyweb Networks</a> </li>
+<a href="http://www.adorigin.com/">AdOrigin</a>
+<a href="http://www.adpepper.com/">AdPepper</a>
+<a href="http://www.adsmart.net/">AdSmart</a>
+<a href="http://www.adtegrity.com/">Adtegrity</a>
+<a href="http://www.adzuba.com/">AdZuba</a>
+<a href="http://www.ampiramedia.com/">Ampira Media</a>
+<a href="http://www.bannerconnect.net/">Bannerconnect</a>
+<a href="http://www.bannerspace.com/">BannerSpace</a>
+<a href="http://www.bluelithium.com/">BlueLithium</a>
+<a href="http://www.burstmedia.com/">BURST! Media</a>
+<a href="http://casalemedia.com/">Casale Media</a>
+<a href="http://www.claxon.com/">Claxon Media</a>
+<a href="http://clickagents.com/">Click Agents </a>
+<a href="http://clickbooth.com/">ClickBooth </a>
+<a href="http://www.cpxinteractive.com/">CPX Interactive (Formerly Buds Media)</a> </li>
+<a href="http://www.euroclick.com/">EuroClick </a>
+<a href="http://experclick.com/">Experclick </a>
+<a href="http://www.fastclick.com/">FastClick/ValueClick</a>
+<a href="http://www.federatedmedia.net/">Federated Media</a>
+<a href="http://gold-group.com/">Gold Group</a>
+<a href="http://www.gorillanation.com/">Gorilla Nation Media</a>
+<a href="http://www.hurricanedigitalmedia.com/">Hurricane Digital Media</a>
+<a href="http://impressionup.com/">Impression|Up</a>
+<a href="http://www.interclick.com/">InterClick</a> </li>
+<a href="http://www.interevco.com/">Interevco (Interactive Revenue Company Ltd.) </a>
+<a href="http://joetec.net/">Joetec</a>
+<a href="http://www.mammamediasolutions.com/">Mamma Media / FocusIn</a> </li>
+<a href="http://www.maxonline.com/">MaxOnline</a>
+<a href="http://oridian.com/">Oridian</a>
+<a href="http://www.premiumnetwork.com/">Premium Network</a>
+<a href="http://www.quakemarketing.com/">Quake Marketing</a>
+<a href="http://www.quinstreet.com/">Quin Street</a>
+<a href="http://www.realcastmedia.com/">RealCastMedia</a>
+<a href="http://www.realtechnetwork.com/">RealTechNetwork</a>
+<a href="http://www.revenue.net/">Revenue.net</a>
+<a href="http://www.rightmedia.com/">Right Media</a>
+<a href="http://www.rydium.com/">Rydium</a>
+<a href="http://www.robertsherman.com/">The Robert Sherman Company</a>
+<a href="http://www.tmp.com/">TMP</a>
+<a href="http://tribalfusion.com/">Tribal Fusion</a>
+<a href="http://valuead.com/">Valuead.com</a>
+<a href="http://www.yesadvertising.com/">Yes Advertising</a>
+
+<strong>Primarily CPA/CPL Ad Networks</strong> </p>
+<a href="http://advertising.com/">Advertising.com</a>
+<a href="http://www.axill.com/">Axill</a>
+<a href="http://www.azoogleads.com/">Azoogle Ads</a>
+<a href="http://clickbank.com/">ClickBank</a>
+<a href="http://www.clickxchange.com/">ClickXChange</a>
+<a href="http://www.cj.com/">Commission Junction / BeFree</a>
+<a href="http://www.coverclicks.com/">CoverClicks</a>
+<a href="http://www.darkblue.com/">DarkBlue</a>
+<a href="http://www.drivepm.com/">DrivePM</a>
+<a href="https://www.emarketmakers.com/">emarketmakers</a>
+<a href="http://www.linkshare.com/">Linkshare</a>
+<a href="http://www.maxbounty.com/">Maxbounty</a>
+<a href="http://metareward.com/">Meta Reward</a>
+<a href="http://profitcenternetwork.com/">ProfitCenter</a>
+<a href="http://www.revenue.net/">Revenue.Net</a>
+<a href="http://www.shareasale.com/">ShareASale</a>
+<a href="http://strategicaffiliates.com/">Strategic Affiliates</a>
+<a href="http://websponsors.com/">WebSponsors</a>
+
+<strong>Primarily CPC AND/OR Text Based/Contextual Ad Networks</strong> </p>
+<a href="http://https//www.google.com/adsense/">Google AdSense</a>
+<a href="http://publisher.yahoo.com/">Yahoo! Publisher Network</a>
+<a href="http://www.adforce.com/">AdForce</a>
+<a href="http://www.adhearus.org/">AdHearUs</a>
+<a href="http://www.adknowledge.com/">AdKnowledge</a>
+<a href="http://www.quigo.com/adsonarexchange.htm">AdSonar</a>
+<a href="http://www.affiliatesensor.com/">Affiliate Sensor</a>
+<a href="http://www.allclicks.com/">All Clicks</a>
+<a href="http://www.allfeeds.com/">AllFeeds</a>
+<a href="http://www.bannerboxes.com/">BannerBoxes</a>
+<a href="http://www.bclick.com/">BClick</a>
+<a href="http://www.bidclix.com/">BidClix</a>
+<a href="http://www.bidvertiser.com/">Bidvertiser</a>
+<a href="http://www.cbprosense.net/">CBprosense</a>
+<a href="http://www.clicksor.com/">Clicksor</a>
+<a href="http://www.expoactive.com/">ExpoActive</a>
+<a href="http://www.industrybrains.com/">IndustryBrains</a>
+<a href="http://www.mirago.com/">Mirago</a>
+<a href="http://www.miva.com/">Miva</a>
+<a href="http://www.nixxie.com/">Nixxie</a>
+<a href="http://onemonkey.com/">One Monkey</a>
+<a href="http://www.oxado.com/">Oxado</a>
+<a href="http://targetpoint.com/">TargetPoint</a>
+<a href="http://www.textads.biz/">Textads Dot Biz</a>
+<a href="http://www.textwise.com/">TextWise</a>
+<a href="http://www.text-link-ads.com/">Text Link Ads</a>
+<a href="http://www.vibrantmedia.com/">Vibrant Media</a>
+<a href="http://www.webadvertising.ca/">WebAdvertising.ca</a>
+<a href="http://www.adbrite.com/">AdBright</a> </li>
+<a href="http://www.hyperbidder.com/">HyperBidder</a>
+
+
+<strong>Shopping/Comparison Networks</strong> </p>
+<a href="http://www.ttzmedia.com/">TTZ Media</a>
+<a href="http://www.pricegrabber.com/">PriceGrabber</a>
+<a href="http://www.chitika.com/">Chitika</a>
+<a href="http://www.shopping.com/">Shopping.com</a>
+<a href="http://shopper.cnet.com/">CNet Shopper</a>
+
+
+non-standard
+<a href="http://7adpower.com/">7AdPower</a> </li>
+<a href="http://www.opt-media.com/">Opt-Media</a> </li>
+<a href="http://www.paypopup.com/">PayPopUp</a> </li>
+<a href="http://www.pointroll.com/">PointRoll</a> </li>
+<a href="http://www.popuptraffic.com/">PopUpTraffic</a>
+<a href="http://www.tremornetwork.com/">Tremor Network</a>
+<a href="http://www.whenu.com/">WhenU</a>
+<a href="http://www.payperpost.com/">PayPerPost</a>
+<a href="http://www.reviewme.com/">ReviewMe</a>
+<a href="http://www.creamaid.com/">CreamAid</a>
+
+<strong>Specific Demographic Ad Networks </strong>
+<a href="http://click.absoluteagency.com/">Absolute Agency</a>
+<a href="http://www.avnads.com/index_avn.php">AVN Ads</a> (*****WARNING: ADULT NETWORK*****)</li>
+<a href="http://www.blogads.com/">BlogAds</a>
+<a href="http://www.crispads.com/">CrispAds Blog Advertising Network</a>
+<a href="http://heragency.com/">HerAgency</a>
+<a href="http://www.hispanoclick.com/">HispanoClick</a>
+<a href="http://www.pheedo.com/">Pheedo RSS &amp; Weblog Marketing Solutions</a>
+<a href="http://www.qumana.com/adgenta.htm">Qumana Adgenta Blog Ads</a>
+<a href="http://www.waypointcash.com/">WayPointCash</a> (*****WARNING: ADULT NETWORK*****) </li>
+
+
+<strong>NON-US Primarily CPM Based Ad Networks </strong>
+<a href="http://www.clickhype.com/">ClickHype</a>
+<a href="http://www.dmoglobal.com/">DMO Global</a>
+
+
+<strong>NON-US Primarily CPC AND/OR Text Based/Contextual Ad Networks </strong>
+<a href="http://responserepublic.net/">Response Republic</a>
+<a href="http://www.peakclick.com/">PeakClick</a>
+
+
+<strong>NON-US Primarily CPA/CPL Ad Networks </strong>
+<a href="http://www.tradedoubler.com/">TradeDoubler</a> </li>
+<a href="http://commissionmonster.com.au/">Commission Monster</a> </li>
+<a href="http://affiliatefuture.co.uk/">Affiliate Future</a>
+
+
+*/
+
+
 function
 widget_test ()
 {
