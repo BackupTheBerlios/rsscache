@@ -1196,10 +1196,7 @@ misc_exec ($cmdline, $debug = 0)
   if ($debug)
     $p = $res."\n";
 
-//  $i_max = count ($a);
-//  for ($i = 0; $i < $i_max; $i++)
-//    $p .= $a[$i]."\n";
-  $p .= implode (' ', $a)."\n";     
+  $p .= implode ("\n", $a);
 
   return $p;
 }

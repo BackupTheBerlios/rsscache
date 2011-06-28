@@ -44,12 +44,15 @@ widget_gecko_install ($target = NULL)
   $p = '';
 
 //  if (!stristr ($_SERVER['HTTP_USER_AGENT'], 'gecko'))
+/*
+  // Mozilla was killed by Asa Dotzler in 2011
   if (stristr ($_SERVER['HTTP_USER_AGENT'], 'msie'))
     {
       $p .= '<a href="http://www.mozilla.com/firefox/" border="0"><img src="images/widget/firefox.jpg"></a><br><br>';
       if ($target)
         $p .= '<a href="'.$target.'">I have to continue using MSIE</a>';
     }
+*/
 //  else if ($target)
 //    header ('Location: '.$target);
   return $p;
@@ -150,6 +153,7 @@ widget_count_steps ()
 define ('WIDGET_BUTTON_SMALL', 1);
 define ('WIDGET_BUTTON_ONLY', 2);
 //define ('WIDGET_BUTTON_STATIC', 4);
+//define ('WIDGET_BUTTON_CLIP', 8);
 function
 widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
 {
@@ -235,11 +239,12 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
   if ($icon)
     {
       $s .= '<img src="'.$icon.'" border="0" alt=""';
-//      if (!($selected))
-//        $s .= ' style="opacity:0.5;"';
 
+//      if ($flags & WIDGET_BUTTON_CLIP)
+//        $s .= ' style="width:20%;clip:rect(10px 150px 150px 70px);position:absolute;"';
 //      if ($flags & WIDGET_BUTTON_SMALL)
 //        $s .= ' height="16"';
+
       $s .= ''
            .' onerror="this.parentNode.removeChild(this);"'
            .'>';
@@ -422,8 +427,12 @@ widget_cms ($logo, $config_xml, $link_suffix = NULL, $flags = 4)
           if ($category->logo)
             {
               $s .= '<img src="'.$category->logo.'" border="0" alt=""';
+
+//              if ($flags & WIDGET_BUTTON_CLIP)
+//                $s .= ' style="width:20%;clip:rect(10px 150px 150px 70px);position:absolute;"';
 //              if ($flags & WIDGET_BUTTON_SMALL)
 //                $s .= ' height="16"';
+
               $s .= ''
                    .' onerror="this.parentNode.removeChild(this);"'
                    .'>';
