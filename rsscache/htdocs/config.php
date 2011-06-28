@@ -71,8 +71,11 @@ $tv2_subdomain = get_subdomain ();
 //echo '$tv2_subdomain=='.$tv2_subdomain."<br>\n";
 
 // HACK
-if (in_array ($tv2_subdomain, array ('', 'www', 'pwnoogle')) || $_SERVER['SERVER_NAME'] == 'pwnoogle.com')
+if (in_array ($tv2_subdomain, array ('', 'www', 'pwnoogle')))
   $tv2_subdomain = 'videos';
+if (isset ($_SERVER['SERVER_NAME']))
+  if ($_SERVER['SERVER_NAME'] == 'pwnoogle.com')
+    $tv2_subdomain = 'videos';
 
 require_once ($tv2_subdomain.'_config.php');
 
