@@ -63,6 +63,7 @@ widget_embed_proxy ($src, $form_action = '', $form_method = 'GET', $allow = ALLO
 {
   $a = parse_url ($src);
   // DEBUG
+//  echo $src;
 //  echo '<pre><tt>';
 //  print_r ($a);
 /*
@@ -77,8 +78,8 @@ widget_embed_proxy ($src, $form_action = '', $form_method = 'GET', $allow = ALLO
 */
   if (isset ($a['query']))
     {
-      parse_str ($a['query'], $a);
-      $b = array_merge ($a, $_GET);
+      parse_str ($a['query'], $b);
+      $b = array_merge ($b, $_GET);
     }
   else
     $b = $_GET;
@@ -89,7 +90,10 @@ widget_embed_proxy ($src, $form_action = '', $form_method = 'GET', $allow = ALLO
   else
     $url = ''.$a['path'];
 */
-  $url = $src.($query != '' ? '?'.$query : '');
+  // DEBUG
+//  echo '<pre><tt>';  
+//  print_r ($a);  
+  $url = $a['scheme'].'://'.$a['host'].(isset ($a['path']) ? $a['path'] : '') .($query != '' ? '?'.$query : '');
 
   // DEBUG
 //  echo $url;
@@ -330,6 +334,9 @@ function
 widget_embed ($src, $flags = 0, $target = '_top')
 {
   $p = '';
+// DEBUG
+//  echo $src;
+
   if ($flags == 0 || $flags == WIDGET_EMBED_AUTO)
     {
       if (!strncasecmp ($src, 'http://', 7))
