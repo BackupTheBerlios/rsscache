@@ -26,7 +26,8 @@ define ('TV2_MISC_PHP', 1);
 //require_once ('config.php');
 require_once ('misc/misc.php');
 require_once ('misc/wikipedia.php');
-require_once ('phpqrcode/qrlib.php');
+if ($tv2_qrcode == 1)
+  require_once ('phpqrcode/qrlib.php');
 require_once ('tv2_sql.php');
 
 
