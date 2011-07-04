@@ -1203,6 +1203,37 @@ misc_exec ($cmdline, $debug = 0)
 
 
 function
+misc_exec_wget ($url, $output_path = '.', $noclobber = 0, $wget_path = '/usr/local/bin/wget', $wget_opts = '')
+{
+//  global $wget_path;
+//  global $wget_opts;
+  $debug = 0;
+
+  // DEBUG
+//  echo $url."\n";
+
+  if ($noclobber == 1)
+    {
+      if (file_exists ($output_path)) // do not overwrite existing files
+        {
+          echo 'WARNING: file '.$output_path.' exists, skipping'."\n";
+          return 1;
+        }
+      // DEBUG
+//      echo $output_path."\n";
+    }
+
+  // download
+  $p = $wget_path.' '.$wget_opts.' -U "'.random_user_agent ().'" "'.$url.'" -O "'.$output_path.'"';
+  // DEBUG
+  echo $p."\n";
+
+  echo misc_exec ($p, $debug);
+  return 0;
+}
+
+
+function
 misc_seo_description ($html_body)
 {
   // generate meta tag from the body
