@@ -415,22 +415,20 @@ in_tag ($s)
 function
 is_url ($s)
 {
-/*
   // checks if string is a url
-  $is_url = 0;
+  $is_url = false;
 
   if (strlen ($s) > 4 &&
       isalpha ($s[0]) &&
       !strstr ($s, '..') &&
       substr_count ($s, '.') == 2 &&
       (substr ($s, -4, 1) == '.' || substr ($s, -3, 1) == '.'))
-    $is_url = 1;
+    $is_url = true;
+
+  if (filter_var ($s, FILTER_VALIDATE_URL) != FALSE)
+    $is_url = true;
 
   return $is_url;
-*/
-  if (filter_var ($s, FILTER_VALIDATE_URL) == FALSE)
-    return 0;
-  return 1;
 }
 
 
@@ -1098,11 +1096,12 @@ parse_links ($s, $cached = 1)
   $a = misc_array_unique_merge ($a); // remove dupes
 
   // find eventual urls
-  $a_size = sizeof ($a);
-  for ($i = 0; $i < $a_size; $i++)
+  for ($i = 0; isset ($a[$i]); $i++)
     if (is_url ($a[$i]))
       {
         $url = $a[$i];
+// DEBUG
+//echo $url;
         if (!stristr ($url, 'http://'))
           $url = 'http://'.$url;
 
