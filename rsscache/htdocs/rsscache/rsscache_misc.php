@@ -356,10 +356,6 @@ tv2_event ($d)
 //Show Type: Podcast,
 //Game Featured: StarCraft 2
 
-  $p = '';
-
-  // enable links in desc
-  $s = parse_links ($d['rsstool_desc']);
 //echo '<pre><tt>';
 //print_r ($d);
 
@@ -368,9 +364,11 @@ tv2_event ($d)
 
   $t[2] = $t[0] - time ();
   date_default_timezone_set ($tz);
-  $t[3] = (100 * $t[2]) / (7 * 24 * 60 * 60); // percent (week)
+  $t[3] = (100 * $t[2]) / (7 * 86400); // percent (week)
 
   $p = '';
+
+  $s = $d['rsstool_desc'];
 //  $s = substr ($s, strpos ($s, 'Show Type: '));
 //  $s = str_replace (', Ends:', ' GMT<br>Ends:', $s);
 //  $s = str_replace (', ', ' GMT<br>Begins:', $s);
