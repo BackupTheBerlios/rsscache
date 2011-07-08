@@ -351,13 +351,15 @@ tv2_highlight ($s)
 function
 tv2_event ($d)
 {
+  global $tv2_time;
+
 //echo '<pre><tt>';
 //print_r ($d);
 
   $t[0] == $d['rsstool_event_start'];
   $t[1] == $d['rsstool_event_end'];
 
-  $t[2] = $t[0] - time ();
+  $t[2] = $t[0] - $tv2_time;
   date_default_timezone_set ($tz);
   $t[3] = (100 * $t[2]) / (7 * 86400); // percent (week)
 
