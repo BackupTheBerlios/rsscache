@@ -351,11 +351,6 @@ tv2_highlight ($s)
 function
 tv2_event ($d)
 {
-//Begins: 12/05 7:00pm,
-//Ends: 12/05 9:00pm,
-//Show Type: Podcast,
-//Game Featured: StarCraft 2
-
 //echo '<pre><tt>';
 //print_r ($d);
 
@@ -367,43 +362,36 @@ tv2_event ($d)
   $t[3] = (100 * $t[2]) / (7 * 86400); // percent (week)
 
   $p = '';
-
-  $s = $d['rsstool_desc'];
-//  $s = substr ($s, strpos ($s, 'Show Type: '));
-//  $s = str_replace (', Ends:', ' GMT<br>Ends:', $s);
-//  $s = str_replace (', ', ' GMT<br>Begins:', $s);
-  $s = str_replace (',', '<br>', $s);
-  $s = str_replace ('Show URL:', '<br>Show URL:', $s);
-  $p .= $s;
+  $p .= $d['rsstool_desc'];
   $p .= '<br>Length: '.floor (($t[1] - $t[0]) / 60).' min';
   $p .= '<br>';
   if ($t[2] > 0)
     {
-  $p .= ''
-       .'<div style="float:left;font-size:16px;">'
-       .'<b>LIVE</b> in '
-//       .'Event in '
-       .floor ($t[2] / 3600).'h '.floor ($t[2] % 60).'m&nbsp;&nbsp;'
-       .'</div>'
+      $p .= ''
+           .'<div style="float:left;font-size:16px;">'
+           .'<b>LIVE</b> in '
+//           .'Event in '
+           .floor ($t[2] / 3600).'h '.floor ($t[2] % 60).'m&nbsp;&nbsp;'
+           .'</div>'
 ;
-  // progress
-  $p .= '<div style="width:'.floor ($t[3]).'px;background-color:#f00;float:left;">&nbsp;</div>';
-  $p .= '<div style="width:'.floor (100 - $t[3]).'px;background-color:#999;float:left;">&nbsp;</div>';
-//  $p .= '<div style="float:left;font-size:16px;">'
-//       .'&nbsp;(7 days)'
-//       .'</div>'
+      // progress
+      $p .= '<div style="width:'.floor ($t[3]).'px;background-color:#f00;float:left;">&nbsp;</div>';
+      $p .= '<div style="width:'.floor (100 - $t[3]).'px;background-color:#999;float:left;">&nbsp;</div>';
+//      $p .= '<div style="float:left;font-size:16px;">'
+//           .'&nbsp;(7 days)'
+//           .'</div>'
 //;
-  $p .= '<div style="clear:both;"></div>';
+      $p .= '<div style="clear:both;"></div>';
     }
   else
-  $p .= ''
-       .'<div style="float:left;font-size:16px;">'
-       .'Event was '
-       .(floor ($t[2] / 3600) * -1).'h '.(floor ($t[2] % 60) * -1).'m&nbsp;ago&nbsp;&nbsp;'
-       .'</div>'
+    $p .= ''
+         .'<div style="float:left;font-size:16px;">'
+         .'Event was '
+         .(floor ($t[2] / 3600) * -1).'h '.(floor ($t[2] % 60) * -1).'m&nbsp;ago&nbsp;&nbsp;'
+         .'</div>'
 ;
 
-  return $d['rsstool_desc'] . $p;
+  return $p;
 }
 
 
