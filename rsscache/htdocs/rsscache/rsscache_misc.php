@@ -349,6 +349,67 @@ tv2_highlight ($s)
 
 
 function
+tv2_event ($d)
+{
+//Begins: 12/05 7:00pm,
+//Ends: 12/05 9:00pm,
+//Show Type: Podcast,
+//Game Featured: StarCraft 2
+
+  $p = '';
+
+  // enable links in desc
+  $s = parse_links ($d['rsstool_desc']);
+//echo '<pre><tt>';
+//print_r ($d);
+
+  $t[0] == $d['rsstool_event_start'];
+  $t[1] == $d['rsstool_event_end'];
+
+  $t[2] = $t[0] - time ();
+  date_default_timezone_set ($tz);
+  $t[3] = (100 * $t[2]) / (7 * 24 * 60 * 60); // percent (week)
+
+  $p = '';
+//  $s = substr ($s, strpos ($s, 'Show Type: '));
+//  $s = str_replace (', Ends:', ' GMT<br>Ends:', $s);
+//  $s = str_replace (', ', ' GMT<br>Begins:', $s);
+  $s = str_replace (',', '<br>', $s);
+  $s = str_replace ('Show URL:', '<br>Show URL:', $s);
+  $p .= $s;
+  $p .= '<br>Length: '.floor (($t[1] - $t[0]) / 60).' min';
+  $p .= '<br>';
+  if ($t[2] > 0)
+    {
+  $p .= ''
+       .'<div style="float:left;font-size:16px;">'
+       .'<b>LIVE</b> in '
+//       .'Event in '
+       .floor ($t[2] / 3600).'h '.floor ($t[2] % 60).'m&nbsp;&nbsp;'
+       .'</div>'
+;
+  // progress
+  $p .= '<div style="width:'.floor ($t[3]).'px;background-color:#f00;float:left;">&nbsp;</div>';
+  $p .= '<div style="width:'.floor (100 - $t[3]).'px;background-color:#999;float:left;">&nbsp;</div>';
+//  $p .= '<div style="float:left;font-size:16px;">'
+//       .'&nbsp;(7 days)'
+//       .'</div>'
+//;
+  $p .= '<div style="clear:both;"></div>';
+    }
+  else
+  $p .= ''
+       .'<div style="float:left;font-size:16px;">'
+       .'Event was '
+       .(floor ($t[2] / 3600) * -1).'h '.(floor ($t[2] % 60) * -1).'m&nbsp;ago&nbsp;&nbsp;'
+       .'</div>'
+;
+
+  return $d['rsstool_desc'] . $p;
+}
+
+
+function
 tv2_stats_rss ()
 {
   global $tv2_link;

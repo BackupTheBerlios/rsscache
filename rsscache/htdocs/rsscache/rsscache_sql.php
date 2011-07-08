@@ -431,6 +431,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
                  .' rsstool_date,'
 //                 .' tv2_category,'
                  .' tv2_moved,'
+                 .' rsstool_event_start,'
+                 .' rsstool_event_end,'
                  .' rsstool_media_duration,'
                  .' rsstool_keywords'
 //                 .' tv2_votes,'
