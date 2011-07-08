@@ -500,7 +500,11 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
   // functions
   if ($f == 'new')
     $a[] = 'rsstool_dl_date > '.($tv2_time - $tv2_isnew).'';
-  else if ($f == '0_5min')
+
+  if ($tv2_item_ttl > 0)
+    $a[] = 'rsstool_date > '.($tv2_time - $tv2_item_ttl);
+
+  if ($f == '0_5min')
     $a[] = 'rsstool_media_duration BETWEEN 0 AND 301';
   else if ($f == '5_10min')
     $a[] = 'rsstool_media_duration BETWEEN 300 AND 601';
