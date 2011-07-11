@@ -1687,12 +1687,14 @@ widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autopla
 
   if ($scale)
     {
-      $bg_width = '\'+Math.floor (misc_getwh ()[0])+\''; // width of black background
-      if ($ratio)
-        $width = '\'+Math.floor (misc_getwh ()[1] * '.$ratio.')+\'';
-      else
-        $width = $bg_width;
-      $height = '\'+Math.floor (misc_getwh ()[1])+\'';
+//      $bg_width = '\'+Math.floor (misc_getwh ()[0])+\''; // width of black background
+//      if ($ratio)
+//        $width = '\'+Math.floor (misc_getwh ()[1] * '.$ratio.')+\'';
+//      else
+//        $width = $bg_width;
+//      $height = '\'+Math.floor (misc_getwh ()[1])+\'';
+      $width = '100%';
+      $height = '100%';
       $p .= ''
            .'<script type="text/javascript">'."\n"
            .'document.write (\'';
