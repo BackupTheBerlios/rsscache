@@ -544,8 +544,8 @@ widget_media_object_func ($object, $param, $embed)
     {
       $p .= '<object';
       for ($i = 0; isset ($object[$i]); $i++)
-//        $p .= ' '.$object[$i][0].'=\''.$object[$i][1].'\'';
-        $p .= ' '.$object[$i][0].'="'.$object[$i][1].'"';
+        $p .= ' '.$object[$i][0].'=\''.$object[$i][1].'\'';
+//        $p .= ' '.$object[$i][0].'="'.$object[$i][1].'"';
       $p .= '>';
     }
 
@@ -556,8 +556,8 @@ widget_media_object_func ($object, $param, $embed)
 //      $param[] = array ('wmode', 'transparent');
       for ($i = 0; isset ($param[$i]); $i++)
         $p .= '<param name="'
-//             .$param[$i][0].'" value=\''.$param[$i][1].'\''
-             .$param[$i][0].'" value="'.$param[$i][1].'"'
+             .$param[$i][0].'" value=\''.$param[$i][1].'\''
+//             .$param[$i][0].'" value="'.$param[$i][1].'"'
              .'></param>';
     }
   if ($embed)
@@ -567,8 +567,8 @@ widget_media_object_func ($object, $param, $embed)
 //      $embed[] = array ('wmode', 'transparent');      
       $p .= '<embed';
       for ($i = 0; isset ($embed[$i]); $i++)
-//        $p .= ' '.$embed[$i][0].'=\''.$embed[$i][1].'\'';
-        $p .= ' '.$embed[$i][0].'="'.$embed[$i][1].'"';
+        $p .= ' '.$embed[$i][0].'=\''.$embed[$i][1].'\'';
+//        $p .= ' '.$embed[$i][0].'="'.$embed[$i][1].'"';
       $p .= '></embed>';
     }
 
@@ -1693,11 +1693,12 @@ widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autopla
 //      else
 //        $width = $bg_width;
 //      $height = '\'+Math.floor (misc_getwh ()[1])+\'';
+      $bg_width = '100%';
       $width = '100%';
       $height = '100%';
-      $p .= ''
-           .'<script type="text/javascript">'."\n"
-           .'document.write (\'';
+//      $p .= ''
+//           .'<script type="text/javascript">'."\n"
+//           .'document.write (\'';
     } 
   else
     {
@@ -1724,9 +1725,9 @@ widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autopla
 
   if ($scale)
     {   
-      $p .= '\');'."\n\n"
-           .'</script>'
-;
+//      $p .= '\');'."\n\n"
+//           .'</script>'
+//;
     }
 
   return $p;
