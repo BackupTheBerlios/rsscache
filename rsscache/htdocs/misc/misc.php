@@ -39,27 +39,46 @@ misc_substr2 ($t, $left, $cont, $right = NULL)
   // $left=NULL $cont='b' $right='a'
   // ...]<-b--[<-a--
 
-  $s = false;
-  $l = false;
+  $l = $c = $r = 0;
+  if ($left != NULL)
+    $l = strpos ($t, $left) + strlen ($left);
+
+  if ($right != NULL)
+    $r = strrpos ($t, $right);
+
+  if ($cont != NULL)
+    {
+      if ($l) // from left
+        $c = strpos ($t, $cont, $l);
+      else if ($r) // from right
+        $c = strrpos ($t, $cont, $r);
+    }
+
+  // DEBUG
+  echo $l.' '.$c.' '.$r."\n";
+
+  // from left to cont
   if ($right == NULL)
-    {
-      $s = strpos ($t, $left) + strlen ($left);
-      $l = strpos (substr ($t, $s), $cont);
-    }
-  else if ($cont == NULL)
-    {
-      $s = strpos ($t, $left) + strlen ($left);
-      $l = strpos (substr ($t, $s), $cont);
-    }
-  else if ($left == NULL)
-    {
-      $s = strpos ($t, $left) + strlen ($left);
-      $l = strpos (substr ($t, $s), $cont);
-    }
-  if ($s == false || $l == false)
-    return '';
-  return substr ($t, $s, $l);
+    return substr ($t, $l, $c - $l);
+  // from right to cont
+  if ($left == NULL)
+    return substr ($t, $c, $r - $c);
+  // from left to right
+  return substr ($t, $l, $r - $l);
 }
+
+
+/*
+function
+misc_substr2_debug ()
+{
+  $t = 'a123b123c123d';//123e123f';
+  echo $t."\n";
+  echo misc_substr2 ($t, '23', '23', NULL)."==b1\n";
+  echo misc_substr2 ($t, NULL, '23', '23')."==c1\n";
+  echo misc_substr2 ($t, '23', NULL, '23')."==b123c1\n";
+}
+*/
 
 
 function
