@@ -77,6 +77,9 @@ if (isset ($_SERVER['SERVER_NAME']))
   if ($_SERVER['SERVER_NAME'] == 'pwnoogle.com')
     $tv2_subdomain = 'videos';
 
+if (!file_exists ($tv2_subdomain.'_config.php'))
+  $tv2_subdomain = 'videos';
+
 require_once ($tv2_subdomain.'_config.php');
 
 }
