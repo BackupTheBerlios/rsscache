@@ -42,30 +42,36 @@ youtube_get_thumbnail_urls ($url)
 
 
 function
-youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $use_tor = 0)
+youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby_published = 1, $use_tor = 0)
 {
   $maxresults = 50;
   $q = urlencode ($search);
   if ($playlist)
     {
-      // normalize
-      if (strtolower (substr ($playlist, 0, 2)) == 'pl')
-        $playlist = substr ($playlist, 2);
-
-      $url = 'http://gdata.youtube.com/feeds/base/playlists/'.$playlist.'?alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
+      $url = 'http://gdata.youtube.com/feeds/base/playlists/'.$playlist;
+      $url .= '?alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
     }
   else if ($channel)
     {
       // OLD: http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
 //    http://gdata.youtube.com/feeds/base/users/'.$v_user.'/uploads?max-results=50
-      $url = 'http://gdata.youtube.com/feeds/base/videos?author='.$channel.'&q='.$q.'&orderby=published&alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
+      $url = 'http://gdata.youtube.com/feeds/base/videos?author='.$channel.'&q='.$q;
+      if ($orderby_published)
+        $url .= '&orderby=published';
+      $url .= '&alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
     }
   else
     {
       // OLD: http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
       // http://gdata.youtube.com/feeds/base/videos?q=SEARCH&orderby=published&alt=rss&client=ytapi-youtube-search&v=2   
-      $url = 'http://gdata.youtube.com/feeds/base/videos?q='.$q.'&orderby=published&alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
+      $url = 'http://gdata.youtube.com/feeds/base/videos?q='.$q;
+      if ($orderby_published) 
+        $url .= '&orderby=published';
+      $url .= '&alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
     }
+
+  // DEBUG
+  echo $url."\n";
 
   if ($use_tor)
     $f = tor_get_contents ($url);
