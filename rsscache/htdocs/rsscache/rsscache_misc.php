@@ -32,6 +32,14 @@ require_once ('tv2_sql.php');
 
 
 function
+tv2_youtube_download ($q)
+{
+//  header('Content-Disposition: attachment; filename="downloaded.pdf"');
+//  readfile("/path/to/file");
+}
+
+
+function
 tv2_get_request_value ($name)
 {
   // wrapper for get_request_value() with hacks

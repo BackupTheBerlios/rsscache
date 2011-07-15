@@ -393,9 +393,6 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
   global $tv2_debug_sql;
   global $tv2_use_database;
 
-  if ($tv2_use_database == 0)
-    return NULL;
-
   $debug = $tv2_debug_sql;
 //  $debug = 1;
 
@@ -405,6 +402,12 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 //  $v = $tv2_sql_db->sql_stresc ($v);
 //  $start = $tv2_sql_db->sql_stresc ($start);
 //  $num = $tv2_sql_db->sql_stresc ($num);
+
+  if ($f == 'extern')
+    return tv2_sql_extern ($c, $q, $v, $start, $num);
+
+  if ($tv2_use_database == 0)
+    return NULL;
 
   $rsstool_table = 'rsstool_table';
   $keyword_table = 'keyword_table';
@@ -418,9 +421,6 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 
   if ($f == 'stats')
     return tv2_sql_stats ($tv2_sql_db, $c);
-
-  if ($f == 'extern')
-    return tv2_sql_extern ($c, $q, $v, $start, $num);
 
   $sql_query_s = '';
   $sql_query_s .= ''

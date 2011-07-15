@@ -56,6 +56,13 @@ if ($tv2_maintenance == 1)
 $f = get_request_value ('f'); // function
 $q = get_request_value ('q'); // search query
 
+// download youtube video
+if ($f == 'download')
+  {
+    tv2_youtube_download ($q);
+    exit;
+  }
+
 // QR code image
 if ($f == 'qrcode')
   {
