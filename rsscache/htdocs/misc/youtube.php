@@ -71,7 +71,7 @@ youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby_published 
     }
 
   // DEBUG
-  echo $url."\n";
+//  echo $url."\n";
 
   if ($use_tor)
     $f = tor_get_contents ($url);

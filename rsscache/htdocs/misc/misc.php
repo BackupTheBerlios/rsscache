@@ -122,12 +122,12 @@ misc_playlist_load_string ($playlist_s)
   // demux
   $demux = 0;
   for ($i = 0; isset ($line[$i]); $i++)
-    if (strstr ($p, '#EXTM3U'))
+    if (strstr ($line[$i], '#EXTM3U'))
       {
         $demux = 1; // m3u
         break;
       }
-    else if (strstr ($p, '[playlist]'))
+    else if (strstr ($line[$i], '[playlist]'))
       {
         $demux = 2; // pls
         break;
@@ -151,12 +151,9 @@ C:\Documents and Settings\I\My Music\Greatest Hits\Example.ogg
         {
           $p = $line[$i];
 
-          if (substr ($p, 0, 1) != '#')
-            continue;
-
           if (strstr ($p, '#EXTINF:'))
             {
-              $p = substr ($p, 8, -3);
+              $p = substr ($p, 8);
               $o = strpos ($p, ',');
               $link = $line[++$i];
               $a[] = array ('title' => trim (substr ($p, $o + 1)),
@@ -202,20 +199,20 @@ Version=2
 
           if (strtolower (substr ($p, 0, 4)) == 'file')
             {
-              $n = substr ($p, 4, strpos ('=') - 4);
-              $s = substr ($p, strpos ('=') + 1);
+              $n = substr ($p, 4, strpos ($p, '=') - 4);
+              $s = substr ($p, strpos ($p, '=') + 1);
               $a[$n * 1 - 1]['link'] = $s;
             }
           else if (strtolower (substr ($p, 0, 5)) == 'title')
             {
-              $n = substr ($p, 5, strpos ('=') - 5); 
-              $s = substr ($p, strpos ('=') + 1);
+              $n = substr ($p, 5, strpos ($p, '=') - 5); 
+              $s = substr ($p, strpos ($p, '=') + 1);
               $a[$n * 1 - 1]['title'] = $s;
             }
           else if (strtolower (substr ($p, 0, 6)) == 'length')
             {
-              $n = substr ($p, 6, strpos ('=') - 6);
-              $s = substr ($p, strpos ('=') + 1);
+              $n = substr ($p, 6, strpos ($p, '=') - 6);
+              $s = substr ($p, strpos ($p, '=') + 1);
               $a[$n * 1 - 1]['media_duration'] = $s;             
             }
         }
