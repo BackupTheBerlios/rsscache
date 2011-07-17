@@ -1,4 +1,34 @@
 <VirtualHost *:80>
+        ServerName rescue.a1.25u.com
+
+        DocumentRoot /htdocs/rescue/htdocs
+        <Directory /htdocs/rescue/htdocs >
+                Options +FollowSymLinks
+                AllowOverride All
+        </Directory>
+</VirtualHost>
+
+<VirtualHost *:80>
+        ServerName phpelite.a1.25u.com
+
+        DocumentRoot /htdocs/phpelite/htdocs
+        <Directory /htdocs/phpelite/htdocs >
+                Options +FollowSymLinks
+                AllowOverride All
+        </Directory>
+</VirtualHost>
+
+<VirtualHost *:80>
+	ServerName test.a1.25u.com
+
+        DocumentRoot /htdocs/test
+        <Directory /htdocs/test >
+                Options +FollowSymLinks
+                AllowOverride All
+        </Directory>
+</VirtualHost>
+
+<VirtualHost *:80>
         ServerName servers.a1.25u.com
 
         DocumentRoot /htdocs/servers/htdocs
@@ -29,26 +59,6 @@
 </VirtualHost>
 
 <VirtualHost *:80>
-	ServerName phpelite.a1.25u.com
-
-        DocumentRoot /htdocs/phpelite/htdocs
-        <Directory /htdocs/phpelite/htdocs >
-                Options +FollowSymLinks
-                AllowOverride All
-        </Directory>
-</VirtualHost>
-
-<VirtualHost *:80>
-	ServerName lifestyle.a1.25u.com
-
-        DocumentRoot /htdocs/lifestyle/htdocs
-        <Directory /htdocs/lifestyle/htdocs >
-                Options +FollowSymLinks
-                AllowOverride All
-        </Directory>
-</VirtualHost>
-
-<VirtualHost *:80>
 	ServerName wiki.a1.25u.com
 
         DocumentRoot /htdocs/wiki/htdocs
@@ -60,16 +70,6 @@
 	Require valid-user
 	AuthUserFile /htdocs/pwnoogle/.htpasswd
 	#AuthGroupFile /dev/null
-        </Directory>
-</VirtualHost>
-
-<VirtualHost *:80>
-	ServerName test.a1.25u.com
-
-        DocumentRoot /htdocs/test
-        <Directory /htdocs/test >
-                Options +FollowSymLinks
-                AllowOverride All
         </Directory>
 </VirtualHost>
 
@@ -123,16 +123,6 @@
         </Directory>
 </VirtualHost>
 
-<VirtualHost *:80>
-        ServerName plugins.a1.25u.com  
-
-        DocumentRoot /htdocs/plugins/htdocs  
-        <Directory /htdocs/plugins/htdocs >  
-                Options +FollowSymLinks
-                AllowOverride All
-        </Directory>
-</VirtualHost>
-
 <VirtualHost *:80>  
         ServerName videos.a1.25u.com
 
@@ -148,26 +138,6 @@
 
         DocumentRoot /htdocs/maps/htdocs
         <Directory /htdocs/maps/htdocs >
-                Options +FollowSymLinks
-                AllowOverride All
-        </Directory>
-</VirtualHost>
-
-<VirtualHost *:80>
-        ServerName private.a1.25u.com
-
-        DocumentRoot /htdocs/private
-        <Directory /htdocs/private >
-                Options +FollowSymLinks
-                AllowOverride All
-        </Directory>
-</VirtualHost>
-
-<VirtualHost *:80>
-        ServerName rescue.a1.25u.com
-
-        DocumentRoot /htdocs/rescue/htdocs
-        <Directory /htdocs/rescue/htdocs >
                 Options +FollowSymLinks
                 AllowOverride All
         </Directory>
