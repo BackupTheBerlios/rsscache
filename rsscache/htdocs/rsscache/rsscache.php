@@ -248,7 +248,7 @@ $tv2_captcha = '';
 if (file_exists ('images/captcha/'))
   $tv2_captcha = widget_captcha ('images/captcha/');
 
-$head_rss = ($tv2_rss_head ? misc_head_rss ($tv2_title, '?'.http_build_query2 (array ('f' => 'rss'), true))
+$head_rss = ($tv2_rss_head ? misc_head_rss (tv2_title ($d_array), '?'.http_build_query2 (array ('f' => 'rss'), true))
                     .misc_head_rss ('Statistics', '?'.http_build_query2 (array ('f' => 'stats'), true)) : '');
 if ($tv2_maintenance == 1)
   {
@@ -260,7 +260,7 @@ else
 if ($f == 'fullscreen' || $f == 'popout')
   {
 $template_replace = array (
-  '<!-- parse:title -->'       => $tv2_title,
+  '<!-- parse:title -->'       => tv2_title ($d_array),
   '<!-- parse:icon -->'        => misc_head_tags ($tv2_icon, 0, $tv2_charset),
   '<!-- parse:head_seo -->'    => misc_seo_description ($body),
   '<!-- parse:head_tag -->'    => $tv2_head_tag,
@@ -283,7 +283,7 @@ $p = misc_template ($p, $tv2_translate[$tv2_language ? $tv2_language : 'default'
 else
   {
 $template_replace = array (
-  '<!-- parse:title -->'       => $tv2_title,
+  '<!-- parse:title -->'       => tv2_title ($d_array),
   '<!-- parse:icon -->'        => misc_head_tags ($tv2_icon, 0, $tv2_charset),
   '<!-- parse:head_seo -->'    => misc_seo_description ($body),
   '<!-- parse:head_tag -->'    => $tv2_head_tag,

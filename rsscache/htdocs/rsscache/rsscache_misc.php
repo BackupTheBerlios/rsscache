@@ -410,7 +410,6 @@ function
 tv2_stats_rss ()
 {
   global $tv2_link;
-  global $tv2_title;
   global $tv2_translate;
   global $tv2_language;
 
@@ -454,7 +453,7 @@ tv2_stats_rss ()
 //  print_r ($rss_link_array);
 //  print_r ($rss_desc_array);
 
-  return generate_rss ($tv2_title,
+  return generate_rss (tv2_title (),
                        $tv2_link,
                        'Statistics',
                        $rss_title_array, $rss_link_array, $rss_desc_array);
@@ -465,7 +464,6 @@ function
 tv2_rss ($d_array)
 {
   global $tv2_link;
-  global $tv2_title;
 
 //    header ('Content-type: text/xml');
     header ('Content-type: application/xml');
@@ -497,7 +495,7 @@ tv2_rss ($d_array)
 //  print_r ($rss_link_array);
 //  print_r ($rss_desc_array);
 
-  return generate_rss ($tv2_title,
+  return generate_rss (tv2_title (),
                      $tv2_link,
                      '',
                      $rss_title_array, $rss_link_array, $rss_desc_array);
