@@ -116,449 +116,6 @@ misc_array_unique_merge ($a)
 function
 misc_playlist_load_string ($playlist_s)
 {
-/*
-#-----AFTERHOURSDJS.ORG- WWW. AFTERHOURSDJS. ORG---------------------------
-#EXTINF:-1, AH Djs 1->
-http://205.188.215.229:8020
-#EXTINF:-1, AH Djs 2->
-http://207.200.96.232:8016
-#EXTINF:-1, AH Djs 2->
-http://207.200.96.230:8004
-#-----TEKLAB.FM- WWW.TEKLAB. FM-----------------------------------
-#EXTINF:-1, MIXED 1->
-http://91.121.6.21:8002
-#-----DRUM & BASS- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Drum & Bass 1 ->
-http://207.200.96.229:8030
-#-----DRUM & BASS- WWW. BASSDRIVE. COM-----------------------------------
-#EXTINF:-1, Drum & Bass 1 ->
-http://pngusa.streams.bassdrive.com:8000
-#EXTINF:-1, Drum & Bass 2 ->
-http://shoutdrive.streams.bassdrive.com:8000
-#EXTINF:-1, Drum & Bass 3 ->
-http://spechal.com.streams.bassdrive.com:8000
-#EXTINF:-1, Drum & Bass 4 ->
-http://visionshosting.net.streams.bassdrive.com:8004
-#EXTINF:-1, Drum & Bass 5 ->
-http://aol.streams.bassdrive.com:8012
-#EXTINF:-1, Drum & Bass 6 ->
-http://us-tx1.streams.bassdrive.com:9000
-#EXTINF:-1, Drum & Bass 7 ->
-http://uk.streams.bassdrive.com:8000
-#EXTINF:-1, Drum & Bass 8 ->
-http://pngusa-2.streams.bassdrive.com:8000
-#EXTINF:-1, Drum & Bass 9 ->
-http://hostdime.streams.bassdrive.com:8000
-#-----BREAKS- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Breaks 1 ->
-http://205.188.215.225:8002
-#-----PROGRESSIVE- WWW. ETN. FM-----------------------------------
-#EXTINF:-1, Progressive 1 - 192kbps
-http://toronto.etn.fm:8210
-#EXTINF:-1, Progressive 2 - [BETA] 256k EUROPE
-http://etn.luon.net:8200
-#-----PROGRESSIVE- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Progressive 1 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1026
-#EXTINF:-1, Progressive 2 ->
-http://scfire-ntc-aa03.stream.aol.com:80/stream/1026
-#EXTINF:-1, Progressive 3 ->
-http://scfire-ntc-aa04.stream.aol.com:80/stream/1026
-#EXTINF:-1, Progressive 4 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1026
-#EXTINF:-1, Progressive 5 ->
-http://scfire-ntc-aa02.stream.aol.com:80/stream/1026
-#EXTINF:-1, Progressive 6 ->
-http://scfire-nyk-aa03.stream.aol.com:80/stream/1026
-#EXTINF:-1, Progressive 7 ->
-http://scfire-nyk-aa04.stream.aol.com:80/stream/1026
-#-----LOUNGE- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Lounge 1 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1009
-#EXTINF:-1, Lounge 2 ->
-http://64.236.98.51:80/stream/1009
-#EXTINF:-1, Lounge 3 ->
-http://64.236.36.55:80/stream/1009
-#EXTINF:-1, Lounge 4 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1009
-#EXTINF:-1, Lounge 5 ->
-http://64.236.126.41:80/stream/1009
-#EXTINF:-1, Lounge 6 ->
-http://64.236.126.42:80/stream/1009
-#EXTINF:-1, Lounge 7 ->
-http://64.236.34.106:80/stream/1009
-#-----SOLO PIANO- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Solo Piano 1 ->
-http://160.79.128.40:7794
-#-----SALSA- WWW. SALSASTREAM. COM-----------------------------------
-#EXTINF:-1, Salsa :D
-http://205.188.215.231:8010
-#-----ROOTS REGGAE- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Roots Reggae 1 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1017
-#EXTINF:-1, Roots Reggae 2 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1017
-#EXTINF:-1, Roots Reggae 3 ->
-http://205.188.215.225:8000
-#EXTINF:-1, Roots Reggae 4 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1017
-#EXTINF:-1, Roots Reggae 5 ->
-http://64.236.126.41:80/stream/1017
-#EXTINF:-1, Roots Reggae 6 ->
-http://64.236.126.42:80/stream/1017
-#EXTINF:-1, Roots Reggae 7 ->
-http://64.236.34.106:80/stream/1017
-#EXTINF:-1, Roots Reggae 8 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1017
-#-----SOUNDTRACKS- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Simply Soundtracks 1 ->
-http://160.79.128.40:7774
-#-----CLASSICE TECHNO- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Classic Techno & Trance ->
-http://205.188.215.225:8004
-#-----TECHNO- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Techno 1 ->
-http://209.247.146.98:8000
-#EXTINF:-1, Techno 2 ->
-http://66.250.45.118:7204
-#-----HARD DANCE- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Hard Dance 1 ->
-http://scfire-ntc-aa03.stream.aol.com:80/stream/1025
-#EXTINF:-1, Hard Dance 2 ->
-http://scfire-ntc-aa04.stream.aol.com:80/stream/1025
-#EXTINF:-1, Hard Dance 3 ->
-http://scfire-nyk-aa03.stream.aol.com:80/stream/1025
-#EXTINF:-1, Hard Dance 4 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1025
-#EXTINF:-1, Hard Dance 5 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1025
-#EXTINF:-1, Hard Dance 6 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1025
-#EXTINF:-1, Hard Dance 7 ->
-http://scfire-chi-aa03.stream.aol.com:80/stream/1025
-#EXTINF:-1, Hard Dance 8 ->
-http://scfire-chi-aa03.stream.aol.com:80/stream/1025
-#-----TRANCE- WWW. ETN. FM-----------------------------------
-#EXTINF:-1, Trance 1 - 192kbps
-http://toronto.etn.fm:8110
-#EXTINF:-1, Trance 2 - [BETA] 256k EUROPE
-http://etn.luon.net:8100
-#-----TRANCE- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Trance 1 ->
-http://scfire-chi0l-1.stream.aol.com/stream/1003
-#EXTINF:-1, Trance 2 ->
-http://scfire-chi0l-2.stream.aol.com/stream/1003
-#EXTINF:-1, Trance 3 ->
-http://scfire-nyk-aa03.stream.aol.com:80/stream/1003
-#EXTINF:-1, Trance 4 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1003
-#EXTINF:-1, Trance 5 ->
-http://scfire-nyk-aa04.stream.aol.com:80/stream/1003
-#EXTINF:-1, Trance 6 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1003
-#EXTINF:-1, Trance 7 ->
-http://scfire-ntc-aa03.stream.aol.com:80/stream/1003
-#EXTINF:-1, Trance 8 ->
-http://scfire-ntc-aa04.stream.aol.com:80/stream/1003
-#EXTINF:-1, Trance 9 ->
-http://scfire-nyk-aa02.stream.aol.com:80/stream/1003
-#-----VOCAL TRANCE- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Vocal Trance 1 ->
-http://scfire-ntc-aa03.stream.aol.com:80/stream/1065
-#EXTINF:-1, Vocal Trance 2 ->
-http://scfire-ntc-aa04.stream.aol.com:80/stream/1065
-#EXTINF:-1, Vocal Trance 3 ->
-http://scfire-chi-aa03.stream.aol.com:80/stream/1065
-#EXTINF:-1, Vocal Trance 4 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1065
-#EXTINF:-1, Vocal Trance 5 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1065
-#EXTINF:-1, Vocal Trance 6 ->
-http://scfire-nyk-aa03.stream.aol.com:80/stream/1065
-#EXTINF:-1, Vocal Trance 7 ->
-http://scfire-nyk-aa04.stream.aol.com:80/stream/1065
-#-----GOA & PSY TRANCE- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Goa & Psychedelic Trance 1 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1008
-#EXTINF:-1, Goa & Psychedelic Trance 2 ->
-http://64.236.98.51:80/stream/1008
-#EXTINF:-1, Goa & Psychedelic Trance 3 ->
-http://64.236.36.55:80/stream/1008
-#EXTINF:-1, Goa & Psychedelic Trance 4 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1008
-#EXTINF:-1, Goa & Psychedelic Trance 5 ->
-http://64.236.126.41:80/stream/1008
-#EXTINF:-1, Goa & Psychedelic Trance 6 ->
-http://64.236.126.42:80/stream/1008
-#EXTINF:-1, Goa & Psychedelic Trance 7 ->
-http://64.236.34.106:80/stream/1008
-#-----FUTURE SYNTHPOP- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Future Synthpop 1 ->
-http://160.79.128.40:7234
-#-----HOUSE- WWW. DI. FM-----------------------------------
-#EXTINF:-1, House 1 ->
-http://scfire-nyk-aa03.stream.aol.com:80/stream/1007
-#EXTINF:-1, House 2 ->
-http://scfire-nyk-aa04.stream.aol.com:80/stream/1007
-#EXTINF:-1, House 3 ->
-http://scfire-nyk-aa02.stream.aol.com:80/stream/1007
-#EXTINF:-1, House 4 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1007
-#EXTINF:-1, House 5 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1007
-#EXTINF:-1, House 6 ->
-http://scfire-ntc-aa03.stream.aol.com:80/stream/1007
-#EXTINF:-1, House 7 ->
-http://scfire-ntc-aa04.stream.aol.com:80/stream/1007
-#-----SOULFUL HOUSE- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Soulful House 1 ->
-http://205.188.215.232:8016
-#EXTINF:-1, Soulful House 2 ->
-http://208.122.59.30:7224
-#EXTINF:-1, Soulful House 3 ->
-http://160.79.128.40:7224
-#-----HOLIDAY / SPECIAL- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Special 1 ->
-http://205.188.215.232:8016
-#EXTINF:-1, Special 2 ->
-http://64.236.34.97:80/stream/1030
-#EXTINF:-1, Special 3 ->
-http://66.250.45.118:7734
-#-----DJ MIXES- WWW. DI. FM-----------------------------------
-#EXTINF:-1, DJ Mixes 1 ->
-http://209.247.146.100:8000
-#-----HAPPY HARDCORE- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Happy Hardcore 1 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1004
-#EXTINF:-1, Happy Hardcore 2 ->
-http://64.236.98.51:80/stream/1004
-#EXTINF:-1, Happy Hardcore 3 ->
-http://64.236.36.55:80/stream/1004
-#EXTINF:-1, Happy Hardcore 4 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1004
-#EXTINF:-1, Happy Hardcore 5 ->
-http://64.236.126.41:80/stream/1004
-#EXTINF:-1, Happy Hardcore 6 ->
-http://64.236.126.42:80/stream/1004
-#EXTINF:-1, Happy Hardcore 7 ->
-http://64.236.34.106:80/stream/1004
-#-----GABBER- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Gabber 1 ->
-http://205.188.215.226:8006
-#-----EURO DANCE- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Euro Dance 1 ->
-http://scfire-chi0l-1.stream.aol.com/stream/1024
-#EXTINF:-1, Euro Dance 2 ->
-http://scfire-chi0l-2.stream.aol.com/stream/1024
-#EXTINF:-1, Euro Dance 3 ->
-http://scfire-nyk-aa04.stream.aol.com:80/stream/1024
-#EXTINF:-1, Euro Dance 4 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1024
-#EXTINF:-1, Euro Dance 5 ->
-http://scfire-ntc-aa03.stream.aol.com:80/stream/1024
-#EXTINF:-1, Euro Dance 6 ->
-http://scfire-ntc-aa04.stream.aol.com:80/stream/1024
-#EXTINF:-1, Euro Dance 7 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1024
-#EXTINF:-1, Euro Dance 8 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1024
-#-----CHILLOUT- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Chillout 1 ->
-http://scfire-chi0l-1.stream.aol.com/stream/1035
-#EXTINF:-1, Chillout 2 ->
-http://scfire-chi0l-2.stream.aol.com/stream/1035
-#EXTINF:-1, Chillout 3 ->
-http://scfire-nyk-aa04.stream.aol.com:80/stream/1035
-#EXTINF:-1, Chillout 4 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1035
-#EXTINF:-1, Chillout 5 ->
-http://scfire-ntc-aa03.stream.aol.com:80/stream/1035
-#EXTINF:-1, Chillout 6 ->
-http://scfire-ntc-aa04.stream.aol.com:80/stream/1035
-#EXTINF:-1, Chillout 7 ->
-http://scfire-chi-aa03.stream.aol.com:80/stream/1035
-#EXTINF:-1, Chillout 8 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1035
-#-----AMBIENT- WWW. DI. FM-----------------------------------
-#EXTINF:-1, Ambient 1 ->
-http://205.188.215.228:8006
-#-----CLASSICAL- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Classical 1 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1006
-#EXTINF:-1, Classical 2 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1006
-#EXTINF:-1, Classical 3 ->
-http://64.236.36.55:80/stream/1006
-#EXTINF:-1, Classical 4 ->
-http://64.236.36.54:80/stream/1006
-#EXTINF:-1, Classical 5 ->
-http://64.236.126.41:80/stream/1006
-#EXTINF:-1, Classical 6 ->
-http://64.236.126.42:80/stream/1006
-#EXTINF:-1, Classical 7 ->
-http://64.236.34.106:80/stream/1006
-#-----PIANO JAZZ- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Piano Jazz 1 ->
-http://160.79.128.40:7814
-#-----BOSSA NOVA- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Bossa Nova 1 ->
-http://160.79.128.40:7804
-#-----CHRISTIAN- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Contemporary Christian 1 ->
-http://160.79.128.40:7784
-#-----NEW AGE- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, New Age 1 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1002
-#EXTINF:-1, New Age 2 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1002
-#EXTINF:-1, New Age 3 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1002
-#EXTINF:-1, New Age 4 ->
-http://64.236.126.41:80/stream/1002
-#EXTINF:-1, New Age 5 ->
-http://64.236.126.42:80/stream/1002
-#EXTINF:-1, New Age 6 ->
-http://64.236.34.106:80/stream/1002
-#-----WORLD- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, World Music 1 ->
-http://160.79.128.61:7674
-#-----INDIE- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Indie Rock 1 ->
-http://160.79.128.61:7724
-#-----IDOBI RADIO- WWW. IDOBI. COM-----------------------------------
-#EXTINF:-1, Rock / Punk 1 ->
-http://67.159.5.221:80
-#EXTINF:-1, Rock / Punk 2 ->
-http://208.53.138.106:80
-#EXTINF:-1, Rock / Punk 3 ->
-http://67.159.5.35:80
-#EXTINF:-1, Rock / Punk 4 ->
-http://67.159.5.139:80
-#-----ALTERNATIVE ROCK- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Alternative Rock 1 ->
-http://160.79.128.40:7754
-#-----CLASSIC ROCK- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Classic Rock 1 ->
-http://72.51.33.149:8000
-#EXTINF:-1, Classic Rock 2 ->
-http://160.79.128.40:7734
-#-----GUITAR- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Classical & Flamenco Guitar 1 ->
-http://205.188.215.226:8020
-#EXTINF:-1, Classical & Flamenco Guitar 2 ->
-http://207.200.96.229:8016
-#EXTINF:-1, Classical & Flamenco Guitar 3 ->
-http://205.188.215.232:8014
-#EXTINF:-1, Classical & Flamenco Guitar 4 ->
-http://205.134.236.59:8050
-#-----OLDIES- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Oldies 1 ->
-http://209.247.146.99:8000
-#EXTINF:-1, Oldies 2 ->
-http://4.79.190.66:8000
-#EXTINF:-1, Oldies 3 ->
-http://160.79.128.61:7684
-#-----COUNTRY- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Country 1 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1019
-#EXTINF:-1, Country 2 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1019
-#EXTINF:-1, Country 3 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1019
-#EXTINF:-1, Country 4 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1019
-#EXTINF:-1, Country 5 ->
-http://64.236.126.41:80/stream/1019
-#EXTINF:-1, Country 6 ->
-http://64.236.126.42:80/stream/1019
-#EXTINF:-1, Country 7 ->
-http://64.236.34.106:80/stream/1019
-#-----70s HITS- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, 70s Hits 1 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1076
-#EXTINF:-1, 70s Hits 2 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1076
-#EXTINF:-1, 70s Hits 3 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1076
-#EXTINF:-1, 70s Hits 4 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1076
-#EXTINF:-1, 70s Hits 5 ->
-http://64.236.126.41:80/stream/1076
-#EXTINF:-1, 70s Hits 6 ->
-http://64.236.126.42:80/stream/1076
-#EXTINF:-1, 70s Hits 7 ->
-http://64.236.34.106:80/stream/1076
-#-----80s HITS- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, 80s Hits 1 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1013
-#EXTINF:-1, 80s Hits 2 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1013
-#EXTINF:-1, 80s Hits 3 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1013
-#EXTINF:-1, 80s Hits 4 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1013
-#EXTINF:-1, 80s Hits 5 ->
-http://64.236.126.41:80/stream/1013
-#EXTINF:-1, 80s Hits 6 ->
-http://64.236.126.42:80/stream/1013
-#EXTINF:-1, 80s Hits 7 ->
-http://64.236.34.106:80/stream/1013
-#-----TOP HITS- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Top Hits 1 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1014
-#EXTINF:-1, Top Hits 2 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1014
-#EXTINF:-1, Top Hits 3 ->
-http://64.236.36.55:80/stream/1014
-#EXTINF:-1, Top Hits 4 ->
-http://64.236.36.54:80/stream/1014
-#EXTINF:-1, Top Hits 5 ->
-http://64.236.126.41:80/stream/1014
-#EXTINF:-1, Top Hits 6 ->
-http://64.236.126.42:80/stream/1014
-#EXTINF:-1, Top Hits 7 ->
-http://64.236.34.106:80/stream/1014
-#-----DATEMPO LOUNGE- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Datempo Lounge 1 ->
-http://38.119.49.140:8000
-#EXTINF:-1, Datempo Lounge 2 ->
-http://38.119.49.140:8030
-#EXTINF:-1, Datempo Lounge 3 ->
-http://160.79.128.40:7744
-#-----URBAN JAMZ- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Urban Jamz 1 ->
-http://66.135.38.32:8000
-#EXTINF:-1, Urban Jamz 2 ->
-http://160.79.128.61:7704
-#-----CLASSIC RAP- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Classic Rap & Hip Hop 1 ->
-http://64.34.178.168:8000
-#EXTINF:-1, Classic Rap & Hip Hop 2 ->
-http://160.79.128.61:7694
-#-----SMOOTH JAZZ- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Smooth Jazz 1 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1010
-#EXTINF:-1, Smooth Jazz 2 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1010
-#EXTINF:-1, Smooth Jazz 3 ->
-http://64.236.126.42:80/stream/1010
-#EXTINF:-1, Smooth Jazz 4 ->
-http://scfire-chi-aa01.stream.aol.com:80/stream/1010
-#EXTINF:-1, Smooth Jazz 5 ->
-http://scfire-chi-aa02.stream.aol.com:80/stream/1010
-#EXTINF:-1, Smooth Jazz 6 ->
-http://64.236.126.41:80/stream/1010
-#-----JAZZ- WWW. SKY. FM-----------------------------------
-#EXTINF:-1,  Modern Jazz 1 ->
-http://205.188.215.227:8008
-#-----UPTEMPO JAZZ- WWW. SKY. FM-----------------------------------
-#EXTINF:-1, Uptempo Smooth Jazz 1 ->
-http://82.149.227.171:8000
-#EXTINF:-1, Uptempo Smooth Jazz 2 ->
-http://81.29.66.64:80
-#EXTINF:-1, Uptempo Smooth Jazz 3 ->
-http://160.79.128.61:7714
-*/
 //  $line = file ();
   $line = explode ("\n", $playlist_s);
 
@@ -570,11 +127,25 @@ http://160.79.128.61:7714
         $demux = 1; // m3u
         break;
       }
-  // TODO: support pls, xspf, and wpl too
+    else if (strstr ($p, '[playlist]'))
+      {
+        $demux = 2; // pls
+        break;
+      }
+  // TODO: support xspf and wpl too
 
   // parse
-  if ($demux == 1)
+  if ($demux == 1) // m3u
     {
+/*
+#EXTM3U
+
+#EXTINF:123,Sample Artist - Sample title
+C:\Documents and Settings\I\My Music\Sample.mp3
+
+#EXTINF:321,Example Artist - Example title
+C:\Documents and Settings\I\My Music\Greatest Hits\Example.ogg
+*/
       $a = array ();
       for ($i = 0; isset ($line[$i]) && isset ($line[$i + 1]); $i++)
         {
@@ -593,8 +164,8 @@ http://160.79.128.61:7714
                             'media_duration' => trim (substr ($p, 0, $o))
 );
             }
-          else
-            $a[] = array ('title' => trim ($p, ' #-'));
+//          else
+//            $a[] = array ('title' => trim ($p, ' #-'));
         }
 
       // DEBUG
@@ -603,8 +174,59 @@ http://160.79.128.61:7714
 
       return $a;
     }
+  else if ($demux == 2) // pls
+    {
+/*
+[playlist]
 
-//  if ($demux == 0)
+File1=http://streamexample.com:80
+Title1=My Favorite Online Radio
+Length1=-1
+
+File2=http://example.com/song.mp3
+Title2=Remote MP3
+Length2=286
+
+File3=/home/myaccount/album.flac
+Title3=Local album
+Length3=3487
+
+NumberOfEntries=3
+
+Version=2
+*/
+      $a = array ();
+      for ($i = 0; isset ($line[$i]); $i++)
+        {
+          $p = $line[$i];
+
+          if (strtolower (substr ($p, 0, 4)) == 'file')
+            {
+              $n = substr ($p, 4, strpos ('=') - 4);
+              $s = substr ($p, strpos ('=') + 1);
+              $a[$n * 1 - 1]['link'] = $s;
+            }
+          else if (strtolower (substr ($p, 0, 5)) == 'title')
+            {
+              $n = substr ($p, 5, strpos ('=') - 5); 
+              $s = substr ($p, strpos ('=') + 1);
+              $a[$n * 1 - 1]['title'] = $s;
+            }
+          else if (strtolower (substr ($p, 0, 6)) == 'length')
+            {
+              $n = substr ($p, 6, strpos ('=') - 6);
+              $s = substr ($p, strpos ('=') + 1);
+              $a[$n * 1 - 1]['media_duration'] = $s;             
+            }
+        }
+
+      // DEBUG
+//      echo '<pre><tt>';
+//      print_r ($a);
+
+      return $a;
+    }
+//  else if ($demux == 0)
 //    echo 'unknown playlist format';
 
   return NULL;

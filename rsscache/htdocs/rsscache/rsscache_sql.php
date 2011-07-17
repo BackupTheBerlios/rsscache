@@ -561,7 +561,16 @@ tv2_sql_extern ($c, $q, $v, $start, $num)
 
   // links or playlist file contents
   if ($v_textarea)
-    $links .= ' '.$v_textarea;
+    {
+      $playlist = misc_playlist_load_string ($v_textarea);
+      if ($playlist == NULL)
+        $links .= ' '.$v_textarea;
+      else
+        {
+          // HACK
+          $q = $playlist[0]['title'];
+        }
+    }
 
   // search
   if ($q)
@@ -570,10 +579,11 @@ tv2_sql_extern ($c, $q, $v, $start, $num)
       if ($v_segments)
         if ($v_segments != '')
           {
-            $s .= ' +(part OR pl';
-            for ($i = 0; $i < 20; $i++)
-              $s .= ' OR "'.($i + 1).'/"';
-            $s .= ')';
+//            $s .= ' +(part OR pl';
+//            for ($i = 0; $i < 20; $i++)
+//              $s .= ' OR "'.($i + 1).'/"';
+//            $s .= ')';
+            $s .= ' +part';
           }
       $rss = youtube_get_rss ($s, NULL, NULL, $orderby_published, $tv2_tor_enabled);
 
