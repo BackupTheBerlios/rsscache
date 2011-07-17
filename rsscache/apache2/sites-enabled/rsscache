@@ -58,7 +58,7 @@
 	AuthName "Restricted Area"
 	AuthType Basic
 	Require valid-user
-	AuthUserFile /htdocs/pwnoogle_common/.htpasswd
+	AuthUserFile /htdocs/pwnoogle/.htpasswd
 	#AuthGroupFile /dev/null
         </Directory>
 </VirtualHost>
