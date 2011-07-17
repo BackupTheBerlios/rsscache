@@ -111,7 +111,7 @@ generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_d
 
 
 function
-rss_to_array ($tag, $array, $url)
+rss_to_array ($tag, $rss_tags, $url)
 {
   // TODO: use ->asXML() ?
   $doc = new DOMdocument();
@@ -122,7 +122,7 @@ rss_to_array ($tag, $array, $url)
 
   foreach($doc->getElementsByTagName($tag) AS $node)
     {
-      foreach($array AS $key => $value)
+      foreach($rss_tags AS $key => $value)
         {
           $items[$value] = $node->getElementsByTagName($value)->item(0)->nodeValue;
         }

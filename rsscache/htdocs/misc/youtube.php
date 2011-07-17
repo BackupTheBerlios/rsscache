@@ -24,6 +24,7 @@ if (!defined ('MISC_YOUTUBE_PHP'))
 define ('MISC_YOUTUBE_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 require_once ('misc.php');
+require_once ('rss.php');
 
 
 function
@@ -42,10 +43,65 @@ youtube_get_thumbnail_urls ($url)
 
 
 function
-youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby_published = 1, $use_tor = 0)
+youtube_get_rss_orderby_relevance ($rss)
 {
+      $title_a = array ();
+      $link_a = array ();
+      $desc_a = array ();
+//      $media_duration_a = array ();
+//      $author_a = array ();
+
+      $title_a[] = $rss->channel->item[0]->title;
+      $link_a[] = $rss->channel->item[0]->link;
+      $desc_a[] = $rss->channel->item[0]->desc;
+//      $media_duration_a[] = $rss->channel->item[0]->media_duration;
+//      $author_a[] = $rss->channel->item[0]->author;
+
+      for ($i = 1; isset ($rss->channel->item[$i]); $i++)
+        {
+          similar_text ($rss->channel->item[0]->title, $rss->channel->item[$i]->title, $percent);
+//          if ($percent < 66.6)
+//            unset ($rss->channel->item[$i]);
+          if ($percent > 66.6)
+            {
+              $title_a[] = $rss->channel->item[$i]->title;
+              $link_a[] = $rss->channel->item[$i]->link;
+              $desc_a[] = $rss->channel->item[$i]->desc;
+//              $media_duration_a[] = $rss->channel->item[$i]->media_duration;
+//              $author_a[] = $rss->channel->item[$i]->author;
+            }
+        }
+
+      // sort by title (useful for evtl. episodes/parts)
+      array_multisort ($title_a, SORT_ASC, SORT_STRING, $link_a, $desc_a
+//, $media_duration_a, $author_a
+);
+
+//function
+//generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_desc_array,
+//              $item_media_duration_array = NULL,
+//              $item_author_array = NULL)
+      $p = generate_rss ($rss->title, $rss->link, $rss->desc, $title_a, $link_a, $desc_a
+//, $media_duration_a, $author_a
+);
+      $rss = simplexml_load_string ($p);
+  return $rss;
+}
+
+
+function
+youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby = 'relevance', $use_tor = 0)
+{
+  /*
+    $orderby
+      'relevance'  entries are ordered by their relevance to a search query (default)
+      'published'  entries are returned in reverse chronological order
+      'viewCount'  entries are ordered from most views to least views
+      'rating'     entries are ordered from highest rating to lowest rating
+  */
   $maxresults = 50;
   $q = urlencode ($search);
+
   if ($playlist)
     {
       $url = 'http://gdata.youtube.com/feeds/base/playlists/'.$playlist;
@@ -56,8 +112,7 @@ youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby_published 
       // OLD: http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
 //    http://gdata.youtube.com/feeds/base/users/'.$v_user.'/uploads?max-results=50
       $url = 'http://gdata.youtube.com/feeds/base/videos?author='.$channel.'&q='.$q;
-      if ($orderby_published)
-        $url .= '&orderby=published';
+      $url .= '&orderby='.$orderby;
       $url .= '&alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
     }
   else
@@ -65,8 +120,7 @@ youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby_published 
       // OLD: http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
       // http://gdata.youtube.com/feeds/base/videos?q=SEARCH&orderby=published&alt=rss&client=ytapi-youtube-search&v=2   
       $url = 'http://gdata.youtube.com/feeds/base/videos?q='.$q;
-      if ($orderby_published) 
-        $url .= '&orderby=published';
+      $url .= '&orderby='.$orderby;
       $url .= '&alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
     }
 
@@ -78,13 +132,17 @@ youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby_published 
   else
     $f = file_get_contents ($url);
 
-  $xml = simplexml_load_string ($f);
+  $rss = simplexml_load_string ($f);
 
-// DEBUG
+  // normalize: remove items with low relevance
+  if ($orderby == 'relevance')
+    $rss = youtube_get_rss_orderby_relevance ($rss);
+
+  // DEBUG
 //echo '<pre><tt>';
-//print_r ($xml);  
+//print_r ($rss);
 
-  return $xml;
+  return $rss;
 } 
 
 
