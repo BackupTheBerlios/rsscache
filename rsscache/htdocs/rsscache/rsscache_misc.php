@@ -42,11 +42,11 @@ tv2_youtube_download ($q)
 function
 tv2_get_request_value ($name)
 {
-  // wrapper for get_request_value() with hacks
+  // wrapper for tv2_get_request_value() with hacks
   global $tv2_default_category;
   global $tv2_default_function;
 
-  $v = get_request_value ($name);
+  $v = tv2_get_request_value ($name);
 
   if ($name == 'c')
     {
@@ -351,7 +351,7 @@ tv2_normalize ($category)
 function
 tv2_highlight ($s)
 {
-//  $q = get_request_value ('q');
+//  $q = tv2_get_request_value ('q');
   // highlight search words
 //  $a = explode (array (' ', '+'), $q);
   // DEBUG

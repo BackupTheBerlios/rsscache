@@ -396,8 +396,8 @@ tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
   $debug = $tv2_debug_sql;
 //  $debug = 1;
 
-  $v_segments = get_request_value ('v_segments');
-//  $q = get_request_value ('q'); // we ignore the arg and make sure we get an unescaped one
+  $v_segments = tv2_get_request_value ('v_segments');
+//  $q = tv2_get_request_value ('q'); // we ignore the arg and make sure we get an unescaped one
 //  $c = $tv2_sql_db->sql_stresc ($c);
 //  $v = $tv2_sql_db->sql_stresc ($v);
 //  $start = $tv2_sql_db->sql_stresc ($start);
@@ -560,11 +560,11 @@ tv2_sql_extern ($c, $q, $v, $start, $num)
 //  $orderby = 'published';
   $orderby = 'relevance';
 
-  $v_segments = get_request_value ('v_segments');
-  $v_textarea = get_request_value ('v_textarea');
-  $v_user = get_request_value ('v_user');
-  $v_playlist_id = get_request_value ('v_playlist_id');
-  $v_stripdir = get_request_value ('v_stripdir');
+  $v_segments = tv2_get_request_value ('v_segments');
+  $v_textarea = tv2_get_request_value ('v_textarea');
+  $v_user = tv2_get_request_value ('v_user');
+  $v_playlist_id = tv2_get_request_value ('v_playlist_id');
+  $v_stripdir = tv2_get_request_value ('v_stripdir');
 
   $links = '';
 

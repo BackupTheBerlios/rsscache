@@ -53,8 +53,8 @@ if ($tv2_maintenance == 1)
     $tv2_use_database = 0;
   }
 
-$f = get_request_value ('f'); // function
-$q = get_request_value ('q'); // search query
+$f = tv2_get_request_value ('f'); // function
+$q = tv2_get_request_value ('q'); // search query
 
 // download youtube video
 if ($f == 'download')
@@ -70,12 +70,12 @@ if ($f == 'qrcode')
     exit;
   }
 
-$v = get_request_value ('v'); // own video
-$captcha = get_request_value ('captcha'); // is request with captcha
-$start = get_request_value ('start'); // offset
+$v = tv2_get_request_value ('v'); // own video
+$captcha = tv2_get_request_value ('captcha'); // is request with captcha
+$start = tv2_get_request_value ('start'); // offset
 if (!($start))
   $start = 0;
-$num = get_request_value ('num'); // number of results
+$num = tv2_get_request_value ('num'); // number of results
 if (!($num))
   {
     if ($f == 'cloud')
