@@ -88,7 +88,7 @@ if (!($num))
 if ($tv2_use_database == 1)
   tv2_sql_open ();
 $config = config_xml ();
-$c = tv2_get_category (); // category
+$c = tv2_get_request_value ('c'); // category
 
 
 $d_array = NULL;

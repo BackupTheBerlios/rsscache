@@ -42,11 +42,11 @@ tv2_youtube_download ($q)
 function
 tv2_get_request_value ($name)
 {
-  // wrapper for tv2_get_request_value() with hacks
+  // wrapper for get_request_value() 
   global $tv2_default_category;
   global $tv2_default_function;
 
-  $v = tv2_get_request_value ($name);
+  $v = get_request_value ($name);
 
   if ($name == 'c')
     {
@@ -60,13 +60,6 @@ tv2_get_request_value ($name)
     }
 
   return $v;
-}
-
-
-function
-tv2_get_category ()
-{
-  return tv2_get_request_value ('c');
 }
 
 
