@@ -44,6 +44,7 @@ tv2_get_request_value ($name)
 {
   // wrapper for get_request_value() with hacks
   global $tv2_default_category;
+  global $tv2_default_function;
 
   $v = get_request_value ($name);
 
@@ -51,6 +52,11 @@ tv2_get_request_value ($name)
     {
       if ($v == '')
         $v = $tv2_default_category;
+    }
+  else if ($name == 'f')
+    {
+      if ($v == '')  
+        $v = $tv2_default_function;
     }
 
   return $v;

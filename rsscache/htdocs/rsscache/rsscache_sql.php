@@ -549,7 +549,16 @@ tv2_sql_extern ($c, $q, $v, $start, $num)
   //   interchangeable with tv2_sql()
   global $tv2_feature;
   global $tv2_tor_enabled;
-  $orderby_published = 0;
+
+  /*
+    $orderby
+      'relevance'  entries are ordered by their relevance to a search query (default)
+      'published'  entries are returned in reverse chronological order
+      'viewCount'  entries are ordered from most views to least views
+      'rating'     entries are ordered from highest rating to lowest rating
+  */
+//  $orderby = 'published';
+  $orderby = 'relevance';
 
   $v_segments = get_request_value ('v_segments');
   $v_textarea = get_request_value ('v_textarea');
@@ -579,13 +588,10 @@ tv2_sql_extern ($c, $q, $v, $start, $num)
       if ($v_segments)
         if ($v_segments != '')
           {
-//            $s .= ' +(part OR pl';
-//            for ($i = 0; $i < 20; $i++)
-//              $s .= ' OR "'.($i + 1).'/"';
-//            $s .= ')';
+            $orderby = 'relevance';
             $s .= ' +part';
           }
-      $rss = youtube_get_rss ($s, NULL, NULL, $orderby_published, $tv2_tor_enabled);
+      $rss = youtube_get_rss ($s, NULL, NULL, $orderby, $tv2_tor_enabled);
 
       for ($i = 0; isset ($rss->channel->item[$start + $i]) && $i < $num; $i++)
         if (isset ($rss->channel->item[$start + $i]->link))
@@ -594,7 +600,7 @@ tv2_sql_extern ($c, $q, $v, $start, $num)
 
   if ($v_user)
       {
-        $rss = youtube_get_rss (NULL, trim ($v_user), NULL, $orderby_published, $tv2_tor_enabled);
+        $rss = youtube_get_rss (NULL, trim ($v_user), NULL, $orderby, $tv2_tor_enabled);
   // DEBUG
 //  echo '<pre><tt>';
 //print_r ($rss);
@@ -606,7 +612,7 @@ tv2_sql_extern ($c, $q, $v, $start, $num)
 
   if ($v_playlist_id)
       {
-        $rss = youtube_get_rss ('', NULL, trim ($v_playlist_id), $orderby_published, $tv2_tor_enabled);
+        $rss = youtube_get_rss ('', NULL, trim ($v_playlist_id), $orderby, $tv2_tor_enabled);
 
         for ($i = 0; isset ($rss->channel->item[$start + $i]) && $i < $num; $i++)
           if (isset ($rss->channel->item[$start + $i]->link))
