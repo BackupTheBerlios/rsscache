@@ -27,6 +27,18 @@ require_once ('misc.php');
 require_once ('rss.php');
 
 
+/*
+Standard (fmt=0 ?) > MP3, ~64 kbps, 22.05 KHz, mono (1 channel)
+fmt=5 > MP3, ~64 kbps, 22.05 KHz, mono (1 channel) (little difference in video bitrate)
+fmt=6 > MP3, ~66 kbps, 44.1 KHz, mono (1 channel)
+fmt=18 > AAC, ~126 kbps, 44.1 KHz, stereo (2 channels)
+fmt=22 > AAC, ~248 kbps, 44.1 KHz, stereo (2 channels) (it's rare, only if uploaded video have 720p)
+fmt=34 > AAC, ~68 kbps, 22.05 KHz, stereo (2 channels)
+fmt=35 > AAC, ~112 kbps, 44.1 KHz, stereo (2 channels) (it's rare)
+fmt=13 and fmt=17 > only on mobile devices (3GP with AMR or AAC audio)
+*/
+
+
 function
 youtube_get_thumbnail_urls ($url)
 {
