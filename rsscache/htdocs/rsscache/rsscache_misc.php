@@ -549,10 +549,10 @@ tv2_sitemap_video_func ($category_name, $d_array)
       $p .= '<video:video>'."\n";
       $p .= ''
            .'<video:thumbnail_loc>'
-           .tv2_link_normalize ($tv2_link.'/thumbnails/'.$tv2_thumbnails_prefix.'tv2/'.$d['rsstool_url_crc32'].'.jpg')
+           .htmlspecialchars (tv2_link_normalize ($tv2_link.'/thumbnails/'.$tv2_thumbnails_prefix.'tv2/'.$d['rsstool_url_crc32'].'.jpg'))
            .'</video:thumbnail_loc>'."\n"
-           .'<video:title>'.$d['rsstool_title'].'</video:title>'."\n"
-           .'<video:description>'.$d['rsstool_desc'].'</video:description>'."\n"
+           .'<video:title>'.htmlspecialchars ($d['rsstool_title']).'</video:title>'."\n"
+           .'<video:description>'.htmlspecialchars ($d['rsstool_desc']).'</video:description>'."\n"
            .'<video:duration>'.$d['rsstool_media_duration'].'</video:duration>'."\n"
 ;
       $p .= '</video:video>'."\n";
@@ -584,7 +584,7 @@ tv2_sitemap ($d_array)
   for ($i = 0; isset ($config_xml->category[$i]); $i++)
     if (trim ($config_xml->category[$i]->name) != '')
     $p .= '<url>'."\n"
-         .'  <loc>http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml->category[$i]->name.'</loc>'."\n"
+         .'  <loc>'.htmlspecialchars ('http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml->category[$i]->name).'</loc>'."\n"
 /*
 The formats are as follows. Exactly the components shown here must be present, with exactly this punctuation. Note that the "T" appears literally in the string, to indicate the beginning of the time element, as specified in ISO 8601.
 
