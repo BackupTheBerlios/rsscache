@@ -253,7 +253,7 @@ $head_rss = ($tv2_rss_head ? misc_head_rss (tv2_title ($d_array), '?'.http_build
 if ($tv2_maintenance == 1)
   {
     $body = '<br><br><b>maintenance - please come back or wait a few seconds</b><br><br><br>';
-    $tv2_head_tag .= '<meta http-equiv="refresh" content="3;URL=http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'">';
+    $tv2_head_tag .= '<meta http-equiv="refresh" content="10;URL=http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'">';
   }
 else
   $body = tv2_body ($d_array);
