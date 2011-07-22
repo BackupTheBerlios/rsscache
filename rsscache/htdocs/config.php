@@ -79,7 +79,7 @@ if (isset ($_SERVER['SERVER_NAME']))
     $tv2_subdomain = 'videos';
 
 if (isset ($_SERVER['PWD']))
-  $pwd = $_SERVER['PWD']; 
+  $pwd = $_SERVER['PWD'].'/../htdocs/'; 
 else  
   $pwd = $_SERVER['DOCUMENT_ROOT'];
 
