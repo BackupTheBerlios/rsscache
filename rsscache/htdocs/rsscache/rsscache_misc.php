@@ -465,6 +465,7 @@ tv2_stats_rss ()
             .($items_7_days * 1).' <!-- lang:items --> <!-- lang:last --> 7 <!-- lang:days --><br>'
             .($items_30_days * 1).' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
 ;
+  $p = misc_template ($p, $tv2_translate[$tv2_language ? $tv2_language : 'default']);
   $rss_desc_array[] = $p;
 
   // DEBUG
