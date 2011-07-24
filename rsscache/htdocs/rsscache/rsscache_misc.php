@@ -411,6 +411,10 @@ tv2_stats_rss ()
   global $tv2_link;
   global $tv2_translate;
   global $tv2_language;
+  $items = 0;
+  $items_today = 0;
+  $items_7_days = 0;
+  $category->items_30_days = 0;
 
 //    header ('Content-type: text/xml');
     header ('Content-type: application/xml');
@@ -445,7 +449,23 @@ tv2_stats_rss ()
         $rss_title_array[] = $category->title;
         $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'].'/?'.$category->query;
         $rss_desc_array[] = $p;
+
+        $items += ($category->items * 1);
+        $items_today += ($category->items_today * 1);
+        $items_7_days += ($category->items_7_days * 1);
+        $items_30_days += ($category->items_30_days * 1);
       }
+
+  $rss_title_array[] = 'ALL';
+  $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'];
+        $p = ''
+            .($items * 1).' <!-- lang:items --><br>'
+            .($items_today * 1).' <!-- lang:items --> <!-- lang:today -->'
+                                     .((items_today * 1) > 0 ? ' '.$s : '').'<br>'
+            .($items_7_days * 1).' <!-- lang:items --> <!-- lang:last --> 7 <!-- lang:days --><br>'
+            .($items_30_days * 1).' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
+;
+  $rss_desc_array[] = $p;
 
   // DEBUG
 //  print_r ($rss_title_array);
