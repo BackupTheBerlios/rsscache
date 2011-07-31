@@ -28,48 +28,15 @@ define ('TV2_PHP', 1);
 require_once ('default.php');
 require_once ('config.php');
 require_once ('misc/misc.php');
-// language settings
-if (isset ($tv2_lang_php)) 
-  include ($tv2_lang_php);
-else
-  include ('tv2/tv2_lang.php');
-require_once ('tv2_output.php');
-require_once ('tv2_output_body.php');
+//require_once ('tv2_output.php');
 require_once ('tv2_misc.php');
-require_once ('tv2_draw.php');
 
 
 // main ()
 
 
-// maintenance?
-$tv2_maintenance = 0;
-if (file_exists ($_SERVER['DOCUMENT_ROOT'].'/maintenance_'.$tv2_subdomain.'.tmp'))
-  $tv2_maintenance = 1;
-if ($tv2_maintenance == 1)
-  {
-//    echo 'maintenance - please come back';
-//    exit;
-    $tv2_use_database = 0;
-  }
-
 $f = tv2_get_request_value ('f'); // function
 $q = tv2_get_request_value ('q'); // search query
-
-// download youtube video
-if ($f == 'download')
-  {
-    tv2_youtube_download ($q);
-    exit;
-  }
-
-// QR code image
-if ($f == 'qrcode')
-  {
-    tv2_qrcode ($q, 2);
-    exit;
-  }
-
 $v = tv2_get_request_value ('v'); // own video
 $captcha = tv2_get_request_value ('captcha'); // is request with captcha
 $start = tv2_get_request_value ('start'); // offset
@@ -114,64 +81,6 @@ else if ($tv2_use_database == 1)
   }
 
 
-if ($tv2_use_database == 1)
-  if ($captcha)
-    if (widget_captcha_check () || islocalhost ())
-    {
-      tv2_sql_move ($v, $c);
-      $v = NULL;
-    }
-
-
-if ($f == 'read' || $f == 'write')
-  {
-    if ($f == 'write')
-      {
-        // set cookie
-/*
-        $a = array ('c' => $c,
-                    'q' => $q,
-                    'f' => $f,
-                    'v' => $v,
-                    'start' => $start,
-                    'num' => $num
-);
-
-        setcookie ('rw', http_build_query2 ($a, false), $tv2_cookie_expire);
-*/
-//        setcookie ('rw', $_SERVER['HTTP_REFERER'], $tv2_cookie_expire);
-      }
-
-    // redirect
-//    header ('refresh: 0; url='.get_cookie ('rw'));
-//    header ('location:'.get_cookie ('rw'));
-
-    if ($tv2_use_database == 1)
-      tv2_sql_close ();
-
-    exit;
-  }
-
-
-// generate embeddable banner for item
-if ($tv2_banner == 1)
-  if ($v && $f == 'banner')
-  {
-    tv2_draw_banner ($d_array[0]);
-    exit;
-  }
-
-
-// RSS only
-if ($tv2_use_database == 1)
-  if ($f == 'rss')
-  {
-    echo tv2_rss ($d_array);
-    tv2_sql_close ();
-    exit;
-  }
-
-
 // stats RSS
 if ($tv2_use_database == 1)
   if ($f == 'stats')
@@ -182,126 +91,13 @@ if ($tv2_use_database == 1)
   }
 
 
-// sitemap only
+// RSS only
 if ($tv2_use_database == 1)
-  if ($f == 'sitemap')
+//  if ($f == 'rss')
   {
-    echo tv2_sitemap ($d_array);
+    echo tv2_rss ($d_array);
     tv2_sql_close ();
     exit;
-  }
-
-
-// robots.txt only
-if ($tv2_use_database == 1)
-  if ($f == 'robots')
-  {
-    echo tv2_robots ();
-    tv2_sql_close ();
-    exit;
-  }
-
-
-if ($f == 'mirror')
-  {
-    // make static (index.html)
-  }
-
-
-/*
-if ($tv2_use_database == 1)
-  if ($memcache_expire > 0)
-  {
-    $memcache = new Memcache;
-    if ($memcache->connect ('localhost', 11211) == TRUE)
-      {
-        // data from the cache
-        $p = $memcache->get (md5 ($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']));
-
-        if ($p != FALSE)
-          {
-            $p = unserialize ($p);
-
-            // DEBUG
-//            echo 'cached';
-
-            echo $p;
-
-              tv2_sql_close ();
-
-            exit;
-          }
-      }
-    else
-      {
-        echo 'ERROR: could not connect to memcached';
-
-          tv2_sql_close ();
-
-        exit; 
-      }
-  }
-*/
-
-
-$tv2_captcha = '';   
-if (file_exists ('images/captcha/'))
-  $tv2_captcha = widget_captcha ('images/captcha/');
-
-$head_rss = ($tv2_rss_head ? misc_head_rss (tv2_title ($d_array), '?'.http_build_query2 (array ('f' => 'rss'), true))
-                    .misc_head_rss ('Statistics', '?'.http_build_query2 (array ('f' => 'stats'), true)) : '');
-if ($tv2_maintenance == 1)
-  {
-    $body = '<br><br><b>maintenance - please come back or wait a few seconds</b><br><br><br>';
-    $tv2_head_tag .= '<meta http-equiv="refresh" content="10;URL=http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'">';
-  }
-else
-  $body = tv2_body ($d_array);
-if ($f == 'fullscreen' || $f == 'popout')
-  {
-$template_replace = array (
-  '<!-- parse:title -->'       => tv2_title ($d_array),
-  '<!-- parse:icon -->'        => misc_head_tags ($tv2_icon, 0, $tv2_charset),
-  '<!-- parse:head_seo -->'    => misc_seo_description ($body),
-  '<!-- parse:head_tag -->'    => $tv2_head_tag,
-  '<!-- parse:body_tag -->'    => $tv2_body_tag,
-  '<!-- parse:body_header -->' => '',
-  '<!-- parse:body -->'        => $body,
-  '<!-- parse:body_footer -->' => '',
-  '<!-- parse:head_rss -->'    => $head_rss,
-  '<!-- parse:small_stats -->' => $config->items.' <!-- lang:items -->&nbsp;&nbsp;'
-                                 .$config->days.' <!-- lang:days -->',
-);
-
-if (file_exists ('tv2_popout.html'))
-  $template = file_get_contents ('tv2_popout.html');
-else
-  $template = file_get_contents ('tv2/tv2_popout.html');
-$p = misc_template ($template, $template_replace);
-$p = misc_template ($p, $tv2_translate[$tv2_language ? $tv2_language : 'default']);
-  }
-else
-  {
-$template_replace = array (
-  '<!-- parse:title -->'       => tv2_title ($d_array),
-  '<!-- parse:icon -->'        => misc_head_tags ($tv2_icon, 0, $tv2_charset),
-  '<!-- parse:head_seo -->'    => misc_seo_description ($body),
-  '<!-- parse:head_tag -->'    => $tv2_head_tag,
-  '<!-- parse:body_tag -->'    => $tv2_body_tag,
-  '<!-- parse:body_header -->' => tv2_body_header ($d_array),
-  '<!-- parse:body -->'        => $body,
-  '<!-- parse:body_footer -->' => tv2_body_footer ($d_array),
-  '<!-- parse:head_rss -->'    => $head_rss,
-  '<!-- parse:small_stats -->' => $config->items.' <!-- lang:items -->&nbsp;&nbsp;'
-                                 .$config->days.' <!-- lang:days -->',
-);
-
-if (file_exists ('tv2_index.html'))
-  $template = file_get_contents ('tv2_index.html');
-else
-  $template = file_get_contents ('tv2/tv2_index.html');
-$p = misc_template ($template, $template_replace);
-$p = misc_template ($p, $tv2_translate[$tv2_language ? $tv2_language : 'default']);
   }
 
 
@@ -312,12 +108,6 @@ else echo $p;
 
 if ($tv2_use_database == 1)
   tv2_sql_close ();
-
-// use memcache
-if ($memcache_expire > 0)
-  {
-    $memcache->set (md5 ($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']), serialize ($p), 0, $memcache_expire);
-  }
 
 
 }

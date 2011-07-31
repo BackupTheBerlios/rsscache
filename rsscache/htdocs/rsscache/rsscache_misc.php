@@ -25,10 +25,114 @@ define ('TV2_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 //require_once ('config.php');
 require_once ('misc/misc.php');
+require_once ('misc/widget.php');
 require_once ('misc/wikipedia.php');
-if ($tv2_qrcode == 1)
-  require_once ('phpqrcode/qrlib.php');
+require_once ('misc/rss.php');
+//if ($tv2_qrcode == 1)
+//  require_once ('phpqrcode/qrlib.php');
 require_once ('tv2_sql.php');
+
+
+function
+tv2_title ($d_array = NULL)
+{
+  global $tv2_title;
+  $v = tv2_get_request_value ('v');
+  $c = tv2_get_request_value ('c');
+  $category = config_xml_by_category ($c);
+
+  $a = array ();
+  if (trim ($tv2_title) != '')
+    $a[] = $tv2_title;
+
+  if ($category)
+    if (trim ($category->title) != '')
+      $a[] = $category->title;
+
+  if ($v && $d_array != NULL)
+    $a[] = $d_array[0]['rsstool_title'];
+
+  return implode (' - ', $a);
+}
+
+
+function
+tv2_duration ($d)
+{
+  if ($d['rsstool_media_duration'] > 0)
+    return gmstrftime ($d['rsstool_media_duration'] > 3599 ? '%H:%M:%S' : '%M:%S', (int) $d['rsstool_media_duration']);
+  return '';
+}
+
+
+function
+tv2_link ($d)
+{
+  $p = '';
+
+  if ($d['tv2_demux'] > 0)
+    {
+      $s = ''
+          .'&seo='.str_replace (' ', '_', tv2_keywords ($d))
+;
+      $p .= http_build_query2 (array ('v' => $d['rsstool_url_crc32'], 'f' => ''), true).$s;
+    }
+  else
+    {
+      $s = tv2_link_normalize (urldecode ($d['rsstool_url'])); // local, static or other server?
+      $p .= $s; // .http_build_query2 (array (), false);
+    }
+
+  return $p;
+}
+
+
+function
+tv2_thumbnail ($d, $width = 120)
+{
+  // NOTE: right now only youtube thumbnails are supported
+  global $tv2_link_static,
+         $tv2_link,
+         $tv2_thumbnails_prefix;
+
+//          $p .= '<a href="?'.http_build_query2 (array ('v' => $d['rsstool_url_crc32'],  
+//                                                       'start' => ($start + 5),  
+//                                                       'len' => $len), false).'">';  
+//          $p .= tv2_thumbnail ($d, $width, 1);
+//          $p .= '</a>';  
+  $link = tv2_link ($d);
+
+  $p = '';
+
+//  if ($d['tv2_demux'] == 1) // youtube
+    {
+//widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
+      $t = tv2_duration ($d);
+      $p .= widget_button (tv2_link_normalize ($tv2_link.'/thumbnails/'.$tv2_thumbnails_prefix.'tv2/'.$d['rsstool_url_crc32'].'.jpg'),
+                           $link,
+                           NULL,
+                           $d['rsstool_title'].($t != '' ? ' ('.$t.')' : ''));
+/*
+      $p .= '<nobr>';
+      $p .= '<a href="?'.$link.'" title="'.$d['rsstool_title'];
+      $t = tv2_duration ($d);
+      if ($t != '')
+        $p .= ' ('.$t.')';
+      $p .= '">';
+
+       $p .= '<img src="'
+            .tv2_link_normalize ($tv2_link.'/thumbnails/'.$tv2_thumbnails_prefix.'tv2/'.$d['rsstool_url_crc32'].'.jpg')
+            .'" width="'.$width.'" border="0" alt="'.$d['rsstool_title'].'"'
+            .' onerror="this.parentNode.removeChild(this);"'
+            .'>';
+
+      $p .= '</a>';
+      $p .= '</nobr>';
+*/
+    }
+
+  return $p;
+}
 
 
 function

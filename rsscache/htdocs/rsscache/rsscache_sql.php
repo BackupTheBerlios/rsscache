@@ -243,7 +243,7 @@ tv2_sql_normalize ($d)
   for ($i = 0; isset ($d[$i]); $i++)
     {
       // demux
-      $d[$i]['tv2_demux'] = widget_media_demux ($d[$i]['rsstool_url']);
+//      $d[$i]['tv2_demux'] = widget_media_demux ($d[$i]['rsstool_url']);
 
       // trim and lower-case categories
       $d[$i]['tv2_category'] = strtolower (trim ($d[$i]['tv2_category']));
