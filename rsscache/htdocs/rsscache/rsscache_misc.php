@@ -23,14 +23,10 @@ if (!defined ('TV2_MISC_PHP'))
 {
 define ('TV2_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
-//require_once ('config.php');
 require_once ('misc/misc.php');
 require_once ('misc/widget.php');
 require_once ('misc/wikipedia.php');
 require_once ('misc/rss.php');
-//if ($tv2_qrcode == 1)
-//  require_once ('phpqrcode/qrlib.php');
-require_once ('tv2_sql.php');
 
 
 function
@@ -136,14 +132,6 @@ tv2_thumbnail ($d, $width = 120)
 
 
 function
-tv2_youtube_download ($q)
-{
-//  header('Content-Disposition: attachment; filename="downloaded.pdf"');
-//  readfile("/path/to/file");
-}
-
-
-function
 tv2_get_request_value ($name)
 {
   // wrapper for get_request_value() 
@@ -168,50 +156,12 @@ tv2_get_request_value ($name)
 
 
 function
-tv2_f_local ()
-{
-  $c = tv2_get_request_value ('c');
-  $config = config_xml_by_category ($c);
-//  return widget_embed ($config->embed, WIDGET_EMBED_AUTO);
-  return widget_embed ($config->local, WIDGET_EMBED_LOCAL);
-}
-
-
-function
-tv2_f_iframe ()
-{
-  $c = tv2_get_request_value ('c');
-  $config = config_xml_by_category ($c);
-//  return widget_embed ($config->embed, WIDGET_EMBED_AUTO);
-  return widget_embed ($config->iframe, WIDGET_EMBED_IFRAME);
-}
-
-
-function
-tv2_f_proxy ()
-{
-  $c = tv2_get_request_value ('c');        
-  $config = config_xml_by_category ($c);      
-  return widget_embed ($config->proxy, WIDGET_EMBED_PROXY);
-}
-
-
-function
 tv2_f_wiki ()
 {
   $c = tv2_get_request_value ('c');        
   $config = config_xml_by_category ($c);      
 //  return widget_wikipedia ($config->wiki);
   return wikipedia_get_html ($config->wiki);
-}
-
-
-function
-tv2_f_localwiki ()
-{
-  $c = tv2_get_request_value ('c');        
-  $config = config_xml_by_category ($c);      
-  return widget_embed ($config->localwiki, WIDGET_EMBED_PROXY);
 }
 
 
@@ -446,20 +396,6 @@ tv2_normalize ($category)
 
 
 function
-tv2_highlight ($s)
-{
-//  $q = tv2_get_request_value ('q');
-  // highlight search words
-//  $a = explode (array (' ', '+'), $q);
-  // DEBUG
-//  print_r ($a);
-//  for ($i = 0; isset ($a[$i]); $i++)
-//    $s = str_ireplace ($a[$i], '<span class="tv2_highlight">'.$a[$i].'</span>', $s);
-  return $s;
-}
-
-
-function
 tv2_event ($d)
 {
   global $tv2_time;
@@ -611,7 +547,8 @@ tv2_rss ($d_array)
       $rss_desc_array[$i] = ''
                            .tv2_thumbnail ($d_array[$i], 120, 1)
                            .'<br>'
-                           .$d_array[$i]['rsstool_desc'];
+                           .$d_array[$i]['rsstool_desc']
+;
     }
 
   // DEBUG

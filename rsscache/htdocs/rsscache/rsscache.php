@@ -28,8 +28,8 @@ define ('TV2_PHP', 1);
 require_once ('default.php');
 require_once ('config.php');
 require_once ('misc/misc.php');
-//require_once ('tv2_output.php');
-require_once ('tv2_misc.php');
+require_once ('rsscache_misc.php');
+require_once ('rsscache_sql.php');
 
 
 // main ()
@@ -52,8 +52,7 @@ if (!($num))
     else
       $num = $tv2_results;
   }
-if ($tv2_use_database == 1)
-  tv2_sql_open ();
+tv2_sql_open ();
 $config = config_xml ();
 $c = tv2_get_request_value ('c'); // category
 
@@ -71,7 +70,7 @@ else if ($f == 'extern')
 //tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)          
     $d_array = tv2_sql ($c, $q, 'extern', NULL, $start, $num);
   }
-else if ($tv2_use_database == 1)
+else
   {
     // use SQL
     if ($v)
@@ -80,35 +79,33 @@ else if ($tv2_use_database == 1)
       $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, $category->table_suffix);
   }
 
+tv2_sql_close ();
+
+// DEBUG
+//echo '<pre><tt>';
+//print_r ($d_array);
+//exit;
+
 
 // stats RSS
-if ($tv2_use_database == 1)
-  if ($f == 'stats')
+if ($f == 'stats')
   {
-    echo tv2_stats_rss ();
-    tv2_sql_close ();
-    exit;
+    $p = tv2_stats_rss ();
   }
-
-
 // RSS only
-if ($tv2_use_database == 1)
-//  if ($f == 'rss')
+else
   {
-    echo tv2_rss ($d_array);
-    tv2_sql_close ();
-    exit;
+    $p = tv2_rss ($d_array);
   }
-
 
 // the _only_ echo
 if ($use_gzip == 1)
   echo_gzip ($p);
-else echo $p;
+else
+echo $p;
 
-if ($tv2_use_database == 1)
-  tv2_sql_close ();
 
+exit;
 
 }
 
