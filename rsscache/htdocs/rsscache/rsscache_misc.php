@@ -30,92 +30,6 @@ require_once ('misc/rss.php');
 
 
 function
-generate_rss2 ($title, $link, $desc, $item_title_array, $item_link_array, $item_desc_array,
-              $item_media_duration_array = NULL,
-              $item_author_array = NULL)
-{
-  $version = 2; // RSS2.0
-
-  $p = '';
-  $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n";
-
-  if ($version == 1)
-    $p .= '<rdf:RDF xmlns="http://purl.org/rss/1.0/">'."\n";
-  else
-    $p .= '<rss version="2.0">'."\n";
-
-  $p .= '  <channel>'."\n"
-       .'    <title>'
-       .$title
-       .'</title>'."\n"
-       .'    <link>'
-       .$link
-       .'</link>'."\n"
-       .'    <description>'
-       .$desc
-       .'</description>'."\n"
-//     .'    <dc:date>%ld</dc:date>'
-;
-
-  if ($version == 1)
-    {
-      $p .= '<items>'."\n"
-           .'<rdf:Seq>'."\n";
-
-      for ($i = 0; isset ($item_link_array[$i]); $i++)
-        $p .= "\n".'        <rdf:li rdf:resource="'
-             .htmlspecialchars ($item_link_array[$i], ENT_QUOTES)
-             .'"/>';
-
-      $p .= '</rdf:Seq>'."\n"
-           .'</items>'."\n"
-           .'</channel>'."\n";
-    }
-
-  for ($i = 0; isset ($item_link_array[$i]); $i++)
-    {
-      if ($version == 1)
-        $p .= '<item rdf:about="'
-             .$item_link_array[$i]
-             .'">'."\n";
-      else
-        $p .= '    <item>'."\n";
-
-      $p .= '      <title>'
-           .htmlspecialchars ($item_title_array[$i], ENT_QUOTES)
-           .'</title>'."\n"
-           .'      <link>'
-           .htmlspecialchars ($item_link_array[$i], ENT_QUOTES)
-           .'</link>'."\n"
-           .'      <description>'
-           .htmlspecialchars ($item_desc_array[$i], ENT_QUOTES)
-           .'</description>'."\n"
-           .'      <pubDate>'
-           .strftime ("%Y%m%d %H:%M:%S", time ())
-//           .time ()
-           .'</pubDate>'."\n";
-
-      if ($item_media_duration_array)
-        if (isset ($item_media_duration_array[$i]))
-          $p .= '      <media:duration>'.$item_media_duration_array[$i].'</media:duration>'."\n";
-
-      if ($item_author_array)
-        if (isset ($item_author_array[$i]))
-          $p .= '      <author>'.$item_author_array[$i].'</author>'."\n";
-
-      $p .= '    </item>'."\n";
-    }
-
-  if ($version == 2)
-    $p .= '  </channel>'."\n";
-
-  $p .= '</rss>'."\n";
-
-  return $p;
-}
-
-
-function
 tv2_title ($d_array = NULL)
 {
   global $tv2_title;
@@ -514,6 +428,92 @@ print_r ($t);
 
 
 function
+generate_rss2 ($title, $link, $desc, $item_title_array, $item_link_array, $item_desc_array,
+              $item_media_duration_array = NULL,
+              $item_author_array = NULL)
+{
+  $version = 2; // RSS2.0
+
+  $p = '';
+  $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+
+  if ($version == 1)
+    $p .= '<rdf:RDF xmlns="http://purl.org/rss/1.0/">'."\n";
+  else
+    $p .= '<rss version="2.0">'."\n";
+
+  $p .= '  <channel>'."\n"
+       .'    <title>'
+       .$title
+       .'</title>'."\n"
+       .'    <link>'
+       .$link
+       .'</link>'."\n"
+       .'    <description>'
+       .$desc
+       .'</description>'."\n"
+//     .'    <dc:date>%ld</dc:date>'
+;
+
+  if ($version == 1)
+    {
+      $p .= '<items>'."\n"
+           .'<rdf:Seq>'."\n";
+
+      for ($i = 0; isset ($item_link_array[$i]); $i++)
+        $p .= "\n".'        <rdf:li rdf:resource="'
+             .htmlspecialchars ($item_link_array[$i], ENT_QUOTES)
+             .'"/>';
+
+      $p .= '</rdf:Seq>'."\n"
+           .'</items>'."\n"
+           .'</channel>'."\n";
+    }
+
+  for ($i = 0; isset ($item_link_array[$i]); $i++)
+    {
+      if ($version == 1)
+        $p .= '<item rdf:about="'
+             .$item_link_array[$i]
+             .'">'."\n";
+      else
+        $p .= '    <item>'."\n";
+
+      $p .= '      <title>'
+           .htmlspecialchars ($item_title_array[$i], ENT_QUOTES)
+           .'</title>'."\n"
+           .'      <link>'
+           .htmlspecialchars ($item_link_array[$i], ENT_QUOTES)
+           .'</link>'."\n"
+           .'      <description>'
+           .htmlspecialchars ($item_desc_array[$i], ENT_QUOTES)
+           .'</description>'."\n"
+           .'      <pubDate>'
+           .strftime ("%Y%m%d %H:%M:%S", time ())
+//           .time ()
+           .'</pubDate>'."\n";
+
+      if ($item_media_duration_array)
+        if (isset ($item_media_duration_array[$i]))
+          $p .= '      <media:duration>'.$item_media_duration_array[$i].'</media:duration>'."\n";
+
+      if ($item_author_array)
+        if (isset ($item_author_array[$i]))
+          $p .= '      <author>'.$item_author_array[$i].'</author>'."\n";
+
+      $p .= '    </item>'."\n";
+    }
+
+  if ($version == 2)
+    $p .= '  </channel>'."\n";
+
+  $p .= '</rss>'."\n";
+
+  return $p;
+}
+
+
+function
 tv2_stats_rss ()
 {
   global $tv2_link;
@@ -566,7 +566,9 @@ tv2_stats_rss ()
 
   $rss_title_array[] = 'ALL';
   $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'];
+
         $p = ''
+//            .'<!-- lang:category -->: '.$config->category[$i]->name.'<br>'
             .($items * 1).' <!-- lang:items --><br>'
             .($items_today * 1).' <!-- lang:items --> <!-- lang:today -->'
                                      .((items_today * 1) > 0 ? ' '.$s : '').'<br>'

@@ -33,9 +33,6 @@ require_once ('rsscache_misc.php');
 require_once ('rsscache_sql.php');
 
 
-print_r ($tv2_translate);
-exit;
-
 // main ()
 
 
