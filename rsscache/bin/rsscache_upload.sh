@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-# tv2_upload.sh - upload/mirror database contents TO different server
+# rsscache_upload.sh - upload/mirror database contents TO different server
 #
 # Copyright (c) 2009 - 2011 NoisyB
 #
 #
-# Usage: tv2_upload.sh SUBDOMAIN
+# Usage: rsscache_upload.sh SUBDOMAIN
 #
 #
 # This program is free software; you can redistribute it and/or modify
@@ -80,12 +80,12 @@ LAST_EXIT_CODE=1
 while :
 do
 echo "$(date): uploading thumbnails"
-rsync ${RSYNC_OPTS} -rav --numeric-ids ../htdocs/thumbnails/tv2 pwnoogle@pwnoogle.com:/home/pwnoogle/htdocs/${SUBDOMAIN}/htdocs/thumbnails/
+rsync ${RSYNC_OPTS} -rav --numeric-ids ../htdocs/thumbnails/rsscache pwnoogle@pwnoogle.com:/home/pwnoogle/htdocs/${SUBDOMAIN}/htdocs/thumbnails/
 
   LAST_EXIT_CODE=$?
   if [ $LAST_EXIT_CODE -eq 0 ]; then
 # delete thumbnails
-#rm -f ../htdocs/thumbnails/tv2/*
+#rm -f ../htdocs/thumbnails/rsscache/*
     break
   fi
 done
@@ -116,7 +116,7 @@ done
 
 
 echo "$(date): running SQL"
-#expect -f tv2_upload.expect
+#expect -f rsscache_upload.expect
 expect << EOF
 set timeout  -1
 

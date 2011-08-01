@@ -1,12 +1,12 @@
 #!/usr/bin/php -q
 <?php
 /*
-tv2_update.php - script to customize/update/clean/fix database
+rsscache_update.php - script to customize/update/clean/fix database
 
 Copyright (c) 2009 - 2011 NoisyB
 
 
-Usage: tv2_update.php [START_ROW]
+Usage: rsscache_update.php [START_ROW]
 
 
 This program is free software; you can redistribute it and/or modify
@@ -35,34 +35,34 @@ $debug = 0;
 
 
 /*
-// done in tv2_sql.php
+// done in rsscache_sql.php
 function
-tv2_update_ttl ()
+rsscache_update_ttl ()
 {
-  global $tv2_root;
-  global $tv2_item_ttl;
-  global $tv2_time;
+  global $rsscache_root;
+  global $rsscache_item_ttl;
+  global $rsscache_time;
   global $db;
   global $table_suffix;
 
-  if ($tv2_item_ttl <= 0) // no ttl set
+  if ($rsscache_item_ttl <= 0) // no ttl set
     {
-      echo '$tv2_time_ttl <= 0: no items removed from database'."\n";
+      echo '$rsscache_time_ttl <= 0: no items removed from database'."\n";
       return;
     }
 
   $sql_query = ''
 //  .'UPDATE rsstool_table'.$table_suffix
 //  .' SET'
-//  .' tv2_active = 0'
+//  .' rsscache_active = 0'
   .'DELETE'
   .' FROM rsstool_table'.$table_suffix
-  .' WHERE rsstool_date < '.($tv2_time - $tv2_item_ttl * 86400)
+  .' WHERE rsstool_date < '.($rsscache_time - $rsscache_item_ttl * 86400)
 ;
   $db->sql_write ($sql_query_s, 0);
 
   // remove thumbnails
-//  $path = $tv2_root.'/thumbnails/youtube/'.youtube_get_videoid ($rsstool_url).'_'.$i.'.jpg';
+//  $path = $rsscache_root.'/thumbnails/youtube/'.youtube_get_videoid ($rsstool_url).'_'.$i.'.jpg';
 //  if (file_exists ($path))
 //    unlink ($path);
 }
@@ -70,7 +70,7 @@ tv2_update_ttl ()
 
 
 function
-tv2_update_normalize ($d)
+rsscache_update_normalize ($d)
 {
   global $db;
   global $table_suffix;
@@ -102,8 +102,8 @@ tv2_update_normalize ($d)
     }
 
   // fix category names
-//  $d['tv2_category'] = trim ($d['tv2_category']);
-//  $d['tv2_moved'] = trim ($d['tv2_moved']);
+//  $d['rsscache_category'] = trim ($d['rsscache_category']);
+//  $d['rsscache_moved'] = trim ($d['rsscache_moved']);
 
   // strip any tags from the desc
   $p = $d['rsstool_desc'];
@@ -126,14 +126,14 @@ tv2_update_normalize ($d)
 
   // rename thumbnail
   if ($d['rsstool_url_crc32'] != $p) 
-  if (rename ('../htdocs/thumbnails/tv2/'.$d['rsstool_url_crc32'].'.jpg',
-              '../htdocs/thumbnails/tv2/'.$p.'.jpg'))
+  if (rename ('../htdocs/thumbnails/rsscache/'.$d['rsstool_url_crc32'].'.jpg',
+              '../htdocs/thumbnails/rsscache/'.$p.'.jpg'))
     echo 'rename '.$d['rsstool_url_crc32'].'.jpg '.$p.'.jpg'."\n";
 }
 
 
 function
-tv2_update_keywords ($r)
+rsscache_update_keywords ($r)
 {
   global $db;
 
@@ -172,7 +172,7 @@ tv2_update_keywords ($r)
 
 
 function
-tv2_update_related_id ($r)
+rsscache_update_related_id ($r)
 {
   global $db;
   global $table_suffix;
@@ -207,15 +207,15 @@ tv2_update_related_id ($r)
 
 
 function
-tv2_update_moved ()
+rsscache_update_moved ()
 {
 //  global $table_suffix;
-//UPDATE rsstool_table'.$table_suffix.' SET tv2_moved = tv2_category WHERE tv2_moved LIKE ''
+//UPDATE rsstool_table'.$table_suffix.' SET rsscache_moved = rsscache_category WHERE rsscache_moved LIKE ''
 }
 
 
 function
-tv2_update_crc32 ($r) // in config and rsstool_table
+rsscache_update_crc32 ($r) // in config and rsstool_table
 {
   global $db;
   global $table_suffix;
@@ -237,9 +237,9 @@ tv2_update_crc32 ($r) // in config and rsstool_table
 
 
 function
-tv2_update_dead_links ($rsstool_url, $rsstool_url_crc32)
+rsscache_update_dead_links ($rsstool_url, $rsstool_url_crc32)
 {
-  global $tv2_root;
+  global $rsscache_root;
   global $db;
   global $table_suffix;
 
@@ -253,7 +253,7 @@ tv2_update_dead_links ($rsstool_url, $rsstool_url_crc32)
   $db->sql_write ($sql_query_s, 0);
 
   // remove thumbnails
-//  $path = $tv2_root.'/thumbnails/youtube/'.youtube_get_videoid ($rsstool_url).'_'.$i.'.jpg';
+//  $path = $rsscache_root.'/thumbnails/youtube/'.youtube_get_videoid ($rsstool_url).'_'.$i.'.jpg';
 //  if (file_exists ($path))
 //    unlink ($path);
 }
@@ -268,9 +268,9 @@ set_time_limit (0);
 //$debug = 1;
 
 $db = new misc_sql;
-$db->sql_open ($tv2_dbhost, $tv2_dbuser, $tv2_dbpass, $tv2_dbname);
+$db->sql_open ($rsscache_dbhost, $rsscache_dbuser, $rsscache_dbpass, $rsscache_dbname);
 // DEBUG
-echo 'database: '.$tv2_dbname.' ('.$tv2_dbuser.')'."\n";
+echo 'database: '.$rsscache_dbname.' ('.$rsscache_dbuser.')'."\n";
 $table_suffix = '';
 //$table_suffix = '_cod4'; 
 //$table_suffix = '_css';
@@ -282,8 +282,8 @@ $rows = $db->sql_get_table_rows ('rsstool_table');
 echo 'rows: '.$rows."\n";
 
 
-// remove items according to $tv2_item_ttl
-//tv2_update_ttl ();
+// remove items according to $rsscache_item_ttl
+//rsscache_update_ttl ();
 //$db->sql_close ();
 //exit;
 
@@ -316,19 +316,19 @@ for ($i = $start; $i < $rows; $i += $chunk)
 //        echo ($i + $j)."\n";
 
         // normalize
-//        tv2_update_normalize ($r[$j]);
+//        rsscache_update_normalize ($r[$j]);
 
-        // tv2_update keywords
-//        tv2_update_keywords ($r[$j]);
+        // rsscache_update keywords
+//        rsscache_update_keywords ($r[$j]);
 
-        // tv2_update related id
-//        tv2_update_related_id ($r[$j]);
+        // rsscache_update related id
+//        rsscache_update_related_id ($r[$j]);
 
-        // tv2_update crc32 checksums
-//        tv2_update_crc32 ($r[$j]);
+        // rsscache_update crc32 checksums
+//        rsscache_update_crc32 ($r[$j]);
 
         // check dead link
-//        tv2_update_dead_links ($r[$j]['rsstool_url'], $r[$j]['rsstool_url_crc32']);
+//        rsscache_update_dead_links ($r[$j]['rsstool_url'], $r[$j]['rsstool_url_crc32']);
 
         // youtube specific
         if (strstr ($r[$j]['rsstool_url'], '.youtube.'))

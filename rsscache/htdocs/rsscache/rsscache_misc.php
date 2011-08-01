@@ -1,6 +1,6 @@
 <?php
 /*
-tv2.php - tv2 engine miscellaneous functions
+rsscache.php - rsscache engine miscellaneous functions
 
 Copyright (c) 2009 - 2011 NoisyB 
 
@@ -30,16 +30,16 @@ require_once ('misc/rss.php');
 
 
 function
-tv2_title ($d_array = NULL)
+rsscache_title ($d_array = NULL)
 {
-  global $tv2_title;
-  $v = tv2_get_request_value ('v');
-  $c = tv2_get_request_value ('c');
+  global $rsscache_title;
+  $v = rsscache_get_request_value ('v');
+  $c = rsscache_get_request_value ('c');
   $category = config_xml_by_category ($c);
 
   $a = array ();
-  if (trim ($tv2_title) != '')
-    $a[] = $tv2_title;
+  if (trim ($rsscache_title) != '')
+    $a[] = $rsscache_title;
 
   if ($category)
     if (trim ($category->title) != '')
@@ -53,7 +53,7 @@ tv2_title ($d_array = NULL)
 
 
 function
-tv2_duration ($d)
+rsscache_duration ($d)
 {
   if ($d['rsstool_media_duration'] > 0)
     return gmstrftime ($d['rsstool_media_duration'] > 3599 ? '%H:%M:%S' : '%M:%S', (int) $d['rsstool_media_duration']);
@@ -62,21 +62,21 @@ tv2_duration ($d)
 
 
 function
-tv2_link ($d)
+rsscache_link ($d)
 {
   $p = '';
 /*
-  if ($d['tv2_demux'] > 0)
+  if ($d['rsscache_demux'] > 0)
     {
       $s = ''
-          .'&seo='.str_replace (' ', '_', tv2_keywords ($d))
+          .'&seo='.str_replace (' ', '_', rsscache_keywords ($d))
 ;
       $p .= http_build_query2 (array ('v' => $d['rsstool_url_crc32'], 'f' => ''), true).$s;
     }
   else
 */
     {
-      $s = tv2_link_normalize (urldecode ($d['rsstool_url'])); // local, static or other server?
+      $s = rsscache_link_normalize (urldecode ($d['rsstool_url'])); // local, static or other server?
       $p .= $s; // .http_build_query2 (array (), false);
     }
 
@@ -85,40 +85,40 @@ tv2_link ($d)
 
 
 function
-tv2_thumbnail ($d, $width = 120)
+rsscache_thumbnail ($d, $width = 120)
 {
   // NOTE: right now only youtube thumbnails are supported
-  global $tv2_link_static,
-         $tv2_link,
-         $tv2_thumbnails_prefix;
+  global $rsscache_link_static,
+         $rsscache_link,
+         $rsscache_thumbnails_prefix;
 
 //          $p .= '<a href="?'.http_build_query2 (array ('v' => $d['rsstool_url_crc32'],  
 //                                                       'start' => ($start + 5),  
 //                                                       'len' => $len), false).'">';  
-//          $p .= tv2_thumbnail ($d, $width, 1);
+//          $p .= rsscache_thumbnail ($d, $width, 1);
 //          $p .= '</a>';  
-  $link = tv2_link ($d);
+  $link = rsscache_link ($d);
 
   $p = '';
 
-//  if ($d['tv2_demux'] == 1) // youtube
+//  if ($d['rsscache_demux'] == 1) // youtube
     {
 //widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
-      $t = tv2_duration ($d);
-      $p .= widget_button (tv2_link_normalize ($tv2_link.'/thumbnails/'.$tv2_thumbnails_prefix.'tv2/'.$d['rsstool_url_crc32'].'.jpg'),
+      $t = rsscache_duration ($d);
+      $p .= widget_button (rsscache_link_normalize ($rsscache_link.'/thumbnails/'.$rsscache_thumbnails_prefix.'rsscache/'.$d['rsstool_url_crc32'].'.jpg'),
                            $link,
                            NULL,
                            $d['rsstool_title'].($t != '' ? ' ('.$t.')' : ''));
 /*
       $p .= '<nobr>';
       $p .= '<a href="?'.$link.'" title="'.$d['rsstool_title'];
-      $t = tv2_duration ($d);
+      $t = rsscache_duration ($d);
       if ($t != '')
         $p .= ' ('.$t.')';
       $p .= '">';
 
        $p .= '<img src="'
-            .tv2_link_normalize ($tv2_link.'/thumbnails/'.$tv2_thumbnails_prefix.'tv2/'.$d['rsstool_url_crc32'].'.jpg')
+            .rsscache_link_normalize ($rsscache_link.'/thumbnails/'.$rsscache_thumbnails_prefix.'rsscache/'.$d['rsstool_url_crc32'].'.jpg')
             .'" width="'.$width.'" border="0" alt="'.$d['rsstool_title'].'"'
             .' onerror="this.parentNode.removeChild(this);"'
             .'>';
@@ -133,23 +133,23 @@ tv2_thumbnail ($d, $width = 120)
 
 
 function
-tv2_get_request_value ($name)
+rsscache_get_request_value ($name)
 {
   // wrapper for get_request_value() 
-  global $tv2_default_category;
-  global $tv2_default_function;
+  global $rsscache_default_category;
+  global $rsscache_default_function;
 
   $v = get_request_value ($name);
 
   if ($name == 'c')
     {
       if ($v == '')
-        $v = $tv2_default_category;
+        $v = $rsscache_default_category;
     }
   else if ($name == 'f')
     {
       if ($v == '')  
-        $v = $tv2_default_function;
+        $v = $rsscache_default_function;
     }
 
   return $v;
@@ -157,9 +157,9 @@ tv2_get_request_value ($name)
 
 
 function
-tv2_f_wiki ()
+rsscache_f_wiki ()
 {
-  $c = tv2_get_request_value ('c');        
+  $c = rsscache_get_request_value ('c');        
   $config = config_xml_by_category ($c);      
 //  return widget_wikipedia ($config->wiki);
   return wikipedia_get_html ($config->wiki);
@@ -180,14 +180,14 @@ tv2_f_wiki ()
             [tv2_moved] => wow
             [rsstool_media_duration] => 0
             [rsstool_keywords] => cptwipe 32728 archive 2011
-            [tv2_demux] => 12
+            [rsscache_demux] => 12
         )
 */
 function
-//tv2_stripdir ($url, $start, $num)
-tv2_stripdir ($url)
+//rsscache_stripdir ($url, $start, $num)
+rsscache_stripdir ($url)
 {
-  global $tv2_tor_enabled;
+  global $rsscache_tor_enabled;
 
   $v = array ();
 
@@ -197,7 +197,7 @@ tv2_stripdir ($url)
       return $v;
     }
 
-  if ($tv2_tor_enabled)
+  if ($rsscache_tor_enabled)
     $s = tor_get_contents ($url);
   else
     $s = file_get_contents ($url);
@@ -227,12 +227,12 @@ tv2_stripdir ($url)
 function
 config_xml_normalize ($config)
 {
-  global $tv2_use_database;
+  global $rsscache_use_database;
 
-  if ($tv2_use_database == 1)
+  if ($rsscache_use_database == 1)
     {
-//tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
-      $stats = tv2_sql (NULL, NULL, 'stats', NULL, 0, count ($config->category));
+//rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
+      $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($config->category));
       // DEBUG
 //echo '<pre><tt>';
 //print_r ($stats);
@@ -286,8 +286,8 @@ config_xml_normalize ($config)
 function
 config_xml ($memcache_expire = 0)
 {
-  global $tv2_use_database;
-  global $tv2_config_xml;
+  global $rsscache_use_database;
+  global $rsscache_config_xml;
   static $config = NULL;
 
   if ($config)
@@ -299,7 +299,7 @@ if ($memcache_expire > 0)
     if ($memcache->connect ('localhost', 11211) == TRUE)
       {
         // data from the cache
-        $p = $memcache->get (md5 ($tv2_config_xml));
+        $p = $memcache->get (md5 ($rsscache_config_xml));
 
         if ($p != FALSE)
           {
@@ -310,8 +310,8 @@ if ($memcache_expire > 0)
 
             echo $p;
 
-            if ($tv2_use_database)
-              tv2_sql_close ();
+            if ($rsscache_use_database)
+              rsscache_sql_close ();
 
             exit;
           }
@@ -320,8 +320,8 @@ if ($memcache_expire > 0)
       {
         echo 'ERROR: could not connect to memcached';
 
-        if ($tv2_use_database)
-          tv2_sql_close ();
+        if ($rsscache_use_database)
+          rsscache_sql_close ();
 
         exit;
       }
@@ -330,13 +330,13 @@ if ($memcache_expire > 0)
   // DEBUG
 //  echo 'read config';
 
-  $config = simplexml_load_file ($tv2_config_xml);
+  $config = simplexml_load_file ($rsscache_config_xml);
   $config = config_xml_normalize ($config);
 
   // use memcache
 if ($memcache_expire > 0)
   {
-    $memcache->set (md5 ($tv2_config_xml), serialize ($config), 0, $memcache_expire);
+    $memcache->set (md5 ($rsscache_config_xml), serialize ($config), 0, $memcache_expire);
   }
 
   return $config;
@@ -358,7 +358,7 @@ config_xml_by_category ($category)
 
 // HACK
 function
-tv2_normalize ($category)
+rsscache_normalize ($category)
 {
   $p = strtolower ($category);
 
@@ -372,14 +372,14 @@ tv2_normalize ($category)
 
 
 function
-tv2_event ($d)
+rsscache_event ($d)
 {
-  global $tv2_time;
+  global $rsscache_time;
 
   $t[0] = $d['rsstool_event_start'];
   $t[1] = $d['rsstool_event_end'];
 
-  $t[2] = $t[0] - $tv2_time;
+  $t[2] = $t[0] - $rsscache_time;
   date_default_timezone_set ($tz);
   $t[3] = (100 * $t[2]) / (7 * 86400); // percent (week)
 
@@ -508,11 +508,11 @@ generate_rss2 ($title, $link, $desc, $item_title_array, $item_link_array, $item_
 
 
 function
-tv2_stats_rss ()
+rsscache_stats_rss ()
 {
-  global $tv2_link;
-  global $tv2_translate;
-  global $tv2_language;
+  global $rsscache_link;
+  global $rsscache_translate;
+  global $rsscache_language;
   $items = 0;
   $items_today = 0;
   $items_7_days = 0;
@@ -546,7 +546,7 @@ tv2_stats_rss ()
             .($category->items_30_days * 1).' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
             .($category->days * 1).' <!-- lang:days --> <!-- lang:since creation of category -->'
 ;
-        $p = misc_template ($p, $tv2_translate[$tv2_language ? $tv2_language : 'default']);
+        $p = misc_template ($p, $rsscache_translate[$rsscache_language ? $rsscache_language : 'default']);
 
         $rss_title_array[] = $category->title;
         $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'].'/?'.$category->query;
@@ -569,7 +569,7 @@ tv2_stats_rss ()
             .($items_7_days * 1).' <!-- lang:items --> <!-- lang:last --> 7 <!-- lang:days --><br>'
             .($items_30_days * 1).' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
 ;
-  $p = misc_template ($p, $tv2_translate[$tv2_language ? $tv2_language : 'default']);
+  $p = misc_template ($p, $rsscache_translate[$rsscache_language ? $rsscache_language : 'default']);
   $rss_desc_array[] = $p;
 
   // DEBUG
@@ -577,8 +577,8 @@ tv2_stats_rss ()
 //  print_r ($rss_link_array);
 //  print_r ($rss_desc_array);
 
-  return generate_rss2 (tv2_title (),
-                       $tv2_link,
+  return generate_rss2 (rsscache_title (),
+                       $rsscache_link,
 //                       'Statistics',
                      'rsscache urls have a similar syntax like google urls<br>'
 .'<br>'
@@ -606,9 +606,9 @@ tv2_stats_rss ()
 
 
 function
-tv2_rss ($d_array)
+rsscache_rss ($d_array)
 {
-  global $tv2_link;
+  global $rsscache_link;
 
 //    header ('Content-type: text/xml');
     header ('Content-type: application/xml');
@@ -624,13 +624,13 @@ tv2_rss ($d_array)
     {
       $rss_title_array[$i] = $d_array[$i]['rsstool_title'];
 //      $rss_link_array[$i] = $d_array[$i]['rsstool_url'];
-      if (substr (tv2_link ($d_array[$i]), 0, 7) == 'http://')
-        $rss_link_array[$i] = tv2_link ($d_array[$i]);
+      if (substr (rsscache_link ($d_array[$i]), 0, 7) == 'http://')
+        $rss_link_array[$i] = rsscache_link ($d_array[$i]);
       else
-        $rss_link_array[$i] = $tv2_link.'?'.tv2_link ($d_array[$i]);
+        $rss_link_array[$i] = $rsscache_link.'?'.rsscache_link ($d_array[$i]);
 
       $rss_desc_array[$i] = ''
-                           .tv2_thumbnail ($d_array[$i], 120, 1)
+                           .rsscache_thumbnail ($d_array[$i], 120, 1)
                            .'<br>'
                            .$d_array[$i]['rsstool_desc']
 ;
@@ -641,8 +641,8 @@ tv2_rss ($d_array)
 //  print_r ($rss_link_array);
 //  print_r ($rss_desc_array);
 
-  return generate_rss2 (tv2_title (),
-                     $tv2_link,
+  return generate_rss2 (rsscache_title (),
+                     $rsscache_link,
                      'rsscache urls have a similar syntax like google urls<br>'
 .'<br>'
 .'<br>'
@@ -669,23 +669,23 @@ tv2_rss ($d_array)
 
 
 function
-tv2_link_normalize ($link)
+rsscache_link_normalize ($link)
 {
   // checks is file is on local server or on static server and returns correct link
-  global $tv2_root,
-         $tv2_link,
-         $tv2_link_static;
+  global $rsscache_root,
+         $rsscache_link,
+         $rsscache_link_static;
   $p = $link; // $d['rsstool_url']
 
-  if (strncmp ($p, $tv2_link, strlen ($tv2_link)) || // extern link
-      !$tv2_link_static) // no static server
+  if (strncmp ($p, $rsscache_link, strlen ($rsscache_link)) || // extern link
+      !$rsscache_link_static) // no static server
     return $link;
 
-  $p = str_replace ($tv2_link, $tv2_root, $link); // file on local server?
+  $p = str_replace ($rsscache_link, $rsscache_root, $link); // file on local server?
   if (file_exists ($p))
     return $link;
 
-  return str_replace ($tv2_link, $tv2_link_static, $link); // has to be on static server then
+  return str_replace ($rsscache_link, $rsscache_link_static, $link); // has to be on static server then
 }
 
 

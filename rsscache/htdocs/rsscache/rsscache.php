@@ -1,6 +1,6 @@
 <?php
 /*
-tv2.php - tv2 engine
+rsscache.php - rsscache engine
 
 Copyright (c) 2009 - 2011 NoisyB
 
@@ -36,22 +36,22 @@ require_once ('rsscache_sql.php');
 // main ()
 
 
-$f = tv2_get_request_value ('f'); // function
-$q = tv2_get_request_value ('q'); // search query
-$v = tv2_get_request_value ('v'); // TODO: deprecate
-$start = tv2_get_request_value ('start'); // offset
+$f = rsscache_get_request_value ('f'); // function
+$q = rsscache_get_request_value ('q'); // search query
+$v = rsscache_get_request_value ('v'); // TODO: deprecate
+$start = rsscache_get_request_value ('start'); // offset
 if (!($start))
   $start = 0;
-$num = tv2_get_request_value ('num'); // number of results
+$num = rsscache_get_request_value ('num'); // number of results
 if (!($num))
-  $num = $tv2_results;
-if ($num > $tv2_max_results)
-  $num = $tv2_max_results;
+  $num = $rsscache_results;
+if ($num > $rsscache_max_results)
+  $num = $rsscache_max_results;
 
-tv2_sql_open ();
+rsscache_sql_open ();
 
 $config = config_xml ();
-$c = tv2_get_request_value ('c'); // category
+$c = rsscache_get_request_value ('c'); // category
 
 
 $d_array = NULL;
@@ -60,23 +60,23 @@ $d_array = NULL;
 $category = config_xml_by_category (strtolower ($c));
 if (isset ($category->index) || isset ($category->stripdir))
   {
-    $d_array = tv2_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
+    $d_array = rsscache_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
   }
 else if ($f == 'extern')
   {
-//tv2_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)          
-    $d_array = tv2_sql ($c, $q, 'extern', NULL, $start, $num);
+//rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)          
+    $d_array = rsscache_sql ($c, $q, 'extern', NULL, $start, $num);
   }
 else
   {
     // use SQL
     if ($v)
-      $d_array = tv2_sql (NULL, NULL, $f, $v, 0, 0, $category->table_suffix);
+      $d_array = rsscache_sql (NULL, NULL, $f, $v, 0, 0, $category->table_suffix);
     else
-      $d_array = tv2_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, $category->table_suffix);
+      $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, $category->table_suffix);
   }
 
-tv2_sql_close ();
+rsscache_sql_close ();
 
 // DEBUG
 //echo '<pre><tt>';
@@ -87,11 +87,11 @@ tv2_sql_close ();
 // stats RSS
 if ($f == 'stats')
   {
-    $p = tv2_stats_rss ();
+    $p = rsscache_stats_rss ();
   }
 else // RSS only
   {
-    $p = tv2_rss ($d_array);
+    $p = rsscache_rss ($d_array);
   }
 
 
