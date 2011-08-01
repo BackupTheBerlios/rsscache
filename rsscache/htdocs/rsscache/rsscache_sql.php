@@ -19,9 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-if (!defined ('TV2_SQL_PHP'))
+if (!defined ('RSSCACHE_SQL_PHP'))
 {
-define ('TV2_SQL_PHP', 1);
+define ('RSSCACHE_SQL_PHP', 1);
 //require_once ('config.php');
 require_once ('misc/misc.php');
 require_once ('misc/sql.php');

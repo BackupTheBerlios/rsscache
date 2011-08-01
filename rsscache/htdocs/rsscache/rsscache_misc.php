@@ -19,9 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-if (!defined ('TV2_MISC_PHP'))
+if (!defined ('RSSCACHE_MISC_PHP'))
 {
-define ('TV2_MISC_PHP', 1);
+define ('RSSCACHE_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 require_once ('misc/misc.php');
 require_once ('misc/widget.php');
@@ -65,7 +65,7 @@ function
 tv2_link ($d)
 {
   $p = '';
-
+/*
   if ($d['tv2_demux'] > 0)
     {
       $s = ''
@@ -74,6 +74,7 @@ tv2_link ($d)
       $p .= http_build_query2 (array ('v' => $d['rsstool_url_crc32'], 'f' => ''), true).$s;
     }
   else
+*/
     {
       $s = tv2_link_normalize (urldecode ($d['rsstool_url'])); // local, static or other server?
       $p .= $s; // .http_build_query2 (array (), false);
@@ -437,13 +438,13 @@ generate_rss2 ($title, $link, $desc, $item_title_array, $item_link_array, $item_
 
   $p .= '  <channel>'."\n"
        .'    <title>'
-       .$title
+       .htmlspecialchars ($title, ENT_QUOTES)
        .'</title>'."\n"
        .'    <link>'
-       .$link
+       .htmlspecialchars ($link, ENT_QUOTES)
        .'</link>'."\n"
        .'    <description>'
-       .$desc
+       .htmlspecialchars ($desc, ENT_QUOTES)
        .'</description>'."\n"
 //     .'    <dc:date>%ld</dc:date>'
 ;
@@ -578,7 +579,28 @@ tv2_stats_rss ()
 
   return generate_rss2 (tv2_title (),
                        $tv2_link,
-                       'Statistics',
+//                       'Statistics',
+                     'rsscache urls have a similar syntax like google urls<br>'
+.'<br>'
+.'<br>'
+.'q=SEARCH  SEARCH query<br>'
+.'start=N   start from result N<br>'
+.'num=N     show N results<br>'
+.'c=NAME    category (leave empty for all categories)<br>'
+.'<br>'
+.'<br>'
+.'*** functions ***<br>'
+.'f=0_5min      videos with duration 0-5 minutes<br>'
+.'f=5_10min     videos with duration 5-10 minutes<br>'
+.'f=10_min      videos with duration 10+ minutes<br>'
+.'f=stats       statistics<br>'
+.'f=new         show only new items<br>'
+.'f=related     find related items (requires &q=SEARCH)<br>'
+.'<br>'   
+.'<br>'
+.'*** install ***<br>'
+.'see apache2/sites-enabled/rsscache<br>'
+.'',
                        $rss_title_array, $rss_link_array, $rss_desc_array);
 }
 
@@ -621,7 +643,27 @@ tv2_rss ($d_array)
 
   return generate_rss2 (tv2_title (),
                      $tv2_link,
-                     '',
+                     'rsscache urls have a similar syntax like google urls<br>'
+.'<br>'
+.'<br>'
+.'q=SEARCH  SEARCH query<br>'
+.'start=N   start from result N<br>'
+.'num=N     show N results<br>'
+.'c=NAME    category (leave empty for all categories)<br>'
+.'<br>'
+.'<br>'
+.'*** functions ***<br>'
+.'f=0_5min      videos with duration 0-5 minutes<br>'
+.'f=5_10min     videos with duration 5-10 minutes<br>'
+.'f=10_min      videos with duration 10+ minutes<br>'
+.'f=stats       statistics<br>'
+.'f=new         show only new items<br>'
+.'f=related     find related items (requires &q=SEARCH)<br>'
+.'<br>'
+.'<br>'
+.'*** install ***<br>'
+.'see apache2/sites-enabled/rsscache<br>'
+,
                      $rss_title_array, $rss_link_array, $rss_desc_array);
 }
 

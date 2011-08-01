@@ -19,9 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-if (!defined ('TV2_PHP'))
+if (!defined ('RSSCACHE_PHP'))
 {
-define ('TV2_PHP', 1);
+define ('RSSCACHE_PHP', 1);
 //phpinfo();
 //exit;
 //error_reporting(E_ALL | E_STRICT);
