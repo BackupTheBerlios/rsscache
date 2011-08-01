@@ -202,7 +202,7 @@ function
 rsscache_sql_insert ($sql)
 {
   global $rsscache_debug_sql;
-  global $db;
+  global $rsscache_sql_db;
   global $debug;
 //  $debug = 1;
 
@@ -217,7 +217,7 @@ rsscache_sql_insert ($sql)
       // DEBUG 
       if ($debug == 1)
         echo $sql_query_s."\n";
-      $db->sql_write ($sql_query_s, 0, $debug);
+      $rsscache_sql_db->sql_write ($sql_query_s, 0, $debug);
       // grace time for the db
 //      sleep (1);
 //      usleep (500000); // microseconds

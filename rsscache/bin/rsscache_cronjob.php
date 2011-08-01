@@ -24,8 +24,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //error_reporting(E_ALL | E_STRICT);
 require_once ('../htdocs/default.php');
 require_once ('../htdocs/config.php');
-require_once ('../htdocs/rsscache_misc.php');
 require_once ('../htdocs/rsscache_sql.php');
+require_once ('../htdocs/rsscache_misc.php');
 
 
 function
@@ -105,7 +105,6 @@ for ($i = 0; isset ($config->category[$i]); $i++)
 //ini_set('max_execution_time', '3600');
 set_time_limit (0);
 
-
 rsscache_sql_open ();
  
 // config.xml from inside htdocs
@@ -116,7 +115,6 @@ $config = config_xml ();
 echo 'database: '.$rsscache_dbname.' ('.$rsscache_dbuser.')'."\n";
 
 test_main ();
-
 
 rsscache_sql_close ();
 
