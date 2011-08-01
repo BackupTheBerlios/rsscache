@@ -24,7 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //error_reporting(E_ALL | E_STRICT);
 require_once ('../htdocs/default.php');
 require_once ('../htdocs/config.php');
-require_once ('../htdocs/rsscache_proxy.php');
+require_once ('../htdocs/rsscache_misc.php');
 
 
 // main ()
@@ -36,9 +36,6 @@ $debug = 0;
 //ini_set('max_execution_time', '3600');
 set_time_limit (0);
 
-// set user agent for downloads
-ini_set('user_agent', random_user_agent ());
-$user_agent = random_user_agent ();
 
 // config.xml from inside htdocs
 $config = simplexml_load_file ('../htdocs/'.$rsscache_config_xml);

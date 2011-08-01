@@ -71,6 +71,13 @@ $rsscache_debug_sql = 0;
 
 //  $rsscache_default_category = 'baseqz';
 
+
+// set user agent for downloads
+require_once ('misc/misc.php');
+ini_set('rsscache_user_agent', random_user_agent ());
+$rsscache_user_agent = random_user_agent ();
+
+
 }
 
 

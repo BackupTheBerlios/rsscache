@@ -24,8 +24,8 @@ if (!defined ('MISC_WIKIPEDIA_PHP'))
 //phpinfo ();
 define ('MISC_WIKIPEDIA_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
-require_once ('misc/misc.php');
-require_once ('misc/embed.php');
+require_once ('misc.php');
+require_once ('embed.php');
 
 
 function

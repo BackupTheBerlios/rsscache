@@ -23,10 +23,110 @@ if (!defined ('RSSCACHE_MISC_PHP'))
 {
 define ('RSSCACHE_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
+require_once ('default.php');
+require_once ('config.php');
 require_once ('misc/misc.php');
 require_once ('misc/widget.php');
 require_once ('misc/wikipedia.php');
-require_once ('misc/rss.php');
+//require_once ('misc/rss.php');
+require_once ('misc/sql.php');
+require_once ('misc/youtube.php');
+require_once ('rsscache_sql.php');
+
+
+function
+rsscache_feed_get ($client = NULL, $opts, $url)
+{
+  global $rsscache_user_agent;
+  global $rsstool_path;
+  global $rsstool_opts;
+  $debug = 0;
+
+  $tmp = tempnam (sys_get_temp_dir (), 'rsscache_');
+
+  // DEBUG
+//  echo $tmp."\n";
+
+  if ($client)
+    $p = $client.' '.$opts.' "'.$url.'" > '.$tmp;
+  else  // default: download and parse feed with rsstool and write proprietary XML
+    $p = $rsstool_path.' '.$rsstool_opts.' -u "'.$rsscache_user_agent.';" '.$opts.' --xml "'.$url.'" -o '.$tmp;
+
+  // DEBUG
+  echo $p."\n";
+  echo misc_exec ($p, $debug);
+
+  $xml = simplexml_load_file ($tmp);
+
+  // DEBUG
+//  print_r ($xml);
+//  exit;
+   
+  unlink ($tmp);
+
+  return $xml;
+}
+
+
+function
+rsscache_download_thumbnails ($xml)
+{
+  global $wget_path;
+  global $wget_opts;
+  global $rsscache_domain;
+  global $debug;
+  
+  for ($i = 0; isset ($xml->item[$i]); $i++)
+    {
+      // DEBUG
+//  print_r ($xml->item[$i]);
+//  exit;
+      $s = NULL;
+      if (trim ($xml->item[$i]->media_image) != '')
+        $s = $xml->item[$i]->media_image;
+
+      if (strstr ($xml->item[$i]->url, '.youtube.')) // HACK: prefer smaller yt thumbnails
+        {
+          $a = youtube_get_thumbnail_urls ($xml->item[$i]->url);
+          $s = $a[0];
+        }
+
+      if ($s == NULL)
+        {
+//          unset ($xml->item[$i]); // drop this item
+          continue; // no thumbnail url
+        }
+
+      $result = 0;
+      $noclobber = 1;
+
+      $p = '../htdocs/thumbnails/rsscache/'.$xml->item[$i]->url_crc32.'.jpg';
+//      echo 'media image: '.$s.' ('.$p.')'."\n";
+      $result = misc_exec_wget ($s, $p, $noclobber, $wget_path, $wget_opts);
+//      $result = misc_download_noclobber ($s, $p);
+//      0 = ok, 1 = thumbnail did exist download skipped, -1 = error
+
+//      if ($rsscache_domain != 'debian2')
+        {
+          if ($result == 1)
+            {
+              $xml->item[$i]->url = ''; // drop this item
+
+              // copy thumbnails to a different directory
+//              $s = 'cp '.$p.' ../htdocs/thumbnails/rsscache_/';
+              // DEBUG
+//              echo $s."\n";
+//              echo misc_exec ($s, $debug);
+            }   
+//          if ($result == -1)
+//            $xml->item[$i]->url = ''; // drop this item
+        }
+    }
+
+//  $xml->item = misc_array_unique_merge ($xml->item);
+
+  return $xml;
+}
 
 
 function

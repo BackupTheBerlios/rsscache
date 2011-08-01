@@ -14,9 +14,16 @@ deny from all
 order allow,deny
 deny from all
 </files>
-<files admin.php>
+<files *default.*>
+order allow,deny
+deny from all
+</files>
+<files rsscache*.php>
 require valid-user
 </files>
+#<files admin.php>
+#require valid-user
+#</files>
 <ifmodule mod_rewrite.c>
 RewriteEngine on 
 RewriteRule ^sitemap\.xml$ /index.php?f=sitemap
@@ -39,4 +46,6 @@ SuPHP_ConfigPath /home/pwnoogle/public_html
 #php_flag session.use_only_cookies off
 AddType video/webm .webm
 AddType audio/webm .weba
-ErrorDocument 404 /
+ErrorDocument 404 /?f=error404
+ErrorDocument 304 /?f=error304
+ErrorDocument 300 /?f=error300
