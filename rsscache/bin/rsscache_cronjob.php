@@ -29,11 +29,13 @@ require_once ('../htdocs/rsscache_misc.php');
 
 
 function
-test_main ()
+test_main ($category_name = NULL)
 {
 $debug = 0;
 global $config;
 global $rsscache_sql_db;
+
+// TODO: single category using category_name
 
 // config.xml
 for ($i = 0; isset ($config->category[$i]); $i++)
@@ -42,6 +44,7 @@ for ($i = 0; isset ($config->category[$i]); $i++)
       {
         $feed = $config->category[$i]->feed[$j];
         $name = trim ($config->category[$i]->name);
+        $link = array ();
 
         // rsstool options
         $opts = '';
@@ -51,47 +54,37 @@ for ($i = 0; isset ($config->category[$i]); $i++)
         // old style config.xml: link[]
         for ($k = 0; isset ($feed->link[$k]); $k++)
           if (trim ($feed->link[$k]) != '')
-            {
-              $link = $feed->link[$k];
-
-              echo 'category: '.$name."\n";
-              echo 'url: '.$feed->link[$k]."\n";
-
-              // get feed
-              $xml = rsscache_feed_get ($feed->client, $opts, $link);
-              // download thumbnails
-              $xml = rsscache_download_thumbnails ($xml);
-              // xml to sql
-              $sql = rsstool_write_ansisql ($xml, $name, $config->category[$i]->table_suffix, $rsscache_sql_db->conn);
-              // insert
-              rsscache_sql_insert ($sql);
-            }
+            $link[] = $feed->link[$k];
 
         // TODO: use new style config.xml
         //   link_prefix, link_search[], link_suffix
         if (isset ($feed->link_prefix))
           for ($k = 0; isset ($feed->link_search[$k]); $k++)
             {
-              $link = '';
+              $p = '';
 //              if (isset ($feed->link_prefix))
-                $link .= $feed->link_prefix;
+                $p .= $feed->link_prefix;
 //              if (isset ($feed->link_search[$k]))
-                $link .= $feed->link_search[$k];
+                $p .= $feed->link_search[$k];
               if (isset ($feed->link_suffix))
-                $link .= $feed->link_suffix;
+                $p .= $feed->link_suffix;
+              $link[] = $p;
+            }
 
+        for ($k = 0; isset ($link[$k]); $k++)
+          {
               echo 'category: '.$name."\n";
-              echo 'url: '.$link."\n";
+              echo 'url: '.$link[$k]."\n";
 
               // get feed
-              $xml = rsscache_feed_get ($feed->client, $opts, $link);
+              $xml = rsscache_feed_get ($feed->client, $opts, $link[$k]);
               // download thumbnails
               $xml = rsscache_download_thumbnails ($xml);
               // xml to sql
               $sql = rsstool_write_ansisql ($xml, $name, $config->category[$i]->table_suffix, $rsscache_sql_db->conn);
               // insert
               rsscache_sql_insert ($sql);
-            }
+          }
       }
 
 }
