@@ -57,7 +57,7 @@ $tv2_item_ttl = 1000; // time to life of an item in the db (in days)
 $tv2_use_database = 1;
 $tv2_dbprefix = '';
 $tv2_dbhost = 'localhost';
-$tv2_dbname = 'pwnoogle_videos';
+$tv2_dbname = 'rsscache';
   $tv2_dbuser = 'root';
   $tv2_dbpass = 'nb';
 
@@ -69,7 +69,7 @@ $tv2_link = 'http://videos.pwnoogle.com/';
 $tv2_link_static = 'http://videos.pwnoogle.com/'; // static content
 $tv2_debug_sql = 0;
 
-  $tv2_default_category = 'baseqz';
+//  $tv2_default_category = 'baseqz';
 
 }
 

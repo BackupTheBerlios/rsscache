@@ -30,6 +30,92 @@ require_once ('misc/rss.php');
 
 
 function
+generate_rss2 ($title, $link, $desc, $item_title_array, $item_link_array, $item_desc_array,
+              $item_media_duration_array = NULL,
+              $item_author_array = NULL)
+{
+  $version = 2; // RSS2.0
+
+  $p = '';
+  $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+
+  if ($version == 1)
+    $p .= '<rdf:RDF xmlns="http://purl.org/rss/1.0/">'."\n";
+  else
+    $p .= '<rss version="2.0">'."\n";
+
+  $p .= '  <channel>'."\n"
+       .'    <title>'
+       .$title
+       .'</title>'."\n"
+       .'    <link>'
+       .$link
+       .'</link>'."\n"
+       .'    <description>'
+       .$desc
+       .'</description>'."\n"
+//     .'    <dc:date>%ld</dc:date>'
+;
+
+  if ($version == 1)
+    {
+      $p .= '<items>'."\n"
+           .'<rdf:Seq>'."\n";
+
+      for ($i = 0; isset ($item_link_array[$i]); $i++)
+        $p .= "\n".'        <rdf:li rdf:resource="'
+             .htmlspecialchars ($item_link_array[$i], ENT_QUOTES)
+             .'"/>';
+
+      $p .= '</rdf:Seq>'."\n"
+           .'</items>'."\n"
+           .'</channel>'."\n";
+    }
+
+  for ($i = 0; isset ($item_link_array[$i]); $i++)
+    {
+      if ($version == 1)
+        $p .= '<item rdf:about="'
+             .$item_link_array[$i]
+             .'">'."\n";
+      else
+        $p .= '    <item>'."\n";
+
+      $p .= '      <title>'
+           .htmlspecialchars ($item_title_array[$i], ENT_QUOTES)
+           .'</title>'."\n"
+           .'      <link>'
+           .htmlspecialchars ($item_link_array[$i], ENT_QUOTES)
+           .'</link>'."\n"
+           .'      <description>'
+           .htmlspecialchars ($item_desc_array[$i], ENT_QUOTES)
+           .'</description>'."\n"
+           .'      <pubDate>'
+           .strftime ("%Y%m%d %H:%M:%S", time ())
+//           .time ()
+           .'</pubDate>'."\n";
+
+      if ($item_media_duration_array)
+        if (isset ($item_media_duration_array[$i]))
+          $p .= '      <media:duration>'.$item_media_duration_array[$i].'</media:duration>'."\n";
+
+      if ($item_author_array)
+        if (isset ($item_author_array[$i]))
+          $p .= '      <author>'.$item_author_array[$i].'</author>'."\n";
+
+      $p .= '    </item>'."\n";
+    }
+
+  if ($version == 2)
+    $p .= '  </channel>'."\n";
+
+  $p .= '</rss>'."\n";
+
+  return $p;
+}
+
+
+function
 tv2_title ($d_array = NULL)
 {
   global $tv2_title;
@@ -221,24 +307,6 @@ tv2_stripdir ($url)
 
   return $v;
 }
-
-
-//function
-//tv2_f_index ()
-//{
-//  $c = tv2_get_request_value ('c');        
-//  $config = config_xml_by_category ($c);      
-//  return widget_embed ($config->index, WIDGET_EMBED_INDEX);
-//}
-
-
-//function
-//tv2_f_stripdir ()
-//{
-//  $c = tv2_get_request_value ('c');        
-//  $config = config_xml_by_category ($c);      
-//  return widget_embed ($config->index, WIDGET_EMBED_INDEX);
-//}
 
 
 function
@@ -513,7 +581,7 @@ tv2_stats_rss ()
 //  print_r ($rss_link_array);
 //  print_r ($rss_desc_array);
 
-  return generate_rss (tv2_title (),
+  return generate_rss2 (tv2_title (),
                        $tv2_link,
                        'Statistics',
                        $rss_title_array, $rss_link_array, $rss_desc_array);
@@ -556,7 +624,7 @@ tv2_rss ($d_array)
 //  print_r ($rss_link_array);
 //  print_r ($rss_desc_array);
 
-  return generate_rss (tv2_title (),
+  return generate_rss2 (tv2_title (),
                      $tv2_link,
                      '',
                      $rss_title_array, $rss_link_array, $rss_desc_array);
@@ -581,124 +649,6 @@ tv2_link_normalize ($link)
     return $link;
 
   return str_replace ($tv2_link, $tv2_link_static, $link); // has to be on static server then
-}
-
-
-function
-tv2_robots ()
-{
-  header ('Content-type: text/plain');
-  $p .= '';
-  $p .= 'Sitemap: http://'.$_SERVER['SERVER_NAME'].'/sitemap.xml'."\n"
-       .'User-agent: *'."\n"
-       .'Allow: /'."\n";
-
-  return $p;
-}
-
-
-function
-tv2_sitemap_video_func ($category_name, $d_array)
-{
-  global $tv2_link;
-  global $tv2_thumbnails_prefix;
-  $p = '';
-
-  for ($i = 0; isset ($d_array[$i]); $i++)
-    if ($category_name == $d_array[$i]['tv2_moved'])
-    {
-      $d = $d_array[$i];
-      $p .= '<video:video>'."\n";
-      $p .= ''
-           .'<video:thumbnail_loc>'
-           .htmlspecialchars (tv2_link_normalize ($tv2_link.'/thumbnails/'.$tv2_thumbnails_prefix.'tv2/'.$d['rsstool_url_crc32'].'.jpg'))
-           .'</video:thumbnail_loc>'."\n"
-           .'<video:title>'.htmlspecialchars ($d['rsstool_title']).'</video:title>'."\n"
-           .'<video:description>'.htmlspecialchars ($d['rsstool_desc']).'</video:description>'."\n"
-           .'<video:duration>'.$d['rsstool_media_duration'].'</video:duration>'."\n"
-;
-      $p .= '</video:video>'."\n";
-    }
-
-  return $p;
-}
-
-
-function
-tv2_sitemap ($d_array)
-{
-//    header ('Content-type: text/xml');
-  header ('Content-type: application/xml');
-//    header ('Content-type: text/xml-external-parsed-entity');
-//    header ('Content-type: application/xml-external-parsed-entity');
-//    header ('Content-type: application/xml-dtd');
-  $config_xml = config_xml ();
-
-//  echo '<pre>';
-//  print_r ($config_xml);
-
-  $p = '';
-  $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n"
-       .'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'
-       .' xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"'
-       .'>'."\n";
-
-  for ($i = 0; isset ($config_xml->category[$i]); $i++)
-    if (trim ($config_xml->category[$i]->name) != '')
-    $p .= '<url>'."\n"
-         .'  <loc>'.htmlspecialchars ('http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml->category[$i]->name).'</loc>'."\n"
-/*
-The formats are as follows. Exactly the components shown here must be present, with exactly this punctuation. Note that the "T" appears literally in the string, to indicate the beginning of the time element, as specified in ISO 8601.
-
-   Year:
-      YYYY (eg 1997)
-   Year and month:
-      YYYY-MM (eg 1997-07)
-   Complete date:
-      YYYY-MM-DD (eg 1997-07-16)
-   Complete date plus hours and minutes:
-      YYYY-MM-DDThh:mmTZD (eg 1997-07-16T19:20+01:00)
-   Complete date plus hours, minutes and seconds:
-      YYYY-MM-DDThh:mm:ssTZD (eg 1997-07-16T19:20:30+01:00)
-   Complete date plus hours, minutes, seconds and a decimal fraction of a second
-      YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
-*/
-         .'<lastmod>'.strftime ('%F' /* 'T%T%Z' */).'</lastmod>'."\n"
-         .'<changefreq>always</changefreq>'."\n"
-         .tv2_sitemap_video_func ($config_xml->category[$i]->name, $d_array)
-         .'</url>'."\n";
-  $p .= '</urlset>';
-
-  return $p;
-}
-
-
-function
-tv2_qrcode ($data, $size = 2, $level = 'L')
-{
-  global $tv2_cache_dir;
-  global $tv2_cache_web;
-
-  // error correction level
-  //   L - smallest
-  //   M
-  //   Q
-  //   H - best
-  if (!in_array ($level, array ('L', 'M', 'Q', 'H')))
-    $level = 'L';
-
-  // matrix point size
-  $size = min (max ((int) $size, 1), 10);
-
-  $data = trim ($data);
-
-  $f = 'qrcode_'.md5 ($data.'_'.$level.'_'.$size).'.png';
-
-  if (!file_exists ($tv2_cache_dir.'/'.$f))
-    QRcode::png ($data, $tv2_cache_dir.'/'.$f, $level, $size, 2);    
-
-  header ('Content-type: image/png');
-  echo file_get_contents ($tv2_cache_web.'/'.$f);
 }
 
 
