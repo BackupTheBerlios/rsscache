@@ -28,9 +28,13 @@ define ('TV2_PHP', 1);
 require_once ('default.php');
 require_once ('config.php');
 require_once ('misc/misc.php');
+require_once ('rsscache_lang.php');
 require_once ('rsscache_misc.php');
 require_once ('rsscache_sql.php');
 
+
+print_r ($tv2_translate);
+exit;
 
 // main ()
 
@@ -97,6 +101,8 @@ else
   {
     $p = tv2_rss ($d_array);
   }
+
+
 
 // the _only_ echo
 if ($use_gzip == 1)
