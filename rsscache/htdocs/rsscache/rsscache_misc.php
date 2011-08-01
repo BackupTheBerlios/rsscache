@@ -247,12 +247,12 @@ config_xml_normalize ($config)
         }
 
       for ($i = 0; isset ($config->category[$i]); $i++)
-        if ($config->category[$i]->query)
+//        if ($config->category[$i]->query)
           {
-            $a = array();
-            parse_str ($config->category[$i]->query, $a);
+//            $a = array();
+//            parse_str ($config->category[$i]->query, $a);
 
-            if (isset ($a['c']))
+//            if (isset ($a['c']))
               for ($j = 0; isset ($stats[$j]); $j++)
                 if ($stats[$j]['category'] == $config->category[$i]->name)
               {
@@ -269,17 +269,10 @@ config_xml_normalize ($config)
   for ($i = 0; isset ($config->category[$i]); $i++)
     {
       $category = $config->category[$i];
-      $category->tooltip = 
-                 ($category->tooltip ? $category->tooltip : $category->title)
+      $category->tooltip = ''
+                .($category->tooltip ? $category->tooltip : $category->title)
                 .($category->items ? ', '.$category->items.' <!-- lang:items -->' : '')
                 .($category->days ? ', '.$category->days.' <!-- lang:days -->' : '');
-//      if ($category->query)
-//        {
-//          $b = array ();
-//          parse_str ($category->query, $b);
-//          $n = array_merge ($a, $b);
-//          $category->query = htmlentities (http_build_query2 ($n, false));
-//        }
     }
   // DEBUG
 //echo '<pre><tt>';

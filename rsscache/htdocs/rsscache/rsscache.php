@@ -38,22 +38,18 @@ require_once ('rsscache_sql.php');
 
 $f = tv2_get_request_value ('f'); // function
 $q = tv2_get_request_value ('q'); // search query
-$v = tv2_get_request_value ('v'); // own video
-$captcha = tv2_get_request_value ('captcha'); // is request with captcha
+$v = tv2_get_request_value ('v'); // TODO: deprecate
 $start = tv2_get_request_value ('start'); // offset
 if (!($start))
   $start = 0;
 $num = tv2_get_request_value ('num'); // number of results
 if (!($num))
-  {
-    if ($f == 'cloud')
-      $num = ($tv2_cloud_results > 0) ? $tv2_cloud_results : 200;
-    else if ($f == 'wall')
-      $num = ($tv2_wall_results > 0) ? $tv2_wall_results : 200;
-    else
-      $num = $tv2_results;
-  }
+  $num = $tv2_results;
+if ($num > $tv2_max_results)
+  $num = $tv2_max_results;
+
 tv2_sql_open ();
+
 $config = config_xml ();
 $c = tv2_get_request_value ('c'); // category
 
@@ -93,8 +89,7 @@ if ($f == 'stats')
   {
     $p = tv2_stats_rss ();
   }
-// RSS only
-else
+else // RSS only
   {
     $p = tv2_rss ($d_array);
   }
@@ -104,8 +99,7 @@ else
 // the _only_ echo
 if ($use_gzip == 1)
   echo_gzip ($p);
-else
-echo $p;
+else echo $p;
 
 
 exit;

@@ -1,0 +1,42 @@
+<files *~>         
+Order allow,deny     
+Deny from all        
+</files>             
+<files *.sh>         
+Order allow,deny     
+Deny from all        
+</files>             
+<files *.dat>        
+order allow,deny     
+deny from all        
+</files> 
+<files *config.*>
+order allow,deny
+deny from all
+</files>
+<files admin.php>
+require valid-user
+</files>
+<ifmodule mod_rewrite.c>
+RewriteEngine on 
+RewriteRule ^sitemap\.xml$ /index.php?f=sitemap
+RewriteRule ^robots\.txt$ /index.php?f=robots
+#RewriteRule ^([^/]*)/index.php$ /index.php?template=$1 [L]
+#RewriteRule ^([^/]*)$ /index.php?c=$1 [L]
+#RewriteRule ^wiki/([^/]*)$ /index.php?q=$1 [L]
+RewriteRule ^([^/]*)/([^/]*)/([^/]*)/banner.jpg$ /plugins.php?game=$1&server=$2&type=$3 [L]
+</ifmodule>
+#<ifmodule mod_auth.c>
+#AuthName "Restricted Area" 
+#AuthType Basic 
+#AuthUserFile /home/pwnoogle/htdocs/pwnoogle/.htpasswd 
+#AuthGroupFile /dev/null 
+#</ifmodule>
+<ifmodule mod_suphp.c>
+SuPHP_ConfigPath /home/pwnoogle/public_html
+</ifmodule>
+#php_flag session.use_trans_sid on
+#php_flag session.use_only_cookies off
+AddType video/webm .webm
+AddType audio/webm .weba
+ErrorDocument 404 /
