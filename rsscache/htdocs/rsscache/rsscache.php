@@ -84,12 +84,15 @@ rsscache_sql_close ();
 //exit;
 
 
-// stats RSS
-if ($f == 'stats')
+if ($f == 'stats') // db statistics as feed
   {
     $p = rsscache_stats_rss ();
   }
-else // RSS only
+else if ($f == 'feed') // download or update feed
+  {
+// TODO:
+  }
+else // write feed
   {
     $p = rsscache_rss ($d_array);
   }

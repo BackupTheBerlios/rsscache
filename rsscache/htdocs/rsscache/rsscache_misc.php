@@ -32,6 +32,7 @@ require_once ('misc/wikipedia.php');
 require_once ('misc/sql.php');
 require_once ('misc/youtube.php');
 require_once ('rsscache_sql.php');
+require_once ('rsscache_lang.php');
 
 
 function

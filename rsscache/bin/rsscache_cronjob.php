@@ -25,26 +25,15 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 require_once ('../htdocs/default.php');
 require_once ('../htdocs/config.php');
 require_once ('../htdocs/rsscache_misc.php');
+require_once ('../htdocs/rsscache_sql.php');
 
 
-// main ()
-
+function
+test_main ()
+{
 $debug = 0;
-
-
-// unlimited execution time
-//ini_set('max_execution_time', '3600');
-set_time_limit (0);
-
-
-// config.xml from inside htdocs
-$config = simplexml_load_file ('../htdocs/'.$rsscache_config_xml);
-
-
-$db = new misc_sql;
-$db->sql_open ($rsscache_dbhost, $rsscache_dbuser, $rsscache_dbpass, $rsscache_dbname);
-// DEBUG
-echo 'database: '.$rsscache_dbname.' ('.$rsscache_dbuser.')'."\n";
+global $config;
+global $rsscache_sql_db;
 
 // config.xml
 for ($i = 0; isset ($config->category[$i]); $i++)
@@ -73,7 +62,7 @@ for ($i = 0; isset ($config->category[$i]); $i++)
               // download thumbnails
               $xml = rsscache_download_thumbnails ($xml);
               // xml to sql
-              $sql = rsstool_write_ansisql ($xml, $name, $config->category[$i]->table_suffix, $db->conn);
+              $sql = rsstool_write_ansisql ($xml, $name, $config->category[$i]->table_suffix, $rsscache_sql_db->conn);
               // insert
               rsscache_sql_insert ($sql);
             }
@@ -99,13 +88,37 @@ for ($i = 0; isset ($config->category[$i]); $i++)
               // download thumbnails
               $xml = rsscache_download_thumbnails ($xml);
               // xml to sql
-              $sql = rsstool_write_ansisql ($xml, $name, $config->category[$i]->table_suffix, $db->conn);
+              $sql = rsstool_write_ansisql ($xml, $name, $config->category[$i]->table_suffix, $rsscache_sql_db->conn);
               // insert
               rsscache_sql_insert ($sql);
             }
       }
 
-$db->sql_close ();
+}
+
+
+// main ()
+
+
+
+// unlimited execution time
+//ini_set('max_execution_time', '3600');
+set_time_limit (0);
+
+
+rsscache_sql_open ();
+ 
+// config.xml from inside htdocs
+$rsscache_config_xml = '../htdocs/'.$rsscache_config_xml;
+$config = config_xml ();
+
+// DEBUG
+echo 'database: '.$rsscache_dbname.' ('.$rsscache_dbuser.')'."\n";
+
+test_main ();
+
+
+rsscache_sql_close ();
 
 exit;
 
