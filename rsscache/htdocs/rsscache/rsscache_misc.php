@@ -131,80 +131,35 @@ rsscache_download_thumbnails ($xml)
 
 
 function
-rsscache_parse_feed_links ($category_name)
-{
-  global $config;
-
-  $category_name = trim ($category_name);
-  $category = config_xml_by_category ($category_name);
-
-  if ($category == NULL)
-    return NULL;
-
-  $link = array ();
-  for ($j = 0; isset ($category->feed[$j]); $j++)
-    {
-      $feed = $category->feed[$j];
-
-      // old style config.xml: link[]
-      for ($k = 0; isset ($feed->link[$k]); $k++)
-        if (trim ($feed->link[$k]) != '')
-          $link[] = $feed->link[$k];
-
-      // TODO: use new style config.xml
-      //   link_prefix, link_search[], link_suffix
-      if (isset ($feed->link_prefix))
-        for ($k = 0; isset ($feed->link_search[$k]); $k++)
-          {
-            $p = '';
-//            if (isset ($feed->link_prefix))
-              $p .= $feed->link_prefix;
-//            if (isset ($feed->link_search[$k]))
-              $p .= $feed->link_search[$k];
-            if (isset ($feed->link_suffix))
-              $p .= $feed->link_suffix;
-            $link[] = $p;
-          }
-    }
-
-  return $link;
-}
-
-
-function
 rsscache_download_feeds_by_category ($category_name)
 {
   global $rsscache_sql_db;
 
   $category_name = trim ($category_name);
   $category = config_xml_by_category ($category_name);
-  $link = rsscache_parse_feed_links ($category_name);
 
-  // TODO: single category using category_name
-  if ($category && $link)
-    for ($j = 0; isset ($category->feed[$j]); $j++)
+  // TODO: single category using category_name   
+  if ($category)
+    for ($j = 0; isset ($category->link[$j]); $j++)
       {
-        $feed = $category->feed[$j];
-
         // rsstool options
         $opts = '';
-        if (isset ($feed->opts))
-          $opts = $feed->opts;
+        if (isset ($category->opts[$j]))
+          $opts = $category->opts[$j];
 
-        for ($k = 0; isset ($link[$k]); $k++)
-          {
               echo 'category: '.$category_name."\n";
-              echo 'url: '.$link[$k]."\n";
+              echo 'client: '.$category->client[$j]."\n";
+              echo 'opts: '.$opts."\n"; 
+              echo 'url: '.$category->link[$j]."\n"; 
 
               // get feed
-              $xml = rsscache_feed_get ($feed->client, $opts, $link[$k]);
+              $xml = rsscache_feed_get ($category->client[$j], $opts, $category->link[$j]);
               // download thumbnails
               $xml = rsscache_download_thumbnails ($xml);
               // xml to sql
               $sql = rsstool_write_ansisql ($xml, $category_name, $category->table_suffix, $rsscache_sql_db->conn);
               // insert
               rsscache_sql_insert ($sql);
-          }
       }
 }
 
@@ -459,6 +414,42 @@ config_xml_normalize ($config)
                 .($category->items ? ', '.$category->items.' <!-- lang:items -->' : '')
                 .($category->days ? ', '.$category->days.' <!-- lang:days -->' : '');
     }
+
+  
+  for ($i = 0; isset ($config->category[$i]); $i++)
+    for ($j = 0; isset ($config->category[$i]->feed[$j]); $j++)
+      {
+        $feed = $config->category[$i]->feed[$j];
+
+//        $config->category[$i]->link = array ();
+//        $config->category[$i]->opts = array ();
+        // old style config.xml: link[]
+        for ($k = 0; isset ($feed->link[$k]); $k++)
+          if (trim ($feed->link[$k]) != '')
+            {
+              $config->category[$i]->link[] = $feed->link[$k];
+              $config->category[$i]->opts[] = $feed->opts;
+              $config->category[$i]->client[] = $feed->client;
+            }
+
+        // TODO: use new style config.xml
+        //   link_prefix, link_search[], link_suffix
+        if (isset ($feed->link_prefix))
+          for ($k = 0; isset ($feed->link_search[$k]); $k++)
+            {
+              $p = '';
+//              if (isset ($feed->link_prefix))
+                $p .= $feed->link_prefix;
+//              if (isset ($feed->link_search[$k]))
+                $p .= $feed->link_search[$k];
+              if (isset ($feed->link_suffix))
+                $p .= $feed->link_suffix;
+              $config->category[$i]->link[] = $p;
+              $config->category[$i]->opts[] = $feed->opts;
+              $config->category[$i]->client[] = $feed->client;
+            }
+      }
+
   // DEBUG
 //echo '<pre><tt>';
 //print_r ($config);

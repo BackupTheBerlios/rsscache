@@ -29,15 +29,6 @@ require_once ('../htdocs/rsscache_sql.php');
 require_once ('../htdocs/rsscache_misc.php');
 
 
-function
-log_write ($p)
-{
-  $date = time ();
-//  echo '-------------------------------------------------------------------------------';
-  echo $date.': '.$p; 
-}
-
-
 // main ()
 
 
@@ -52,9 +43,7 @@ rsscache_sql_open ();
 $rsscache_config_xml = '../htdocs/'.$rsscache_config_xml;
 $config = config_xml ();
 
-log_write ('start: rsscache_cronjob.php');
-
-misc_exec ('/etc/init.d/tor restart');
+echo misc_exec ('/etc/init.d/tor restart');
 
 // DEBUG
 echo 'database: '.$rsscache_dbname.' ('.$rsscache_dbuser.')'."\n";
@@ -64,17 +53,6 @@ for ($i = 0; isset ($config->category[$i]); $i++)
     rsscache_download_feeds_by_category ($config->category[$i]->name);
 
 rsscache_sql_close ();
-
-if ($tv2_upload)
-  {
-    log_write ('start: rsscache_upload.sh');
-
-//    misc_exec ('./rsscache_upload.sh');
-
-    log_write ('stop: rsscache_upload.sh');  
-  }
-
-log_write ('stop: rsscache_cronjob.php');
 
 
 exit;
