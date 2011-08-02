@@ -285,7 +285,11 @@ rsscache_thumbnail ($d, $width = 120)
     {
 //widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
       $t = rsscache_duration ($d);
-      $p .= widget_button (rsscache_link_normalize ($rsscache_link.'/thumbnails/'.$rsscache_thumbnails_prefix.'rsscache/'.$d['rsstool_url_crc32'].'.jpg'),
+//      $p .= widget_button (rsscache_link_normalize ($rsscache_link.'/thumbnails/'.$rsscache_thumbnails_prefix.'rsscache/'.$d['rsstool_url_crc32'].'.jpg'),
+//                           $link,
+//                           NULL,
+//                           $d['rsstool_title'].($t != '' ? ' ('.$t.')' : ''));
+      $p .= widget_button ('/thumbnails/'.$rsscache_thumbnails_prefix.'rsscache/'.$d['rsstool_url_crc32'].'.jpg',
                            $link,
                            NULL,
                            $d['rsstool_title'].($t != '' ? ' ('.$t.')' : ''));
