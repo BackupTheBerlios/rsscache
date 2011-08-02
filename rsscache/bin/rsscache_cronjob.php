@@ -22,10 +22,20 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 //phpinfo ();
 //error_reporting(E_ALL | E_STRICT);
+chdir (dirname ($argv[0]));
 require_once ('../htdocs/default.php');
 require_once ('../htdocs/config.php');
 require_once ('../htdocs/rsscache_sql.php');
 require_once ('../htdocs/rsscache_misc.php');
+
+
+function
+log_write ($p)
+{
+  $date = time ();
+//  echo '-------------------------------------------------------------------------------';
+  echo $date.': '.$p; 
+}
 
 
 // main ()
@@ -35,11 +45,16 @@ require_once ('../htdocs/rsscache_misc.php');
 //ini_set('max_execution_time', '3600');
 set_time_limit (0);
 
+
 rsscache_sql_open ();
  
 // config.xml from inside htdocs
 $rsscache_config_xml = '../htdocs/'.$rsscache_config_xml;
 $config = config_xml ();
+
+log_write ('start: rsscache_cronjob.php');
+
+misc_exec ('/etc/init.d/tor restart');
 
 // DEBUG
 echo 'database: '.$rsscache_dbname.' ('.$rsscache_dbuser.')'."\n";
@@ -49,6 +64,18 @@ for ($i = 0; isset ($config->category[$i]); $i++)
     rsscache_download_feeds_by_category ($config->category[$i]->name);
 
 rsscache_sql_close ();
+
+if ($tv2_upload)
+  {
+    log_write ('start: rsscache_upload.sh');
+
+//    misc_exec ('./rsscache_upload.sh');
+
+    log_write ('stop: rsscache_upload.sh');  
+  }
+
+log_write ('stop: rsscache_cronjob.php');
+
 
 exit;
 
