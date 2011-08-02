@@ -54,7 +54,6 @@ $rsscache_item_ttl = 1000; // time to life of an item in the db (in days)
 //$rsscache_banner = 1;
 
 // database settings
-$rsscache_use_database = 1;
 $rsscache_dbprefix = '';
 $rsscache_dbhost = 'localhost';
 $rsscache_dbname = 'rsscache';

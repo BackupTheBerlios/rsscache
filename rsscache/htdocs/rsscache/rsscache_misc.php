@@ -23,50 +23,14 @@ if (!defined ('RSSCACHE_MISC_PHP'))
 {
 define ('RSSCACHE_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
-//require_once ('default.php');
-//require_once ('config.php');
 require_once ('misc/misc.php');
 require_once ('misc/widget.php');
 require_once ('misc/wikipedia.php');
 //require_once ('misc/rss.php');
 require_once ('misc/sql.php');
 require_once ('misc/youtube.php');
-require_once ('rsscache_sql.php');
 require_once ('rsscache_lang.php');
-
-
-function
-rsscache_feed_get ($client = NULL, $opts, $url)
-{
-  global $rsscache_user_agent;
-  global $rsstool_path;
-  global $rsstool_opts;
-  $debug = 0;
-
-  $tmp = tempnam (sys_get_temp_dir (), 'rsscache_');
-
-  // DEBUG
-//  echo $tmp."\n";
-
-  if ($client)
-    $p = $client.' '.$opts.' "'.$url.'" > '.$tmp;
-  else  // default: download and parse feed with rsstool and write proprietary XML
-    $p = $rsstool_path.' '.$rsstool_opts.' -u "'.$rsscache_user_agent.'" '.$opts.' --xml "'.$url.'" -o '.$tmp;
-
-  // DEBUG
-  echo $p."\n";
-  echo misc_exec ($p, $debug);
-
-  $xml = simplexml_load_file ($tmp);
-
-  // DEBUG
-//  print_r ($xml);
-//  exit;
-   
-  unlink ($tmp);
-
-  return $xml;
-}
+require_once ('rsscache_sql.php');
 
 
 function
@@ -131,36 +95,75 @@ rsscache_download_thumbnails ($xml)
 
 
 function
+rsscache_feed_get ($client = NULL, $opts, $url)
+{
+  global $rsscache_user_agent;
+  global $rsstool_path;
+  global $rsstool_opts;
+  $debug = 0;
+
+  $tmp = tempnam (sys_get_temp_dir (), 'rsscache_');
+
+  // DEBUG
+//  echo $tmp."\n";
+
+  if ($client)
+    $p = $client.' '.$opts.' "'.$url.'" > '.$tmp;
+  else  // default: download and parse feed with rsstool and write proprietary XML
+    $p = $rsstool_path.' '.$rsstool_opts.' -u "'.$rsscache_user_agent.'" '.$opts.' --xml "'.$url.'" -o '.$tmp;
+
+  // DEBUG
+  echo $p."\n";
+  echo misc_exec ($p, $debug);
+
+  $xml = simplexml_load_file ($tmp);
+
+  // DEBUG
+//  print_r ($xml);
+//  exit;
+   
+  unlink ($tmp);
+
+  return $xml;
+}
+
+
+function
 rsscache_download_feeds_by_category ($category_name)
 {
   global $rsscache_sql_db;
+  global $rsscache_user_agent;
 
   $category_name = trim ($category_name);
   $category = config_xml_by_category ($category_name);
 
   // TODO: single category using category_name   
-  if ($category)
-    for ($j = 0; isset ($category->link[$j]); $j++)
-      {
-        // rsstool options
-        $opts = '';
-        if (isset ($category->opts[$j]))
-          $opts = $category->opts[$j];
+  if ($category == NULL)
+    return;
 
-              echo 'category: '.$category_name."\n";
-              echo 'client: '.$category->client[$j]."\n";
-              echo 'opts: '.$opts."\n"; 
-              echo 'url: '.$category->link[$j]."\n"; 
+  for ($j = 0; isset ($category->link[$j]); $j++)
+    {
+      // rsstool options
+      $opts = '';
+      if (isset ($category->opts[$j]))
+        $opts = $category->opts[$j];
 
-              // get feed
-              $xml = rsscache_feed_get ($category->client[$j], $opts, $category->link[$j]);
-              // download thumbnails
-              $xml = rsscache_download_thumbnails ($xml);
-              // xml to sql
-              $sql = rsstool_write_ansisql ($xml, $category_name, $category->table_suffix, $rsscache_sql_db->conn);
-              // insert
-              rsscache_sql_insert ($sql);
-      }
+//      $p = '';
+//      $p .= 'category: '.$category_name."\n"
+//           .'client: '.$category->client[$j]."\n"
+//           .'opts: '.$opts."\n"
+//           .'url: '.$category->link[$j]."\n"; 
+//      echo $p;
+
+      // get feed
+      $xml = rsscache_feed_get ($category->client[$j], $opts, $category->link[$j]);
+      // download thumbnails
+      $xml = rsscache_download_thumbnails ($xml);
+      // xml to sql
+      $sql_queries_s = rsstool_write_ansisql ($xml, $category_name, $category->table_suffix, $rsscache_sql_db->conn);
+
+      rsscache_sql_queries ($sql_queries_s);
+    }
 }
 
 
@@ -366,10 +369,9 @@ rsscache_stripdir ($url)
 function
 config_xml_normalize ($config)
 {
-  global $rsscache_use_database;
+  global $rsstool_path;
+  global $rsstool_opts;
 
-  if ($rsscache_use_database == 1)
-    {
 //rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
       $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($config->category));
       // DEBUG
@@ -404,7 +406,6 @@ config_xml_normalize ($config)
                 break;
               }
           }
-    }
 
   for ($i = 0; isset ($config->category[$i]); $i++)
     {
@@ -414,7 +415,6 @@ config_xml_normalize ($config)
                 .($category->items ? ', '.$category->items.' <!-- lang:items -->' : '')
                 .($category->days ? ', '.$category->days.' <!-- lang:days -->' : '');
     }
-
   
   for ($i = 0; isset ($config->category[$i]); $i++)
     for ($j = 0; isset ($config->category[$i]->feed[$j]); $j++)
@@ -428,8 +428,8 @@ config_xml_normalize ($config)
           if (trim ($feed->link[$k]) != '')
             {
               $config->category[$i]->link[] = $feed->link[$k];
-              $config->category[$i]->opts[] = $feed->opts;
-              $config->category[$i]->client[] = $feed->client;
+              $config->category[$i]->opts[] = $rsstool_opts.' '.$feed->opts;
+              $config->category[$i]->client[] = $feed->client; // ? $feed->client : $rsstool_path; 
             }
 
         // TODO: use new style config.xml
@@ -445,8 +445,8 @@ config_xml_normalize ($config)
               if (isset ($feed->link_suffix))
                 $p .= $feed->link_suffix;
               $config->category[$i]->link[] = $p;
-              $config->category[$i]->opts[] = $feed->opts;
-              $config->category[$i]->client[] = $feed->client;
+              $config->category[$i]->opts[] = $rsstool_opts.' '.$feed->opts;
+              $config->category[$i]->client[] = $feed->client; //  ? $feed->client : $rsstool_path;
             }
       }
 
@@ -461,7 +461,6 @@ config_xml_normalize ($config)
 function
 config_xml ($memcache_expire = 0)
 {
-  global $rsscache_use_database;
   global $rsscache_config_xml;
   static $config = NULL;
 
@@ -485,8 +484,7 @@ if ($memcache_expire > 0)
 
             echo $p;
 
-            if ($rsscache_use_database)
-              rsscache_sql_close ();
+            rsscache_sql_close ();
 
             exit;
           }
@@ -495,8 +493,7 @@ if ($memcache_expire > 0)
       {
         echo 'ERROR: could not connect to memcached';
 
-        if ($rsscache_use_database)
-          rsscache_sql_close ();
+        rsscache_sql_close ();
 
         exit;
       }

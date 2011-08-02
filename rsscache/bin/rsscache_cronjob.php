@@ -50,7 +50,19 @@ echo 'database: '.$rsscache_dbname.' ('.$rsscache_dbuser.')'."\n";
 
 for ($i = 0; isset ($config->category[$i]); $i++)
   if (isset ($config->category[$i]->name))
-    rsscache_download_feeds_by_category ($config->category[$i]->name);
+    {
+      $p = '';
+      $p .= 'category: '.$config->category[$i]->name."\n";
+  for ($j = 0; isset ($config->category[$i]->link[$j]); $j++)
+    {
+         $p .= 'client: '.$config->category[$i]->client[$j]."\n"
+           .'opts: '.$config->category[$i]->opts[$j]."\n"
+           .'url: '.$config->category[$i]->link[$j]."\n";
+    }
+      echo $p;
+
+      rsscache_download_feeds_by_category ($config->category[$i]->name);
+    }
 
 rsscache_sql_close ();
 

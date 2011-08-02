@@ -199,33 +199,6 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
 
 
 function
-rsscache_sql_insert ($sql)
-{
-  global $rsscache_debug_sql;
-  global $rsscache_sql_db;
-  global $debug;
-//  $debug = 1;
-
-  $sql_array = explode ("\n", $sql);
-  for ($i = 0; isset ($sql_array[$i]); $i++)
-    {
-      $sql_query_s = $sql_array[$i];
-
-      if (substr (trim ($sql_query_s), 0, 2) == '--')
-        continue;
-
-      // DEBUG 
-      if ($debug == 1)
-        echo $sql_query_s."\n";
-      $rsscache_sql_db->sql_write ($sql_query_s, 0, $debug);
-      // grace time for the db
-//      sleep (1);
-//      usleep (500000); // microseconds
-    }
-}
-
-
-function
 rsscache_sql_open ()
 {
   // move item to different category
@@ -234,10 +207,6 @@ rsscache_sql_open ()
          $rsscache_dbuser,
          $rsscache_dbpass,
          $rsscache_dbname;
-  global $rsscache_use_database;
-
-  if ($rsscache_use_database == 0)
-    return;
 
   $rsscache_sql_db = new misc_sql;
   $rsscache_sql_db->sql_open ($rsscache_dbhost,
@@ -251,10 +220,6 @@ function
 rsscache_sql_close ()
 {
   global $rsscache_sql_db;
-  global $rsscache_use_database;
-
-  if ($rsscache_use_database == 0)
-    return;
 
   $rsscache_sql_db->sql_close ();
 }
@@ -283,59 +248,19 @@ rsscache_sql_query ($sql_query_s)
 
 
 function
-rsscache_sql_move ($rsstool_url_crc32, $new_category)
+rsscache_sql_queries ($sql_queries_s)
 {
-/*
-  // move item to different category
-  global $rsscache_sql_db;
-  $debug = 0;
+  $sql_array = explode ("\n", $sql_queries_s);
 
-  $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = \''.$rsscache_sql_db->sql_stresc ($new_category).'\''
-                .' WHERE rsstool_url_crc32 = '.$rsscache_sql_db->sql_stresc ($rsstool_url_crc32);
+  for ($i = 0; isset ($sql_array[$i]); $i++)
+    {
+      $sql_query_s = $sql_array[$i];
 
-  $rsscache_sql_db->sql_write ($sql_query_s, 0, $debug);
-*/
-}
+      if (substr (trim ($sql_query_s), 0, 2) == '--')
+        continue;
 
-
-function
-rsscache_sql_vote ($rsstool_url_crc32, $new_score)
-{
-/*
-  global $rsscache_sql_db;
-  $debug = 0;
-
-  $sql_query_s = 'SELECT tv2_votes,tv2_score FROM rsstool_table'
-                .' WHERE rsstool_url_crc32 = '.$rsscache_sql_db->sql_stresc ($rsstool_url_crc32);
-  $rsscache_sql_db->sql_write ($p, 0, $debug);
-  $r = $rsscache_sql_db->sql_read (1, $debug);
-
-  if ($new_score > 0)
-    $new_score = ($r[0]['tv2_votes'] * $r[0]['tv2_score'] + $new_score) / ($r[0]['tv2_votes'] + 1);
-  else
-    $new_score = $r[0]['tv2_score'];
-
-  $sql_query_s = 'UPDATE rsstool_table SET tv2_votes = '.($r[0]['tv2_votes'] + 1).',tv2_score = '.$new_score
-                .' WHERE rsstool_url_crc32 = '.$rsscache_sql_db->sql_stresc ($rsstool_url_crc32);
-
-  $rsscache_sql_db->sql_write ($p, 1, $debug);
-*/
-}
-
-
-function
-rsscache_sql_restore ($rsstool_url_crc32)
-{
-/*
-  // restore original category
-  global $rsscache_sql_db;
-  $debug = 0;
-
-  $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = tv2_category'
-                .' WHERE rsstool_url_crc32 = '.$rsscache_sql_db->sql_stresc ($rsstool_url_crc32);
-
-  $rsscache_sql_db->sql_write ($sql_query_s, 0, $debug);
-*/
+      rsscache_sql_query ($sql_query_s);
+    }
 }
 
 
@@ -586,7 +511,6 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
          $rsscache_wall_results,
          $rsscache_cloud_results;
   global $rsscache_debug_sql;
-  global $rsscache_use_database;
 
   $debug = $rsscache_debug_sql;
 //  $debug = 1;
@@ -597,12 +521,6 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 //  $v = $rsscache_sql_db->sql_stresc ($v);
 //  $start = $rsscache_sql_db->sql_stresc ($start);
 //  $num = $rsscache_sql_db->sql_stresc ($num);
-
-  if ($f == 'extern')
-    return rsscache_sql_extern ($c, $q, $v, $start, $num);
-
-  if ($rsscache_use_database == 0)
-    return NULL;
 
   $rsstool_table = 'rsstool_table';
   $keyword_table = 'keyword_table';
@@ -738,137 +656,59 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 
 
 function
-rsscache_sql_extern ($c, $q, $v, $start, $num)
+rsscache_sql_move ($rsstool_url_crc32, $new_category)
 {
-  // wrapper for searching other websites
-  //   interchangeable with rsscache_sql()
-  global $rsscache_feature;
-  global $rsscache_tor_enabled;
+/*
+  // move item to different category
+  global $rsscache_sql_db;
+  $debug = 0;
 
-  /*
-    $orderby
-      'relevance'  entries are ordered by their relevance to a search query (default)
-      'published'  entries are returned in reverse chronological order
-      'viewCount'  entries are ordered from most views to least views
-      'rating'     entries are ordered from highest rating to lowest rating
-  */
-//  $orderby = 'published';
-  $orderby = 'relevance';
+  $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = \''.$rsscache_sql_db->sql_stresc ($new_category).'\''
+                .' WHERE rsstool_url_crc32 = '.$rsscache_sql_db->sql_stresc ($rsstool_url_crc32);
 
-  $v_segments = rsscache_get_request_value ('v_segments');
-  $v_textarea = rsscache_get_request_value ('v_textarea');
-  $v_user = rsscache_get_request_value ('v_user');
-  $v_playlist_id = rsscache_get_request_value ('v_playlist_id');
-  $v_stripdir = rsscache_get_request_value ('v_stripdir');
+  $rsscache_sql_db->sql_write ($sql_query_s, 0, $debug);
+*/
+}
 
-  $links = '';
 
-  // links or playlist file contents
-  if ($v_textarea)
-    {
-      $playlist = misc_playlist_load_string ($v_textarea);
-      if ($playlist == NULL)
-        $links .= ' '.$v_textarea;
-      else
-        {
-          // HACK
-          $q = $playlist[0]['title'];
-        }
-    }
+function
+rsscache_sql_vote ($rsstool_url_crc32, $new_score)
+{
+/*
+  global $rsscache_sql_db;
+  $debug = 0;
 
-  // search
-  if ($q)
-    {
-      $s = $q;
-      if ($v_segments)
-        if ($v_segments != '')
-          {
-            $orderby = 'relevance';
-            $s .= ' +part';
-          }
-      $rss = youtube_get_rss ($s, NULL, NULL, $orderby, $rsscache_tor_enabled);
+  $sql_query_s = 'SELECT tv2_votes,tv2_score FROM rsstool_table'
+                .' WHERE rsstool_url_crc32 = '.$rsscache_sql_db->sql_stresc ($rsstool_url_crc32);
+  $rsscache_sql_db->sql_write ($p, 0, $debug);
+  $r = $rsscache_sql_db->sql_read (1, $debug);
 
-      for ($i = 0; isset ($rss->channel->item[$start + $i]) && $i < $num; $i++)
-        if (isset ($rss->channel->item[$start + $i]->link))
-          $links .= ' '.$rss->channel->item[$start + $i]->link;
-    }
+  if ($new_score > 0)
+    $new_score = ($r[0]['tv2_votes'] * $r[0]['tv2_score'] + $new_score) / ($r[0]['tv2_votes'] + 1);
+  else
+    $new_score = $r[0]['tv2_score'];
 
-  if ($v_user)
-      {
-        $rss = youtube_get_rss (NULL, trim ($v_user), NULL, $orderby, $rsscache_tor_enabled);
-  // DEBUG
-//  echo '<pre><tt>';
-//print_r ($rss);
-        for ($i = 0; isset ($rss->channel->item[$start + $i]) && $i < $num; $i++)
-          if (isset ($rss->channel->item[$start + $i]->link))
-            $links .= ' '.$rss->channel->item[$start + $i]->link;
-//echo $start;
-      }
+  $sql_query_s = 'UPDATE rsstool_table SET tv2_votes = '.($r[0]['tv2_votes'] + 1).',tv2_score = '.$new_score
+                .' WHERE rsstool_url_crc32 = '.$rsscache_sql_db->sql_stresc ($rsstool_url_crc32);
 
-  if ($v_playlist_id)
-      {
-        $rss = youtube_get_rss ('', NULL, trim ($v_playlist_id), $orderby, $rsscache_tor_enabled);
+  $rsscache_sql_db->sql_write ($p, 1, $debug);
+*/
+}
 
-        for ($i = 0; isset ($rss->channel->item[$start + $i]) && $i < $num; $i++)
-          if (isset ($rss->channel->item[$start + $i]->link))
-            $links .= ' '.$rss->channel->item[$start + $i]->link;
-      }
 
-  if ($v_stripdir)
-      {
-        $a = rsscache_stripdir ($v_stripdir, $start, $num);
-        $links .= implode ($a, ' ');
-      }
+function
+rsscache_sql_restore ($rsstool_url_crc32)
+{
+/*
+  // restore original category
+  global $rsscache_sql_db;
+  $debug = 0;
 
-  // normalize youtube links
-  $links = trim (strip_tags (urldecode ($links)));
-  if ($links == '')
-    $links = $rsscache_feature;
-  $links = str_replace ("\n", ' ', $links);
-  $a = explode (' ', $links);
-  $d = array ();
-  for ($i = 0; isset ($a[$i]); $i++)
-    {
-      $p = trim ($a[$i]);
-      if ($p == '')
-        continue;
+  $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = tv2_category'
+                .' WHERE rsstool_url_crc32 = '.$rsscache_sql_db->sql_stresc ($rsstool_url_crc32);
 
-          $p = youtube_get_videoid ($p);
-            $d[] = array ('rsstool_url' => 'http://www.youtube.com/watch?v='.$p,
-                          'rsstool_url_crc32' => sprintf ("%u", crc32 ('http://www.youtube.com/watch?v='.$p)),
-                          'rsstool_title' => 'title',
-                          'rsstool_desc' => 'desc',
-                          'rsstool_dl_date' => $rsscache_time,
-                          'rsstool_date' => $rsscache_time,
-                          'tv2_moved' => '',
-                          'rsstool_media_duration' => 0,
-                          'rsstool_keywords' => '',
-);
-    }
-
-  if ($v_stripdir)
-    {
-      $a = rsscache_stripdir ($v_stripdir, $start, $num);
-      for ($i = 0; isset ($a[$start + $i]) && $i < $num; $i++)
-        $d[] = array ('rsstool_url' => $a[$start + $i],
-                      'rsstool_url_crc32' => sprintf ("%u", crc32 ($a[$start + $i])),
-                      'rsstool_title' => 'title',
-                      'rsstool_desc' => 'desc',
-                      'rsstool_dl_date' => $rsscache_time,
-                      'rsstool_date' => $rsscache_time,
-                      'tv2_moved' => '',
-                      'rsstool_media_duration' => 0,
-                      'rsstool_keywords' => '',
-);
-    }
-
-  $d = rsscache_sql_normalize ($d);
-
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($d);
-
-  return $d;
+  $rsscache_sql_db->sql_write ($sql_query_s, 0, $debug);
+*/
 }
 
 
