@@ -108,7 +108,7 @@ if ($f == 'html')
 
     if ($rsscache_xsl_trans == 0) // transform on server
       {
-        $xsl = file_get_contents ('rsscache.xsl');
+        $xsl = file_get_contents ($rsscache_xsl_stylesheet);
         $xslt = new XSLTProcessor (); 
         $xslt->importStylesheet (new  SimpleXMLElement ($xsl));
         $p = $xslt->transformToXml (new SimpleXMLElement ($p));
