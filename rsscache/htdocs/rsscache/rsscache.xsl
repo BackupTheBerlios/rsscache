@@ -9,12 +9,16 @@
 </style>
 </head>
 <body>
-<h1><xsl:value-of select="rss/channel/title"/></h1>
-<xsl:value-of disable-output-escaping="yes" select="rss/channel/description"/>
+
+<xsl:value-of select="rss/channel/title"/><br/><br/>
+<xsl:value-of disable-output-escaping="yes" select="rss/channel/description"/><br/><br/>
+
 <xsl:for-each select="rss/channel/item">
-<h2><a href="{link}" rel="bookmark"><xsl:value-of select="title"/></a></h2>
-<xsl:value-of disable-output-escaping="yes" select="description"/>
+<a href="{link}" rel="bookmark"><xsl:value-of select="title"/></a><br/>
+<xsl:value-of disable-output-escaping="yes" select="pubDate"/><br/>
+<xsl:value-of disable-output-escaping="yes" select="description"/><br/><br/>
 </xsl:for-each>
+
 </body>
 </html>
 </xsl:template>

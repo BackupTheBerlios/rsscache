@@ -34,21 +34,28 @@ require_once ('rsscache_sql.php');
 
 
 function
+rsscache_write_rss_escape ($s)
+{
+//  return htmlspecialchars ($s, ENT_QUOTES);
+  return '<![CDATA['.$s.']]>';
+}
+
+
+function
 rsscache_write_rss ($channel_title,
                     $channel_link,
                     $channel_desc,
                     $item_title_array,
                     $item_link_array,
                     $item_desc_array,
-                    $item_date_array = NULL,
+                    $item_date_array,
                     $item_media_duration_array = NULL,
-                    $item_author_array = NULL)
+                    $item_author_array = NULL,
+                    $item_category_array = NULL)
 {
   global $rsscache_xsl_trans;
   global $rsscache_xsl_stylesheet;
-
-//  $d = strftime ("%Y%m%d %H:%M:%S", time ());
-  $d = time ();
+  global $rsscache_time;
 
   // DEBUG
 //  print_r ($rss_title_array);
@@ -58,25 +65,25 @@ rsscache_write_rss ($channel_title,
 //  print_r ($rss_media_duration_array);
 //  print_r ($rss_author_array);
 
-$channel_desc = 'rsscache urls have a similar syntax like google urls<br>'
-               .'<tt><pre>q=SEARCH    SEARCH query<br>'
-               .'start=N     start from result N<br>'
-               .'num=N       show N results<br>'
-               .'c=NAME      category (leave empty for all categories)<br>'
-               .'item=CRC32  show single item<br>'
-               .'f=FUNC      execute FUNCtion'
-               .'</pre></tt><br>'
-               .'*** functions ***<br>'
-               .'<tt><pre>f=0_5min    media with duration 0-5 minutes<br>'
-               .'f=5_10min   media with duration 5-10 minutes<br>'
-               .'f=10_min    media with duration 10+ minutes<br>'
-               .'f=stats     statistics<br>'
-               .'f=new       show only newly created items (default: download time)<br>'
-               .'f=related   find related items (requires &q=SEARCH)<br>'
-               .'f=html      show feed in html (XSL transformation)<br>'
-               .'</pre></tt><br>'
-               .'*** install ***<br>'
-               .'see apache2/sites-enabled/rsscache<br>';
+  $channel_desc = 'rsscache urls have a similar syntax like google urls<br>'
+                 .'<tt><pre>q=SEARCH    SEARCH query<br>'
+                 .'start=N     start from result N<br>'
+                 .'num=N       show N results<br>'
+                 .'c=NAME      category (leave empty for all categories)<br>'
+                 .'item=CRC32  show single item<br>'
+                 .'f=FUNC      execute FUNCtion'
+                 .'</pre></tt><br>'
+                 .'*** functions ***<br>'
+                 .'<tt><pre>f=0_5min    media with duration 0-5 minutes<br>'
+                 .'f=5_10min   media with duration 5-10 minutes<br>'
+                 .'f=10_min    media with duration 10+ minutes<br>'
+                 .'f=stats     statistics<br>'
+                 .'f=new       show only newly created items (default: download time)<br>'
+                 .'f=related   find related items (requires &q=SEARCH)<br>'
+                 .'f=html      show feed in html (XSL transformation)<br>'
+                 .'</pre></tt><br>'
+                 .'*** install ***<br>'
+                 .'see apache2/sites-enabled/rsscache<br>';
 
   $p = '';
 
@@ -88,47 +95,36 @@ $channel_desc = 'rsscache urls have a similar syntax like google urls<br>'
   $p .= '<rss version="2.0">'."\n";
 
   $p .= '  <channel>'."\n"
-       .'    <title>'
-       .htmlspecialchars ($channel_title, ENT_QUOTES)
-       .'</title>'."\n"
-       .'    <link>'
-       .htmlspecialchars ($channel_link, ENT_QUOTES)
-       .'</link>'."\n"
-       .'    <description>'
-       .htmlspecialchars ($channel_desc, ENT_QUOTES)
-       .'</description>'."\n"
-//       .sprintf ('    <dc:date>%u</dc:date>', $d)
+       .'    <title>'.rsscache_write_rss_escape ($channel_title).'</title>'."\n"
+       .'    <link>'.rsscache_write_rss_escape ($channel_link).'</link>'."\n"
+       .'    <description>'.rsscache_write_rss_escape ($channel_desc).'</description>'."\n"
+       .'    <lastBuildDate>'.strftime ("%a, %d %h %Y %H:%M:%S %z", $rsscache_time).'</lastBuildDate>'."\n"
+//       .'    <language>en</language>'."\n"
+//       .'    <image>'."\n"
+//       .'      <title><![CDATA[ZDNet - Business et Solutions IT]]></title>'."\n"
+//       .'      <url>http://images.zdnet.fr/i/ser/rss/zdnet-rss-logo.gif</url>'."\n"
+//       .'      <link>http://www.zdnet.fr/feeds/rss/</link>'."\n"
+//       .'      <width>68</width>'."\n"
+//       .'      <height>35</height>'."\n"
+//       .'    </image>'."\n"
 ;
 
   for ($i = 0; isset ($item_link_array[$i]); $i++)
     {
-      if ($item_date_array)
-        if (isset ($item_date_array[$i]))
-          $d = $item_date_array[$i];
+      $p .= '    <item>'."\n";
 
-      if ($version == 1)
-        $p .= '<item rdf:about="'
-             .$item_link_array[$i]
-             .'">'."\n";
-      else
-        $p .= '    <item>'."\n";
-
-      $p .= '      <title>'
-           .htmlspecialchars ($item_title_array[$i], ENT_QUOTES)
-           .'</title>'."\n"
-           .'      <link>'
-           .htmlspecialchars ($item_link_array[$i], ENT_QUOTES)
-           .'</link>'."\n"
-           .'      <description>'
-           .htmlspecialchars ($item_desc_array[$i], ENT_QUOTES)
-           .'</description>'."\n"
+      $p .= '      <title>'.rsscache_write_rss_escape ($item_title_array[$i]).'</title>'."\n"
+           .'      <link>'.rsscache_write_rss_escape ($item_link_array[$i]).'</link>'."\n"
+           .'      <description>'.rsscache_write_rss_escape ($item_desc_array[$i]).'</description>'."\n"
+           .'      <pubDate>'
+//                <pubDate>Fri, 05 Aug 2011 15:03:02 +0200</pubDate>
+           .strftime ("%a, %d %h %Y %H:%M:%S %z", $item_date_array[$i])
+//           .strftime ("%a, %d %h %Y %H:%M:%S %Z", $item_date_array[$i])
+           .'</pubDate>'."\n"
+//           .'<category><![CDATA[bMobile : Actualités]]></category>'
+//           .'<comments>http://www.zdnet.fr/produits/test/dell-streak-7-39762776.htm#xtor=123456</comments>'
+//           .'<enclosure url="http://www.cnetfrance.fr/i/edit/2011/pr/dell-streak-7-120x90.jpg" length="2783" type="image/jpeg" />'
 ;
-
-      if ($item_date_array)
-        if (isset ($item_date_array[$i]))
-          $p .= '      <pubDate>'
-               .$item_date_array[$i]
-               .'</pubDate>'."\n";
 
       if ($item_media_duration_array)
         if (isset ($item_media_duration_array[$i]))
@@ -136,7 +132,7 @@ $channel_desc = 'rsscache urls have a similar syntax like google urls<br>'
 
       if ($item_author_array)
         if (isset ($item_author_array[$i]))
-          $p .= '      <author>'.$item_author_array[$i].'</author>'."\n";
+          $p .= '      <author>'.rsscache_write_rss_escape ($item_author_array[$i]).'</author>'."\n";
 
       $p .= '    </item>'."\n";
     }
@@ -155,6 +151,8 @@ rsscache_stats_rss ()
   global $rsscache_link;
   global $rsscache_translate;
   global $rsscache_language;
+  global $rsscache_time;
+
   $items = 0;
   $items_today = 0;
   $items_7_days = 0;
@@ -189,8 +187,7 @@ rsscache_stats_rss ()
 //        $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'].'/?'.$category->query;
         $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category->name;
         $rss_desc_array[] = $p;
-// TODO: correct date
-        $rss_date_array[] = time ();
+        $rss_date_array[] = $rsscache_time;
 
         $items += ($category->items * 1);
         $items_today += ($category->items_today * 1);
@@ -198,20 +195,20 @@ rsscache_stats_rss ()
         $items_30_days += ($category->items_30_days * 1);
       }
 
-        $p = ''
-//            .'<!-- lang:category -->: '.$config->category[$i]->name.'<br>'
-            .($items * 1).' <!-- lang:items --><br>'
-            .($items_today * 1).' <!-- lang:items --> <!-- lang:today -->'
-                                     .((items_today * 1) > 0 ? ' '.$s : '').'<br>'
-            .($items_7_days * 1).' <!-- lang:items --> <!-- lang:last --> 7 <!-- lang:days --><br>'
-            .($items_30_days * 1).' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
+  $p = ''
+//      .'<!-- lang:category -->: '.$config->category[$i]->name.'<br>'
+      .($items * 1).' <!-- lang:items --><br>'
+      .($items_today * 1).' <!-- lang:items --> <!-- lang:today -->'
+                               .((items_today * 1) > 0 ? ' '.$s : '').'<br>'
+      .($items_7_days * 1).' <!-- lang:items --> <!-- lang:last --> 7 <!-- lang:days --><br>'
+      .($items_30_days * 1).' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
 ;
   $p = misc_template ($p, $rsscache_translate[$rsscache_language ? $rsscache_language : 'default']);
 
   return rsscache_write_rss (rsscache_title (),
-                        $rsscache_link,
-                       $p,
-                       $rss_title_array, $rss_link_array, $rss_desc_array, $rss_date_array);
+                             $rsscache_link,
+                             $p,
+                             $rss_title_array, $rss_link_array, $rss_desc_array, $rss_date_array);
 }
 
 
@@ -219,6 +216,7 @@ function
 rsscache_rss ($d_array)
 {
   global $rsscache_link;
+  global $rsscache_time;
 
   $rss_title_array = array ();
   $rss_link_array = array ();
@@ -239,13 +237,13 @@ rsscache_rss ($d_array)
                            .'<br>'
                            .$d_array[$i]['rsstool_desc']
 ;
-      $rss_date_array[] = time ();
+      $rss_date_array[] = $rsscache_time;
     }
 
   return rsscache_write_rss (rsscache_title (),
-                     $rsscache_link,
-                     'test',
-                     $rss_title_array, $rss_link_array, $rss_desc_array, $rss_date_array);
+                             $rsscache_link,
+                             '',
+                             $rss_title_array, $rss_link_array, $rss_desc_array, $rss_date_array);
 }
 
 
