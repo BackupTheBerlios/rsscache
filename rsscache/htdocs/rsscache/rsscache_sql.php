@@ -509,7 +509,8 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
          $rsscache_related_search,
          $rsscache_use_dl_date,
          $rsscache_wall_results,
-         $rsscache_cloud_results;
+         $rsscache_cloud_results,
+         $rsscache_item_ttl;
   global $rsscache_debug_sql;
 
   $debug = $rsscache_debug_sql;
@@ -546,7 +547,7 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
                  .' rsstool_desc,'
                  .' rsstool_dl_date,'
                  .' rsstool_date,'
-//                 .' tv2_category,'
+                 .' tv2_category,'
                  .' tv2_moved,'
                  .' rsstool_event_start,'
                  .' rsstool_event_end,'

@@ -31,6 +31,193 @@ require_once ('misc/sql.php');
 require_once ('misc/youtube.php');
 require_once ('rsscache_lang.php');
 require_once ('rsscache_sql.php');
+require_once ('rsscache_write.php'); // write RSS
+
+
+function
+rsscache_get_request_value ($name)
+{
+  // wrapper for get_request_value() 
+  global $rsscache_default_category;
+  global $rsscache_default_function;
+
+  $v = get_request_value ($name);
+
+  if ($name == 'c')
+    {
+      if ($v == '')
+        $v = $rsscache_default_category;
+    }
+  else if ($name == 'f')
+    {
+      if ($v == '')  
+        $v = $rsscache_default_function;
+    }
+
+  return $v;
+}
+
+
+function
+config_xml_normalize ($config)
+{
+  global $rsstool_path;
+  global $rsstool_opts;
+
+//rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
+      $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($config->category));
+      // DEBUG
+//echo '<pre><tt>';
+//print_r ($stats);
+
+      // add new variables
+      for ($j = 0; isset ($stats[$j]); $j++)
+        {
+          $config->items += $stats[$j]['items'];
+          $config->items_today += $stats[$j]['items_today'];
+          $config->items_7_days += $stats[$j]['items_7_days'];
+          $config->items_30_days += $stats[$j]['items_30_days'];
+          $config->days += $stats[$j]['days'];
+        }
+
+      for ($i = 0; isset ($config->category[$i]); $i++)
+//        if ($config->category[$i]->query)
+          {
+//            $a = array();
+//            parse_str ($config->category[$i]->query, $a);
+
+//            if (isset ($a['c']))
+              for ($j = 0; isset ($stats[$j]); $j++)
+                if ($stats[$j]['category'] == $config->category[$i]->name)
+              {
+                $config->category[$i]->items = $stats[$j]['items'];
+                $config->category[$i]->items_today = $stats[$j]['items_today'];
+                $config->category[$i]->items_7_days = $stats[$j]['items_7_days'];
+                $config->category[$i]->items_30_days = $stats[$j]['items_30_days'];
+                $config->category[$i]->days = $stats[$j]['days'];
+                break;
+              }
+          }
+
+  for ($i = 0; isset ($config->category[$i]); $i++)
+    {
+      $category = $config->category[$i];
+      $category->tooltip = ''
+                .($category->tooltip ? $category->tooltip : $category->title)
+                .($category->items ? ', '.$category->items.' <!-- lang:items -->' : '')
+                .($category->days ? ', '.$category->days.' <!-- lang:days -->' : '');
+    }
+  
+  for ($i = 0; isset ($config->category[$i]); $i++)
+    for ($j = 0; isset ($config->category[$i]->feed[$j]); $j++)
+      {
+        $feed = $config->category[$i]->feed[$j];
+
+//        $config->category[$i]->link = array ();
+//        $config->category[$i]->opts = array ();
+        // old style config.xml: link[]
+        for ($k = 0; isset ($feed->link[$k]); $k++)
+          if (trim ($feed->link[$k]) != '')
+            {
+              $config->category[$i]->link[] = $feed->link[$k];
+              $config->category[$i]->opts[] = $rsstool_opts.' '.$feed->opts;
+              $config->category[$i]->client[] = $feed->client; // ? $feed->client : $rsstool_path; 
+            }
+
+        // TODO: use new style config.xml
+        //   link_prefix, link_search[], link_suffix
+        if (isset ($feed->link_prefix))
+          for ($k = 0; isset ($feed->link_search[$k]); $k++)
+            {
+              $p = '';
+//              if (isset ($feed->link_prefix))
+                $p .= $feed->link_prefix;
+//              if (isset ($feed->link_search[$k]))
+                $p .= $feed->link_search[$k];
+              if (isset ($feed->link_suffix))
+                $p .= $feed->link_suffix;
+              $config->category[$i]->link[] = $p;
+              $config->category[$i]->opts[] = $rsstool_opts.' '.$feed->opts;
+              $config->category[$i]->client[] = $feed->client; //  ? $feed->client : $rsstool_path;
+            }
+      }
+
+  // DEBUG
+//echo '<pre><tt>';
+//print_r ($config);
+
+  return $config;
+}
+
+
+function
+config_xml ($memcache_expire = 0)
+{
+  global $rsscache_config_xml;
+  static $config = NULL;
+
+  if ($config)
+    return $config;
+
+if ($memcache_expire > 0)
+  {
+    $memcache = new Memcache;
+    if ($memcache->connect ('localhost', 11211) == TRUE)
+      {
+        // data from the cache
+        $p = $memcache->get (md5 ($rsscache_config_xml));
+
+        if ($p != FALSE)
+          {
+            $p = unserialize ($p);
+
+            // DEBUG
+//            echo 'cached';
+
+            echo $p;
+
+            rsscache_sql_close ();
+
+            exit;
+          }
+      }
+    else
+      {
+        echo 'ERROR: could not connect to memcached';
+
+        rsscache_sql_close ();
+
+        exit;
+      }
+  }
+
+  // DEBUG
+//  echo 'read config';
+
+  $config = simplexml_load_file ($rsscache_config_xml);
+  $config = config_xml_normalize ($config);
+
+  // use memcache
+if ($memcache_expire > 0)
+  {
+    $memcache->set (md5 ($rsscache_config_xml), serialize ($config), 0, $memcache_expire);
+  }
+
+  return $config;
+}
+
+
+function
+config_xml_by_category ($category)
+{
+  $config = config_xml ();
+
+  for ($i = 0; isset ($config->category[$i]); $i++)
+    if (trim ($config->category[$i]->name) == $category)
+      return $config->category[$i];
+
+  return NULL;
+}
 
 
 function
@@ -200,6 +387,27 @@ rsscache_duration ($d)
 
 
 function
+rsscache_link_normalize ($link)
+{
+  // checks is file is on local server or on static server and returns correct link
+  global $rsscache_root,
+         $rsscache_link,
+         $rsscache_link_static;
+  $p = $link; // $d['rsstool_url']
+
+  if (strncmp ($p, $rsscache_link, strlen ($rsscache_link)) || // extern link
+      !$rsscache_link_static) // no static server
+    return $link;
+
+  $p = str_replace ($rsscache_link, $rsscache_root, $link); // file on local server?
+  if (file_exists ($p))
+    return $link;
+
+  return str_replace ($rsscache_link, $rsscache_link_static, $link); // has to be on static server then
+}
+
+
+function
 rsscache_link ($d)
 {
   $p = '';
@@ -275,30 +483,6 @@ rsscache_thumbnail ($d, $width = 120)
 
 
 function
-rsscache_get_request_value ($name)
-{
-  // wrapper for get_request_value() 
-  global $rsscache_default_category;
-  global $rsscache_default_function;
-
-  $v = get_request_value ($name);
-
-  if ($name == 'c')
-    {
-      if ($v == '')
-        $v = $rsscache_default_category;
-    }
-  else if ($name == 'f')
-    {
-      if ($v == '')  
-        $v = $rsscache_default_function;
-    }
-
-  return $v;
-}
-
-
-function
 rsscache_f_wiki ()
 {
   $c = rsscache_get_request_value ('c');        
@@ -367,183 +551,6 @@ rsscache_stripdir ($url)
 
 
 function
-config_xml_normalize ($config)
-{
-  global $rsstool_path;
-  global $rsstool_opts;
-
-//rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
-      $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($config->category));
-      // DEBUG
-//echo '<pre><tt>';
-//print_r ($stats);
-
-      // add new variables
-      for ($j = 0; isset ($stats[$j]); $j++)
-        {
-          $config->items += $stats[$j]['items'];
-          $config->items_today += $stats[$j]['items_today'];
-          $config->items_7_days += $stats[$j]['items_7_days'];
-          $config->items_30_days += $stats[$j]['items_30_days'];
-          $config->days += $stats[$j]['days'];
-        }
-
-      for ($i = 0; isset ($config->category[$i]); $i++)
-//        if ($config->category[$i]->query)
-          {
-//            $a = array();
-//            parse_str ($config->category[$i]->query, $a);
-
-//            if (isset ($a['c']))
-              for ($j = 0; isset ($stats[$j]); $j++)
-                if ($stats[$j]['category'] == $config->category[$i]->name)
-              {
-                $config->category[$i]->items = $stats[$j]['items'];
-                $config->category[$i]->items_today = $stats[$j]['items_today'];
-                $config->category[$i]->items_7_days = $stats[$j]['items_7_days'];
-                $config->category[$i]->items_30_days = $stats[$j]['items_30_days'];
-                $config->category[$i]->days = $stats[$j]['days'];
-                break;
-              }
-          }
-
-  for ($i = 0; isset ($config->category[$i]); $i++)
-    {
-      $category = $config->category[$i];
-      $category->tooltip = ''
-                .($category->tooltip ? $category->tooltip : $category->title)
-                .($category->items ? ', '.$category->items.' <!-- lang:items -->' : '')
-                .($category->days ? ', '.$category->days.' <!-- lang:days -->' : '');
-    }
-  
-  for ($i = 0; isset ($config->category[$i]); $i++)
-    for ($j = 0; isset ($config->category[$i]->feed[$j]); $j++)
-      {
-        $feed = $config->category[$i]->feed[$j];
-
-//        $config->category[$i]->link = array ();
-//        $config->category[$i]->opts = array ();
-        // old style config.xml: link[]
-        for ($k = 0; isset ($feed->link[$k]); $k++)
-          if (trim ($feed->link[$k]) != '')
-            {
-              $config->category[$i]->link[] = $feed->link[$k];
-              $config->category[$i]->opts[] = $rsstool_opts.' '.$feed->opts;
-              $config->category[$i]->client[] = $feed->client; // ? $feed->client : $rsstool_path; 
-            }
-
-        // TODO: use new style config.xml
-        //   link_prefix, link_search[], link_suffix
-        if (isset ($feed->link_prefix))
-          for ($k = 0; isset ($feed->link_search[$k]); $k++)
-            {
-              $p = '';
-//              if (isset ($feed->link_prefix))
-                $p .= $feed->link_prefix;
-//              if (isset ($feed->link_search[$k]))
-                $p .= $feed->link_search[$k];
-              if (isset ($feed->link_suffix))
-                $p .= $feed->link_suffix;
-              $config->category[$i]->link[] = $p;
-              $config->category[$i]->opts[] = $rsstool_opts.' '.$feed->opts;
-              $config->category[$i]->client[] = $feed->client; //  ? $feed->client : $rsstool_path;
-            }
-      }
-
-  // DEBUG
-//echo '<pre><tt>';
-//print_r ($config);
-
-  return $config;
-}
-
-
-function
-config_xml ($memcache_expire = 0)
-{
-  global $rsscache_config_xml;
-  static $config = NULL;
-
-  if ($config)
-    return $config;
-
-if ($memcache_expire > 0)
-  {
-    $memcache = new Memcache;
-    if ($memcache->connect ('localhost', 11211) == TRUE)
-      {
-        // data from the cache
-        $p = $memcache->get (md5 ($rsscache_config_xml));
-
-        if ($p != FALSE)
-          {
-            $p = unserialize ($p);
-
-            // DEBUG
-//            echo 'cached';
-
-            echo $p;
-
-            rsscache_sql_close ();
-
-            exit;
-          }
-      }
-    else
-      {
-        echo 'ERROR: could not connect to memcached';
-
-        rsscache_sql_close ();
-
-        exit;
-      }
-  }
-
-  // DEBUG
-//  echo 'read config';
-
-  $config = simplexml_load_file ($rsscache_config_xml);
-  $config = config_xml_normalize ($config);
-
-  // use memcache
-if ($memcache_expire > 0)
-  {
-    $memcache->set (md5 ($rsscache_config_xml), serialize ($config), 0, $memcache_expire);
-  }
-
-  return $config;
-}
-
-
-function
-config_xml_by_category ($category)
-{
-  $config = config_xml ();
-
-  for ($i = 0; isset ($config->category[$i]); $i++)
-    if (trim ($config->category[$i]->name) == $category)
-      return $config->category[$i];
-
-  return NULL;
-}
-
-
-// HACK
-function
-rsscache_normalize ($category)
-{
-  $p = strtolower ($category);
-
-  if ($p == 'baseq3')
-    $category = 'quake3';
-  else if ($p == 'baseqz')
-    $category = 'quakelive';
-
-  return $category;
-}
-
-
-function
 rsscache_event ($d)
 {
   global $rsscache_time;
@@ -590,188 +597,6 @@ print_r ($t);
 ;
 
   return $p;
-}
-
-
-function
-rsscache_stats_rss ()
-{
-  global $rsscache_link;
-  global $rsscache_translate;
-  global $rsscache_language;
-  $items = 0;
-  $items_today = 0;
-  $items_7_days = 0;
-  $category->items_30_days = 0;
-
-//    header ('Content-type: text/xml');
-    header ('Content-type: application/xml');
-//    header ('Content-type: text/xml-external-parsed-entity');
-//    header ('Content-type: application/xml-external-parsed-entity');
-//    header ('Content-type: application/xml-dtd');
-
-  $config = config_xml ();
-
-  $rss_title_array = array ();
-  $rss_link_array = array ();
-  $rss_desc_array = array ();
-
-  $s = '<img src="images/new.png" border="0">';
-
-  for ($i = 0; isset ($config->category[$i]); $i++)
-    if ($config->category[$i]->name != '' &&
-        (isset ($config->category[$i]->feed[0]->link[0]) || isset ($config->category[$i]->feed[0]->link_prefix)))
-      {
-        $category = $config->category[$i];
-        $p = ''
-            .'<img src="'.$config->category[$i]->logo.'" border="0"><br>'
-            .($category->items * 1).' <!-- lang:items --><br>'
-            .($category->items_today * 1).' <!-- lang:items --> <!-- lang:today -->'
-                                     .(($category->items_today * 1) > 0 ? ' '.$s : '').'<br>'
-            .($category->items_7_days * 1).' <!-- lang:items --> <!-- lang:last --> 7 <!-- lang:days --><br>'
-            .($category->items_30_days * 1).' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
-            .($category->days * 1).' <!-- lang:days --> <!-- lang:since creation of category -->'
-;
-        $p = misc_template ($p, $rsscache_translate[$rsscache_language ? $rsscache_language : 'default']);
-
-        $rss_title_array[] = $category->title;
-        $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'].'/?'.$category->query;
-        $rss_desc_array[] = $p;
-
-        $items += ($category->items * 1);
-        $items_today += ($category->items_today * 1);
-        $items_7_days += ($category->items_7_days * 1);
-        $items_30_days += ($category->items_30_days * 1);
-      }
-
-  $rss_title_array[] = 'ALL';
-  $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'];
-
-        $p = ''
-//            .'<!-- lang:category -->: '.$config->category[$i]->name.'<br>'
-            .($items * 1).' <!-- lang:items --><br>'
-            .($items_today * 1).' <!-- lang:items --> <!-- lang:today -->'
-                                     .((items_today * 1) > 0 ? ' '.$s : '').'<br>'
-            .($items_7_days * 1).' <!-- lang:items --> <!-- lang:last --> 7 <!-- lang:days --><br>'
-            .($items_30_days * 1).' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
-;
-  $p = misc_template ($p, $rsscache_translate[$rsscache_language ? $rsscache_language : 'default']);
-  $rss_desc_array[] = $p;
-
-  // DEBUG
-//  print_r ($rss_title_array);
-//  print_r ($rss_link_array);
-//  print_r ($rss_desc_array);
-
-  return generate_rss2 (rsscache_title (),
-                       $rsscache_link,
-//                       'Statistics',
-                     'rsscache urls have a similar syntax like google urls<br>'
-.'<br>'
-.'<br>'
-.'q=SEARCH  SEARCH query<br>'
-.'start=N   start from result N<br>'
-.'num=N     show N results<br>'
-.'c=NAME    category (leave empty for all categories)<br>'
-.'<br>'
-.'<br>'
-.'*** functions ***<br>'
-.'f=0_5min      videos with duration 0-5 minutes<br>'
-.'f=5_10min     videos with duration 5-10 minutes<br>'
-.'f=10_min      videos with duration 10+ minutes<br>'
-.'f=stats       statistics<br>'
-.'f=new         show only new items<br>'
-.'f=related     find related items (requires &q=SEARCH)<br>'
-.'<br>'   
-.'<br>'
-.'*** install ***<br>'
-.'see apache2/sites-enabled/rsscache<br>'
-.'',
-                       $rss_title_array, $rss_link_array, $rss_desc_array);
-}
-
-
-function
-rsscache_rss ($d_array)
-{
-  global $rsscache_link;
-
-//    header ('Content-type: text/xml');
-    header ('Content-type: application/xml');
-//    header ('Content-type: text/xml-external-parsed-entity');
-//    header ('Content-type: application/xml-external-parsed-entity');
-//    header ('Content-type: application/xml-dtd');
-
-  $rss_title_array = array ();
-  $rss_link_array = array ();
-  $rss_desc_array = array ();
-
-  for ($i = 0; isset ($d_array[$i]); $i++)
-    {
-      $rss_title_array[$i] = $d_array[$i]['rsstool_title'];
-//      $rss_link_array[$i] = $d_array[$i]['rsstool_url'];
-      if (substr (rsscache_link ($d_array[$i]), 0, 7) == 'http://')
-        $rss_link_array[$i] = rsscache_link ($d_array[$i]);
-      else
-        $rss_link_array[$i] = $rsscache_link.'?'.rsscache_link ($d_array[$i]);
-
-      $rss_desc_array[$i] = ''
-                           .rsscache_thumbnail ($d_array[$i], 120, 1)
-                           .'<br>'
-                           .$d_array[$i]['rsstool_desc']
-;
-    }
-
-  // DEBUG
-//  print_r ($rss_title_array);
-//  print_r ($rss_link_array);
-//  print_r ($rss_desc_array);
-
-  return generate_rss2 (rsscache_title (),
-                     $rsscache_link,
-                     'rsscache urls have a similar syntax like google urls<br>'
-.'<br>'
-.'<br>'
-.'q=SEARCH  SEARCH query<br>'
-.'start=N   start from result N<br>'
-.'num=N     show N results<br>'
-.'c=NAME    category (leave empty for all categories)<br>'
-.'<br>'
-.'<br>'
-.'*** functions ***<br>'
-.'f=0_5min      videos with duration 0-5 minutes<br>'
-.'f=5_10min     videos with duration 5-10 minutes<br>'
-.'f=10_min      videos with duration 10+ minutes<br>'
-.'f=stats       statistics<br>'
-.'f=new         show only new items<br>'
-.'f=related     find related items (requires &q=SEARCH)<br>'
-.'<br>'
-.'<br>'
-.'*** install ***<br>'
-.'see apache2/sites-enabled/rsscache<br>'
-,
-                     $rss_title_array, $rss_link_array, $rss_desc_array);
-}
-
-
-function
-rsscache_link_normalize ($link)
-{
-  // checks is file is on local server or on static server and returns correct link
-  global $rsscache_root,
-         $rsscache_link,
-         $rsscache_link_static;
-  $p = $link; // $d['rsstool_url']
-
-  if (strncmp ($p, $rsscache_link, strlen ($rsscache_link)) || // extern link
-      !$rsscache_link_static) // no static server
-    return $link;
-
-  $p = str_replace ($rsscache_link, $rsscache_root, $link); // file on local server?
-  if (file_exists ($p))
-    return $link;
-
-  return str_replace ($rsscache_link, $rsscache_link_static, $link); // has to be on static server then
 }
 
 

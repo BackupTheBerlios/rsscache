@@ -241,10 +241,15 @@ youtube_download_single ($video_id, $use_tor = 0, $debug = 0)
       echo '</tt></pre>';
     }
 
-  if (!isset ($a['fmt_url_map']))
+//  if (!isset ($a['fmt_url_map']))
+//    return NULL;
+//  $b = explode (',', $a['fmt_url_map']);
+  // changed by yt in august 2011
+  if (!isset ($a['url_encoded_fmt_stream_map']))
     return NULL;
-
-  $b = explode (',', $a['fmt_url_map']);
+  $b = explode (',', $a['url_encoded_fmt_stream_map']);
+  for ($i = 0; isset ($b[$i]); $i++)
+    $b[$i] = substr ($b[$i], 4);
 
   if ($debug == 1)
     {

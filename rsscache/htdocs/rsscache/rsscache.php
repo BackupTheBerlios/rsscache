@@ -31,6 +31,7 @@ require_once ('misc/misc.php');
 require_once ('rsscache_lang.php');
 require_once ('rsscache_misc.php');
 require_once ('rsscache_sql.php');
+require_once ('rsscache_write.php');
 
 
 // main ()
@@ -98,6 +99,22 @@ else // write feed
   }
 
 
+// xsl transformation
+if ($f == 'html')
+  {
+    $xsl = file_get_contents ('rsscache.xsl');
+    $xslt = new XSLTProcessor(); 
+    $xslt->importStylesheet (new  SimpleXMLElement ($xsl));
+    $p = $xslt->transformToXml (new SimpleXMLElement ($p));
+  }
+else
+  {
+//    header ('Content-type: text/xml');
+    header ('Content-type: application/xml');
+//    header ('Content-type: text/xml-external-parsed-entity');
+//    header ('Content-type: application/xml-external-parsed-entity');
+//    header ('Content-type: application/xml-dtd');
+  }
 
 // the _only_ echo
 if ($use_gzip == 1)

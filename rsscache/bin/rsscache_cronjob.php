@@ -1,7 +1,7 @@
 #!/usr/bin/php -q
 <?php
 /*
-rsscache.php - read config.xml, download feeds, turn feeds into SQL and write to db
+rsscache_cronjob.php - read config.xml, download feeds, turn feeds into SQL and write to db
 
 Copyright (c) 2009 - 2011 NoisyB
 
@@ -25,6 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 chdir (dirname ($argv[0]));
 require_once ('../htdocs/default.php');
 require_once ('../htdocs/config.php');
+require_once ('../htdocs/rsscache_lang.php');
 require_once ('../htdocs/rsscache_sql.php');
 require_once ('../htdocs/rsscache_misc.php');
 
@@ -51,16 +52,7 @@ echo 'database: '.$rsscache_dbname.' ('.$rsscache_dbuser.')'."\n";
 for ($i = 0; isset ($config->category[$i]); $i++)
   if (isset ($config->category[$i]->name))
     {
-      $p = '';
-      $p .= 'category: '.$config->category[$i]->name."\n";
-  for ($j = 0; isset ($config->category[$i]->link[$j]); $j++)
-    {
-         $p .= 'client: '.$config->category[$i]->client[$j]."\n"
-           .'opts: '.$config->category[$i]->opts[$j]."\n"
-           .'url: '.$config->category[$i]->link[$j]."\n";
-    }
-      echo $p;
-
+      print_r ($config->category[$i]);
       rsscache_download_feeds_by_category ($config->category[$i]->name);
     }
 
