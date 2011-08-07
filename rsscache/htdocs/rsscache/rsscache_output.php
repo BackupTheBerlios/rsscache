@@ -37,12 +37,12 @@ function
 rsscache_write_rss ($channel_title,
                     $channel_link,
                     $channel_desc,
-               $item_title_array,
-               $item_link_array,
-               $item_desc_array,
-               $item_date_array = NULL,
-               $item_media_duration_array = NULL,
-               $item_author_array = NULL)
+                    $item_title_array,
+                    $item_link_array,
+                    $item_desc_array,
+                    $item_date_array = NULL,
+                    $item_media_duration_array = NULL,
+                    $item_author_array = NULL)
 {
   global $rsscache_xsl_trans;
   global $rsscache_xsl_stylesheet;
@@ -59,23 +59,22 @@ rsscache_write_rss ($channel_title,
 //  print_r ($rss_author_array);
 
 $channel_desc = 'rsscache urls have a similar syntax like google urls<br>'
-               .'<br>'
-               .'<br>'
-               .'q=SEARCH  SEARCH query<br>'
-               .'start=N   start from result N<br>'
-               .'num=N     show N results<br>'
-               .'c=NAME    category (leave empty for all categories)<br>'
-               .'<br>'
-               .'<br>'
+               .'<tt><pre>q=SEARCH    SEARCH query<br>'
+               .'start=N     start from result N<br>'
+               .'num=N       show N results<br>'
+               .'c=NAME      category (leave empty for all categories)<br>'
+               .'item=CRC32  show single item<br>'
+               .'f=FUNC      execute FUNCtion'
+               .'</pre></tt><br>'
                .'*** functions ***<br>'
-               .'f=0_5min      videos with duration 0-5 minutes<br>'
-               .'f=5_10min     videos with duration 5-10 minutes<br>'
-               .'f=10_min      videos with duration 10+ minutes<br>'
-               .'f=stats       statistics<br>'
-               .'f=new         show only new items<br>'
-               .'f=related     find related items (requires &q=SEARCH)<br>'
-               .'<br>'
-               .'<br>'
+               .'<tt><pre>f=0_5min    media with duration 0-5 minutes<br>'
+               .'f=5_10min   media with duration 5-10 minutes<br>'
+               .'f=10_min    media with duration 10+ minutes<br>'
+               .'f=stats     statistics<br>'
+               .'f=new       show only newly created items (default: download time)<br>'
+               .'f=related   find related items (requires &q=SEARCH)<br>'
+               .'f=html      show feed in html (XSL transformation)<br>'
+               .'</pre></tt><br>'
                .'*** install ***<br>'
                .'see apache2/sites-enabled/rsscache<br>';
 

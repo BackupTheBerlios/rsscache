@@ -39,7 +39,7 @@ require_once ('rsscache_write.php');
 
 $f = rsscache_get_request_value ('f'); // function
 $q = rsscache_get_request_value ('q'); // search query
-$v = rsscache_get_request_value ('v'); // item crc32
+$item = rsscache_get_request_value ('item'); // item crc32
 $start = rsscache_get_request_value ('start'); // offset
 if (!($start))
   $start = 0;
@@ -68,23 +68,12 @@ else // write feed
 
     // category   
     $category = config_xml_by_category (strtolower ($c));
-    if (isset ($category->index) || isset ($category->stripdir))
-      {
-        $d_array = rsscache_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
-      }
-    else if ($f == 'extern')
-      {
-//        rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)          
-        $d_array = rsscache_sql ($c, $q, 'extern', NULL, $start, $num);
-      }
+
+    // use SQL
+    if ($item)
+      $d_array = rsscache_sql (NULL, NULL, $f, $item, 0, 0, $category->table_suffix);
     else
-      {
-        // use SQL
-        if ($v)
-          $d_array = rsscache_sql (NULL, NULL, $f, $v, 0, 0, $category->table_suffix);
-        else
-          $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, $category->table_suffix);
-      }
+      $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, $category->table_suffix);
 
 // DEBUG
 //echo '<pre><tt>';
@@ -117,8 +106,7 @@ if ($f == 'html')
       {
       }
   }
-
-if ($rsscache_xsl_trans > 0)
+else
   {
 //    header ('Content-type: text/xml');
     header ('Content-type: application/xml');
