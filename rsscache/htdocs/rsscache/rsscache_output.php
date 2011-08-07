@@ -34,9 +34,9 @@ require_once ('rsscache_sql.php');
 
 
 function
-generate_rss2 ($title,
-               $link,
-               $desc,
+rsscache_write_rss ($channel_title,
+                    $channel_link,
+                    $channel_desc,
                $item_title_array,
                $item_link_array,
                $item_desc_array,
@@ -44,53 +44,42 @@ generate_rss2 ($title,
                $item_media_duration_array = NULL,
                $item_author_array = NULL)
 {
-  $version = 2; // RSS2.0
+  global $rsscache_xsl_trans;
 //  $d = strftime ("%Y%m%d %H:%M:%S", time ());
   $d = time ();
 
-  $p = '';
+  // DEBUG
+//  print_r ($rss_title_array);
+//  print_r ($rss_link_array);
+//  print_r ($rss_desc_array);
+//  print_r ($rss_date_array);
+//  print_r ($rss_media_duration_array);
+//  print_r ($rss_author_array);
 
+  $p = '';
   $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+  if ($rsscache_xsl_trans == 1)
+    $p .= '<?xml-stylesheet href="rsscache.xsl" type="text/xsl" media="screen"?>'."\n";
 /*
   $p .= '<?xml-stylesheet type="text/css" href="rsscache.css"?>'."\n";
-*/
-  $p .= '<?xml-stylesheet href="rsscache.xsl" type="text/xsl" media="screen"?>'."\n";
-/*
   $p .= '<rss version="2.0" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/">';
 */
 
-  if ($version == 1)
-    $p .= '<rdf:RDF xmlns="http://purl.org/rss/1.0/">'."\n";
-  else
+//    $p .= '<rss version="2.0" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/">'."\n";
     $p .= '<rss version="2.0">'."\n";
 
   $p .= '  <channel>'."\n"
        .'    <title>'
-       .htmlspecialchars ($title, ENT_QUOTES)
+       .htmlspecialchars ($channel_title, ENT_QUOTES)
        .'</title>'."\n"
        .'    <link>'
-       .htmlspecialchars ($link, ENT_QUOTES)
+       .htmlspecialchars ($channel_link, ENT_QUOTES)
        .'</link>'."\n"
        .'    <description>'
-       .htmlspecialchars ($desc, ENT_QUOTES)
+       .htmlspecialchars ($channel_desc, ENT_QUOTES)
        .'</description>'."\n"
 //       .sprintf ('    <dc:date>%u</dc:date>', $d)
 ;
-
-  if ($version == 1)
-    {
-      $p .= '<items>'."\n"
-           .'<rdf:Seq>'."\n";
-
-      for ($i = 0; isset ($item_link_array[$i]); $i++)
-        $p .= "\n".'        <rdf:li rdf:resource="'
-             .htmlspecialchars ($item_link_array[$i], ENT_QUOTES)
-             .'"/>';
-
-      $p .= '</rdf:Seq>'."\n"
-           .'</items>'."\n"
-           .'</channel>'."\n";
-    }
 
   for ($i = 0; isset ($item_link_array[$i]); $i++)
     {
@@ -133,8 +122,7 @@ generate_rss2 ($title,
       $p .= '    </item>'."\n";
     }
 
-  if ($version == 2)
-    $p .= '  </channel>'."\n";
+  $p .= '  </channel>'."\n";
 
   $p .= '</rss>'."\n";
 
@@ -151,7 +139,7 @@ rsscache_stats_rss ()
   $items = 0;
   $items_today = 0;
   $items_7_days = 0;
-  $category->items_30_days = 0;
+  $items_30_days = 0;
 
   $config = config_xml ();
 
@@ -191,9 +179,6 @@ rsscache_stats_rss ()
         $items_30_days += ($category->items_30_days * 1);
       }
 
-  $rss_title_array[] = 'ALL';
-  $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'];
-
         $p = ''
 //            .'<!-- lang:category -->: '.$config->category[$i]->name.'<br>'
             .($items * 1).' <!-- lang:items --><br>'
@@ -203,39 +188,10 @@ rsscache_stats_rss ()
             .($items_30_days * 1).' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
 ;
   $p = misc_template ($p, $rsscache_translate[$rsscache_language ? $rsscache_language : 'default']);
-  $rss_desc_array[] = $p;
-  $rss_date_array[] = time ();
 
-  // DEBUG
-//  print_r ($rss_title_array);
-//  print_r ($rss_link_array);
-//  print_r ($rss_desc_array);
-//  print_r ($rss_date_array);
-
-  return generate_rss2 (rsscache_title (),
+  return rsscache_write_rss (rsscache_title (),
                         $rsscache_link,
-//                       'Statistics',
-                     'rsscache urls have a similar syntax like google urls<br>'
-.'<br>'
-.'<br>'
-.'q=SEARCH  SEARCH query<br>'
-.'start=N   start from result N<br>'
-.'num=N     show N results<br>'
-.'c=NAME    category (leave empty for all categories)<br>'
-.'<br>'
-.'<br>'
-.'*** functions ***<br>'
-.'f=0_5min      videos with duration 0-5 minutes<br>'
-.'f=5_10min     videos with duration 5-10 minutes<br>'
-.'f=10_min      videos with duration 10+ minutes<br>'
-.'f=stats       statistics<br>'
-.'f=new         show only new items<br>'
-.'f=related     find related items (requires &q=SEARCH)<br>'
-.'<br>'   
-.'<br>'
-.'*** install ***<br>'
-.'see apache2/sites-enabled/rsscache<br>'
-.'',
+                       $p,
                        $rss_title_array, $rss_link_array, $rss_desc_array, $rss_date_array);
 }
 
@@ -267,35 +223,9 @@ rsscache_rss ($d_array)
       $rss_date_array[] = time ();
     }
 
-  // DEBUG
-//  print_r ($rss_title_array);
-//  print_r ($rss_link_array);
-//  print_r ($rss_desc_array);
-//  print_r ($rss_date_array);
-
-  return generate_rss2 (rsscache_title (),
+  return rsscache_write_rss (rsscache_title (),
                      $rsscache_link,
-                     'rsscache urls have a similar syntax like google urls<br>'
-.'<br>'
-.'<br>'
-.'q=SEARCH  SEARCH query<br>'
-.'start=N   start from result N<br>'
-.'num=N     show N results<br>'
-.'c=NAME    category (leave empty for all categories)<br>'
-.'<br>'
-.'<br>'
-.'*** functions ***<br>'
-.'f=0_5min      videos with duration 0-5 minutes<br>'
-.'f=5_10min     videos with duration 5-10 minutes<br>'
-.'f=10_min      videos with duration 10+ minutes<br>'
-.'f=stats       statistics<br>'
-.'f=new         show only new items<br>'
-.'f=related     find related items (requires &q=SEARCH)<br>'
-.'<br>'
-.'<br>'
-.'*** install ***<br>'
-.'see apache2/sites-enabled/rsscache<br>'
-,
+                     'test',
                      $rss_title_array, $rss_link_array, $rss_desc_array, $rss_date_array);
 }
 

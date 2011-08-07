@@ -39,7 +39,7 @@ require_once ('rsscache_write.php');
 
 $f = rsscache_get_request_value ('f'); // function
 $q = rsscache_get_request_value ('q'); // search query
-$v = rsscache_get_request_value ('v'); // TODO: deprecate
+$v = rsscache_get_request_value ('v'); // item crc32
 $start = rsscache_get_request_value ('start'); // offset
 if (!($start))
   $start = 0;
@@ -54,60 +54,71 @@ rsscache_sql_open ();
 $config = config_xml ();
 $c = rsscache_get_request_value ('c'); // category
 
-
-$d_array = NULL;
-
-// category   
-$category = config_xml_by_category (strtolower ($c));
-if (isset ($category->index) || isset ($category->stripdir))
-  {
-    $d_array = rsscache_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
-  }
-else if ($f == 'extern')
-  {
-//rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)          
-    $d_array = rsscache_sql ($c, $q, 'extern', NULL, $start, $num);
-  }
-else
-  {
-    // use SQL
-    if ($v)
-      $d_array = rsscache_sql (NULL, NULL, $f, $v, 0, 0, $category->table_suffix);
-    else
-      $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, $category->table_suffix);
-  }
-
-rsscache_sql_close ();
-
-// DEBUG
-//echo '<pre><tt>';
-//print_r ($d_array);
-//exit;
-
-
 if ($f == 'stats') // db statistics as feed
   {
     $p = rsscache_stats_rss ();
   }
 else if ($f == 'feed') // download or update feed
   {
-// TODO:
+    // TODO
   }
 else // write feed
   {
+    $d_array = NULL;
+
+    // category   
+    $category = config_xml_by_category (strtolower ($c));
+    if (isset ($category->index) || isset ($category->stripdir))
+      {
+        $d_array = rsscache_stripdir (isset ($category->index) ? $category->index : $category->stripdir, $start, $num ? $num : 0);
+      }
+    else if ($f == 'extern')
+      {
+//        rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)          
+        $d_array = rsscache_sql ($c, $q, 'extern', NULL, $start, $num);
+      }
+    else
+      {
+        // use SQL
+        if ($v)
+          $d_array = rsscache_sql (NULL, NULL, $f, $v, 0, 0, $category->table_suffix);
+        else
+          $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, $category->table_suffix);
+      }
+
+// DEBUG
+//echo '<pre><tt>';
+//print_r ($d_array);
+//exit;
+
     $p = rsscache_rss ($d_array);
   }
 
+rsscache_sql_close ();
 
-// xsl transformation
+
+// XSL transformation
 if ($f == 'html')
   {
-    $xsl = file_get_contents ('rsscache.xsl');
-    $xslt = new XSLTProcessor(); 
-    $xslt->importStylesheet (new  SimpleXMLElement ($xsl));
-    $p = $xslt->transformToXml (new SimpleXMLElement ($p));
+    if ($rsscache_xsl_trans == 2) // check user-agent and decide
+      {
+        // TODO
+        $rsscache_xsl_trans = 0;
+      }
+
+    if ($rsscache_xsl_trans == 0) // transform on server
+      {
+        $xsl = file_get_contents ('rsscache.xsl');
+        $xslt = new XSLTProcessor (); 
+        $xslt->importStylesheet (new  SimpleXMLElement ($xsl));
+        $p = $xslt->transformToXml (new SimpleXMLElement ($p));
+      }
+    else if ($rsscache_xsl_trans == 1) // transform on client
+      {
+      }
   }
-else
+
+if ($rsscache_xsl_trans > 0)
   {
 //    header ('Content-type: text/xml');
     header ('Content-type: application/xml');
@@ -116,10 +127,12 @@ else
 //    header ('Content-type: application/xml-dtd');
   }
 
+
 // the _only_ echo
 if ($use_gzip == 1)
   echo_gzip ($p);
-else echo $p;
+else
+  echo $p;
 
 
 exit;

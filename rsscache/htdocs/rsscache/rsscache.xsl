@@ -20,6 +20,28 @@ Overview:
  - page furniture, nav stuff, etc
  - with the h1, actual stuff.
 
+rsscache urls have a similar syntax like google urls<br>
+<br>
+<br>
+q=SEARCH  SEARCH query<br>
+start=N   start from result N<br>
+num=N     show N results<br>
+c=NAME    category (leave empty for all categories)<br>
+<br>
+<br>
+*** functions ***<br>
+f=0_5min      videos with duration 0-5 minutes<br>
+f=5_10min     videos with duration 5-10 minutes<br>
+f=10_min      videos with duration 10+ minutes<br>
+f=stats       statistics<br>
+f=new         show only new items<br>
+f=related     find related items (requires &q=SEARCH)<br>
+<br>
+<br>
+*** install ***<br>
+see apache2/sites-enabled/rsscache<br>
+
+
 -->
 <Q:stylesheet version="1.0"
   xmlns:Q = "http://www.w3.org/1999/XSL/Transform"

@@ -510,6 +510,7 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
          $rsscache_use_dl_date,
          $rsscache_wall_results,
          $rsscache_cloud_results,
+//         $rsscache_time,
          $rsscache_item_ttl;
   global $rsscache_debug_sql;
 
