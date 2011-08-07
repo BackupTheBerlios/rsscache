@@ -25,7 +25,7 @@ define ('RSSCACHE_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 require_once ('misc/misc.php');
 require_once ('misc/widget.php');
-require_once ('misc/wikipedia.php');
+//require_once ('misc/wikipedia.php');
 //require_once ('misc/rss.php');
 require_once ('misc/sql.php');
 require_once ('misc/youtube.php');
@@ -479,74 +479,6 @@ rsscache_thumbnail ($d, $width = 120)
     }
 
   return $p;
-}
-
-
-function
-rsscache_f_wiki ()
-{
-  $c = rsscache_get_request_value ('c');        
-  $config = config_xml_by_category ($c);      
-//  return widget_wikipedia ($config->wiki);
-  return wikipedia_get_html ($config->wiki);
-}
-
-
-/*
-    [0] => Array
-        (
-            [rsstool_url] => http://www.own3d.tv/watch/83483
-            [rsstool_url_crc32] => 2358663608
-            [rsstool_title] => CptWipe [id:32728] Archive (2011-03-07 00:08:21 - 00:11:10)
-            [rsstool_desc] => 
-									 							
-            [rsstool_dl_date] => 1299456810
-            [rsstool_date] => 1299453060
-            [tv2_category] => wow
-            [tv2_moved] => wow
-            [rsstool_media_duration] => 0
-            [rsstool_keywords] => cptwipe 32728 archive 2011
-            [rsscache_demux] => 12
-        )
-*/
-function
-//rsscache_stripdir ($url, $start, $num)
-rsscache_stripdir ($url)
-{
-  global $rsscache_tor_enabled;
-
-  $v = array ();
-
-  if (widget_media_demux ($url) != 0)
-    {
-      $v[] = $url;
-      return $v;
-    }
-
-  if ($rsscache_tor_enabled)
-    $s = tor_get_contents ($url);
-  else
-    $s = file_get_contents ($url);
-
-  $count = 0;
-  $html = str_get_html ($s);
-  $a = $html->find ('a');
-  if ($a)
-    foreach ($html->find('a') as $tag)
-      if (widget_media_demux ($url.'/'.$tag->href) != 0)
-        {
-//          if ($count > $start)
-            $v[] = $url.'/'.$tag->href;
-          $count++;
-//          if ($count - $start > $num)
-//            break;
-        }
-
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($v);
-
-  return $v;
 }
 
 

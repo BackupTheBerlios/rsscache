@@ -25,7 +25,7 @@ define ('RSSCACHE_WRITE_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 require_once ('misc/misc.php');
 require_once ('misc/widget.php');
-require_once ('misc/wikipedia.php');
+//require_once ('misc/wikipedia.php');
 //require_once ('misc/rss.php');
 require_once ('misc/sql.php');
 require_once ('misc/youtube.php');
@@ -66,22 +66,23 @@ rsscache_write_rss ($channel_title,
 //  print_r ($rss_author_array);
 
   $channel_desc = 'rsscache urls have a similar syntax like google urls<br>'
-                 .'<tt><pre>q=SEARCH    SEARCH query<br>'
-                 .'start=N     start from result N<br>'
-                 .'num=N       show N results<br>'
-                 .'c=NAME      category (leave empty for all categories)<br>'
-                 .'item=CRC32  show single item<br>'
-                 .'f=FUNC      execute FUNCtion'
-                 .'</pre></tt><br>'
+                 .'<br>'           
+                 .'q=SEARCH&nbsp;&nbsp;  SEARCH query<br>'
+                 .'start=N&nbsp;&nbsp;   start from result N<br>'
+                 .'num=N&nbsp;&nbsp;     show N results<br>'
+                 .'c=NAME&nbsp;&nbsp;    category (leave empty for all categories)<br>'
+                 .'item=CRC32&nbsp;&nbsp;show single item<br>'
+                 .'f=FUNC&nbsp;&nbsp;    execute FUNCtion<br>'
+                 .'<br>'           
                  .'*** functions ***<br>'
-                 .'<tt><pre>f=0_5min    media with duration 0-5 minutes<br>'
-                 .'f=5_10min   media with duration 5-10 minutes<br>'
-                 .'f=10_min    media with duration 10+ minutes<br>'
-                 .'f=stats     statistics<br>'
-                 .'f=new       show only newly created items (default: download time)<br>'
-                 .'f=related   find related items (requires &q=SEARCH)<br>'
-                 .'f=html      show feed in html (XSL transformation)<br>'
-                 .'</pre></tt><br>'
+                 .'f=0_5min&nbsp;&nbsp;  media with duration 0-5 minutes<br>'
+                 .'f=5_10min&nbsp;&nbsp; media with duration 5-10 minutes<br>'
+                 .'f=10_min&nbsp;&nbsp;  media with duration 10+ minutes<br>'
+                 .'f=stats&nbsp;&nbsp;   statistics<br>'
+                 .'f=new&nbsp;&nbsp;     show only newly created items (default: download time)<br>'
+                 .'f=related&nbsp;&nbsp; find related items (requires &q=SEARCH)<br>'
+                 .'f=html&nbsp;&nbsp;    show feed in html (XSL transformation)<br>'
+                 .'<br>'
                  .'*** install ***<br>'
                  .'see apache2/sites-enabled/rsscache<br>';
 
@@ -121,9 +122,9 @@ rsscache_write_rss ($channel_title,
            .strftime ("%a, %d %h %Y %H:%M:%S %z", $item_date_array[$i])
 //           .strftime ("%a, %d %h %Y %H:%M:%S %Z", $item_date_array[$i])
            .'</pubDate>'."\n"
-//           .'<category><![CDATA[bMobile : Actualités]]></category>'
-//           .'<comments>http://www.zdnet.fr/produits/test/dell-streak-7-39762776.htm#xtor=123456</comments>'
-//           .'<enclosure url="http://www.cnetfrance.fr/i/edit/2011/pr/dell-streak-7-120x90.jpg" length="2783" type="image/jpeg" />'
+//           .'<category><![CDATA[bMobile : Actualités]]></category>'."\n"
+//           .'<comments>http://www.zdnet.fr/produits/test/dell-streak-7-39762776.htm#xtor=123456</comments>'."\n"
+//           .'<enclosure url="http://www.cnetfrance.fr/i/edit/2011/pr/dell-streak-7-120x90.jpg" length="2783" type="image/jpeg" />'."\n"
 ;
 
       if ($item_media_duration_array)
