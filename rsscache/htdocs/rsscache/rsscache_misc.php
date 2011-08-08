@@ -438,6 +438,9 @@ rsscache_thumbnail ($d, $width = 120)
          $rsscache_link,
          $rsscache_thumbnails_prefix;
 
+return $rsscache_link_static.'/thumbnails/'.$rsscache_thumbnails_prefix.'rsscache/'.$d['rsstool_url_crc32'].'.jpg';
+
+
 //          $p .= '<a href="?'.http_build_query2 (array ('v' => $d['rsstool_url_crc32'],  
 //                                                       'start' => ($start + 5),  
 //                                                       'len' => $len), false).'">';  

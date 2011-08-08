@@ -34,8 +34,6 @@ $rsscache_collapsed = 2; // collapse categories? -1 == always, 0 == no (default)
 $rsscache_qrcode = 1; // generate QR codes for links
 
 $rsscache_root = dirname(__FILE__).'/';
-//$rsscache_link = 'http://emulive.pwnoogle.com/';
-//$rsscache_link_static = 'http://emulive.pwnoogle.com/'; // remote static content
 $rsscache_cookie_expire = time() + 3600 * 24 * 30 * 1; // 1 month
 // DEBUG (show the SQL query)
 $rsscache_rss_head = 1;
@@ -64,8 +62,8 @@ $rsscache_dbpass = 'nb';
 $rsscache_config_xml = 'config.xml';
 $rsscache_thumbnails_prefix = '';
 
-$rsscache_link = 'http://videos.pwnoogle.com/';
-$rsscache_link_static = 'http://videos.pwnoogle.com/'; // static content
+$rsscache_link = 'http://'.$_SERVER['SERVER_NAME'];
+$rsscache_link_static = 'http://'.$_SERVER['SERVER_NAME']; // static content
 $rsscache_debug_sql = 0;
 
 //  $rsscache_default_category = 'baseqz';
