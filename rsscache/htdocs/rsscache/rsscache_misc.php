@@ -29,7 +29,6 @@ require_once ('misc/widget.php');
 //require_once ('misc/rss.php');
 require_once ('misc/sql.php');
 require_once ('misc/youtube.php');
-require_once ('rsscache_lang.php');
 require_once ('rsscache_sql.php');
 require_once ('rsscache_write.php'); // write RSS
 

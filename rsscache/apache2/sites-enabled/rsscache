@@ -7,3 +7,14 @@
                 AllowOverride All
         </Directory>
 </VirtualHost>
+
+<VirtualHost *:80>
+        ServerName tv2.a1.25u.com
+
+        DocumentRoot /htdocs/pwnoogle2/htdocs
+        <Directory /htdocs/pwnoogle2/htdocs >
+                Options +FollowSymLinks
+                AllowOverride All
+        </Directory>
+</VirtualHost>
+

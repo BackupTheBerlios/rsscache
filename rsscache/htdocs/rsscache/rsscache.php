@@ -28,7 +28,6 @@ define ('RSSCACHE_PHP', 1);
 require_once ('default.php');
 require_once ('config.php');
 require_once ('misc/misc.php');
-require_once ('rsscache_lang.php');
 require_once ('rsscache_misc.php');
 require_once ('rsscache_sql.php');
 require_once ('rsscache_write.php');

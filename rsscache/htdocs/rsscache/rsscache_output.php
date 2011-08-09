@@ -29,7 +29,6 @@ require_once ('misc/widget.php');
 //require_once ('misc/rss.php');
 require_once ('misc/sql.php');
 require_once ('misc/youtube.php');
-require_once ('rsscache_lang.php');
 require_once ('rsscache_sql.php');
 
 
@@ -66,27 +65,6 @@ rsscache_write_mrss ($channel_title,
 //  print_r ($rss_date_array);
 //  print_r ($rss_media_duration_array);
 //  print_r ($rss_author_array);
-
-  $channel_desc = 'rsscache urls have a similar syntax like google urls<br>'
-                 .'<br>'           
-                 .'q=SEARCH&nbsp;&nbsp;  SEARCH query<br>'
-                 .'start=N&nbsp;&nbsp;   start from result N<br>'
-                 .'num=N&nbsp;&nbsp;     show N results<br>'
-                 .'c=NAME&nbsp;&nbsp;    category (leave empty for all categories)<br>'
-                 .'item=CRC32&nbsp;&nbsp;show single item<br>'
-                 .'f=FUNC&nbsp;&nbsp;    execute FUNCtion<br>'
-                 .'<br>'           
-                 .'*** functions ***<br>'
-                 .'f=0_5min&nbsp;&nbsp;  media with duration 0-5 minutes<br>'
-                 .'f=5_10min&nbsp;&nbsp; media with duration 5-10 minutes<br>'
-                 .'f=10_min&nbsp;&nbsp;  media with duration 10+ minutes<br>'
-                 .'f=stats&nbsp;&nbsp;   statistics<br>'
-                 .'f=new&nbsp;&nbsp;     show only newly created items (default: download time)<br>'
-                 .'f=related&nbsp;&nbsp; find related items (requires &q=SEARCH)<br>'
-                 .'f=html&nbsp;&nbsp;    show feed in html (XSL transformation)<br>'
-                 .'<br>'
-                 .'*** install ***<br>'
-                 .'see apache2/sites-enabled/rsscache<br>';
 
   $p = '';
 
@@ -191,22 +169,25 @@ rsscache_stats_rss ()
   $rss_date_array = array ();
   $rss_image_array = array ();
 
-  $s = '<img src="images/new.png" border="0">';
+//  $s = '<img src="images/new.png" border="0">';
+  $s = 'NEW!';
 
   for ($i = 0; isset ($config->category[$i]); $i++)
     if ($config->category[$i]->name != '' &&
         (isset ($config->category[$i]->feed[0]->link[0]) || isset ($config->category[$i]->feed[0]->link_prefix)))
       {
         $category = $config->category[$i];
-        $p = ''
-            .($category->items * 1).' <!-- lang:items --><br>'
-            .($category->items_today * 1).' <!-- lang:items --> <!-- lang:today -->'
-                                     .(($category->items_today * 1) > 0 ? ' '.$s : '').'<br>'
-            .($category->items_7_days * 1).' <!-- lang:items --> <!-- lang:last --> 7 <!-- lang:days --><br>'
-            .($category->items_30_days * 1).' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
-            .($category->days * 1).' <!-- lang:days --> <!-- lang:since creation of category -->'
+        $p = '';
+        $p .= ''
+            .($category->items * 1).' items<br>'
+            .($category->items_today * 1).' items today';
+        if (($category->items_today * 1) > 0)
+          $p .= ' '.$s;
+        $p .= '<br>'
+            .($category->items_7_days * 1).' items last 7 days<br>'
+            .($category->items_30_days * 1).' items last 30 days<br>'
+            .($category->days * 1).' days since creation of category'
 ;
-        $p = misc_template ($p, $rsscache_translate[$rsscache_language ? $rsscache_language : 'default']);
 
         $rss_title_array[] = $category->title;
 //        $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'].'/?'.$category->query;
@@ -222,15 +203,15 @@ rsscache_stats_rss ()
       }
 
   $p = ''
-//      .'<!-- lang:category -->: '.$config->category[$i]->name.'<br>'
-      .($items * 1).' <!-- lang:items --><br>'
-      .($items_today * 1).' <!-- lang:items --> <!-- lang:today -->'
-                               .((items_today * 1) > 0 ? ' '.$s : '').'<br>'
-      .($items_7_days * 1).' <!-- lang:items --> <!-- lang:last --> 7 <!-- lang:days --><br>'
-      .($items_30_days * 1).' <!-- lang:items --> <!-- lang:last --> 30 <!-- lang:days --><br>'
+//      .'category: '.$config->category[$i]->name.'<br>'
+      .($items * 1).' items<br>'
+      .($items_today * 1).' items today';
+  if (($items_today * 1) > 0) 
+    $p .= ' '.$s;
+  $p .= '<br>'                                                                               
+       .($items_7_days * 1).' items last 7 days<br>'
+       .($items_30_days * 1).' items last 30 days<br>'
 ;
-  $p = misc_template ($p, $rsscache_translate[$rsscache_language ? $rsscache_language : 'default']);
-
   return rsscache_write_mrss (rsscache_title (),
                              $rsscache_link,
                              $p,
@@ -277,7 +258,26 @@ rsscache_rss ($d_array)
 
   return rsscache_write_mrss (rsscache_title (),
                              $rsscache_link,
-                             '',
+                  'rsscache urls have a similar syntax like google urls<br>'
+                 .'<br>'           
+                 .'q=SEARCH&nbsp;&nbsp;  SEARCH query<br>'
+                 .'start=N&nbsp;&nbsp;   start from result N<br>'
+                 .'num=N&nbsp;&nbsp;     show N results<br>'
+                 .'c=NAME&nbsp;&nbsp;    category (leave empty for all categories)<br>'
+                 .'item=CRC32&nbsp;&nbsp;show single item<br>'
+                 .'f=FUNC&nbsp;&nbsp;    execute FUNCtion<br>'
+                 .'<br>'           
+                 .'*** functions ***<br>'
+                 .'f=0_5min&nbsp;&nbsp;  media with duration 0-5 minutes<br>'
+                 .'f=5_10min&nbsp;&nbsp; media with duration 5-10 minutes<br>'
+                 .'f=10_min&nbsp;&nbsp;  media with duration 10+ minutes<br>'
+                 .'f=stats&nbsp;&nbsp;   statistics<br>'
+                 .'f=new&nbsp;&nbsp;     show only newly created items (default: download time)<br>'
+                 .'f=related&nbsp;&nbsp; find related items (requires &q=SEARCH)<br>'
+                 .'f=html&nbsp;&nbsp;    show feed in html (XSL transformation)<br>'
+                 .'<br>'
+                 .'*** install ***<br>'
+                 .'see apache2/sites-enabled/rsscache<br>',
                              $rss_title_array,
                              $rss_link_array,
                              $rss_desc_array,
