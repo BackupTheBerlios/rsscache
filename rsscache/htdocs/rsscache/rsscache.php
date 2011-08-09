@@ -39,6 +39,11 @@ require_once ('rsscache_write.php');
 $f = rsscache_get_request_value ('f'); // function
 $q = rsscache_get_request_value ('q'); // search query
 $item = rsscache_get_request_value ('item'); // item crc32
+//$prefix = rsscache_get_request_value ('prefix'); // item crc32
+//if (!($prefix))
+//  $prefix = get_subdomain ();
+//$rsscache_thumbnails_prefix = $prefix;
+//$rsscache_dbprefix = $prefix;
 $start = rsscache_get_request_value ('start'); // offset
 if (!($start))
   $start = 0;
