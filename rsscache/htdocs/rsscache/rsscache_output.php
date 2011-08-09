@@ -47,10 +47,10 @@ rsscache_write_mrss ($channel_title,
                     $item_link_array,
                     $item_desc_array,
                     $item_date_array,
-                    $item_media_duration_array = NULL,
-                    $item_author_array = NULL,
-                    $item_image_array = NULL,
-                    $item_category_array = NULL
+                    $item_media_duration_array,
+                    $item_author_array,
+                    $item_image_array,
+                    $item_category_array
 )
 {
   global $rsscache_xsl_trans;
@@ -73,9 +73,7 @@ rsscache_write_mrss ($channel_title,
   if ($rsscache_xsl_trans == 1)
     $p .= '<?xml-stylesheet href="'.$rsscache_xsl_stylesheet.'" type="text/xsl" media="screen"?>'."\n";
 
-  $p .= '<rss version="2.0"'
-        .' xmlns:media="http://search.yahoo.com/mrss/"'
-        .'>'."\n";
+  $p .= '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">'."\n";
 
   $p .= '  <channel>'."\n"
        .'    <title>'.rsscache_write_mrss_escape ($channel_title).'</title>'."\n"
@@ -173,10 +171,10 @@ rsscache_stats_rss ()
   $rss_date_array = array ();
   $rss_image_array = array ();
   $rss_category_array = array ();
+  $rss_media_duration_array = array ();
+  $rss_author_array = array ();
 
-//  $s = '<img src="images/new.png" border="0">';
-  $s = '';
-
+  $count = 0;
   for ($i = 0; isset ($config->category[$i]); $i++)
     if ($config->category[$i]->name != '' &&
         (isset ($config->category[$i]->feed[0]->link[0]) || isset ($config->category[$i]->feed[0]->link_prefix)))
@@ -185,22 +183,20 @@ rsscache_stats_rss ()
         $p = '';
         $p .= ''
             .($category->items * 1).' items<br>'
-            .($category->items_today * 1).' items today';
-        if (($category->items_today * 1) > 0)
-          $p .= ' '.$s;
-        $p .= '<br>'
+            .($category->items_today * 1).' items today<br>'
             .($category->items_7_days * 1).' items last 7 days<br>'
             .($category->items_30_days * 1).' items last 30 days<br>'
             .($category->days * 1).' days since creation of category'
 ;
-
-        $rss_title_array[] = $category->title;
-//        $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'].'/?'.$category->query;
-        $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category->name;
-        $rss_desc_array[] = $p;
-        $rss_date_array[] = $rsscache_time;
-        $rss_image_array[] = $category->logo;
-        $rss_category_array[$i] = $category->name;
+        $rss_title_array[$count] = $category->title;
+        $rss_link_array[$count] = 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category->name;
+        $rss_desc_array[$count] = $p;
+        $rss_date_array[$count] = $rsscache_time;
+//        $rss_image_array[$count] = $category->logo;
+        $rss_category_array[$count] = $category->name;
+        $rss_media_duration_array[$count] = 0;
+        $rss_author_array[$count] = '';
+        $count++;
 
         $items += ($category->items * 1);
         $items_today += ($category->items_today * 1);
@@ -210,12 +206,9 @@ rsscache_stats_rss ()
 
   $p = ''
       .($items * 1).' items<br>'
-      .($items_today * 1).' items today';
-  if (($items_today * 1) > 0) 
-    $p .= ' '.$s;
-  $p .= '<br>'                                                                               
-       .($items_7_days * 1).' items last 7 days<br>'
-       .($items_30_days * 1).' items last 30 days<br>'
+      .($items_today * 1).' items today<br>'
+      .($items_7_days * 1).' items last 7 days<br>'
+      .($items_30_days * 1).' items last 30 days<br>'
 ;
   return rsscache_write_mrss (rsscache_title (),
                              $rsscache_link,
@@ -224,8 +217,8 @@ rsscache_stats_rss ()
                              $rss_link_array,
                              $rss_desc_array,
                              $rss_date_array,
-                             NULL,
-                             NULL,
+                             $rss_media_duration_array,
+                             $rss_author_array,
                              $rss_image_array,
                              $rss_category_array);
 }
@@ -236,6 +229,7 @@ rsscache_rss ($d_array)
 {
   global $rsscache_link;
   global $rsscache_time;
+  global $rsscache_results;
 
   $f = rsscache_get_request_value ('f'); // function
 
@@ -245,23 +239,29 @@ rsscache_rss ($d_array)
   $rss_date_array = array ();
   $rss_image_array = array ();
   $rss_category_array = array ();
+  $rss_media_duration_array = array ();
+  $rss_author_array = array ();
 
+  $count = 0;
   for ($i = 0; isset ($d_array[$i]); $i++)
     {
-      $rss_title_array[$i] = $d_array[$i]['rsstool_title'];
-//      $rss_link_array[$i] = $d_array[$i]['rsstool_url'];
+      $rss_title_array[$count] = $d_array[$i]['rsstool_title'];
+//      $rss_link_array[$count] = $d_array[$i]['rsstool_url'];
       if (substr (rsscache_link ($d_array[$i]), 0, 7) == 'http://')
-        $rss_link_array[$i] = rsscache_link ($d_array[$i]);
+        $rss_link_array[$count] = rsscache_link ($d_array[$i]);
       else
-        $rss_link_array[$i] = $rsscache_link.'?'.rsscache_link ($d_array[$i]);
+        $rss_link_array[$count] = $rsscache_link.'?'.rsscache_link ($d_array[$i]);
 
-      $rss_desc_array[$i] = $d_array[$i]['rsstool_desc'];
+      $rss_desc_array[$count] = $d_array[$i]['rsstool_desc'];
       if ($f == 'new')
-        $rss_date_array[$i] = $d_array[$i]['rsstool_dl_date'];
+        $rss_date_array[$count] = $d_array[$i]['rsstool_dl_date'];
       else
-        $rss_date_array[$i] = $d_array[$i]['rsstool_date'];
-      $rss_image_array[$i] = rsscache_thumbnail ($d_array[$i], 120, 1);
-      $rss_category_array[$i] = $d_array[$i]['tv2_moved'];
+        $rss_date_array[$count] = $d_array[$i]['rsstool_date'];
+      $rss_image_array[$count] = rsscache_thumbnail ($d_array[$i], 120, 1);
+      $rss_category_array[$count] = $d_array[$i]['tv2_moved'];
+      $rss_media_duration_array[$count] = $d_array[$i]['rsstool_media_duration'];
+      $rss_author_array[$count] = $d_array[$i]['rsstool_author'];
+      $count++;
     }
 
   return rsscache_write_mrss (rsscache_title (),
@@ -270,7 +270,7 @@ rsscache_rss ($d_array)
                  .'<br>'           
                  .'q=SEARCH&nbsp;&nbsp;   SEARCH query<br>'
                  .'start=N&nbsp;&nbsp;    start from result N<br>'
-                 .'num=N&nbsp;&nbsp;      show N results<br>'
+                 .'num=N&nbsp;&nbsp;      show N results (default: '.$rsscache_results.')<br>'
                  .'c=NAME&nbsp;&nbsp;     category (leave empty for all categories)<br>'
                  .'item=CRC32&nbsp;&nbsp; show single item<br>'
                  .'f=FUNC&nbsp;&nbsp;     execute FUNCtion<br>'
@@ -291,8 +291,8 @@ rsscache_rss ($d_array)
                              $rss_link_array,
                              $rss_desc_array,
                              $rss_date_array,  
-                             NULL,
-                             NULL,
+                             $rss_media_duration_array,
+                             $rss_author_array,
                              $rss_image_array,
                              $rss_category_array);
 }
