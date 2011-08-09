@@ -56,6 +56,7 @@ rsscache_write_mrss ($channel_title,
   global $rsscache_xsl_trans;
   global $rsscache_xsl_stylesheet;
   global $rsscache_time;
+  global $rsscache_logo;
 
   // DEBUG
 //  print_r ($rss_title_array);
@@ -82,13 +83,13 @@ rsscache_write_mrss ($channel_title,
        .'    <description>'.rsscache_write_mrss_escape ($channel_desc).'</description>'."\n"
        .'    <lastBuildDate>'.strftime ("%a, %d %h %Y %H:%M:%S %z", $rsscache_time).'</lastBuildDate>'."\n"
 //       .'    <language>en</language>'."\n"
-//       .'    <image>'."\n"
-//       .'      <title><![CDATA[ZDNet - Business et Solutions IT]]></title>'."\n"
-//       .'      <url>http://images.zdnet.fr/i/ser/rss/zdnet-rss-logo.gif</url>'."\n"
-//       .'      <link>http://www.zdnet.fr/feeds/rss/</link>'."\n"
-//       .'      <width>68</width>'."\n"
-//       .'      <height>35</height>'."\n"
-//       .'    </image>'."\n"
+       .'    <image>'."\n"
+//       .'      <title><![CDATA[]]></title>'."\n"
+       .'      <url>'.$rsscache_logo.'</url>'."\n"
+//       .'      <link>'.rsscache_write_mrss_escape ($channel_link).'</link>'."\n"
+//       .'      <width></width>'."\n"
+//       .'      <height></height>'."\n"
+       .'    </image>'."\n"
 ;
 
   for ($i = 0; isset ($item_link_array[$i]); $i++)
@@ -103,9 +104,12 @@ rsscache_write_mrss ($channel_title,
            .strftime ("%a, %d %h %Y %H:%M:%S %z", $item_date_array[$i])
 //           .strftime ("%a, %d %h %Y %H:%M:%S %Z", $item_date_array[$i])
            .'</pubDate>'."\n"
-//           .'<category><![CDATA[bMobile : Actualités]]></category>'."\n"
-//           .'<comments>http://www.zdnet.fr/produits/test/dell-streak-7-39762776.htm#xtor=123456</comments>'."\n"
+//           .'<comments>http://domain/bla.txt</comments>'."\n"
 ;
+
+      if ($item_category_array)
+        if (isset ($item_category_array[$i]))
+          $p .= '      <category><![CDATA['.$item_category_array[$i].']]></category>'."\n";
 
       if ($item_author_array)
         if (isset ($item_author_array[$i]))
@@ -113,27 +117,28 @@ rsscache_write_mrss ($channel_title,
 
       if ($item_image_array)
         if (isset ($item_image_array[$i]))
-          $p .= '<enclosure url="'.$item_image_array[$i].'"'
-               .' length=""'
-               .' type="image/jpeg"'
-               .' />'."\n"
-;
+          {
+            $suffix = strtolower (get_suffix ($item_image_array[$i]));
+            if ($suffix == '.jpg')
+              $suffix = '.jpeg';
+            $p .= '      <enclosure url="'.$item_image_array[$i].'" length="" type="image/'.substr ($suffix, 1).'" />'."\n";
+          }
 
-//      $p .= '<media:group>'."\n";
+      $p .= '      <media:group>'."\n";
 
-      $p .= '<media:content url="'.$item_link_array[$i].'" />'."\n";
+      $p .= '        <media:content url="'.$item_link_array[$i].'" />'."\n";
 
 //<media:category scheme="http://search.yahoo.com/mrss/category_ schema">music/artist/album/song</media:category>
 
       if ($item_image_array)
         if (isset ($item_image_array[$i]))
-          $p .= '      <media:thumbnail url="'.$item_image_array[$i].'" />'."\n";
+          $p .= '        <media:thumbnail url="'.$item_image_array[$i].'" />'."\n";
 
       if ($item_media_duration_array)
         if (isset ($item_media_duration_array[$i]))
-          $p .= '      <media:duration>'.$item_media_duration_array[$i].'</media:duration>'."\n";
+          $p .= '        <media:duration>'.$item_media_duration_array[$i].'</media:duration>'."\n";
 
-//      $p .= '</media:group>'."\n";
+      $p .= '      </media:group>'."\n";
 
 
       $p .= '    </item>'."\n";
@@ -167,9 +172,10 @@ rsscache_stats_rss ()
   $rss_desc_array = array ();
   $rss_date_array = array ();
   $rss_image_array = array ();
+  $rss_category_array = array ();
 
 //  $s = '<img src="images/new.png" border="0">';
-  $s = 'NEW!';
+  $s = '';
 
   for ($i = 0; isset ($config->category[$i]); $i++)
     if ($config->category[$i]->name != '' &&
@@ -193,7 +199,8 @@ rsscache_stats_rss ()
         $rss_link_array[] = 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category->name;
         $rss_desc_array[] = $p;
         $rss_date_array[] = $rsscache_time;
-        $rss_image_array[] = $config->category[$i]->logo;
+        $rss_image_array[] = $category->logo;
+        $rss_category_array[$i] = $category->name;
 
         $items += ($category->items * 1);
         $items_today += ($category->items_today * 1);
@@ -202,7 +209,6 @@ rsscache_stats_rss ()
       }
 
   $p = ''
-//      .'category: '.$config->category[$i]->name.'<br>'
       .($items * 1).' items<br>'
       .($items_today * 1).' items today';
   if (($items_today * 1) > 0) 
@@ -220,7 +226,8 @@ rsscache_stats_rss ()
                              $rss_date_array,
                              NULL,
                              NULL,
-                             $rss_image_array);
+                             $rss_image_array,
+                             $rss_category_array);
 }
 
 
@@ -237,6 +244,7 @@ rsscache_rss ($d_array)
   $rss_desc_array = array ();
   $rss_date_array = array ();
   $rss_image_array = array ();
+  $rss_category_array = array ();
 
   for ($i = 0; isset ($d_array[$i]); $i++)
     {
@@ -253,6 +261,7 @@ rsscache_rss ($d_array)
       else
         $rss_date_array[$i] = $d_array[$i]['rsstool_date'];
       $rss_image_array[$i] = rsscache_thumbnail ($d_array[$i], 120, 1);
+      $rss_category_array[$i] = $d_array[$i]['tv2_moved'];
     }
 
   return rsscache_write_mrss (rsscache_title (),
@@ -284,7 +293,8 @@ rsscache_rss ($d_array)
                              $rss_date_array,  
                              NULL,
                              NULL,
-                             $rss_image_array);
+                             $rss_image_array,
+                             $rss_category_array);
 }
 
 

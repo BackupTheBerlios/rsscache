@@ -15,7 +15,7 @@
 
 <xsl:for-each select="rss/channel/item">
 <a href="{link}"><xsl:value-of disable-output-escaping="yes" select="title"/></a><br/>
-<xsl:value-of disable-output-escaping="yes" select="pubDate"/><br/>
+<xsl:value-of disable-output-escaping="yes" select="pubDate"/>, Category: <xsl:value-of disable-output-escaping="yes" select="category"/><br/>
 <xsl:value-of disable-output-escaping="yes" select="./media:group/media:thumbnail"/><br/>
 <xsl:value-of disable-output-escaping="yes" select="description"/><br/><br/>
 </xsl:for-each>

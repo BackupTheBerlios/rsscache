@@ -123,7 +123,7 @@ rsscache_sql_stats_func ($c = NULL, $table_suffix = NULL, $t = 0)
 //        .' ORDER BY rsscache_rows DESC'
 ;
   // DEBUG
-//echo $sql_query_s.'<br>';
+//echo $sql_query_s."\n";
   return $sql_query_s;
 }
 
