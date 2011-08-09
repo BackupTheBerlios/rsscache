@@ -24,7 +24,6 @@ if (!defined ('RSSCACHE_WRITE_PHP'))
 define ('RSSCACHE_WRITE_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 require_once ('misc/misc.php');
-require_once ('misc/widget.php');
 //require_once ('misc/wikipedia.php');
 //require_once ('misc/rss.php');
 require_once ('misc/sql.php');
