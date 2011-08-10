@@ -1,6 +1,6 @@
 <?php
 /*
-rsscache_write.php - rsscache engine miscellaneous functions
+rsscache_output.php - rsscache engine output functions
 
 Copyright (c) 2009 - 2011 NoisyB 
 
@@ -260,7 +260,7 @@ rsscache_write_rss ($d_array)
       $rss_image_array[$count] = rsscache_thumbnail ($d_array[$i], 120, 1);
       $rss_category_array[$count] = $d_array[$i]['tv2_moved'];
       $rss_media_duration_array[$count] = $d_array[$i]['rsstool_media_duration'];
-      $rss_author_array[$count] = $d_array[$i]['rsstool_author'];
+      $rss_author_array[$count] = $d_array[$i]['rsstool_user'];
       $count++;
     }
 

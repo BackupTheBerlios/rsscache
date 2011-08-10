@@ -48,7 +48,7 @@ $rsscache_buttons_only = 0;   // use only logos as category buttons
 $rsscache_enable_search = 1; // allow users to search
 $rsscache_related_search = 1; // make use of related searches (requires keywords)
 $rsscache_use_dl_date = 0;
-$rsscache_item_ttl = 1000; // time to life of an item in the db (in days)
+$rsscache_item_ttl = 0; // time to life of an item in the db (in days)
 //$rsscache_banner = 1;
 
 // database settings

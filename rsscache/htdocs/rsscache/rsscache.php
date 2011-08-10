@@ -30,7 +30,7 @@ require_once ('config.php');
 require_once ('misc/misc.php');
 require_once ('rsscache_misc.php');
 require_once ('rsscache_sql.php');
-require_once ('rsscache_write.php');
+require_once ('rsscache_output.php');
 
 
 // main ()
@@ -70,9 +70,9 @@ else // write feed
 
     // use SQL
     if ($item)
-      $d_array = rsscache_sql (NULL, NULL, $f, $item, 0, 0, $category->table_suffix);
+      $d_array = rsscache_sql (NULL, NULL, $f, $item, 0, 0, isset ($category->table_suffix) ? $category->table_suffix : NULL);
     else
-      $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, $category->table_suffix);
+      $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, isset ($category->table_suffix) ? $category->table_suffix : NULL);
 
 // DEBUG
 //echo '<pre><tt>';

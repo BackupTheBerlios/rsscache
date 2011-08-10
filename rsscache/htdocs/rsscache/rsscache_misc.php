@@ -29,7 +29,7 @@ require_once ('misc/misc.php');
 //require_once ('misc/sql.php');
 require_once ('misc/youtube.php');
 require_once ('rsscache_sql.php');
-require_once ('rsscache_write.php'); // write RSS
+require_once ('rsscache_output.php');
 
 
 function
@@ -97,15 +97,6 @@ config_xml_normalize ($config)
               }
           }
 
-  for ($i = 0; isset ($config->category[$i]); $i++)
-    {
-      $category = $config->category[$i];
-      $category->tooltip = ''
-                .($category->tooltip ? $category->tooltip : $category->title)
-                .($category->items ? ', '.$category->items.' <!-- lang:items -->' : '')
-                .($category->days ? ', '.$category->days.' <!-- lang:days -->' : '');
-    }
-  
   for ($i = 0; isset ($config->category[$i]); $i++)
     for ($j = 0; isset ($config->category[$i]->feed[$j]); $j++)
       {
@@ -353,7 +344,7 @@ rsscache_download_feeds_by_category ($category_name)
 
 
 function
-rsscache_title ($d)
+rsscache_title ($d = NULL)
 {
   global $rsscache_title;
   $v = rsscache_get_request_value ('v');
@@ -368,7 +359,7 @@ rsscache_title ($d)
     if (trim ($category->title) != '')
       $a[] = $category->title;
 
-  if ($v && $d_array != NULL)
+  if ($v && $d != NULL)
     $a[] = $d['rsstool_title'];
 
   return implode (' - ', $a);

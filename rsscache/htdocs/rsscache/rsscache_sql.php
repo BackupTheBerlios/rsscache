@@ -129,17 +129,16 @@ rsscache_sql_stats_func ($c = NULL, $table_suffix = NULL, $t = 0)
 
 
 function
-rsscache_sql_stats ($db, $c = NULL)
+rsscache_sql_stats ($db, $c = NULL, $table_suffix = NULL)
 {
   global $rsscache_time;
-  $category = config_xml_by_category ($c);
 
   $debug = 0;
 
   $stats = array ();
 
   // total items and days since creation
-  $sql_query_s = rsscache_sql_stats_func ($c, $category->table_prefix, 0);
+  $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, 0);
   $db->sql_write ($sql_query_s, 0, $debug);
   $r = $db->sql_read (0, $debug);
   for ($i = 0; isset ($r[$i]); $i++)
@@ -151,9 +150,9 @@ rsscache_sql_stats ($db, $c = NULL)
     }
 
   // downloaded items today
-  $sql_query_s = rsscache_sql_stats_func ($c, $category->table_prefix, mktime (0, 0, 0));
-//  $sql_query_s = rsscache_sql_stats_func ($c, $category->table_prefix, mktime (0, 0, 0, date ('n'), date ('j')));
-//  $sql_query_s = rsscache_sql_stats_func ($c, $category->table_prefix, $rsscache_time);
+  $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, mktime (0, 0, 0));
+//  $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, mktime (0, 0, 0, date ('n'), date ('j')));
+//  $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, $rsscache_time);
   $db->sql_write ($sql_query_s, 0, $debug);
   $r = $db->sql_read (0, $debug);
   for ($i = 0; isset ($r[$i]); $i++)
@@ -165,7 +164,7 @@ rsscache_sql_stats ($db, $c = NULL)
         }
 
   // downloaded items last 7 days   
-  $sql_query_s = rsscache_sql_stats_func ($c, $category->table_prefix, mktime (0, 0, 0, date ('n'), date ('j') - 7));
+  $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, mktime (0, 0, 0, date ('n'), date ('j') - 7));
   $db->sql_write ($sql_query_s, 0, $debug);
   $r = $db->sql_read (0, $debug);
   for ($i = 0; isset ($r[$i]); $i++)
@@ -177,7 +176,7 @@ rsscache_sql_stats ($db, $c = NULL)
         }
 
   // downloaded items last 30 days
-  $sql_query_s = rsscache_sql_stats_func ($c, $category->table_prefix, mktime (0, 0, 0, date ('n'), date ('j') - 30));
+  $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, mktime (0, 0, 0, date ('n'), date ('j') - 30));
   $db->sql_write ($sql_query_s, 0, $debug);
   $r = $db->sql_read (0, $debug);
   for ($i = 0; isset ($r[$i]); $i++)
@@ -208,7 +207,7 @@ rsscache_sql_normalize ($d)
   for ($i = 0; isset ($d[$i]); $i++)
     {
       // trim and lower-case categories
-      $d[$i]['tv2_category'] = strtolower (trim ($d[$i]['tv2_category']));
+//      $d[$i]['tv2_category'] = strtolower (trim ($d[$i]['tv2_category']));
       $d[$i]['tv2_moved'] = strtolower (trim ($d[$i]['tv2_moved']));
     }
 
@@ -352,7 +351,7 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
          $rsscache_use_dl_date,
          $rsscache_wall_results,
          $rsscache_cloud_results,
-//         $rsscache_time,
+         $rsscache_time,
          $rsscache_item_ttl;
   global $rsscache_debug_sql;
 
@@ -365,6 +364,10 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 //  $v = $rsscache_sql_db->sql_stresc ($v);
 //  $start = $rsscache_sql_db->sql_stresc ($start);
 //  $num = $rsscache_sql_db->sql_stresc ($num);
+  $category = config_xml_by_category ($c);
+
+  if ($f == 'stats')
+    return rsscache_sql_stats ($rsscache_sql_db, isset ($category->table_suffix) ? $category->table_suffix : NULL, $c);
 
   $rsstool_table = 'rsstool_table';
   $keyword_table = 'keyword_table';
@@ -375,9 +378,6 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
         // TODO
 //      $keyword_table .= '_'.$table_suffix;
       }
-
-  if ($f == 'stats')
-    return rsscache_sql_stats ($rsscache_sql_db, $c);
 
   $sql_query_s = '';
   $sql_query_s .= ''
@@ -390,12 +390,13 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
                  .' rsstool_desc,'
                  .' rsstool_dl_date,'
                  .' rsstool_date,'
-                 .' tv2_category,'
+//                 .' tv2_category,'
                  .' tv2_moved,'
                  .' rsstool_event_start,'
                  .' rsstool_event_end,'
                  .' rsstool_media_duration,'
-                 .' rsstool_keywords'
+                 .' rsstool_keywords,'
+                 .' rsstool_user'
 //                 .' tv2_votes,'
 //                 .' tv2_score'
 ;
