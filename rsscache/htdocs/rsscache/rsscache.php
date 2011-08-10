@@ -39,11 +39,6 @@ require_once ('rsscache_write.php');
 $f = rsscache_get_request_value ('f'); // function
 $q = rsscache_get_request_value ('q'); // search query
 $item = rsscache_get_request_value ('item'); // item crc32
-//$prefix = rsscache_get_request_value ('prefix'); // item crc32
-//if (!($prefix))
-//  $prefix = get_subdomain ();
-//$rsscache_thumbnails_prefix = $prefix;
-//$rsscache_dbprefix = $prefix;
 $start = rsscache_get_request_value ('start'); // offset
 if (!($start))
   $start = 0;
@@ -60,7 +55,7 @@ $c = rsscache_get_request_value ('c'); // category
 
 if ($f == 'stats') // db statistics as feed
   {
-    $p = rsscache_stats_rss ();
+    $p = rsscache_write_stats_rss ();
   }
 else if ($f == 'feed') // download or update feed
   {
@@ -84,7 +79,7 @@ else // write feed
 //print_r ($d_array);
 //exit;
 
-    $p = rsscache_rss ($d_array);
+    $p = rsscache_write_rss ($d_array);
   }
 
 rsscache_sql_close ();

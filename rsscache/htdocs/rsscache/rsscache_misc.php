@@ -33,37 +33,6 @@ require_once ('rsscache_write.php'); // write RSS
 
 
 function
-rsscache_link_normalize ($link)
-{
-  // checks is file is on local server or on static server and returns correct link
-  global $rsscache_root,
-         $rsscache_link,
-         $rsscache_link_static;
-  $p = $link; // $d['rsstool_url']
-
-  if (strncmp ($p, $rsscache_link, strlen ($rsscache_link)) || // extern link
-      !$rsscache_link_static) // no static server
-    return $link;
-
-  $p = str_replace ($rsscache_link, $rsscache_root, $link); // file on local server?
-  if (file_exists ($p))
-    return $link;
-
-  return str_replace ($rsscache_link, $rsscache_link_static, $link); // has to be on static server then
-}
-
-
-function
-rsscache_link ($d)
-{
-  $p = '';
-  $s = rsscache_link_normalize (urldecode ($d['rsstool_url'])); // local, static or other server?
-  $p .= $s; // .http_build_query2 (array (), false);
-  return $p;
-}
-
-
-function
 rsscache_get_request_value ($name)
 {
   // wrapper for get_request_value() 
@@ -384,7 +353,7 @@ rsscache_download_feeds_by_category ($category_name)
 
 
 function
-rsscache_title ($d_array = NULL)
+rsscache_title ($d)
 {
   global $rsscache_title;
   $v = rsscache_get_request_value ('v');
@@ -400,9 +369,31 @@ rsscache_title ($d_array = NULL)
       $a[] = $category->title;
 
   if ($v && $d_array != NULL)
-    $a[] = $d_array[0]['rsstool_title'];
+    $a[] = $d['rsstool_title'];
 
   return implode (' - ', $a);
+}
+
+
+function
+rsscache_link ($d)
+{
+  // checks is file is on local server or on static server and returns correct link
+  global $rsscache_root,
+         $rsscache_link,
+         $rsscache_link_static;
+  $link = urldecode ($d['rsstool_url']);
+  $p = $link;
+
+  if (strncmp ($p, $rsscache_link, strlen ($rsscache_link)) || // extern link
+      !$rsscache_link_static) // no static server
+    return $link;
+
+  $p = str_replace ($rsscache_link, $rsscache_root, $link); // file on local server?
+  if (file_exists ($p))
+    return $link;
+
+  return str_replace ($rsscache_link, $rsscache_link_static, $link); // has to be on static server then
 }
 
 
@@ -416,52 +407,15 @@ rsscache_duration ($d)
 
 
 function
-rsscache_thumbnail ($d, $width = 120)
+rsscache_thumbnail ($d)
 {
-  // NOTE: right now only youtube thumbnails are supported
   global $rsscache_link_static,
-         $rsscache_link,
          $rsscache_thumbnails_prefix;
-
-return $rsscache_link_static.'/thumbnails/'.$rsscache_thumbnails_prefix.'rsscache/'.$d['rsstool_url_crc32'].'.jpg';
-
-
-//          $p .= '<a href="?'.http_build_query2 (array ('v' => $d['rsstool_url_crc32'],  
-//                                                       'start' => ($start + 5),  
-//                                                       'len' => $len), false).'">';  
-//          $p .= rsscache_thumbnail ($d, $width, 1);
-//          $p .= '</a>';  
-  $link = rsscache_link ($d);
-
-  $p = '';
-
-//  if ($d['rsscache_demux'] == 1) // youtube
-    {
-      $t = rsscache_duration ($d);
-      $p .= '/thumbnails/'.$rsscache_thumbnails_prefix.'rsscache/'.$d['rsstool_url_crc32'].'.jpg';
-/*
-      $p .= '<nobr>';
-      $p .= '<a href="?'.$link.'" title="'.$d['rsstool_title'];
-      $t = rsscache_duration ($d);
-      if ($t != '')
-        $p .= ' ('.$t.')';
-      $p .= '">';
-
-       $p .= '<img src="'
-            .rsscache_link_normalize ($rsscache_link.'/thumbnails/'.$rsscache_thumbnails_prefix.'rsscache/'.$d['rsstool_url_crc32'].'.jpg')
-            .'" width="'.$width.'" border="0" alt="'.$d['rsstool_title'].'"'
-            .' onerror="this.parentNode.removeChild(this);"'
-            .'>';
-
-      $p .= '</a>';
-      $p .= '</nobr>';
-*/
-    }
-
-  return $p;
+  return $rsscache_link_static.'/thumbnails/'.$rsscache_thumbnails_prefix.'/rsscache/'.$d['rsstool_url_crc32'].'.jpg';
 }
 
 
+/*
 function
 rsscache_event ($d)
 {
@@ -510,6 +464,7 @@ print_r ($t);
 
   return $p;
 }
+*/
 
 
 }

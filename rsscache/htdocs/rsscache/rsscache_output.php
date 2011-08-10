@@ -151,7 +151,7 @@ rsscache_write_mrss ($channel_title,
 
 
 function
-rsscache_stats_rss ()
+rsscache_write_stats_rss ()
 {
   global $rsscache_link;
   global $rsscache_translate;
@@ -225,7 +225,7 @@ rsscache_stats_rss ()
 
 
 function
-rsscache_rss ($d_array)
+rsscache_write_rss ($d_array)
 {
   global $rsscache_link;
   global $rsscache_time;
@@ -295,19 +295,6 @@ rsscache_rss ($d_array)
                              $rss_author_array,
                              $rss_image_array,
                              $rss_category_array);
-}
-
-
-function
-misc_sql_stresc ($s, $db_conn = NULL)
-{
-  if ($db_conn)
-    return mysql_real_escape_string ($s, $db_conn);
-  if (function_exists ('mysql_escape_string'))
-    return mysql_escape_string ($s); // deprecated
-  echo 'WARNING: neither mysql_real_escape_string() or mysql_escape_string() could be found/used'."\n"
-      .'         making this script vulnerable to SQL injection attacks'."\n";
-  return $s;
 }
 
 
