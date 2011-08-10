@@ -195,7 +195,7 @@ rsscache_write_stats_rss ()
 //        $rss_image_array[$count] = $category->logo;
         $rss_category_array[$count] = $category->name;
         $rss_media_duration_array[$count] = 0;
-        $rss_author_array[$count] = '';
+        $rss_author_array[$count] = NULL;
         $count++;
 
         $items += ($category->items * 1);

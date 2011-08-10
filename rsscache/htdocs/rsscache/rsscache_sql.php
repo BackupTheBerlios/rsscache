@@ -149,6 +149,13 @@ rsscache_sql_stats ($db, $c = NULL, $table_suffix = NULL)
       $stats[] = $a;
     }
 
+  for ($j = 0; isset ($stats[$j]); $j++)
+    {
+      $stats[$j]['items_today'] = 0;
+      $stats[$j]['items_7_days'] = 0;
+      $stats[$j]['items_30_days'] = 0;
+    }
+
   // downloaded items today
   $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, mktime (0, 0, 0));
 //  $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, mktime (0, 0, 0, date ('n'), date ('j')));
