@@ -37,6 +37,7 @@ require_once ('rsscache_output.php');
 
 
 $f = rsscache_get_request_value ('f'); // function
+$output = rsscache_get_request_value ('output'); // output
 $q = rsscache_get_request_value ('q'); // search query
 $item = rsscache_get_request_value ('item'); // item crc32
 $start = rsscache_get_request_value ('start'); // offset
@@ -86,7 +87,7 @@ rsscache_sql_close ();
 
 
 // XSL transformation
-if ($f == 'html')
+if ($output == 'html')
   {
     if ($rsscache_xsl_trans == 2) // check user-agent and decide
       {
@@ -105,7 +106,7 @@ if ($f == 'html')
       {
       }
   }
-else
+else // if ($output == 'rss')
   {
 //    header ('Content-type: text/xml');
     header ('Content-type: application/xml');

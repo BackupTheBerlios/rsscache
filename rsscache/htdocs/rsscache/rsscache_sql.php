@@ -478,11 +478,13 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
   if ($f == '0_5min')
     $a[] = 'rsstool_media_duration BETWEEN 0 AND 301';
   else if ($f == '5_10min')
-    $a[] = 'rsstool_media_duration BETWEEN 300 AND 601';
-  else if ($f == '10_min')
-    $a[] = 'rsstool_media_duration > 600';
-  else if ($f == '1_h')
-    $a[] = 'rsstool_media_duration > 3600';
+    $a[] = 'rsstool_media_duration BETWEEN 299 AND 601';
+  else if ($f == '10_30min')
+    $a[] = 'rsstool_media_duration BETWEEN 599 AND 1801';
+  else if ($f == '30_60_min')
+    $a[] = 'rsstool_media_duration BETWEEN 1799 AND 3601';
+  else if ($f == '60_min' || $f == '1_h')
+    $a[] = 'rsstool_media_duration > 3599';
 
   if (isset ($a[0]))
     $sql_query_s .= ' WHERE ( '.implode (' AND ', $a).' )';
