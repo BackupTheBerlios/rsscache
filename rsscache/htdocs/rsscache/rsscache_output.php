@@ -19,12 +19,11 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-if (!defined ('RSSCACHE_WRITE_PHP'))
+if (!defined ('RSSCACHE_OUTPUT_PHP'))
 {
-define ('RSSCACHE_WRITE_PHP', 1);
+define ('RSSCACHE_OUTPUT_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 require_once ('misc/misc.php');
-//require_once ('misc/wikipedia.php');
 //require_once ('misc/rss.php');
 require_once ('misc/sql.php');
 require_once ('misc/youtube.php');
@@ -42,23 +41,33 @@ rsscache_write_mrss_escape ($s)
 function
 rsscache_write_mrss ($channel, $item)
 /*
-$channel['title'],
-                    $channel['link'],
-                    $channel['desc'],
-                    $item['title'],
-                    $item['link'],
-                    $item['desc'],
-                    $item['date'],
-                    $item['media_duration'],
-                    $item['user'],
-                    $item['image'],
-                    $item['category']
+format:
+channel
+  title
+  link
+  desc
+item[]
+  title
+  link
+  desc
+  date
+  image
+  enclosure
+  category
+  media_duration
+  user
+  dl_date
+  keywords
+  related_id
+  event_start
+  event_end
 */
 {
   global $rsscache_xsl_trans;
   global $rsscache_xsl_stylesheet;
   global $rsscache_time;
   global $rsscache_logo;
+  $rsscache_namespace = 1;
 
   // DEBUG
 //  print_r ($channel);
@@ -138,6 +147,8 @@ $channel['title'],
       $p .= '      </media:group>'."\n";
 
       // rsscache
+      if ($rsscache_namespace == 1)
+        {
       $p .= '      <rsscache_group>'."\n";
 
       if (isset ($item[$i]['dl_date']))
@@ -156,6 +167,7 @@ $channel['title'],
         $p .= '        <rsscache_event_end>'.sprintf ("%u", $item[$i]['event_end']).'</rsscache_event_end>'."\n";
 
       $p .= '      </rsscache_group>'."\n";
+        }
 
       $p .= '    </item>'."\n";
     }
