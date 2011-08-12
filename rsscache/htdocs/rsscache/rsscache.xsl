@@ -5,7 +5,7 @@
 <head>
 <title><xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/></title>
 <style type="text/css">
-@import url(rsscache.css);
+@import url(rsscache/rsscache.css);
 </style>
 <link rel="alternate" type="application/rss+xml">
 <xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/></xsl:attribute>

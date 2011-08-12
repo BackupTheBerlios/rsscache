@@ -5,5 +5,14 @@
         <Directory /htdocs/rsscache/htdocs >
                 Options +FollowSymLinks
                 AllowOverride All
+
+<files admin.php>
+
+        AuthName "Restricted Area"
+        AuthType Basic
+        Require valid-user
+        AuthUserFile /htdocs/rsscache/.htpasswd
+        #AuthGroupFile /dev/null
+</files>
         </Directory>
 </VirtualHost>

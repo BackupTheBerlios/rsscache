@@ -21,9 +21,9 @@ deny from all
 <files rsscache*.php>
 require valid-user
 </files>
-#<files admin.php>
-#require valid-user
-#</files>
+<files admin.php>
+require valid-user
+</files>
 <ifmodule mod_rewrite.c>
 RewriteEngine on 
 RewriteRule ^sitemap\.xml$ /index.php?f=sitemap
@@ -34,10 +34,10 @@ RewriteRule ^robots\.txt$ /index.php?f=robots
 RewriteRule ^([^/]*)/([^/]*)/([^/]*)/banner.jpg$ /plugins.php?game=$1&server=$2&type=$3 [L]
 </ifmodule>
 #<ifmodule mod_auth.c>
-#AuthName "Restricted Area" 
-#AuthType Basic 
-#AuthUserFile /home/pwnoogle/htdocs/pwnoogle/.htpasswd 
-#AuthGroupFile /dev/null 
+AuthName "Restricted Area" 
+AuthType Basic 
+AuthUserFile /htdocs/rsscache/.htpasswd 
+AuthGroupFile /dev/null 
 #</ifmodule>
 <ifmodule mod_suphp.c>
 SuPHP_ConfigPath /home/pwnoogle/public_html
