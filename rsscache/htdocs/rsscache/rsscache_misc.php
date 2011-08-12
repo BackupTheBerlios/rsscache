@@ -347,13 +347,16 @@ function
 rsscache_title ($d = NULL)
 {
   global $rsscache_title;
+  global $rsscache_time;
   $v = rsscache_get_request_value ('v');
   $c = rsscache_get_request_value ('c');
   $category = config_xml_by_category ($c);
 
   $a = array ();
   if (trim ($rsscache_title) != '')
-    $a[] = $rsscache_title;
+    $a[] = $rsscache_title
+          .' 0.96beta-'.sprintf ("%u", $rsscache_time)
+;
 
   if ($category)
     if (trim ($category->title) != '')

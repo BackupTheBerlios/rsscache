@@ -40,18 +40,20 @@ rsscache_write_mrss_escape ($s)
 
 
 function
-rsscache_write_mrss ($channel_title,
-                    $channel_link,
-                    $channel_desc,
-                    $item_title_array,
-                    $item_link_array,
-                    $item_desc_array,
-                    $item_date_array,
-                    $item_media_duration_array,
-                    $item_author_array,
-                    $item_image_array,
-                    $item_category_array
-)
+rsscache_write_mrss ($channel, $item)
+/*
+$channel['title'],
+                    $channel['link'],
+                    $channel['desc'],
+                    $item['title'],
+                    $item['link'],
+                    $item['desc'],
+                    $item['date'],
+                    $item['media_duration'],
+                    $item['user'],
+                    $item['image'],
+                    $item['category']
+*/
 {
   global $rsscache_xsl_trans;
   global $rsscache_xsl_stylesheet;
@@ -59,12 +61,8 @@ rsscache_write_mrss ($channel_title,
   global $rsscache_logo;
 
   // DEBUG
-//  print_r ($rss_title_array);
-//  print_r ($rss_link_array);
-//  print_r ($rss_desc_array);
-//  print_r ($rss_date_array);
-//  print_r ($rss_media_duration_array);
-//  print_r ($rss_author_array);
+//  print_r ($channel);
+//  print_r ($item);
 
   $p = '';
 
@@ -73,71 +71,91 @@ rsscache_write_mrss ($channel_title,
   if ($rsscache_xsl_trans == 1)
     $p .= '<?xml-stylesheet href="'.$rsscache_xsl_stylesheet.'" type="text/xsl" media="screen"?>'."\n";
 
-  $p .= '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">'."\n";
+  $p .= '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/"'
+//                         .' xmlns:rsstool=""'
+.">\n";
 
   $p .= '  <channel>'."\n"
-       .'    <title>'.rsscache_write_mrss_escape ($channel_title).'</title>'."\n"
-       .'    <link>'.rsscache_write_mrss_escape ($channel_link).'</link>'."\n"
-       .'    <description>'.rsscache_write_mrss_escape ($channel_desc).'</description>'."\n"
+       .'    <title>'.rsscache_write_mrss_escape ($channel['title']).'</title>'."\n"
+       .'    <link>'.rsscache_write_mrss_escape ($channel['link']).'</link>'."\n"
+       .'    <description>'.rsscache_write_mrss_escape ($channel['desc']).'</description>'."\n"
        .'    <lastBuildDate>'.strftime ("%a, %d %h %Y %H:%M:%S %z", $rsscache_time).'</lastBuildDate>'."\n"
 //       .'    <language>en</language>'."\n"
        .'    <image>'."\n"
 //       .'      <title><![CDATA[]]></title>'."\n"
        .'      <url>'.$rsscache_logo.'</url>'."\n"
-//       .'      <link>'.rsscache_write_mrss_escape ($channel_link).'</link>'."\n"
+//       .'      <link>'.rsscache_write_mrss_escape ($channel['link']).'</link>'."\n"
 //       .'      <width></width>'."\n"
 //       .'      <height></height>'."\n"
        .'    </image>'."\n"
 ;
 
-  for ($i = 0; isset ($item_link_array[$i]); $i++)
+  for ($i = 0; isset ($item[$i]['link']); $i++)
     {
       $p .= '    <item>'."\n";
 
-      $p .= '      <title>'.rsscache_write_mrss_escape ($item_title_array[$i]).'</title>'."\n"
-           .'      <link>'.rsscache_write_mrss_escape ($item_link_array[$i]).'</link>'."\n"
-           .'      <description>'.rsscache_write_mrss_escape ($item_desc_array[$i]).'</description>'."\n"
+      $p .= '      <title>'.rsscache_write_mrss_escape ($item[$i]['title']).'</title>'."\n"
+           .'      <link>'.rsscache_write_mrss_escape ($item[$i]['link']).'</link>'."\n"
+           .'      <description>'.rsscache_write_mrss_escape ($item[$i]['desc']).'</description>'."\n"
            .'      <pubDate>'
 //                <pubDate>Fri, 05 Aug 2011 15:03:02 +0200</pubDate>
-           .strftime ("%a, %d %h %Y %H:%M:%S %z", $item_date_array[$i])
-//           .strftime ("%a, %d %h %Y %H:%M:%S %Z", $item_date_array[$i])
+           .strftime ("%a, %d %h %Y %H:%M:%S %z", $item[$i]['date'])
+//           .strftime ("%a, %d %h %Y %H:%M:%S %Z", $item[$i]['date'])
            .'</pubDate>'."\n"
 //           .'<comments>http://domain/bla.txt</comments>'."\n"
 ;
 
-      if ($item_category_array)
-        if (isset ($item_category_array[$i]))
-          $p .= '      <category><![CDATA['.$item_category_array[$i].']]></category>'."\n";
+        if (isset ($item[$i]['category']))
+          $p .= '      <category><![CDATA['.$item[$i]['category'].']]></category>'."\n";
 
-      if ($item_author_array)
-        if (isset ($item_author_array[$i]))
-          $p .= '      <author>'.rsscache_write_mrss_escape ($item_author_array[$i]).'</author>'."\n";
+        if (isset ($item[$i]['user']))
+          $p .= '      <author>'.rsscache_write_mrss_escape ($item[$i]['user']).'</author>'."\n";
 
-      if ($item_image_array)
-        if (isset ($item_image_array[$i]))
+        if (isset ($item[$i]['enclosure']))
           {
-            $suffix = strtolower (get_suffix ($item_image_array[$i]));
+            $suffix = strtolower (get_suffix ($item[$i]['enclosure']));
             if ($suffix == '.jpg')
               $suffix = '.jpeg';
-            $p .= '      <enclosure url="'.$item_image_array[$i].'" length="" type="image/'.substr ($suffix, 1).'" />'."\n";
+            $p .= '      <enclosure url="'.$item[$i]['image'].'" length="" type="image/'.substr ($suffix, 1).'" />'."\n";
           }
 
+      // mrss
       $p .= '      <media:group>'."\n";
 
-      $p .= '        <media:content url="'.$item_link_array[$i].'" />'."\n";
+      $p .= '        <media:content url="'.$item[$i]['link'].'" />'."\n";
 
-//<media:category scheme="http://search.yahoo.com/mrss/category_ schema">music/artist/album/song</media:category>
+//      $p .= '        <media:category scheme="">'..'</media:category>';
 
-      if ($item_image_array)
-        if (isset ($item_image_array[$i]))
-          $p .= '        <media:thumbnail url="'.$item_image_array[$i].'" />'."\n";
+      if (isset ($item[$i]['image']))
+        $p .= '        <media:thumbnail url="'.$item[$i]['image'].'" />'."\n";
 
-      if ($item_media_duration_array)
-        if (isset ($item_media_duration_array[$i]))
-          $p .= '        <media:duration>'.$item_media_duration_array[$i].'</media:duration>'."\n";
+      if (isset ($item[$i]['media_duration']))
+        $p .= '        <media:duration>'.$item[$i]['media_duration'].'</media:duration>'."\n";
+
+      if (isset ($item[$i]['keywords']))
+        $p .= '        <media:keywords><![CDATA['.str_replace (' ', ', ', $item[$i]['keywords']).']]></media:keywords>'."\n";
 
       $p .= '      </media:group>'."\n";
 
+      // rsscache
+      $p .= '      <rsscache_group>'."\n";
+
+      if (isset ($item[$i]['dl_date']))
+        $p .= '        <rsscache_dl_date>'.sprintf ("%u", $item[$i]['dl_date']).'</rsscache_dl_date>'."\n";
+
+      if (isset ($item[$i]['date']))
+        $p .= '        <rsscache_date>'.sprintf ("%u", $item[$i]['date']).'</rsscache_date>'."\n";
+
+      if (isset ($item[$i]['related_id']))
+        $p .= '        <rsscache_related_id>'.sprintf ("%u", $item[$i]['related_id']).'</rsscache_related_id>'."\n";
+
+      if (isset ($item[$i]['event_start']))
+        $p .= '        <rsscache_event_start>'.sprintf ("%u", $item[$i]['event_start']).'</rsscache_event_start>'."\n";
+
+      if (isset ($item[$i]['event_end']))
+        $p .= '        <rsscache_event_end>'.sprintf ("%u", $item[$i]['event_end']).'</rsscache_event_end>'."\n";
+
+      $p .= '      </rsscache_group>'."\n";
 
       $p .= '    </item>'."\n";
     }
@@ -165,16 +183,8 @@ rsscache_write_stats_rss ()
 
   $config = config_xml ();
 
-  $rss_title_array = array ();
-  $rss_link_array = array ();
-  $rss_desc_array = array ();
-  $rss_date_array = array ();
-  $rss_image_array = array ();
-  $rss_category_array = array ();
-  $rss_media_duration_array = array ();
-  $rss_author_array = array ();
+  $item = array ();
 
-  $count = 0;
   for ($i = 0; isset ($config->category[$i]); $i++)
     if ($config->category[$i]->name != '' &&
         (isset ($config->category[$i]->feed[0]->link[0]) || isset ($config->category[$i]->feed[0]->link_prefix)))
@@ -188,16 +198,21 @@ rsscache_write_stats_rss ()
             .($category->items_30_days * 1).' items last 30 days<br>'
             .($category->days * 1).' days since creation of category'
 ;
-        $rss_title_array[$count] = $category->title;
-        $rss_link_array[$count] = 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category->name;
-        $rss_desc_array[$count] = $p;
-        $rss_date_array[$count] = $rsscache_time;
-//        $rss_image_array[$count] = $category->logo;
-        $rss_category_array[$count] = $category->name;
-        $rss_media_duration_array[$count] = 0;
-        $rss_author_array[$count] = NULL;
-        $count++;
+        $item[] = array ('title' => $category->title,
+                         'link' => 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category->name,
+                         'desc' => $p,
+                         'date' => $rsscache_time,
+//                       'image' => $category->logo,
+                         'category' => $category->name,
+                         'media_duration' => 0,
+//                         'user' => NULL
 
+                         'dl_date' => $rsscache_time,
+//                         'keywords' => NULL,
+//                         'related_id' => NULL,
+//                         'event_start' => 0,
+//                         'event_end' => 0
+);
         $items += ($category->items * 1);
         $items_today += ($category->items_today * 1);
         $items_7_days += ($category->items_7_days * 1);
@@ -210,17 +225,9 @@ rsscache_write_stats_rss ()
       .($items_7_days * 1).' items last 7 days<br>'
       .($items_30_days * 1).' items last 30 days<br>'
 ;
-  return rsscache_write_mrss (rsscache_title (),
-                             $rsscache_link,
-                             $p,
-                             $rss_title_array,
-                             $rss_link_array,
-                             $rss_desc_array,
-                             $rss_date_array,
-                             $rss_media_duration_array,
-                             $rss_author_array,
-                             $rss_image_array,
-                             $rss_category_array);
+  return rsscache_write_mrss (array ('title' => rsscache_title (),
+                                     'link' => $rsscache_link,
+                                     'desc' => $p), $item);
 }
 
 
@@ -231,73 +238,69 @@ rsscache_write_rss ($d_array)
   global $rsscache_time;
   global $rsscache_results;
 
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($d_array);
+
   $f = rsscache_get_request_value ('f'); // function
 
-  $rss_title_array = array ();
-  $rss_link_array = array ();
-  $rss_desc_array = array ();
-  $rss_date_array = array ();
-  $rss_image_array = array ();
-  $rss_category_array = array ();
-  $rss_media_duration_array = array ();
-  $rss_author_array = array ();
+  $item = array ();
 
-  $count = 0;
   for ($i = 0; isset ($d_array[$i]); $i++)
     {
-      $rss_title_array[$count] = $d_array[$i]['rsstool_title'];
-//      $rss_link_array[$count] = $d_array[$i]['rsstool_url'];
-      if (substr (rsscache_link ($d_array[$i]), 0, 7) == 'http://')
-        $rss_link_array[$count] = rsscache_link ($d_array[$i]);
-      else
-        $rss_link_array[$count] = $rsscache_link.'?'.rsscache_link ($d_array[$i]);
+      $link = (substr (rsscache_link ($d_array[$i]), 0, 7) == 'http://') ? 
+        rsscache_link ($d_array[$i]) : 
+        ($rsscache_link.'?'.rsscache_link ($d_array[$i]));
+      $date = ($f == 'new') ?
+        $d_array[$i]['rsstool_dl_date'] :
+        $d_array[$i]['rsstool_date'];
 
-      $rss_desc_array[$count] = $d_array[$i]['rsstool_desc'];
-      if ($f == 'new')
-        $rss_date_array[$count] = $d_array[$i]['rsstool_dl_date'];
-      else
-        $rss_date_array[$count] = $d_array[$i]['rsstool_date'];
-      $rss_image_array[$count] = rsscache_thumbnail ($d_array[$i], 120, 1);
-      $rss_category_array[$count] = $d_array[$i]['tv2_moved'];
-      $rss_media_duration_array[$count] = $d_array[$i]['rsstool_media_duration'];
-      $rss_author_array[$count] = $d_array[$i]['rsstool_user'];
-      $count++;
+      $item[] = array ('title' => $d_array[$i]['rsstool_title'],
+//                       'link' => $d_array[$i]['rsstool_url'],
+                       'link' => $link,
+                       'desc' => $d_array[$i]['rsstool_desc'],
+                       'date'  => $date,
+                       'image' => rsscache_thumbnail ($d_array[$i]),
+                       'enclosure' => rsscache_thumbnail ($d_array[$i]),
+                       'category' => $d_array[$i]['tv2_moved'],
+                       'media_duration' => $d_array[$i]['rsstool_media_duration'],
+                       'user' => $d_array[$i]['rsstool_user'],
+                       'dl_date' => $d_array[$i]['rsstool_dl_date'],
+                       'keywords' => $d_array[$i]['rsstool_keywords'],
+                       'related_id' => $d_array[$i]['rsstool_related_id'],
+                       'event_start' => $d_array[$i]['rsstool_event_start'],
+                       'event_end' => $d_array[$i]['rsstool_event_end']
+);
     }
 
-  return rsscache_write_mrss (rsscache_title (),
-                             $rsscache_link,
-                  'rsscache urls have a similar syntax like google urls<br>'
-                 .'<br>'           
-                 .'q=SEARCH&nbsp;&nbsp;   SEARCH query<br>'
-                 .'start=N&nbsp;&nbsp;    start from result N<br>'
-                 .'num=N&nbsp;&nbsp;      show N results (default: '.$rsscache_results.')<br>'
-                 .'c=NAME&nbsp;&nbsp;     category (leave empty for all categories)<br>'
-                 .'item=CRC32&nbsp;&nbsp; show single item<br>'
-                 .'f=FUNC&nbsp;&nbsp;     execute FUNCtion<br>'
-                 .'output=FORMAT&nbsp;&nbsp; output in "html" or "rss" (default: rss)<br>'
-//                 .'prefix=SUBDOMAIN&nbsp;&nbsp; prefix or SUBDOMAIN (leave empty for current subdomain)<br>'
-                 .'<br>'           
-                 .'*** functions ***<br>'
-                 .'f=0_5min&nbsp;&nbsp;   media with duration 0-5 minutes<br>'
-                 .'f=5_10min&nbsp;&nbsp;  media with duration 5-10 minutes<br>'
-                 .'f=10_30min&nbsp;&nbsp; media with duration 10-30 minutes<br>'
-                 .'f=30_60min&nbsp;&nbsp; media with duration 30-60 minutes<br>'
-                 .'f=60_min&nbsp;&nbsp;   media with duration 60+ minutes<br>'
-                 .'f=stats&nbsp;&nbsp;    statistics<br>'
-                 .'f=new&nbsp;&nbsp;      show only newly created items (default: download time)<br>'
-                 .'f=related&nbsp;&nbsp;  find related items (requires &q=SEARCH)<br>'
-                 .'f=html&nbsp;&nbsp;     show feed in html (XSL transformation)<br>'
-                 .'<br>'
-                 .'*** install ***<br>'
-                 .'see apache2/sites-enabled/rsscache<br>',
-                             $rss_title_array,
-                             $rss_link_array,
-                             $rss_desc_array,
-                             $rss_date_array,  
-                             $rss_media_duration_array,
-                             $rss_author_array,
-                             $rss_image_array,
-                             $rss_category_array);
+  $p = ''
+      .'q=SEARCH&nbsp;&nbsp;   SEARCH query<br>'
+      .'start=N&nbsp;&nbsp;    start from result N<br>'
+      .'num=N&nbsp;&nbsp;      show N results (default: '.$rsscache_results.')<br>'
+      .'c=NAME&nbsp;&nbsp;     category (leave empty for all categories)<br>'
+      .'item=CRC32&nbsp;&nbsp; show single item<br>'
+      .'f=FUNC&nbsp;&nbsp;     execute FUNCtion<br>'
+      .'output=FORMAT&nbsp;&nbsp; output in "html" or "rss" (default: rss)<br>'
+//      .'prefix=SUBDOMAIN&nbsp;&nbsp; prefix or SUBDOMAIN (leave empty for current subdomain)<br>'
+      .'<br>'           
+      .'*** functions ***<br>'
+      .'f=author&nbsp;&nbsp;   find user/author/channel (requires &q=SEARCH)<br>'
+      .'f=0_5min&nbsp;&nbsp;   media with duration 0-5 minutes<br>'
+      .'f=5_10min&nbsp;&nbsp;  media with duration 5-10 minutes<br>'
+      .'f=10_30min&nbsp;&nbsp; media with duration 10-30 minutes<br>'
+      .'f=30_60min&nbsp;&nbsp; media with duration 30-60 minutes<br>'
+      .'f=60_min&nbsp;&nbsp;   media with duration 60+ minutes<br>'
+      .'f=new&nbsp;&nbsp;      show only newly created items (default: download time)<br>'
+      .'f=related&nbsp;&nbsp;  find related items (requires &q=TITLE)<br>'
+//      .'f=related&nbsp;&nbsp;  find related items (requires &q=RELATED_ID)<br>'
+      .'f=stats&nbsp;&nbsp;    statistics<br>'
+      .'<br>'
+      .'*** install ***<br>'
+      .'see apache2/sites-enabled/rsscache<br>'
+;
+  return rsscache_write_mrss (array ('title' => rsscache_title (),
+                                     'link' => $rsscache_link,
+                                     'desc' => $p), $item);
 }
 
 

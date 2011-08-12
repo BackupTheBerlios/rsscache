@@ -216,6 +216,7 @@ rsscache_sql_normalize ($d)
       // trim and lower-case categories
 //      $d[$i]['tv2_category'] = strtolower (trim ($d[$i]['tv2_category']));
       $d[$i]['tv2_moved'] = strtolower (trim ($d[$i]['tv2_moved']));
+      $d[$i]['rsstool_related_id'] = misc_related_string_id ($d[$i]['rsstool_title']);
     }
 
   return $d;
