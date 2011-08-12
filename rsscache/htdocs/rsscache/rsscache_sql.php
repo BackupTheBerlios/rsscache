@@ -357,8 +357,7 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
          $rsscache_enable_search,
          $rsscache_related_search,
          $rsscache_use_dl_date,
-         $rsscache_wall_results,
-         $rsscache_cloud_results,
+         $rsscache_max_results,
          $rsscache_time,
          $rsscache_item_ttl;
   global $rsscache_debug_sql;
@@ -442,7 +441,7 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
       $sql_query_s .= ' ORDER BY rsstool_title ASC';
 
       // limit
-      $sql_query_s .= ' LIMIT '.$rsscache_wall_results;
+      $sql_query_s .= ' LIMIT '.$rsscache_max_results;
 
       $d = rsscache_sql_query ($sql_query_s);
 
@@ -500,7 +499,7 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
     $sql_query_s .= ' ORDER BY rsstool_date DESC';
 
   // limit
-  $sql_query_s .= ' LIMIT '.$start.','.min ($num, $rsscache_wall_results);
+  $sql_query_s .= ' LIMIT '.$start.','.min ($num, $rsscache_max_results);
 
   $d = rsscache_sql_query ($sql_query_s);
 

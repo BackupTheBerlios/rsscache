@@ -115,7 +115,6 @@ else // if ($output == 'rss')
 //    header ('Content-type: application/xml-dtd');
   }
 
-
 // the _only_ echo
 if ($use_gzip == 1)
   echo_gzip ($p);
