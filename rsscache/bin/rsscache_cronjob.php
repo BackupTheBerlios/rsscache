@@ -25,8 +25,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 chdir (dirname ($argv[0]));
 require_once ('../htdocs/default.php');
 require_once ('../htdocs/config.php');
-require_once ('../htdocs/rsscache/rsscache_sql.php');
-require_once ('../htdocs/rsscache/rsscache_misc.php');
+require_once ('../htdocs/rsscache_sql.php');
+require_once ('../htdocs/rsscache_misc.php');
 
 
 // main ()

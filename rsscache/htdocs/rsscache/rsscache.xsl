@@ -29,7 +29,6 @@
 <xsl:value-of disable-output-escaping="yes" select="description"/><br/><br/>
 </xsl:for-each>
 <br/>
-<xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/>
 </body>
 </html>
 </xsl:template>

@@ -27,6 +27,7 @@ define ('RSSCACHE_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 require_once ('default.php');
 require_once ('config.php');
+//require_once ('misc/rss.php');
 require_once ('misc/misc.php');
 require_once ('rsscache_misc.php');
 require_once ('rsscache_sql.php');
@@ -58,9 +59,19 @@ if ($f == 'stats') // db statistics as feed
   {
     $p = rsscache_write_stats_rss ();
   }
-else if ($f == 'feed') // download or update feed
+else if ($rsscache_admin == 1 && $f == 'cache') // cache (new) items into database
   {
-    // TODO
+    if ($c)
+      {
+        ob_start ();
+        rsscache_download_feeds_by_category ($c);
+        $p = str_replace ("\n", "<br>\n", ob_get_contents ());
+        ob_end_clean ();
+        $p .= '<br><br>success';
+      }
+    else
+      $p = '&c=CATEGORY required';
+    $p = generate_rss2 (array ('title' => rsscache_title (), 'desc' => $p), NULL);
   }
 else // write feed
   {
