@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- config for rsscache -->
+<!--
+format:
+categories
+  category[]
+    name         category name
+    title        name
+    feed[]           feed downloads
+      link[]         complete RSS feed url(s)
+                       unrelated to link_prefix, link_suffix or link_search
+      NOTE: use link_prefix, link_suffix and link_search when getting more than one RSS feed from the same place
+      link_prefix    RSS feed url prefix used for all link_search
+      link_search[]  RSS feed url search query(-ies) to be used between link_prefix and link_suffix
+      link_suffix    optional, RSS feed url suffix used for all link_search
+      opts           optional, options to be used with rsstool when downloading this RSS feed(s)
+    filter    optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
+
+Example: http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
+         http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
+-->
+<categories>
+  <category>
+    <name>quake1</name>
+    <title>Quake</title>
+    <filter>-hack -crack -japan -china -samoa -earthquake -earth-quake -earth -indones +quake +quakeworld</filter>
+    <!-- feed>
+      <link>http://video.google.com/videosearch?q=quake1&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+    </feed -->
+    <feed>
+      <link>http://video.google.com/videosearch?q=quakeworld&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>-enc=ISO-8859-15</opts>
+    </feed>
+    <!-- feed> 
+      <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=quake1</link>
+    </feed>
+    <feed> 
+      <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=quakeworld</link>
+    </feed -->
+    <feed>
+      <link>http://www.dailymotion.com/rss/search/quake1/1</link>
+    </feed>
+    <feed>
+      <link>http://www.dailymotion.com/rss/search/quakeworld/1</link>     
+    </feed>   
+    <!-- feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=quake1&amp;max-results=50</link>
+    </feed -->
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=quakeworld&amp;max-results=50</link>
+    </feed>
+  </category>
+</categories>

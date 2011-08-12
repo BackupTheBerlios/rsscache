@@ -1,0 +1,733 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- config for tv2 -->
+<!--
+format:   
+categories
+  category[]
+    name         category name
+    title        name
+    tooltip      tooltip
+    separate     optional, adds a line-feed or separator before the next category
+                   0 == no separator
+                   1 == line-feed
+                   2 == horizontal line (hr tag)
+TODO: filter     optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
+    buttononly   optional, show only button
+    logo         optional, overrides default logo
+    homepage     optional
+    background   optional, fixed background image
+    default      optional, category is/are shown as default
+    local        optional, local file to embed
+    iframe       optional, url to embed
+    proxy        optional, url to embed (proxy-style)
+    wiki         optional, embed wikipedia.org article [wiki]search[/wiki]
+TODO:    button       show 32x32 button
+    select       add to select menu
+TODO:    movable     if items can be moved to another category
+TODO:    reportable  if items can be reported to the admins
+TODO:    voteable    if videos of this category can be voted for
+
+    feed[]       feed downloads
+      link       RSS feed url
+      opts       optional, options to be used with rsstool when downloading this feed
+TODO: filter     optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
+TODO:      temp       optional, feed is only temporarily (live)
+
+    query[]      url of button or select
+      name
+        q        search
+      value
+        ...
+      name
+        f        functions
+      value
+        all      show all categories (sorted by time of RSS feed download)
+        new      show all categories (sorted by time of RSS item)
+        rss      output page as RSS feed
+        0_5min   show videos with <5 minutes duration
+        5_10min
+        10_min
+        score    sort by score/votes/popularity
+        mirror   output page as static HTML
+        wall     show search results as wall
+        cloud    same as wall
+        stats    show RSS feed download stats
+        1col     show videos in 1 column
+        2cols    show videos in 2 columns
+        4_3      4:3 ratio for videos 
+        16_9     16:9 ratio for videos
+
+Example: http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
+         http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
+         http://www.mefeedia.com/search/SEARCH/rss
+
+-->
+<!--
+
+      <link>http://archive.gp2x.de/rss20.php</link>
+      <link>http://forum.gp2x.de/rss.php?f=2&t=1</link>
+      <link>http://planetemu.net/php/rss/rss.php</link>
+      <link>http://planetemu.net/php/rss/rss.php?type=arcade</link>
+      <link>http://planetemu.net/php/rss/rss.php?type=console</link>
+      <link>http://planetemu.net/php/rss/rss.php?type=ordinateur</link>
+      <link>http://releases.pocketheaven.com/gba.rss.php</link>
+      <link>http://releases.pocketheaven.com/nds.rss.php</link>
+      <link>http://releases.pocketheaven.com/psp.rss.php</link>
+      <link>http://www.dcemu.co.uk/vbulletin/external.php?type=RSS2&forumids=27</link>
+      <link>http://www.famitsu.com/rss/fcom_all.rdf</link>
+      <link>http://www.feedster.com/search/type/rss/nintendo</link>
+      <link>http://www.feedster.com/search/type/rss/ps3</link>
+      <link>http://www.feedster.com/search/type/rss/psp</link>
+      <link>http://www.feedster.com/search/type/rss/wii</link>
+      <link>http://www.youtube.com/rss/tag/dreamcast+emulation.rss</link>
+      <link>http://www.youtube.com/rss/tag/gp2x+emulation.rss</link>
+      <link>http://www.youtube.com/rss/tag/nintendo+emulation.rss</link>
+      <link>http://www.youtube.com/rss/tag/play+station+emulation.rss</link>
+      <link>http://www.youtube.com/rss/tag/ps2+emulation.rss</link>
+      <link>http://www.youtube.com/rss/tag/sega+emulation.rss</link>
+      <link>http://www.youtube.com/rss/tag/snes+emulation.rss</link>
+      <link>http://www.youtube.com/rss/tag/sony+emulation.rss</link>
+
+
+      <link>http://www.mefeedia.com/search/psx_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/psx_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/ps1_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/ps1_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/ps2_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/ps2_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/ps3_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/ps3_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/wii_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/wii_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/gamecube_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/gamecube_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/_nintendo_64_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/_nintendo_64_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/n64_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/n64_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/snes_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/snes_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/_super_nintendo_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/_super_nintendo_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/nes_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/nes_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/dreamcast_longplay_-dc/rss</link>
+      <link>http://www.mefeedia.com/search/dreamcast_emulation_-dc/rss</link>
+      <link>http://www.mefeedia.com/search/sega_saturn_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/sega_saturn_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/sega_megadrive_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/sega_megadrive_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/sega_genesis_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/sega_genesis_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/sega_master_system_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/sega_master_system_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/amiga_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/amiga_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/c64_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/c64_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/_commodore_64_longplay/rss</link>
+      <link>http://www.mefeedia.com/search/_commodore_64_emulation/rss</link>
+      <link>http://www.mefeedia.com/search/c64_DerSchmu/rss</link>
+      <link>http://www.mefeedia.com/search/bruce_lee_fight_scene/rss</link>
+      <link>http://www.mefeedia.com/search/bruce_lee_interview/rss</link>
+
+
+-->
+<categories>
+  <category>
+    <name>psx</name>
+    <title>PlayStation</title>
+    <separate>0</separate>
+    <logo>images/logos/psx.png</logo>
+    <background>images/background/psx.png</background>
+    <homepage></homepage>
+    <filter>psx longplay "lets play"</filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=psx+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=psx+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=ps1+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=ps1+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=psx+lp+lets+play&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=ps1+lp+lets+play&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=psx+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=psx+emulation&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=ps1+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=ps1+emulation&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://www.mefeedia.com/search/psx_longplay/rss</link>
+    </feed>
+    <feed>
+      <link>http://www.mefeedia.com/search/psx_emulation/rss</link>
+    </feed>
+    <feed>
+      <link>http://www.mefeedia.com/search/ps1_longplay/rss</link>
+    </feed>
+    <feed>
+      <link>http://www.mefeedia.com/search/ps1_emulation/rss</link>
+    </feed>
+    <query>c=psx</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>ps2</name>
+    <title>PlayStation 2</title>
+    <separate>0</separate>
+    <logo>images/logos/ps2.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=ps2+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=ps2+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=ps2+lp+lets+play&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=ps2+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=ps2+emulation&amp;max-results=50</link>
+    </feed>
+    <query>c=ps2</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>ps3</name>
+    <title>PlayStation 3</title>
+    <separate>0</separate>
+    <logo>images/logos/ps3.png</logo>
+    <homepage></homepage>
+    <filter>(-fifa -"pc " (ps3 longplay "lets play"))</filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=ps3+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=ps3+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=ps3+lp+lets+play&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=ps3+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=ps3+emulation&amp;max-results=50</link>
+    </feed>
+    <query>c=ps3</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>wii</name>
+    <title>Wii</title>
+    <separate>0</separate>
+    <logo>images/logos/wii.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=wii+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=wii+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=wii+lp+lets+play&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=wii+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=wii+emulation&amp;max-results=50</link>
+    </feed>
+    <query>c=wii</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>gamecube</name>
+    <title>Gamecube</title>
+    <separate>0</separate>
+    <logo>images/logos/gamecube.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=gamecube+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=gamecube+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=gamecube+lp+lets+play&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=gamecube+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=gamecube+emulation&amp;max-results=50</link>
+    </feed>
+    <query>c=gamecube</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>n64</name>
+    <title>Nintendo 64</title>
+    <separate>0</separate>
+    <logo>images/logos/n64.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=%22nintendo+64%22+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=%22nintendo+64%22+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=n64+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=n64+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=n64+lp+lets+play&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=%22nintendo+64%22+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=%22nintendo+64%22+emulation&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=n64+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=n64+emulation&amp;max-results=50</link>
+    </feed>
+    <query>c=n64</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>snes</name>
+    <title>Super Nintendo</title>
+    <separate>0</separate>
+    <logo>images/logos/snes.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=snes+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=snes+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=%22super+nintendo%22+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=%22super+nintendo%22+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=%22super+nintendo%22+lp+lets+play&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=snes+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=snes+emulation&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=%22super+nintendo%22+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=%22super+nintendo%22+emulation&amp;max-results=50</link>
+    </feed>
+    <query>c=snes</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>snes</name>
+    <title>Super Famicom</title>
+    <separate>0</separate>
+    <logo>images/logos/sf.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <query>c=snes</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>nes</name>
+    <title>NES</title>
+    <separate>0</separate>
+    <logo>images/logos/nes.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=nes+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=nes+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=nes+lp+lets+play&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=nes+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=nes+emulation&amp;max-results=50</link>
+    </feed>
+    <query>c=nes</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>dreamcast</name>
+    <title>Sega Dreamcast</title>
+    <separate>0</separate>
+    <logo>images/logos/dc.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=dreamcast+longplay+-dc&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=dreamcast+emulation+-dc&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=dreamcast+lp+lets+play+-dc&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=dreamcast+longplay+-dc&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=dreamcast+emulation+-dc&amp;max-results=50</link>
+    </feed>
+    <query>c=dreamcast</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>saturn</name>
+    <title>Sega Saturn</title>
+    <separate>0</separate>
+    <logo>images/logos/sega_saturn.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=sega+saturn+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=sega+saturn+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=sega+saturn+lp+lets+play&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=sega+saturn+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=sega+saturn+emulation&amp;max-results=50</link>
+    </feed>
+    <query>c=saturn</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>genesis</name>
+    <title>Sega Genesis</title>
+    <separate>0</separate>
+    <logo>images/logos/sega_genesis.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=sega+genesis+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=sega+genesis+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=sega+genesis+lp+lets+play&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=sega+megadrive+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=sega+megadrive+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=sega+megadrive+lp+lets+play&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=sega+megadrive+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=sega+megadrive+emulation&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=sega+genesis+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=sega+genesis+emulation&amp;max-results=50</link>
+    </feed>
+    <query>c=genesis</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>genesis</name>
+    <title>Sega MegaDrive</title>
+    <separate>0</separate>
+    <logo>images/logos/sega_megadrive.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <query>c=genesis</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>sms</name>
+    <title>Sega Master System</title>
+    <separate>0</separate>
+    <logo>images/logos/sms.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=sega+master+system+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=sega+master+system+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=sega+master+system+lp+lets+play&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=sega+master+system+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=sega+master+system+emulation&amp;max-results=50</link>
+    </feed>
+    <query>c=sms</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>amiga</name>
+    <title>Amiga</title>
+    <separate>0</separate>
+    <logo>images/logos/amiga.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=amiga+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=amiga+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=amiga+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=amiga+emulation&amp;max-results=50</link>
+    </feed>
+    <query>c=amiga</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>c64</name>
+    <title>C64</title>
+    <separate>0</separate>
+    <logo>images/logos/c64.png</logo>
+    <homepage></homepage>
+    <filter></filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=c64+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=c64+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=%22commodore+64%22+longplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://video.google.com/videosearch?q=%22commodore+64%22+emulation&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=c64+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=c64+emulation&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=%22commodore+64%22+longplay&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=%22commodore+64%22+emulation&amp;max-results=50</link>
+    </feed>
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=c64+DerSchmu&amp;max-results=50</link>
+    </feed>
+    <query>c=c64</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>brucelee</name>
+    <title>Bruce Lee</title>
+    <separate>0</separate>
+    <logo>images/logos/brucelee.png</logo>
+    <homepage></homepage>
+    <filter>+bruce +lee -brandon</filter>
+    <feed>
+      <link>http://video.google.com/videosearch?q=bruce+lee+fight+scene&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+      <opts>--enc=ISO-8859-15</opts>
+    </feed>
+    <!-- feed>
+      <link>http://video.google.com/videosearch?q=bruce+lee+interview&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
+    </feed -->
+    <feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=bruce+lee+fight+scene&amp;max-results=50</link>
+    </feed>
+    <!-- feed>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=bruce+lee+interview&amp;max-results=50</link>
+    </feed -->
+    <query>c=brucelee</query>
+    <button>1</button>
+    <select>1</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>emulation</name>
+    <title>Emulation</title>
+    <separate>0</separate>
+    <homepage></homepage>
+    <filter>emulator emulation</filter>
+    <query>q=emulator+emulation</query>
+    <button>1</button>
+    <select>0</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+  <category>
+    <name>longplay</name>
+    <title>Longplay</title>
+    <separate>1</separate>
+    <homepage></homepage>
+    <filter>longplay (+lets +play)</filter>
+    <query>q=longplay+lets+play</query>
+    <button>1</button>
+    <select>0</select>
+    <movable>0</movable>
+    <voteable>0</voteable>
+  </category>
+</categories>
