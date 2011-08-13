@@ -34,8 +34,9 @@
 </img><br/>
 <xsl:value-of disable-output-escaping="yes" select="description"/><br/><br/>
 Category: <a><xsl:attribute name="href">?c=<xsl:value-of disable-output-escaping="yes" select="category"/>&amp;output=html</xsl:attribute><xsl:value-of disable-output-escaping="yes" select="category"/></a><br/><br/>
-</xsl:for-each>
+Tags: <xsl:value-of disable-output-escaping="yes" select="media:keywords"/><br/>
 <br/>
+</xsl:for-each>
 </body>
 </html>
 </xsl:template>
