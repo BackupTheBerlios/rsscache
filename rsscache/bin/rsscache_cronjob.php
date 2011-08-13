@@ -23,8 +23,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //phpinfo ();
 //error_reporting(E_ALL | E_STRICT);
 chdir (dirname ($argv[0]));
-require_once ('../htdocs/default.php');
+require_once ('../htdocs/rsscache/default.php');
 require_once ('../htdocs/config.php');
+require_once ('../htdocs/misc/misc.php');
+require_once ('../htdocs/misc/sql.php');
+require_once ('../htdocs/misc/youtube.php');
 require_once ('../htdocs/rsscache_sql.php');
 require_once ('../htdocs/rsscache_misc.php');
 
