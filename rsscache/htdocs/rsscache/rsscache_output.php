@@ -155,27 +155,27 @@ item[]
       // rsscache
       if ($use_rsscache == 1)
         {
-//      $p .= '      <rsscache_group>'."\n";
+//      $p .= '      <rsscache:group>'."\n";
 
       if (isset ($item[$i]['dl_date']))
-        $p .= '        <rsscache_dl_date>'.sprintf ("%u", $item[$i]['dl_date']).'</rsscache_dl_date>'."\n";
+        $p .= '        <rsscache:dl_date>'.sprintf ("%u", $item[$i]['dl_date']).'</rsscache:dl_date>'."\n";
 
       if (isset ($item[$i]['date']))
-        $p .= '        <rsscache_date>'.sprintf ("%u", $item[$i]['date']).'</rsscache_date>'."\n";
+        $p .= '        <rsscache:date>'.sprintf ("%u", $item[$i]['date']).'</rsscache:date>'."\n";
 
       if (isset ($item[$i]['related_id']))
-        $p .= '        <rsscache_related_id>'.sprintf ("%u", $item[$i]['related_id']).'</rsscache_related_id>'."\n";
+        $p .= '        <rsscache:related_id>'.sprintf ("%u", $item[$i]['related_id']).'</rsscache:related_id>'."\n";
 
       if (isset ($item[$i]['event_start']))
-        $p .= '        <rsscache_event_start>'.sprintf ("%u", $item[$i]['event_start']).'</rsscache_event_start>'."\n";
+        $p .= '        <rsscache:event_start>'.sprintf ("%u", $item[$i]['event_start']).'</rsscache:event_start>'."\n";
 
       if (isset ($item[$i]['event_end']))
-        $p .= '        <rsscache_event_end>'.sprintf ("%u", $item[$i]['event_end']).'</rsscache_event_end>'."\n";
+        $p .= '        <rsscache:event_end>'.sprintf ("%u", $item[$i]['event_end']).'</rsscache:event_end>'."\n";
 
       if (isset ($item[$i]['url_crc32']))
-        $p .= '        <rsscache_url_crc32>'.sprintf ("%u", $item[$i]['url_crc32']).'</rsscache_url_crc32>'."\n";
+        $p .= '        <rsscache:url_crc32>'.sprintf ("%u", $item[$i]['url_crc32']).'</rsscache:url_crc32>'."\n";
 
-//      $p .= '      </rsscache_group>'."\n";
+//      $p .= '      </rsscache:group>'."\n";
         }
 
       $p .= '    </item>'."\n";
