@@ -98,6 +98,10 @@ rsscache_sql_close ();
 
 
 // XSL transformation
+//if ($output == 'js')
+//  {
+//  }
+//else 
 if ($output == 'html')
   {
     if ($rsscache_xsl_trans == 2) // check user-agent and decide

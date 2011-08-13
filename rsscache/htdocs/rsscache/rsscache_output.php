@@ -207,17 +207,18 @@ rsscache_write_stats_rss ()
   $item = array ();
 
   for ($i = 0; isset ($config->category[$i]); $i++)
-    if ($config->category[$i]->name != '' &&
-        (isset ($config->category[$i]->feed[0]->link[0]) || isset ($config->category[$i]->feed[0]->link_prefix)))
+    if (trim ($config->category[$i]->name) != '' &&
+        (isset ($config->category[$i]->feed[0]->link[0]) ||
+         isset ($config->category[$i]->feed[0]->link_prefix)))
       {
         $category = $config->category[$i];
         $p = '';
         $p .= ''
-            .($category->items * 1).' items<br>'
-            .($category->items_today * 1).' items today<br>'
-            .($category->items_7_days * 1).' items last 7 days<br>'
-            .($category->items_30_days * 1).' items last 30 days<br>'
-            .($category->days * 1).' days since creation of category'
+             .($category->items * 1).' items<br>'
+             .($category->items_today * 1).' items today<br>'
+             .($category->items_7_days * 1).' items last 7 days<br>'
+             .($category->items_30_days * 1).' items last 30 days<br>'
+             .($category->days * 1).' days since creation of category'
 ;
         $item[] = array ('title' => $category->title,
                          'link' => 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category->name,
@@ -247,8 +248,8 @@ rsscache_write_stats_rss ()
       .($items_30_days * 1).' items last 30 days<br>'
 ;
   return generate_rss2 (array ('title' => rsscache_title (),
-                                     'link' => $rsscache_link,
-                                     'desc' => $p), $item);
+                               'link' => $rsscache_link,
+                               'desc' => $p), $item);
 }
 
 
@@ -326,8 +327,8 @@ rsscache_write_rss ($d_array)
       .'see apache2/sites-enabled/rsscache<br>'
 ;
   return generate_rss2 (array ('title' => rsscache_title (),
-                                     'link' => $rsscache_link,
-                                     'desc' => $p), $item);
+                               'link' => $rsscache_link,
+                               'desc' => $p), $item);
 }
 
 
