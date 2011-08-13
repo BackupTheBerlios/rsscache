@@ -81,8 +81,8 @@ item[]
     $p .= '<?xml-stylesheet href="'.$rsscache_xsl_stylesheet.'" type="text/xsl" media="screen"?>'."\n";
 
   $p .= '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/"'
-//                         .' xmlns:rsstool=""'
-.">\n";
+       .' xmlns:rsscache="http://www.example.com/rsscache/"'
+       .'>'."\n";
 
   $p .= '  <channel>'."\n"
        .'    <title>'.generate_rss2_escape ($channel['title']).'</title>'."\n"
