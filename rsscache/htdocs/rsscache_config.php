@@ -18,7 +18,7 @@ $rsstool_opts = '--hack-google --sbin --shtml';
 
 
 // configuration
-$rsscache_config_xml = 'config.xml';
+$rsscache_config_xml = 'pwnoogle_config.xml';
 $rsscache_thumbnails_prefix = '';
 $rsscache_debug_sql = 0;
 $rsscache_enable_search = 1; // allow users to search

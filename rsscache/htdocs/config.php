@@ -1,7 +1,7 @@
 <?php
-if (!defined ('_TV2_CONFIG_PHP'))
+if (!defined ('RSSCACHE_CONFIG_PHP'))
 {
-define ('_TV2_CONFIG_PHP', 1);
+define ('RSSCACHE_CONFIG_PHP', 1);
 
 // apache2
 //$_SERVER['SERVER_NAME'] == 'maps.pwnoogle.com'
