@@ -175,7 +175,7 @@ rsscache_write_rss ($d_array)
       .'&amp;f=stats&nbsp;&nbsp;    statistics<br>'
       .'<br>'
       .'*** admin functions ***<br>'
-      .'requires access to <a href="./admin.php">admin.php</a><br>'
+      .'requires access to <a href="./rsscache/admin.php">admin.php</a><br>'
       .'&amp;f=cache&nbsp;&nbsp;    cache (new) items into database (requires &amp;c=CATEGORY)<br>'
 //      .'&amp;f=log&nbsp;&nbsp;      show log<br>'
 //      .'&amp;f=sql&nbsp;&nbsp;      dump database<br>'

@@ -18,7 +18,7 @@ deny from all
 order allow,deny
 deny from all
 </files>
-<files rsscache*.php>
+<files rsscache/*.php>
 require valid-user
 </files>
 <files admin.php>
