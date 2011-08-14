@@ -31,162 +31,9 @@ require_once ('rsscache_sql.php');
 
 
 function
-generate_rss2_escape ($s)
+rsscache_write_log_rss ()
 {
-//  return htmlspecialchars ($s, ENT_QUOTES);
-  return '<![CDATA['.$s.']]>';
-}
-
-
-function
-generate_rss2 ($channel, $item, $use_mrss = 1, $use_rsscache = 1, $xsl_stylesheet = NULL)
-/*
-format:
-channel
-  title
-  link
-  desc
-item[]
-  title
-  link
-  desc
-  date
-  image
-  enclosure
-  category
-  media_duration
-  user
-  dl_date
-  keywords
-  related_id
-  event_start
-  event_end
-  url_crc32
-*/
-{
-  // DEBUG
-//  print_r ($channel);
-//  print_r ($item);
-
-  $p = '';
-
-  $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n";
-
-  if ($xsl_stylesheet)
-    $p .= '<?xml-stylesheet href="'.$xsl_stylesheet.'" type="text/xsl" media="screen"?>'."\n";
-
-  $p .= '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/"'
-       .' xmlns:rsscache="http://www.example.com/rsscache/"'
-       .'>'."\n";
-
-  $p .= '  <channel>'."\n"
-       .'    <title>'.generate_rss2_escape ($channel['title']).'</title>'."\n"
-       .'    <link>'.generate_rss2_escape ($channel['link']).'</link>'."\n"
-       .'    <description>'.generate_rss2_escape ($channel['desc']).'</description>'."\n";
-  if (isset ($channel['lastBuildDate']))
-    $p .= '    <lastBuildDate>'.strftime ("%a, %d %h %Y %H:%M:%S %z", $channel['lastBuildDate']).'</lastBuildDate>'."\n";
-
-  if (isset ($channel['logo']))
-    $p .= ''
-//       .'    <language>en</language>'."\n"
-       .'    <image>'."\n"
-//       .'      <title><![CDATA[]]></title>'."\n"
-
-       .'      <url>'.$channel['logo'].'</url>'."\n"
-
-//       .'      <link>'.generate_rss2_escape ($channel['link']).'</link>'."\n"
-//       .'      <width></width>'."\n"
-//       .'      <height></height>'."\n"
-       .'    </image>'."\n"
-;
-
-  for ($i = 0; isset ($item[$i]['link']); $i++)
-    {
-      $p .= '    <item>'."\n";
-
-      $p .= '      <title>'.generate_rss2_escape ($item[$i]['title']).'</title>'."\n"
-           .'      <link>'.generate_rss2_escape ($item[$i]['link']).'</link>'."\n"
-           .'      <description>'.generate_rss2_escape ($item[$i]['desc']).'</description>'."\n"
-           .'      <pubDate>'
-//                <pubDate>Fri, 05 Aug 2011 15:03:02 +0200</pubDate>
-           .strftime ("%a, %d %h %Y %H:%M:%S %z", $item[$i]['date'])
-//           .strftime ("%a, %d %h %Y %H:%M:%S %Z", $item[$i]['date'])
-           .'</pubDate>'."\n"
-//           .'<comments>http://domain/bla.txt</comments>'."\n"
-;
-
-        if (isset ($item[$i]['category']))
-          $p .= '      <category><![CDATA['.$item[$i]['category'].']]></category>'."\n";
-
-        if (isset ($item[$i]['user']))
-          $p .= '      <author>'.generate_rss2_escape ($item[$i]['user']).'</author>'."\n";
-
-        if (isset ($item[$i]['enclosure']))
-          {
-            $suffix = strtolower (get_suffix ($item[$i]['enclosure']));
-
-            // HACK
-            if ($suffix == '.jpg') $suffix = '.jpeg';
-
-            // TODO: get filesize from db
-            $p .= '      <enclosure url="'.$item[$i]['image'].'" length="" type="image/'.substr ($suffix, 1).'" />'."\n";
-          }
-
-      // mrss
-      if ($use_mrss == 1)
-        {
-//      $p .= '      <media:group>'."\n";
-
-//      $p .= '        <media:content url="'.$item[$i]['link'].'" />'."\n";
-
-//      $p .= '        <media:category scheme="">'..'</media:category>';
-
-      if (isset ($item[$i]['image']))
-        $p .= '        <media:thumbnail url="'.$item[$i]['image'].'" />'."\n";
-
-      if (isset ($item[$i]['media_duration']))
-        $p .= '        <media:duration>'.$item[$i]['media_duration'].'</media:duration>'."\n";
-
-      if (isset ($item[$i]['keywords']))
-        $p .= '        <media:keywords><![CDATA['.str_replace (' ', ', ', $item[$i]['keywords']).']]></media:keywords>'."\n";
-
-//      $p .= '      </media:group>'."\n";
-        }
-
-      // rsscache
-      if ($use_rsscache == 1)
-        {
-//      $p .= '      <rsscache:group>'."\n";
-
-      if (isset ($item[$i]['dl_date']))
-        $p .= '        <rsscache:dl_date>'.sprintf ("%u", $item[$i]['dl_date']).'</rsscache:dl_date>'."\n";
-
-      if (isset ($item[$i]['date']))
-        $p .= '        <rsscache:date>'.sprintf ("%u", $item[$i]['date']).'</rsscache:date>'."\n";
-
-      if (isset ($item[$i]['related_id']))
-        $p .= '        <rsscache:related_id>'.sprintf ("%u", $item[$i]['related_id']).'</rsscache:related_id>'."\n";
-
-      if (isset ($item[$i]['event_start']))
-        $p .= '        <rsscache:event_start>'.sprintf ("%u", $item[$i]['event_start']).'</rsscache:event_start>'."\n";
-
-      if (isset ($item[$i]['event_end']))
-        $p .= '        <rsscache:event_end>'.sprintf ("%u", $item[$i]['event_end']).'</rsscache:event_end>'."\n";
-
-      if (isset ($item[$i]['url_crc32']))
-        $p .= '        <rsscache:url_crc32>'.sprintf ("%u", $item[$i]['url_crc32']).'</rsscache:url_crc32>'."\n";
-
-//      $p .= '      </rsscache:group>'."\n";
-        }
-
-      $p .= '    </item>'."\n";
-    }
-
-  $p .= '  </channel>'."\n";
-
-  $p .= '</rss>'."\n";
-
-  return $p;
+  // last N requests
 }
 
 
@@ -330,6 +177,7 @@ rsscache_write_rss ($d_array)
       .'*** admin functions ***<br>'
       .'requires access to <a href="./admin.php">admin.php</a><br>'
       .'&amp;f=cache&nbsp;&nbsp;    cache (new) items into database (requires &amp;c=CATEGORY)<br>'
+//      .'&amp;f=log&nbsp;&nbsp;      show log<br>'
 //      .'&amp;f=sql&nbsp;&nbsp;      dump database<br>'
       .'<br>'
       .'*** install ***<br>'
