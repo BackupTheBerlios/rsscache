@@ -22,7 +22,7 @@ function
 get_hostname ()
 {
   // default
-  $p = 'tv2_domain';
+  $p = 'config_domain';
 
 //  if (isset ($_SERVER['SERVER_NAME']))
 //    $p = $_SERVER['SERVER_NAME'];
@@ -39,7 +39,7 @@ function
 get_subdomain ()
 {
   // default
-  $p = 'tv2_subdomain';
+  $p = 'config_subdomain';
 
   // apache2
   if (isset ($_SERVER['SERVER_NAME']))
@@ -64,29 +64,29 @@ get_subdomain ()
 }
 
 
-$tv2_domain = get_hostname ();
-$tv2_subdomain = get_subdomain ();
+$config_domain = get_hostname ();
+$config_subdomain = get_subdomain ();
 // DEBUG
-//echo '$tv2_domain=='.$tv2_domain."<br>\n";
-//echo '$tv2_subdomain=='.$tv2_subdomain."<br>\n";
+//echo '$config_domain=='.$config_domain."<br>\n";
+//echo '$config_subdomain=='.$config_subdomain."<br>\n";
 
 // HACK
 
-if (in_array ($tv2_subdomain, array ('', 'www', 'pwnoogle')))
-  $tv2_subdomain = 'videos';
+if (in_array ($config_subdomain, array ('', 'www', 'pwnoogle')))
+  $config_subdomain = 'videos';
 if (isset ($_SERVER['SERVER_NAME']))
   if ($_SERVER['SERVER_NAME'] == 'pwnoogle.com')
-    $tv2_subdomain = 'videos';
+    $config_subdomain = 'videos';
 
 if (isset ($_SERVER['PWD']))
   $pwd = $_SERVER['PWD'].'/../htdocs/'; 
 else  
   $pwd = $_SERVER['DOCUMENT_ROOT'];
 
-if (!file_exists ($pwd.'/'.$tv2_subdomain.'_config.php'))
-  $tv2_subdomain = 'videos';
+if (!file_exists ($pwd.'/'.$config_subdomain.'_config.php'))
+  $config_subdomain = 'videos';
 
-require_once ($tv2_subdomain.'_config.php');
+require_once ($config_subdomain.'_config.php');
 
 }
 
