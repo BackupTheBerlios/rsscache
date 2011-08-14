@@ -23,6 +23,8 @@ $rsscache_thumbnails_prefix = '';
 $rsscache_debug_sql = 0;
 $rsscache_enable_search = 1; // allow users to search
 $rsscache_related_search = 1; // make use of related searches (requires keywords)
+$rsscache_xsl_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/pwnoogle.xsl';
+$rsscache_js = 'http://'.$_SERVER['SERVER_NAME'].'/pwnoogle.js';
 
 
 // database settings

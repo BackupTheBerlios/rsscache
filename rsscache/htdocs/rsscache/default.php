@@ -24,7 +24,7 @@ $rsstool_opts = '--hack-google --hack-event --sbin --shtml';
 
 
 // configuration
-$rsscache_config_xml = 'default.xml';
+$rsscache_config_xml = 'rsscache/default.xml';
 $rsscache_thumbnails_prefix = '';
 $rsscache_maintenance = 0; // down for maintenance?
 $rsscache_root = dirname(__FILE__).'/';
@@ -59,7 +59,8 @@ $rsscache_default_function = ''; // default function
 $rsscache_tor_enabled = 0;  // connect to extern sites using TOR
 $rsscache_item_ttl = 0; // delete older (in seconds) items from db (<=0 == never delete)
 $rsscache_xsl_trans = 0;  // XSL transformation for HTML output (0 == server, 1 == client, 2 == auto)
-$rsscache_xsl_stylesheet = 'rsscache/rsscache.xsl';
+$rsscache_xsl_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache/rsscache.xsl';
+$rsscache_js = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache/rsscache.js';
 
 
 // database settings
