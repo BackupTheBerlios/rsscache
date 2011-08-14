@@ -28,8 +28,8 @@ require_once ('../htdocs/config.php');
 require_once ('../htdocs/misc/misc.php');
 require_once ('../htdocs/misc/sql.php');
 require_once ('../htdocs/misc/youtube.php');
-require_once ('../htdocs/rsscache_sql.php');
-require_once ('../htdocs/rsscache_misc.php');
+require_once ('../htdocs/rsscache/rsscache_sql.php');
+require_once ('../htdocs/rsscache/rsscache_misc.php');
 
 
 // main ()

@@ -26,14 +26,14 @@
 <br/>
 <br/>
 <xsl:for-each select="rss/channel/item">
-<a href="{link}&amp;output=html"><xsl:value-of disable-output-escaping="yes" select="title"/></a>
+<a href="{link}"><xsl:value-of disable-output-escaping="yes" select="title"/></a>
 &#160;&#160;<xsl:value-of disable-output-escaping="yes" select="media:duration"/> seconds<br/>
 <xsl:value-of disable-output-escaping="yes" select="pubDate"/><br/>
 <img>
 <xsl:attribute name="src"><xsl:value-of disable-output-escaping="yes" select="media:thumbnail/@url"/></xsl:attribute>
 </img><br/>
 <xsl:value-of disable-output-escaping="yes" select="description"/><br/><br/>
-Category: <a><xsl:attribute name="href">?c=<xsl:value-of disable-output-escaping="yes" select="category"/>&amp;output=html</xsl:attribute><xsl:value-of disable-output-escaping="yes" select="category"/></a><br/><br/>
+Category: <a><xsl:attribute name="href">?c=<xsl:value-of disable-output-escaping="yes" select="category"/></xsl:attribute><xsl:value-of disable-output-escaping="yes" select="category"/></a><br/><br/>
 Tags: <xsl:value-of disable-output-escaping="yes" select="media:keywords"/><br/>
 <br/>
 </xsl:for-each>

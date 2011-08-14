@@ -45,6 +45,7 @@ rsscache_write_stats_rss ()
   global $rsscache_logo;
   global $rsscache_xsl_trans;
   global $rsscache_xsl_stylesheet;
+  global $output;
 
   $items = 0;
   $items_today = 0;
@@ -70,7 +71,9 @@ rsscache_write_stats_rss ()
              .($category->days * 1).' days since creation of category'
 ;
         $item[] = array ('title' => $category->title,
-                         'link' => 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category->name,
+                         'link' => 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category->name
+.($output == 'html' ? '&output=html' : '')
+,
                          'desc' => $p,
                          'date' => $rsscache_time,
 //                       'image' => $category->logo,

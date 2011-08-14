@@ -1,7 +1,7 @@
 <?php
-if (!defined ('RSSCACHE_CONFIG_PHP'))
+if (!defined ('_RSSCACHE_CONFIG_PHP'))
 {
-define ('RSSCACHE_CONFIG_PHP', 1);
+define ('_RSSCACHE_CONFIG_PHP', 1);
 
 // apache2
 //$_SERVER['SERVER_NAME'] == 'maps.pwnoogle.com'
@@ -71,7 +71,6 @@ $config_subdomain = get_subdomain ();
 //echo '$config_subdomain=='.$config_subdomain."<br>\n";
 
 // HACK
-
 if (in_array ($config_subdomain, array ('', 'www', 'pwnoogle')))
   $config_subdomain = 'videos';
 if (isset ($_SERVER['SERVER_NAME']))
@@ -86,6 +85,8 @@ else
 if (!file_exists ($pwd.'/'.$config_subdomain.'_config.php'))
   $config_subdomain = 'videos';
 
+
+$config_subdomain = 'videos';
 require_once ($config_subdomain.'_config.php');
 
 }
