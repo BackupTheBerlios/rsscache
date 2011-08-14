@@ -39,7 +39,7 @@ generate_rss2_escape ($s)
 
 
 function
-generate_rss2 ($channel, $item, $use_mrss = 1, $use_rsscache = 1)
+generate_rss2 ($channel, $item, $use_mrss = 1, $use_rsscache = 1, $xsl_stylesheet = NULL)
 /*
 format:
 channel
@@ -64,11 +64,6 @@ item[]
   url_crc32
 */
 {
-  global $rsscache_xsl_trans;
-  global $rsscache_xsl_stylesheet;
-  global $rsscache_time;
-  global $rsscache_logo;
-
   // DEBUG
 //  print_r ($channel);
 //  print_r ($item);
@@ -77,8 +72,8 @@ item[]
 
   $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 
-  if ($rsscache_xsl_trans == 1)
-    $p .= '<?xml-stylesheet href="'.$rsscache_xsl_stylesheet.'" type="text/xsl" media="screen"?>'."\n";
+  if ($xsl_stylesheet)
+    $p .= '<?xml-stylesheet href="'.$xsl_stylesheet.'" type="text/xsl" media="screen"?>'."\n";
 
   $p .= '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/"'
        .' xmlns:rsscache="http://www.example.com/rsscache/"'
@@ -87,12 +82,18 @@ item[]
   $p .= '  <channel>'."\n"
        .'    <title>'.generate_rss2_escape ($channel['title']).'</title>'."\n"
        .'    <link>'.generate_rss2_escape ($channel['link']).'</link>'."\n"
-       .'    <description>'.generate_rss2_escape ($channel['desc']).'</description>'."\n"
-       .'    <lastBuildDate>'.strftime ("%a, %d %h %Y %H:%M:%S %z", $rsscache_time).'</lastBuildDate>'."\n"
+       .'    <description>'.generate_rss2_escape ($channel['desc']).'</description>'."\n";
+  if (isset ($channel['lastBuildDate']))
+    $p .= '    <lastBuildDate>'.strftime ("%a, %d %h %Y %H:%M:%S %z", $channel['lastBuildDate']).'</lastBuildDate>'."\n";
+
+  if (isset ($channel['logo']))
+    $p .= ''
 //       .'    <language>en</language>'."\n"
        .'    <image>'."\n"
 //       .'      <title><![CDATA[]]></title>'."\n"
-       .'      <url>'.$rsscache_logo.'</url>'."\n"
+
+       .'      <url>'.$channel['logo'].'</url>'."\n"
+
 //       .'      <link>'.generate_rss2_escape ($channel['link']).'</link>'."\n"
 //       .'      <width></width>'."\n"
 //       .'      <height></height>'."\n"
@@ -193,9 +194,10 @@ function
 rsscache_write_stats_rss ()
 {
   global $rsscache_link;
-  global $rsscache_translate;
-  global $rsscache_language;
   global $rsscache_time;
+  global $rsscache_logo;
+  global $rsscache_xsl_trans;
+  global $rsscache_xsl_stylesheet;
 
   $items = 0;
   $items_today = 0;
@@ -249,7 +251,11 @@ rsscache_write_stats_rss ()
 ;
   return generate_rss2 (array ('title' => rsscache_title (),
                                'link' => $rsscache_link,
-                               'desc' => $p), $item);
+                               'desc' => $p,
+                               'logo' => $rsscache_logo,
+                               'lastBuildDate' => $rsscache_time), $item, 1, 1,
+                               $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
+
 }
 
 
@@ -258,7 +264,10 @@ rsscache_write_rss ($d_array)
 {
   global $rsscache_link;
   global $rsscache_time;
+  global $rsscache_logo;
   global $rsscache_results;
+  global $rsscache_xsl_trans;
+  global $rsscache_xsl_stylesheet;
 
   // DEBUG
 //  echo '<pre><tt>';
@@ -328,7 +337,10 @@ rsscache_write_rss ($d_array)
 ;
   return generate_rss2 (array ('title' => rsscache_title (),
                                'link' => $rsscache_link,
-                               'desc' => $p), $item);
+                               'desc' => $p,
+                               'logo' => $rsscache_logo,
+                               'lastBuildDate' => $rsscache_time), $item, 1, 1,
+                               $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
 }
 
 

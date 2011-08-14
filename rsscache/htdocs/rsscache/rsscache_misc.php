@@ -355,7 +355,7 @@ rsscache_title ($d = NULL)
   $a = array ();
   if (trim ($rsscache_title) != '')
     $a[] = $rsscache_title
-          .' 0.96beta-'.sprintf ("%u", $rsscache_time)
+          .' 0.9.6beta-'.sprintf ("%u", $rsscache_time)
 ;
 
   if ($category)
