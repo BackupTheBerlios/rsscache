@@ -30,12 +30,13 @@ require_once ('misc/youtube.php');
 require_once ('rsscache_sql.php');
 
 
+/*
 function
 rsscache_write_log_rss ()
 {
   // last N requests
 }
-
+*/
 
 function
 rsscache_write_stats_rss ()
@@ -110,6 +111,101 @@ rsscache_write_stats_rss ()
 
 
 function
+rsscache_write_mediawiki_escape ($s)
+{
+//  $s = str_replace('[', '&#91;', $s);
+//  $s = str_replace(']', '&#93;', $s);
+  $s = str_replace('#', '&#35;', $s);
+//  return htmlspecialchars ($s, ENT_QUOTES);
+  return '<![CDATA['.$s.']]>';
+}
+
+
+
+function
+rsscache_write_mediawiki ($channel, $item, $output_type = 0)
+{
+  global $rsscache_name;
+  global $rsscache_time;
+
+// TODO: escape []'s
+
+  $p = ''
+       .'<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.4/"'
+       .' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'
+       .' xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.4/ http://www.mediawiki.org/xml/export-0.4.xsd"'
+       .' version="0.4" xml:lang="en">'
+       .'  <siteinfo>'
+       .'    <sitename>'.rsscache_write_mediawiki_escape ($channel['title']).'</sitename>'
+/*
+       .'    <base>http://localhost/index.php/Main_Page</base>'
+*/
+       .'    <generator>'.$rsscache_name.'</generator>'
+/*
+       .'    <case>first-letter</case>'
+       .'    <namespaces>'
+       .'      <namespace key="-2" case="first-letter">Media</namespace>'
+       .'      <namespace key="-1" case="first-letter">Special</namespace>'
+       .'      <namespace key="0" case="first-letter" />'
+       .'      <namespace key="1" case="first-letter">Talk</namespace>'
+       .'      <namespace key="2" case="first-letter">User</namespace>'
+       .'      <namespace key="3" case="first-letter">User talk</namespace>'
+       .'      <namespace key="4" case="first-letter">Hiddenwiki</namespace>'
+       .'      <namespace key="5" case="first-letter">Hiddenwiki talk</namespace>'
+       .'      <namespace key="6" case="first-letter">File</namespace>'
+       .'      <namespace key="7" case="first-letter">File talk</namespace>'
+       .'      <namespace key="8" case="first-letter">MediaWiki</namespace>'
+       .'      <namespace key="9" case="first-letter">MediaWiki talk</namespace>'
+       .'      <namespace key="10" case="first-letter">Template</namespace>'
+       .'      <namespace key="11" case="first-letter">Template talk</namespace>'
+       .'      <namespace key="12" case="first-letter">Help</namespace>'
+       .'      <namespace key="13" case="first-letter">Help talk</namespace>'
+       .'      <namespace key="14" case="first-letter">Category</namespace>'
+       .'      <namespace key="15" case="first-letter">Category talk</namespace>'
+       .'    </namespaces>'
+*/
+       .'  </siteinfo>';
+
+  for ($i = 0; isset ($item[$i]); $i++)
+    {
+    $p .= ''
+       .'  <page>'."\n"
+       .'    <title>'.rsscache_write_mediawiki_escape ($item[$i]['title']).'</title>'."\n"
+       .'    <id>'.($rsscache_time + $i).'</id>'."\n"
+       .'    <revision>'."\n"
+       .'      <id>'.($rsscache_time + $i + 1).'</id>'."\n"
+//       .'      <timestamp>'.strftime ("%Y-%m-%dT%H:%M:%SZ", $item[$i]['date']).'</timestamp>'."\n"
+       .'      <timestamp>'.strftime ("%Y-%m-%dT%H:%M:%SZ", $rsscache_time).'</timestamp>'."\n"
+       .'      <contributor>'."\n"
+       .'        <ip>127.0.0.1</ip>'."\n"
+       .'      </contributor>'."\n"
+       .'      <text xml:space="preserve">'
+//       .'<![CDATA['
+       .'__NOTOC__'
+//       .'['.$item[$i]['link'].' '.rsscache_write_mediawiki_escape ($item[$i]['title']).']'."\n"
+//       .'='.rsscache_write_mediawiki_escape ($item[$i]['title']).'='."\n"     
+       .'{{#mw_media:'.$item[$i]['link'].'|640}}'."\n"."\n"
+       .rsscache_write_mediawiki_escape ($item[$i]['desc'])."\n"."\n"
+       .'[[:Category:'.rsscache_write_mediawiki_escape ($item[$i]['category']).'|'.rsscache_write_mediawiki_escape ($item[$i]['category']).']]'."\n"."\n"
+       .'==Keywords=='."\n";
+
+      $s = str_replace (' ', ']][[Category:', trim ($item[$i]['keywords']));
+      $p .= '[[Category:'.$s.']]'."\n";
+
+      $p .= ''
+//       .']]>'
+       .'</text>'."\n"
+       .'    </revision>'."\n"
+       .'  </page>'."\n";
+    }
+
+  $p .= '</mediawiki>'."\n";
+
+  return $p;
+}
+
+
+function
 rsscache_write_rss ($d_array)
 {
   global $rsscache_link;
@@ -124,6 +220,7 @@ rsscache_write_rss ($d_array)
 //  print_r ($d_array);
 
   $f = rsscache_get_request_value ('f'); // function
+  $output = rsscache_get_request_value ('output');
 
   $item = array ();
 
@@ -162,7 +259,7 @@ rsscache_write_rss ($d_array)
       .'&amp;c=NAME&nbsp;&nbsp;     category (leave empty for all categories)<br>'
       .'&amp;item=URL_CRC32&nbsp;&nbsp; show single item<br>'
       .'&amp;f=FUNC&nbsp;&nbsp;     execute FUNCtion<br>'
-      .'&amp;output=FORMAT&nbsp;&nbsp; output in "html" or "rss" (default: rss)<br>'
+      .'&amp;output=FORMAT&nbsp;&nbsp; output in "rss", "mediawiki" or "html" (default: rss)<br>'
 //      .'&amp;prefix=SUBDOMAIN&nbsp;&nbsp; prefix or SUBDOMAIN (leave empty for current subdomain)<br>'
       .'<br>'           
       .'*** functions ***<br>'
@@ -186,11 +283,16 @@ rsscache_write_rss ($d_array)
       .'*** install ***<br>'
       .'see apache2/sites-enabled/rsscache<br>'
 ;
-  return generate_rss2 (array ('title' => rsscache_title (),
+  $channel = array ('title' => rsscache_title (),
                                'link' => $rsscache_link,
                                'desc' => $p,
                                'logo' => $rsscache_logo,
-                               'lastBuildDate' => $rsscache_time), $item, 1, 1,
+                               'lastBuildDate' => $rsscache_time);
+
+  if ($output == 'mediawiki')
+    return rsscache_write_mediawiki ($channel, $item, 0);
+  else
+    return generate_rss2 ($channel, $item, 1, 1,
                                $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
 }
 
