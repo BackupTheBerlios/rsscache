@@ -103,11 +103,19 @@ item[]
 
   for ($i = 0; isset ($item[$i]['link']); $i++)
     {
+      if (isset ($item[$i]['description']))
+        $desc = $item[$i]['description'];
+      else
+        $desc = $item[$i]['desc'];
+
       $p .= '    <item>'."\n";
 
       $p .= '      <title>'.generate_rss2_escape ($item[$i]['title']).'</title>'."\n"
            .'      <link>'.generate_rss2_escape ($item[$i]['link']).'</link>'."\n"
-           .'      <description>'.generate_rss2_escape ($item[$i]['desc']).'</description>'."\n"
+           .'      <description>'.generate_rss2_escape ($desc).'</description>'."\n";
+
+      if (isset ($item[$i]['pubDate']))
+        $p .= ''
            .'      <pubDate>'
 //                <pubDate>Fri, 05 Aug 2011 15:03:02 +0200</pubDate>
            .strftime ("%a, %d %h %Y %H:%M:%S %z", $item[$i]['pubDate'])
@@ -115,7 +123,6 @@ item[]
            .'</pubDate>'."\n"
 //           .'<comments>http://domain/bla.txt</comments>'."\n"
 ;
-
         if (isset ($item[$i]['category']))
           $p .= '      <category><![CDATA['.$item[$i]['category'].']]></category>'."\n";
 
@@ -251,6 +258,65 @@ parse_rss_from_url ($rss_url)
   $rssfeed = rss_to_array ($rss_item_tag, $rss_tags, $rss_url);
     
   return $rssfeed;
+}
+
+
+function
+rss_improve_relevance_s ($rss)
+{
+  $threshold = 66.6; // 2/3 similarity is okay for (e.g.) parted movies, etc.
+
+  $title_a = array ();
+  $link_a = array ();
+  $desc_a = array ();
+//  $media_duration_a = array ();
+//  $author_a = array ();
+
+  $title_a[] = $rss->channel->item[0]->title;
+  $link_a[] = $rss->channel->item[0]->link;
+  $desc_a[] = $rss->channel->item[0]->desc;
+//  $media_duration_a[] = $rss->channel->item[0]->media->duration;
+//  $author_a[] = $rss->channel->item[0]->author;
+
+  for ($i = 1; isset ($rss->channel->item[$i]); $i++)
+    {
+      similar_text ($rss->channel->item[0]->title, $rss->channel->item[$i]->title, $percent);
+//      if ($percent < $threshold)
+//        unset ($rss->channel->item[$i]);
+      if ($percent > $threshold)
+        {
+          $title_a[] = $rss->channel->item[$i]->title;
+          $link_a[] = $rss->channel->item[$i]->link;
+          $desc_a[] = $rss->channel->item[$i]->description;
+//          $media_duration_a[] = $rss->channel->item[$i]->media->duration;
+//          $author_a[] = $rss->channel->item[$i]->author;
+        }
+    }
+
+  // sort by title (useful for evtl. episodes/parts)
+  array_multisort ($title_a, SORT_ASC, SORT_STRING, $link_a, $desc_a
+//, $media_duration_a, $author_a
+);
+
+  $channel = array ('title' => $rss->channel->title,
+                    'link' => $rss->channel->link,
+                    'desc' => $rss->channel->desc);
+
+  $item = array ();
+  for ($i = 0; isset ($title_a[$i]); $i++)
+    $item[] = array ('title' => $title_a[$i],
+                     'link' => $link_a[$i],
+                     'description' => $desc_a[$i],
+//                     'media:duration' => $media_duration_a[$i],
+//                     'author' => $author_a[$i],
+);
+
+  // DEBUG
+//  print_r ($channel);
+//  print_r ($title_a);
+//  exit;
+
+  return generate_rss2 ($channel, $item, 0, 0);
 }
 
 

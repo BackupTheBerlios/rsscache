@@ -55,54 +55,6 @@ youtube_get_thumbnail_urls ($url)
 
 
 function
-youtube_get_rss_orderby_relevance ($rss)
-{
-  $title_a = array ();
-  $link_a = array ();
-  $desc_a = array ();
-//  $media_duration_a = array ();
-//  $author_a = array ();
-
-  $title_a[] = $rss->channel->item[0]->title;
-  $link_a[] = $rss->channel->item[0]->link;
-  $desc_a[] = $rss->channel->item[0]->desc;
-//  $media_duration_a[] = $rss->channel->item[0]->media_duration;
-//  $author_a[] = $rss->channel->item[0]->author;
-
-  for ($i = 1; isset ($rss->channel->item[$i]); $i++)
-    {
-      similar_text ($rss->channel->item[0]->title, $rss->channel->item[$i]->title, $percent);
-//      if ($percent < 66.6)
-//        unset ($rss->channel->item[$i]);
-      if ($percent > 66.6)
-        {
-          $title_a[] = $rss->channel->item[$i]->title;
-          $link_a[] = $rss->channel->item[$i]->link;
-          $desc_a[] = $rss->channel->item[$i]->desc;
-//          $media_duration_a[] = $rss->channel->item[$i]->media_duration;
-//          $author_a[] = $rss->channel->item[$i]->author;
-        }
-    }
-
-  // sort by title (useful for evtl. episodes/parts)
-  array_multisort ($title_a, SORT_ASC, SORT_STRING, $link_a, $desc_a
-//, $media_duration_a, $author_a
-);
-
-//function
-//generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_desc_array,
-//              $item_media_duration_array = NULL,
-//              $item_author_array = NULL)
-  $p = generate_rss ($rss->title, $rss->link, $rss->desc, $title_a, $link_a, $desc_a
-//, $media_duration_a, $author_a
-);
-
-  $rss = simplexml_load_string ($p);
-  return $rss;
-}
-
-
-function
 youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby = 'relevance', $use_tor = 0)
 {
   /*
@@ -146,11 +98,6 @@ youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby = 'relevan
     $f = file_get_contents ($url);
 
   $rss = simplexml_load_string ($f);
-
-  // normalize: remove items with low relevance
-  if ($orderby == 'relevance' && $search)
-    if (trim ($search) != '')
-    $rss = youtube_get_rss_orderby_relevance ($rss);
 
   // DEBUG
 //echo '<pre><tt>';
