@@ -179,21 +179,20 @@ rsscache_write_mediawiki ($channel, $item, $output_type = 0)
        .'      <contributor>'."\n"
        .'        <ip>127.0.0.1</ip>'."\n"
        .'      </contributor>'."\n"
-       .'      <text xml:space="preserve">'
-//       .'<![CDATA['
-       .'__NOTOC__'
-//       .'['.$item[$i]['link'].' '.rsscache_write_mediawiki_escape ($item[$i]['title']).']'."\n"
-//       .'='.rsscache_write_mediawiki_escape ($item[$i]['title']).'='."\n"     
-       .'{{#mw_media:'.$item[$i]['link'].'|640}}'."\n"."\n"
-       .rsscache_write_mediawiki_escape ($item[$i]['desc'])."\n"."\n"
-       .'[[:Category:'.rsscache_write_mediawiki_escape ($item[$i]['category']).'|'.rsscache_write_mediawiki_escape ($item[$i]['category']).']]'."\n"."\n"
-       .'==Keywords=='."\n";
+       .'      <text xml:space="preserve">';
 
-      $s = str_replace (' ', ']][[Category:', trim ($item[$i]['keywords']));
-      $p .= '[[Category:'.$s.']]'."\n";
+     $s = ''
+       .'__NOTOC__'
+//       .'['.$item[$i]['link'].' '.$item[$i]['title'].']'."\n"
+//       .'='.$item[$i]['title'].'='."\n"     
+       .'{{#mw_media:'.$item[$i]['link'].'|640}}'."\n"."\n"
+       .$item[$i]['desc']."\n"."\n"
+       .'[[:Category:'.$item[$i]['category'].'|'.$item[$i]['category'].']]'."\n"."\n"
+       .'==Keywords=='."\n"
+       .'[[Category:'.str_replace (' ', ']][[Category:', trim ($item[$i]['keywords'])).']]'."\n";
 
       $p .= ''
-//       .']]>'
+       .rsscache_write_mediawiki_escape ($s)
        .'</text>'."\n"
        .'    </revision>'."\n"
        .'  </page>'."\n";

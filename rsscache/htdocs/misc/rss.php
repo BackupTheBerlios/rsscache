@@ -59,8 +59,8 @@ item[]
 */
 {
   // DEBUG
-  print_r ($channel);
-  print_r ($item);
+//  print_r ($channel);
+//  print_r ($item);
 
   $p = '';
 
