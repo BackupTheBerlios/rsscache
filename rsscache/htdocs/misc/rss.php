@@ -59,8 +59,8 @@ item[]
 */
 {
   // DEBUG
-//  print_r ($channel);
-//  print_r ($item);
+  print_r ($channel);
+  print_r ($item);
 
   $p = '';
 
@@ -110,8 +110,8 @@ item[]
            .'      <description>'.generate_rss2_escape ($item[$i]['desc']).'</description>'."\n"
            .'      <pubDate>'
 //                <pubDate>Fri, 05 Aug 2011 15:03:02 +0200</pubDate>
-           .strftime ("%a, %d %h %Y %H:%M:%S %z", $item[$i]['date'])
-//           .strftime ("%a, %d %h %Y %H:%M:%S %Z", $item[$i]['date'])
+           .strftime ("%a, %d %h %Y %H:%M:%S %z", $item[$i]['pubDate'])
+//           .strftime ("%a, %d %h %Y %H:%M:%S %Z", $item[$i]['pubDate'])
            .'</pubDate>'."\n"
 //           .'<comments>http://domain/bla.txt</comments>'."\n"
 ;
@@ -206,8 +206,8 @@ generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_d
 
 
   return generate_rss2 (array ('title' => $title,
-                               'link' => link,
-                               'desc' => desc), $item, 1);
+                               'link' => $link,
+                               'desc' => $desc), $item, 1);
 }
 
 
