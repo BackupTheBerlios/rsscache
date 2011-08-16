@@ -71,11 +71,8 @@ $config_subdomain = get_subdomain ();
 //echo '$config_subdomain=='.$config_subdomain."<br>\n";
 
 // HACK
-if (in_array ($config_subdomain, array ('', 'www', 'pwnoogle')))
-  $config_subdomain = 'videos';
-if (isset ($_SERVER['SERVER_NAME']))
-  if ($_SERVER['SERVER_NAME'] == 'pwnoogle.com')
-    $config_subdomain = 'videos';
+if (in_array ($config_subdomain, array ('', 'www')))
+  $config_subdomain = 'rsscache';
 
 if (isset ($_SERVER['PWD']))
   $pwd = $_SERVER['PWD'].'/../htdocs/'; 
@@ -83,10 +80,10 @@ else
   $pwd = $_SERVER['DOCUMENT_ROOT'];
 
 if (!file_exists ($pwd.'/'.$config_subdomain.'_config.php'))
-  $config_subdomain = 'videos';
+  $config_subdomain = 'rsscache';
 
 
-$config_subdomain = 'videos';
+$config_subdomain = 'rsscache';
 require_once ($config_subdomain.'_config.php');
 
 }
