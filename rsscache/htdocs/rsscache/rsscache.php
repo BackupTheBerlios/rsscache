@@ -51,6 +51,19 @@ if (!($num))
 if ($num > $rsscache_max_results)
   $num = $rsscache_max_results;
 
+if ($f == 'robots')
+  {
+    echo rsscache_write_robots ();
+    exit;
+  }
+
+//if ($f == 'sitemap')
+//  {
+        // generate sitemap.xml from config
+//      echo rsscache_write_sitemap ();        
+//      exit;
+//  }  
+
 rsscache_sql_open ();
 
 $config = config_xml ();

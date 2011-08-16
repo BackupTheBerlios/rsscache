@@ -30,13 +30,18 @@ define ('RSSCACHE_OUTPUT_PHP', 1);
 require_once ('rsscache_sql.php');
 
 
-/*
 function
-rsscache_write_log_rss ()
+rsscache_write_robots ()
 {
-  // last N requests
+  header ('Content-type: text/plain');
+  $p .= '';
+  $p .= 'Sitemap: http://'.$_SERVER['SERVER_NAME'].'/sitemap.xml'."\n"
+       .'User-agent: *'."\n"
+       .'Allow: /'."\n";
+
+  return $p;
 }
-*/
+
 
 function
 rsscache_write_stats_rss ()
@@ -205,6 +210,87 @@ rsscache_write_mediawiki ($channel, $item, $output_type = 0)
 
 
 function
+rsscache_write_sitemap_escape ($s)
+{
+//  return htmlspecialchars ($s, ENT_QUOTES);
+  return '<![CDATA['.$s.']]>';
+}
+
+
+function
+rsscache_write_sitemap_video_func ($category_name, $item)
+{
+  global $rsscache_link;
+  global $rsscache_thumbnails_prefix;
+  $p = '';
+
+  for ($i = 0; isset ($item[$i]); $i++)
+    if ($category_name == $item[$i]['category'])
+    {
+      $p .= '<video:video>'."\n";
+      $p .= ''
+           .'<video:thumbnail_loc>'.rsscache_write_sitemap_escape ($item[$i]['image']).'</video:thumbnail_loc>'."\n"
+           .'<video:title>'.rsscache_write_sitemap_escape ($item[$i]['title']).'</video:title>'."\n"
+           .'<video:description>'.rsscache_write_sitemap_escape ($item[$i]['desc']).'</video:description>'."\n"
+           .'<video:duration>'.$item[$i]['media_duration'].'</video:duration>'."\n"
+;
+      $p .= '</video:video>'."\n";
+    }
+
+  return $p;
+}
+
+
+function
+rsscache_write_sitemap ($channel, $item)
+{
+//    header ('Content-type: text/xml');
+//  header ('Content-type: application/xml');
+//    header ('Content-type: text/xml-external-parsed-entity');
+//    header ('Content-type: application/xml-external-parsed-entity');
+//    header ('Content-type: application/xml-dtd');
+  $config_xml = config_xml ();
+
+//  echo '<pre>';
+//  print_r ($config_xml);
+
+  $p = '';
+  $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n"
+       .'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'
+       .' xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"'
+       .'>'."\n";
+
+  for ($i = 0; isset ($config_xml->category[$i]); $i++)
+    if (trim ($config_xml->category[$i]->name) != '')
+    $p .= '<url>'."\n"
+         .'  <loc>'.rsscache_write_sitemap_escape ('http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml->category[$i]->name).'</loc>'."\n"
+/*
+The formats are as follows. Exactly the components shown here must be present, with exactly this punctuation. Note that the "T" appears literally in the string, to indicate the beginning of the time element, as specified in ISO 8601.
+
+   Year:
+      YYYY (eg 1997)
+   Year and month:
+      YYYY-MM (eg 1997-07)
+   Complete date:
+      YYYY-MM-DD (eg 1997-07-16)
+   Complete date plus hours and minutes:
+      YYYY-MM-DDThh:mmTZD (eg 1997-07-16T19:20+01:00)
+   Complete date plus hours, minutes and seconds:
+      YYYY-MM-DDThh:mm:ssTZD (eg 1997-07-16T19:20:30+01:00)
+   Complete date plus hours, minutes, seconds and a decimal fraction of a second
+      YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
+*/
+         .'<lastmod>'.strftime ('%F' /* 'T%T%Z' */).'</lastmod>'."\n"
+         .'<changefreq>always</changefreq>'."\n"
+         .rsscache_write_sitemap_video_func ($config_xml->category[$i]->name, $item)
+         .'</url>'."\n";
+  $p .= '</urlset>';
+
+  return $p;
+}
+
+
+function
 rsscache_write_rss ($d_array)
 {
   global $rsscache_link;
@@ -273,11 +359,12 @@ rsscache_write_rss ($d_array)
       .'&amp;f=related&nbsp;&nbsp;  find related items (requires &amp;q=RELATED_ID)<br>'
       .'&amp;f=stats&nbsp;&nbsp;    statistics<br>'
       .'<br>'
+      .'&amp;f=sitemap&nbsp;&nbsp;  sitemap<br>'  
+      .'&amp;f=sitemap&nbsp;&nbsp;  robots.txt<br>'
+      .'<br>'
       .'*** admin functions ***<br>'
       .'requires access to <a href="./rsscache/admin.php">admin.php</a><br>'
       .'&amp;f=cache&nbsp;&nbsp;    cache (new) items into database (requires &amp;c=CATEGORY)<br>'
-//      .'&amp;f=log&nbsp;&nbsp;      show log<br>'
-//      .'&amp;f=sql&nbsp;&nbsp;      dump database<br>'
       .'<br>'
       .'*** install ***<br>'
       .'see apache2/sites-enabled/rsscache<br>'
@@ -290,6 +377,9 @@ rsscache_write_rss ($d_array)
 
   if ($output == 'mediawiki')
     return rsscache_write_mediawiki ($channel, $item, 0);
+  // TODO: generate sitemap without db use
+  else if ($f == 'sitemap')
+    return rsscache_write_sitemap ($channel, $item);
   else
     return generate_rss2 ($channel, $item, 1, 1,
                                $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);

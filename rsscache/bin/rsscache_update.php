@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  
 */
 error_reporting(E_ALL | E_STRICT);
-require_once ('../htdocs/default.php');
+require_once ('../htdocs/rsscache/default.php');
 require_once ('../htdocs/config.php');
 require_once ('../htdocs/misc/sql.php');
 require_once ('../htdocs/misc/misc.php');
