@@ -126,7 +126,6 @@ rsscache_write_mediawiki_escape ($s)
 }
 
 
-
 function
 rsscache_write_mediawiki ($channel, $item, $output_type = 0)
 {
@@ -256,7 +255,8 @@ rsscache_write_sitemap ($channel, $item)
 
   $p = '';
   $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n"
-       .'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'
+       .'<urlset'
+       .' xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'
        .' xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"'
        .'>'."\n";
 
