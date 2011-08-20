@@ -39,7 +39,10 @@ misc_substr2 ($t, $left, $cont, $right = NULL)
   // $left=NULL $cont='b' $right='a'
   // ...]<-b--[<-a--
 
-  $l = $c = $r = 0;
+  // DEBUG
+//  echo 'left:"'.$left.'" cont:"'.$cont.'" right:"'.$right.'"'."\n";
+
+  $l = $c = $r = 0; 
   if ($left != NULL)
     $l = strpos ($t, $left) + strlen ($left);
 
@@ -48,14 +51,14 @@ misc_substr2 ($t, $left, $cont, $right = NULL)
 
   if ($cont != NULL)
     {
-      if ($l) // from left
+      if ($left != NULL) // from left to cont
         $c = strpos ($t, $cont, $l);
-      else if ($r) // from right
-        $c = strrpos ($t, $cont, $r);
+      else if ($right != NULL) // from right to cont
+        $c = strrpos (substr ($t, 0, $r), $cont) + 1;
     }
 
   // DEBUG
-  echo $l.' '.$c.' '.$r."\n";
+//  echo 'l:'.$l.' c:'.$c.' r:'.$r."\n";
 
   // from left to cont
   if ($right == NULL)
@@ -65,29 +68,37 @@ misc_substr2 ($t, $left, $cont, $right = NULL)
     return substr ($t, $c, $r - $c);
   // from left to right
   return substr ($t, $l, $r - $l);
-}
+} 
+  
 
-
-/*
+/*  
 function
 misc_substr2_debug ()
 {
-  $t = 'a123b123c123d';//123e123f';
+  $t = '1234a1234b1234c1234d1234e1234f';
   echo $t."\n";
-  echo misc_substr2 ($t, '23', '23', NULL)."==b1\n";
-  echo misc_substr2 ($t, NULL, '23', '23')."==c1\n";
-  echo misc_substr2 ($t, '23', NULL, '23')."==b123c1\n";
-}
+
+  echo '$left=\'a\' $cont=\'b\' $right=NULL'."\n";
+  echo ' --a->]--b->[...'."\n";
+  echo misc_substr2 ($t, '3', '1', NULL)."\n";
+
+  echo '$left=\'a\' $cont=NULL $right=\'b\''."\n";
+  echo ' --a->]   [<-b--'."\n";
+  echo misc_substr2 ($t, '4', NULL, '3')."\n";
+
+  echo '$left=NULL $cont=\'b\' $right=\'a\''."\n";
+  echo '...]<-b--[<-a--'."\n";
+  echo misc_substr2 ($t, NULL, '2', '1')."\n";
+} 
+//misc_substr2_debug ();
 */
 
 
-/*
 function
 misc_substr2_array ($t, $a)
 {
   return misc_substr2 ($t, $a[0], $a[1], $a[2]);
 }
-*/
 
 
 function
@@ -1314,11 +1325,11 @@ misc_exec ($cmdline, $debug = 0)
 
 
 function
-misc_exec_wget ($url, $output_path = '.', $noclobber = 0, $wget_path = '/usr/local/bin/wget', $wget_opts = '')
+misc_exec_wget ($url, $output_path = '.', $noclobber = 0, $wget_path = '/usr/local/bin/wget', $wget_opts = '', $debug = 0)
 {
 //  global $wget_path;
 //  global $wget_opts;
-  $debug = 0;
+//  $debug = 0;
 
   // DEBUG
 //  echo $url."\n";
@@ -1337,9 +1348,13 @@ misc_exec_wget ($url, $output_path = '.', $noclobber = 0, $wget_path = '/usr/loc
   // download
   $p = $wget_path.' '.$wget_opts.' -U "'.random_user_agent ().'" "'.$url.'" -O "'.$output_path.'"';
   // DEBUG
-  echo $p."\n";
+  if ($debug == 1)
+    echo $p."\n";
 
-  echo misc_exec ($p, $debug);
+  if ($debug == 1)
+    echo misc_exec ($p, $debug);
+  else
+    misc_exec ($p, $debug);
   return 0;
 }
 
