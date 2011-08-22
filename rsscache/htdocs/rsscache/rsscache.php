@@ -93,12 +93,13 @@ else // write feed
 
     // category   
     $category = config_xml_by_category (strtolower ($c));
+    $category_rsscache = $category->children ('rsscache', TRUE);
 
     // use SQL
     if ($item)
-      $d_array = rsscache_sql (NULL, NULL, $f, $item, 0, 0, isset ($category->table_suffix) ? $category->table_suffix : NULL);
+      $d_array = rsscache_sql (NULL, NULL, $f, $item, 0, 0, isset ($category_rsscache->table_suffix) ? $category_rsscache->table_suffix : NULL);
     else
-      $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, isset ($category->table_suffix) ? $category->table_suffix : NULL);
+      $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, isset ($category_rsscache->table_suffix) ? $category_rsscache->table_suffix : NULL);
 
 // DEBUG
 //echo '<pre><tt>';

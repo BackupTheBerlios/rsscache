@@ -1,77 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- config for tv2 -->
-<!--
-format:   
-categories
-  category[]
-    name         category name
-    title        name
-    separate     optional, adds a line-feed or separator before the next category
-                   0 == no separator
-                   1 == line-feed
-                   2 == horizontal line (hr tag)
-    buttononly   optional, show only button
-    logo         optional, overrides default logo
-    homepage     optional
-    background   optional, fixed background image
-    default      optional, category is/are shown as default
-    local        optional, local file to embed        
-    iframe       optional, url to embed
-    proxy        optional, url to embed (proxy-style)
-
-    feed[]       feed downloads
-      link       RSS feed url
-      opts       optional, options to be used with rsstool when downloading this feed
-TODO: filter     optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
-
-    query[]      url of button or select
-      name
-        q        search
-      value
-        ...
-      name
-        f        functions
-      value
-        all      show all categories (sorted by time of RSS feed download)
-        new      show all categories (sorted by time of RSS item)
-        rss      output page as RSS feed
-        0_5min   show videos with <5 minutes duration
-        5_10min
-        10_min
-        score    sort by score/votes/popularity
-        mirror   output page as static HTML
-        wall     show search results as wall
-        cloud    same as wall
-        stats    show RSS feed download stats
-        1col     show videos in 1 column
-        2cols    show videos in 2 columns
-        4_3      4:3 ratio for videos 
-        16_9     16:9 ratio for videos
-        local    embed local file
-        iframe   embed url
-        proxy    embed url (proxy-style)
-
-    filter    optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
-
-    button       show 32x32 button
-      0
-      1
-    select       add to select menu
-      0
-      1
-    movable     if items can be moved to another category
-      0
-      1
-    reportable  if items can be reported to the admins
-      0
-      1
-    voteable    if videos of this category can be voted for
-      0   
-      1
-
-Example: http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
-         http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
--->
+<!-- config for rsscache -->
 <!--
 
 'http://www.gametrailers.com/rssgenerate.php?'
@@ -192,20 +120,20 @@ Game Filters
 Argument: "game"
 Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" etc. 
 -->
-<categories>
+<categories xmlns:cms="http://www.example.com/cms/" xmlns:rsscache="http://www.example.com/rsscache/">                     
   <category>
     <name>quake1</name>
     <title>Quake</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/quake1_trans16.png</logo>
-    <filter>-hack -crack -japan -china -samoa -earthquake -earth-quake -earth -indones +quake +quakeworld</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/quake1_trans16.png</image>
+    <rsscache:filter>-hack -crack -japan -china -samoa -earthquake -earth-quake -earth -indones +quake +quakeworld</rsscache:filter>
     <!-- feed>
       <link>http://video.google.com/videosearch?q=quake1&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=quakeworld&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <!-- feed> 
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=quake1</link>
@@ -225,23 +153,23 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quakeworld&amp;max-results=50</link>
     </feed>
-    <query>c=quake1</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=quake1</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>quake2</name>
     <title>Quake 2</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/quake2_trans16.png</logo>
-    <filter>-hack -crack -quake1 -quake3 -quake4 -japan -china -samoa -earthquake -earth-quake -earth -indones +quake2</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/quake2_trans16.png</image>
+    <rsscache:filter>-hack -crack -quake1 -quake3 -quake4 -japan -china -samoa -earthquake -earth-quake -earth -indones +quake2</rsscache:filter>
     <feed>
       <link>http://video.google.com/videosearch?q=quake2&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quake2&amp;max-results=50</link>
@@ -252,24 +180,24 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed> 
       <link>http://www.dailymotion.com/rss/search/quake2/1</link>
     </feed>
-    <query>c=quake2</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=quake2</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>baseq3</name>
     <title>Quake III: Arena</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/quake3_trans16.png</logo>
-    <homepage>http://www.idsoftware.com</homepage>
-    <filter>-hack -crack -japan -china -samoa -earth -earthquake -earth-quake -indones +quake +arena</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/quake3_trans16.png</image>
+    <cms:homepage>http://www.idsoftware.com</cms:homepage>
+    <rsscache:filter>-hack -crack -japan -china -samoa -earth -earthquake -earth-quake -indones +quake +arena</rsscache:filter>
     <feed>
       <link>http://video.google.com/videosearch?q=quake+arena&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=q3schools&amp;max-results=50</link>
@@ -355,23 +283,23 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed> 
       <link>http://www.dailymotion.com/rss/search/quake+arena/1</link>
     </feed>
-    <query>c=baseq3</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=baseq3</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>quake4</name>
     <title>Quake 4</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/quake4_trans16.png</logo>
-    <filter>-hack -crack -japan -china -samoa -earthquake -earth-quake -earth -indones +quake4</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/quake4_trans16.png</image>
+    <rsscache:filter>-hack -crack -japan -china -samoa -earthquake -earth-quake -earth -indones +quake4</rsscache:filter>
     <feed>
       <link>http://video.google.com/videosearch?q=quake4&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quake4&amp;max-results=50</link>
@@ -382,28 +310,28 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed> 
       <link>http://www.dailymotion.com/rss/search/quake4/1</link>
     </feed>
-    <query>c=quake4</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=quake4</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>baseqz</name>
     <title>QuakeLive</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/quakelive_trans16.png</logo>
-    <homepage>http://www.quakelive.com</homepage>
-    <filter>-hack -crack -china -samoa -earthquake -earth-quake -earth quake -indones +quakelive</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/quakelive_trans16.png</image>
+    <cms:homepage>http://www.quakelive.com</cms:homepage>
+    <rsscache:filter>-hack -crack -china -samoa -earthquake -earth-quake -earth quake -indones +quakelive</rsscache:filter>
     <feed>
       <link>http://video.google.com/videosearch?q=quakelive&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=TheQuakeLiveTV&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quakelive&amp;max-results=50</link>
@@ -423,21 +351,21 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed> 
       <link>http://www.dailymotion.com/rss/search/quakelive/1</link>
     </feed>
-    <query>c=baseqz</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=baseqz</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>defrag</name>
     <title>DeFrag</title>
-    <separate>2</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/defrag_trans16.png</logo>
-    <homepage>http://cggdev.org</homepage>
+    <cms:separate>2</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/defrag_trans16.png</image>
+    <cms:homepage>http://cggdev.org</cms:homepage>
     <feed>
       <link>http://video.google.com/videosearch?q=quake+defrag&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quake+defrag&amp;max-results=50</link>
@@ -448,22 +376,22 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed> 
       <link>http://www.dailymotion.com/rss/search/defrag/1</link>
     </feed>
-    <query>c=defrag</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=defrag</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>cpma</name>
     <title>CPMA</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/cpma_trans16.png</logo>
-    <homepage>http://promode.org</homepage>
-    <filter>-hack -crack -china -samoa -japan -earthquake -earth-quake -earth -indones +quake +cpma</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/cpma_trans16.png</image>
+    <cms:homepage>http://promode.org</cms:homepage>
+    <rsscache:filter>-hack -crack -china -samoa -japan -earthquake -earth-quake -earth -indones +quake +cpma</rsscache:filter>
     <feed>
       <link>http://video.google.com/videosearch?q=quake+cpma&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quake+cpma&amp;max-results=50</link>
@@ -471,23 +399,23 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed> 
       <link>http://www.dailymotion.com/rss/search/cpma/1</link>  
     </feed> 
-    <query>c=cpma</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=cpma</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>osp</name>
     <title>OSP</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/osp_trans16.png</logo>
-    <homepage>http://www.orangesmoothie.org</homepage>
-    <!-- filter>+osp +vs +ffa +ctf +tdm +game</filter -->
-    <filter>-hack -crack +osp +game</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/osp_trans16.png</image>
+    <cms:homepage>http://www.orangesmoothie.org</cms:homepage>
+    <!-- rsscache:filter>+osp +vs +ffa +ctf +tdm +game</filter -->
+    <rsscache:filter>-hack -crack +osp +game</rsscache:filter>
     <feed>
       <link>http://video.google.com/videosearch?q=quake+osp&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quake+osp&amp;max-results=50</link>
@@ -495,26 +423,26 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>  
       <link>http://www.dailymotion.com/rss/search/quake+osp/1</link>
     </feed> 
-    <query>c=osp</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=osp</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>arena</name>
     <title>Rocket Arena Q3A</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/arena_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/arena_trans16.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=quake+&quot;rocket+arena&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=quake+ra3&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quake+&quot;rocket+arena&quot;&amp;max-results=50</link>
@@ -522,45 +450,45 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quake+ra3&amp;max-results=50</link>
     </feed>
-    <query>c=arena</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=arena</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>noghost</name>
     <title>NoGhost</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/noghost_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/noghost_trans16.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=quake+noghost&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quake+noghost&amp;max-results=50</link>
     </feed>
-    <query>c=noghost</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=noghost</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>q3ut2</name>
     <title>UrbanTerror</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/q3ut2_trans16.png</logo>
-    <homepage>http://urbanterror.net</homepage>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/q3ut2_trans16.png</image>
+    <cms:homepage>http://urbanterror.net</cms:homepage>
     <feed>
       <link>http://video.google.com/videosearch?q=quake+urt+&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=urbanterror&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quake+urt&amp;max-results=50</link>
@@ -573,30 +501,30 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=UrbanTerrorOfficial&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
-    <query>c=q3ut2</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=q3ut2</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>baseoa</name>
     <title>OpenArena</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/baseoa_trans16.png</logo>
-    <homepage>http://openarena.ws</homepage>
-    <filter>-hack -crack -festival +openarena</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/baseoa_trans16.png</image>
+    <cms:homepage>http://openarena.ws</cms:homepage>
+    <rsscache:filter>-hack -crack -festival +openarena</rsscache:filter>
     <!-- feed>
       <link>http://video.google.com/videosearch?q=&quot;open+arena&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=openarena&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;open+arena&quot;&amp;max-results=50</link>
@@ -604,26 +532,26 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=openarena&amp;max-results=50</link>
     </feed -->
-    <query>c=baseoa</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=baseoa</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>excessiveplus</name>
     <title>excessiveplus</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/excessiveplus_trans16.png</logo>
-    <homepage>http://excessiveplus.net</homepage>
-    <filter>-hack -crack +excessive</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/excessiveplus_trans16.png</image>
+    <cms:homepage>http://excessiveplus.net</cms:homepage>
+    <rsscache:filter>-hack -crack +excessive</rsscache:filter>
     <feed>
       <link>http://video.google.com/videosearch?q=quake+excessive&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=quake+excessiveplus&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quake+excessive&amp;max-results=50</link>
@@ -634,140 +562,140 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?author=q3excessiveplus&amp;max-results=50</link>
     </feed>
-    <query>c=excessiveplus</query> 
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=excessiveplus</cms:query> 
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>doom3</name>
     <title>Doom III</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/doom3_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/doom3_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=doom3</link>
     </feed -->  
     <feed>
       <link>http://video.google.com/videosearch?q=doom3&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=doom3&amp;max-results=50</link>
     </feed>
-    <query>c=doom3</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=doom3</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>et</name>
     <title>Wolfenstein:ET</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/et_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/et_trans16.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=wolfenstein+enemy+territory&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=wolfenstein+et&amp;max-results=50</link>
     </feed>
-    <query>c=et</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=et</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>etqw</name>
     <title>ET:Quake Wars</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/etqw_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/etqw_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=etqw</link> 
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=etqw&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=etqw&amp;max-results=50</link>
     </feed>
-    <query>c=etqw</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=etqw</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>minecraft</name>
-    <table_suffix>minecraft</table_suffix>
+    <rsscache:table_suffix>minecraft</rsscache:table_suffix>
     <title>MineCraft</title>
-    <separate>2</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/minecraft_trans16.png</logo>
+    <cms:separate>2</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/minecraft_trans16.png</image>
     <!-- feed> 
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=minecraft</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=minecraft&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=minecraft&amp;max-results=50</link>
     </feed>
-    <query>c=minecraft</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=minecraft</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>terraria</name>
-    <!-- table_suffix>terraria</table_suffix -->
+    <!-- rsscache:table_suffix>minecraft</table_suffix -->
     <title>Terraria</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/terraria_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/terraria_trans16.png</image>
     <!-- feed> 
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=minecraft</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=terraria&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=terraria&amp;max-results=50</link>
     </feed>
-    <query>c=terraria</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
-    <status>1</status>
+    <cms:query>c=terraria</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
+    <cms:status>1</cms:status>
   </category>
 
   <category>
     <name>css</name>
-    <table_suffix>css</table_suffix>
+    <rsscache:table_suffix>css</rsscache:table_suffix>
     <title>CS:Source</title>
-    <separate>1</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/css_trans16.png</logo>
+    <cms:separate>1</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/css_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=css</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;counter+strike+source&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;CS:S&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;counter+strike+source&quot;&amp;max-results=50</link>
@@ -775,29 +703,29 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;CS:S&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=css</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=css</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>cscz</name>
     <title>CS:Condition Zero</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/cscz_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/cscz_trans16.png</image>
     <!-- feed> 
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=cscz</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;counter+strike&quot;+&quot;condition+zero&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;CS:CZ&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;counter+strike&quot;+&quot;condition+zero&quot;&amp;max-results=50</link>
@@ -805,51 +733,51 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;CS:CZ&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=cscz</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=cscz</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>cs</name>
     <title>Counter-Strike 1.6</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/cs_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/cs_trans16.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;counter+strike&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;counter+strike&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=cs</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=cs</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
 
 
   <category>
     <name>ut3</name>
     <title>UT3</title>
-    <separate>1</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/ut3_trans16.png</logo>
+    <cms:separate>1</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/ut3_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=&quot;unreal+tournament+III&quot;</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;unreal+tournament+3&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;unreal+tournament+III&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;unreal+tournament+3&quot;&amp;max-results=50</link>
@@ -857,35 +785,35 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;unreal+tournament+III&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=ut3</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=ut3</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>ut2003</name>
     <title>UT 2003/2004</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/ut2003_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/ut2003_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=ut2004</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;unreal+tournament+2003&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;unreal+tournament+2004&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=ut2003&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=ut2004&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;unreal+tournament+2003&quot;&amp;max-results=50</link>
@@ -899,29 +827,29 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=ut2004&amp;max-results=50</link>
     </feed>
-    <query>c=ut2003</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=ut2003</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>ut99</name>
     <title>Unreal Tournament</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/ut99_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/ut99_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=ut99</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;unreal+tournament&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=ut99&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;unreal+tournament&quot;&amp;max-results=50</link>
@@ -929,21 +857,21 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=ut99&amp;max-results=50</link>
     </feed>
-    <query>c=ut99</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=ut99</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
 
   <category>
     <name>codbo</name>
-    <table_suffix>cod4</table_suffix>
+    <rsscache:table_suffix>cod4</rsscache:table_suffix>
     <title>Call of Duty:Black Ops</title>
-    <separate>2</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/codbo_trans16.png</logo>
+    <cms:separate>2</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/codbo_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=cod+black+ops</link>
     </feed -->  
@@ -952,11 +880,11 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=cod+black+ops&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=call+of+duty+4+black+ops&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=cod4+black+ops&amp;max-results=50</link>
@@ -964,20 +892,20 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=call+of+duty+black+ops&amp;max-results=50</link>
     </feed>
-    <query>c=codbo</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=codbo</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>cod4</name>
-    <table_suffix>cod4</table_suffix>
+    <rsscache:table_suffix>cod4</rsscache:table_suffix>
     <title>Call of Duty 4</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/cod4_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/cod4_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=&quot;cod4&quot;</link>
     </feed -->  
@@ -986,11 +914,11 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=cod4&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;call+of+duty+4&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;cod4&quot;&amp;max-results=50</link>
@@ -998,19 +926,19 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;call+of+duty+4&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=cod4</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=cod4</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>tf2</name>
     <title>Team Fortress 2</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/tf2_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/tf2_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=&quot;team+fortress+2&quot;</link>
     </feed>
@@ -1019,11 +947,11 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;team+fortress+2&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;team+fortress+ii&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;team+fortress+2&quot;&amp;max-results=50</link>
@@ -1031,143 +959,143 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;team+fortress+ii&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=tf2</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=tf2</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>l4d2</name>
     <title>Left 4 Dead 2</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/l4d2_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/l4d2_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=l4d2</link>
     </feed -->  
     <feed>
       <link>http://video.google.com/videosearch?q=l4d2&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=l4d2&amp;max-results=50</link>
     </feed>
-    <query>c=l4d2</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=l4d2</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>l4d</name>
     <title>Left 4 Dead</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/l4d_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/l4d_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=l4d</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=l4d&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=l4d&amp;max-results=50</link>
     </feed>
-    <query>c=l4d</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=l4d</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>assaultcube</name>
     <title>Assault Cube</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/assaultcube_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/assaultcube_trans16.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=assault+cube&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=assault+cube&amp;max-results=50</link>
     </feed>
-    <query>c=assaultcube</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=assaultcube</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>sauerbraten</name>
     <title>Sauerbraten</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/sauerbraten_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/sauerbraten_trans16.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=sauerbraten+cube&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=sauerbraten+cube&amp;max-results=50</link>
     </feed>
-    <query>c=sauerbraten</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=sauerbraten</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>nexuiz</name>
     <title>Nexuiz</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/nexuiz_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/nexuiz_trans16.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=nexuiz&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=nexuiz&amp;max-results=50</link>
     </feed>
-    <query>c=nexuiz</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=nexuiz</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <!-- category>
     <name>xreal</name>
     <title>XreaL</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/xreal_trans16.png</logo>
-    <query>c=xreal</query>
-    <button>1</button>
-    <select>1</select>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/xreal_trans16.png</image>
+    <cms:query>c=xreal</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
   </category -->
   <category>
     <name>warsow</name>
     <title>Warsow</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/warsow_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/warsow_trans16.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=warsow&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=warsow&amp;max-results=50</link>
     </feed>
-    <query>c=warsow</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=warsow</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>teeworlds</name>
     <title>teeworlds</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/teeworlds_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/teeworlds_trans16.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=teeworlds&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=teeworlds&amp;max-results=50</link>
@@ -1175,90 +1103,90 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?author=TeeworldsTeewars&amp;max-results=50</link>
     </feed>
-    <query>c=teeworlds</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=teeworlds</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>painkiller</name>
     <title>Painkiller</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/painkiller_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/painkiller_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=painkiller</link>
     </feed -->
     <!-- feed>
       <link>http://video.google.com/videosearch?q=painkiller+fps&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=painkiller+fps&amp;max-results=50</link>
     </feed -->
-    <query>c=painkiller</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=painkiller</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>ssf4</name>
     <title>Super Street Fighter IV</title>
-    <separate>2</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/ssf4_trans16.png</logo>
+    <cms:separate>2</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/ssf4_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=ssf4</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=ssf4&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=ssf4&amp;max-results=50</link>
     </feed>
-    <query>c=ssf4</query>
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=ssf4</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
 
 
   <category>
     <name>wow</name>
-    <table_suffix>wow</table_suffix>
+    <rsscache:table_suffix>wow</rsscache:table_suffix>
     <title>World of Warcraft</title>
-    <separate>1</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/wow_trans16.png</logo>
+    <cms:separate>1</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/wow_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=&quot;world+of+warcraft&quot;</link>
     </feed -->   
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;world+of+warcraft&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;world+of+warcraft&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=wow</query> 
-    <button>1</button>
-    <select>1</select>
-    <voteable>0</voteable>
+    <cms:query>c=wow</cms:query> 
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>warcraft3</name>
     <title>Warcraft III</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/warcraft3_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/warcraft3_trans16.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;warcraft+3&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;warcraft+iii&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;warcraft+3&quot;&amp;max-results=50</link>
@@ -1266,223 +1194,223 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;warcraft+iii&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=warcraft3</query> 
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=warcraft3</cms:query> 
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>starcraft2</name>
-    <table_suffix>starcraft2</table_suffix>
+    <rsscache:table_suffix>starcraft2</rsscache:table_suffix>
     <title>StarCraft 2</title>
-    <separate>1</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/starcraft2_trans16.png</logo>
+    <cms:separate>1</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/starcraft2_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=&quot;starcraft+2&quot;</link>
     </feed -->   
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;starcraft+2&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;starcraft+2&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=starcraft2</query> 
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=starcraft2</cms:query> 
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>starcraft</name>
     <title>StarCraft</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/starcraft_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/starcraft_trans16.png</image>
     <!-- feed> 
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=&quot;starcraft&quot;</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=starcraft&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=starcraft&amp;max-results=50</link>
     </feed>
-    <query>c=starcraft</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=starcraft</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>diablo3</name>
-    <status>2</status>
+    <cms:status>2</cms:status>
     <title>Diablo 3</title>
-    <separate>1</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/diablo3_trans16.png</logo>
+    <cms:separate>1</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/diablo3_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=&quot;diablo+3&quot;</link>
     </feed -->
     <!-- feed>
       <link>http://video.google.com/videosearch?q=&quot;diablo+3&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;diablo+3&quot;&amp;max-results=50</link>
     </feed -->
-    <!-- query>c=diablo3</query -->
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <!-- cms:query>c=diablo3</query -->
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>diablo2</name>
     <title>Diablo 2</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/diablo2_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/diablo2_trans16.png</image>
     <!-- feed> 
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=&quot;diable+3&quot;</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;diablo+2&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;diablo+2&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=diablo2</query> 
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=diablo2</cms:query> 
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>diablo</name>
     <title>Diablo</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/diablo_trans16.png</logo>
-    <filter>-hack -crack +diablo -lamborghini -un -forza -con -nike -dios -esto -del -quien -cual -el -le -te -lo -la -nosotros -usted -eso -nos -ella</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/diablo_trans16.png</image>
+    <rsscache:filter>-hack -crack +diablo -lamborghini -un -forza -con -nike -dios -esto -del -quien -cual -el -le -te -lo -la -nosotros -usted -eso -nos -ella</rsscache:filter>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=&quot;diablo+1&quot;</link>
     </feed -->   
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;diablo+1&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;diablo+1&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=diablo</query> 
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=diablo</cms:query> 
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>halo3</name>
-    <table_suffix>halo3</table_suffix>
+    <rsscache:table_suffix>halo3</rsscache:table_suffix>
     <title>Halo 3</title>
-    <separate>2</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/halo3_trans16.png</logo>
-    <filter>-hack -crack -halo1 -halo2 +halo</filter>
+    <cms:separate>2</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/halo3_trans16.png</image>
+    <rsscache:filter>-hack -crack -halo1 -halo2 +halo</rsscache:filter>
     <!-- feed> 
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=&quot;halo+3&quot;</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;halo+3&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;halo+3&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=halo3</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=halo3</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>halo2</name>
     <title>Halo 2</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/halo2_trans16.png</logo>
-    <filter>-hack -crack -halo1 -halo3 +halo</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/halo2_trans16.png</image>
+    <rsscache:filter>-hack -crack -halo1 -halo3 +halo</rsscache:filter>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;halo+2&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;halo+2&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=halo2</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=halo2</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>halowars</name>
     <title>Halo Wars</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/halowars_trans16.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/halowars_trans16.png</image>
     <!-- feed>
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=&quot;halo+wars&quot;</link>     
     </feed -->   
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;halo+wars&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;halo+wars&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=halowars</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=halowars</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>halo</name>
     <title>Halo: Combat Evolved</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos/halo_trans16.png</logo>
-    <filter>-hack -crack +xbox +halo -generator -wii -ps2 -ps3</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos/halo_trans16.png</image>
+    <rsscache:filter>-hack -crack +xbox +halo -generator -wii -ps2 -ps3</rsscache:filter>
     <!-- feed> 
       <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=&quot;halo&quot;</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=halo+gameplay&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=halo+gameplay&amp;max-results=50</link>
     </feed>
-    <query>c=halo</query>
-    <button>1</button>
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=halo</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
 
 <!--
@@ -1510,182 +1438,182 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
   <category>
     <name>bf2142</name>
     <title>Battlefield 2142</title>
-    <logo>http://static.pwnoogle.com/logos/battlefield2142_trans16.png</logo>
-    <separate>1</separate>
-    <buttononly>0</buttononly>
+    <image>http://static.pwnoogle.com/logos/battlefield2142_trans16.png</image>
+    <cms:separate>1</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+2142&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+2142&quot;&amp;max-results=50</link>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+northern+strike&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+northern+strike&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=bf2142</query>
-    <button>1</button>  
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=bf2142</cms:query>
+    <cms:button>1</cms:button>  
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>battlefield1</name>
     <title>Battlefield</title>
-    <logo>http://static.pwnoogle.com/logos/battlefield1_trans16.png</logo>
-    <separate>1</separate>
-    <buttononly>0</buttononly>
+    <image>http://static.pwnoogle.com/logos/battlefield1_trans16.png</image>
+    <cms:separate>1</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+1942&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+1942&quot;&amp;max-results=50</link>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+1943&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+1943&quot;&amp;max-results=50</link>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+vietnam&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+vietnam&quot;&amp;max-results=50</link>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+road+rome&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+road+rome&quot;&amp;max-results=50</link>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+secret+weapons&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+secret+weapons&quot;&amp;max-results=50</link>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+heroes&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+heroes&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=battlefield1</query>
-    <button>1</button>  
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=battlefield1</cms:query>
+    <cms:button>1</cms:button>  
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>battlefield2</name>
     <title>Battlefield 2</title>
-    <logo>http://static.pwnoogle.com/logos/battlefield2_trans16.png</logo>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
+    <image>http://static.pwnoogle.com/logos/battlefield2_trans16.png</image>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+special+forces&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+special+forces&quot;&amp;max-results=50</link>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+euro+force&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+euro+force&quot;&amp;max-results=50</link>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+amored+fury&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+amored+fury&quot;&amp;max-results=50</link>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+modern+combat&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+modern+combat&quot;&amp;max-results=50</link>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+bad+company&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+bad+company&quot;&amp;max-results=50</link>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+online&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+online&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=battlefield2</query>
-    <button>1</button>  
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=battlefield2</cms:query>
+    <cms:button>1</cms:button>  
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
   <category>
     <name>battlefield3</name>
     <title>Battlefield 3</title>
-    <logo>http://static.pwnoogle.com/logos/battlefield3.png</logo>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <status>2</status>
+    <image>http://static.pwnoogle.com/logos/battlefield3.png</image>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <cms:status>2</cms:status>
     <feed>
       <link>http://video.google.com/videosearch?q=&quot;battlefield+3&quot;&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>   
       <link>http://gdata.youtube.com/feeds/api/videos?vq=&quot;battlefield+3&quot;&amp;max-results=50</link>
     </feed>
-    <query>c=battlefield3</query>
-    <button>1</button>  
-    <select>1</select>
-    <movable>0</movable>
-    <reportable>0</reportable>
-    <voteable>0</voteable>
+    <cms:query>c=battlefield3</cms:query>
+    <cms:button>1</cms:button>  
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
 
 
   <category>
     <title>Electronic sports leagues:</title>
-    <separate>2</separate>
+    <cms:separate>2</cms:separate>
   </category>
 
   <category>
     <name>pgl</name>
     <title>Pro Gaming League</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos//pgl32.png</logo>
-    <filter>-hack -crack -fifa +pgl -kids -children -adventure</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos//pgl32.png</image>
+    <rsscache:filter>-hack -crack -fifa +pgl -kids -children -adventure</rsscache:filter>
     <feed>
       <link>http://video.google.com/videosearch?q=pgl&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=theAGPTour+pgl&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=pgl&amp;max-results=50</link>
@@ -1693,24 +1621,24 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?author=theAGPTour&amp;vq=pgl&amp;max-results=50</link>
     </feed>
-    <!-- query>q=+pgl+&amp;c=</query -->
-    <query>c=pgl</query>
-    <button>1</button>
-    <select>0</select>
+    <!-- cms:query>q=+pgl+&amp;c=</query -->
+    <cms:query>c=pgl</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
   <category>
     <name>esl</name>
     <title>Electronic Sports League</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos//esl32.png</logo>
-    <filter>-hack -crack +esl -grammar -language -teach -business -vocabul -lesson -learn -class -study -books -dios -esto -del -quien -cual -el -le -te -lo -la -nosotros -usted -eso -nos -ella</filter>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos//esl32.png</image>
+    <rsscache:filter>-hack -crack +esl -grammar -language -teach -business -vocabul -lesson -learn -class -study -books -dios -esto -del -quien -cual -el -le -te -lo -la -nosotros -usted -eso -nos -ella</rsscache:filter>
     <!-- feed>
       <link>http://video.google.com/videosearch?q=esl&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
     </feed -->
     <feed>
       <link>http://video.google.com/videosearch?q=theAGPTour+esl&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <!-- feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=esl&amp;max-results=50</link>
@@ -1718,24 +1646,24 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?author=theAGPTour&amp;vq=esl&amp;max-results=50</link>
     </feed>
-    <!-- query>q=+esl+&amp;c=</query -->
-    <query>c=esl</query>
-    <button>1</button>
-    <select>0</select>
+    <!-- cms:query>q=+esl+&amp;c=</query -->
+    <cms:query>c=esl</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
   <category>
     <name>wsvg</name>
     <title>World Series of Video Games</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos//wsvg32.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos//wsvg32.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=wsvg&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=theAGPTour+wsvg&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=wsvg&amp;max-results=50</link>
@@ -1743,32 +1671,32 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?author=theAGPTour&amp;vq=wsvg&amp;max-results=50</link>
     </feed>
-    <!-- query>q=+wsvg+&amp;c=</query -->
-    <query>c=wsvg</query>
-    <button>1</button>
-    <select>0</select>
+    <!-- cms:query>q=+wsvg+&amp;c=</query -->
+    <cms:query>c=wsvg</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
   <category>
     <name>cpl</name>
     <title>Cyberathlete Professional League</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos//cpl32.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos//cpl32.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=cpl+game&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=cpl+quake&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=cpl+frags&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=theAGPTour+cpl&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=cpl+game&amp;max-results=50</link>
@@ -1782,24 +1710,24 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?author=theAGPTour&amp;vq=cpl&amp;max-results=50</link>
     </feed>
-    <!-- query>q=+cpl+&amp;c=</query -->
-    <query>c=cpl</query>
-    <button>1</button>
-    <select>0</select>
+    <!-- cms:query>q=+cpl+&amp;c=</query -->
+    <cms:query>c=cpl</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
   <category>
     <name>eswc</name>
     <title>Electronic Sports World Cup</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos//eswc32.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos//eswc32.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=eswc&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=theAGPTour+eswc&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=eswc&amp;max-results=50</link>
@@ -1807,42 +1735,42 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?author=theAGPTour&amp;vq=eswc&amp;max-results=50</link>
     </feed>
-    <!-- query>q=+eswc+&amp;c=</query -->
-    <query>c=eswc</query>
-    <button>1</button>
-    <select>0</select>
+    <!-- cms:query>q=+eswc+&amp;c=</query -->
+    <cms:query>c=eswc</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
   <category>
     <name>wcg</name>
     <title>World Cyber Games</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos//wcg32.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos//wcg32.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=theAGPTour+wcg&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quake+wcg&amp;max-results=50</link>
     </feed>
-    <!-- query>q=+wcg+&amp;c=</query -->
-    <query>c=wcg</query>
-    <button>1</button>
-    <select>0</select>
+    <!-- cms:query>q=+wcg+&amp;c=</query -->
+    <cms:query>c=wcg</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
   <category>
     <name>quakecon</name>
     <title>QuakeCon</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos//quakecon32.png</logo>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos//quakecon32.png</image>
     <feed>
       <link>http://video.google.com/videosearch?q=quakecon&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://video.google.com/videosearch?q=theAGPTour+quakecon&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <rsscache:opts>-enc=ISO-8859-15</rsscache:opts>
     </feed>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=quakecon&amp;max-results=50</link>
@@ -1850,116 +1778,116 @@ Valid values: "et", "q3", "q4", "rtcw", "etqw", "cs", "css", "aa", "bf2", "bf1" 
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?author=theAGPTour&amp;vq=quakecon&amp;max-results=50</link>
     </feed>
-    <!-- query>q=quakecon&amp;c=</query -->
-    <query>c=quakecon</query>
-    <button>1</button>
-    <select>0</select>
+    <!-- cms:query>q=quakecon&amp;c=</query -->
+    <cms:query>c=quakecon</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
 
   <!-- category>
     <title>South Korea</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/logos//southkorea32.png</logo>
-    <query>q=+korea&amp;c=</query>
-    <button>1</button>
-    <select>0</select>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/logos//southkorea32.png</image>
+    <cms:query>q=+korea&amp;c=</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category -->
 
   <category>
     <title>vs matches only (Teams and 1v1)</title>
-    <separate>2</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/gametypes/vs.png</logo>
-    <!-- query>q=+vs</query -->
-    <button>1</button>
-    <select>0</select>
+    <cms:separate>2</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/gametypes/vs.png</image>
+    <!-- cms:query>q=+vs</query -->
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
   <category>
     <title>FFA/Deathmatch only</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/gametypes/ffa.png</logo>
-    <!-- query>q=+ffa+</query -->
-    <button>1</button>
-    <select>0</select>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/gametypes/ffa.png</image>
+    <!-- cms:query>q=+ffa+</query -->
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
   <category>
     <title>Capture the Flag matches only</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/gametypes/ctf.png</logo>
-    <!-- query>q=ctf</query -->
-    <button>1</button>
-    <select>0</select>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/gametypes/ctf.png</image>
+    <!-- cms:query>q=ctf</query -->
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
   <category>
     <title>Team Deathmatches only</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <logo>http://static.pwnoogle.com/gametypes/tdm.png</logo>
-    <!-- query>q=tdm</query -->
-    <button>1</button>
-    <select>0</select>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>http://static.pwnoogle.com/gametypes/tdm.png</image>
+    <!-- cms:query>q=tdm</query -->
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
 
 
   <category>
-    <status>1</status>
-    <!-- logo>images/1_h.png</logo -->
+    <cms:status>1</cms:status>
+    <!-- image>images/1_h.png</logo -->
     <title>Popular</title>
-    <separate>1</separate>
-    <buttononly>0</buttononly>
-    <query>f=1_h</query>
-    <button>1</button>
-    <select>0</select>
+    <cms:separate>1</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <cms:query>f=1_h</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
   <category>
-    <status>1</status>
+    <cms:status>1</cms:status>
     <title>Trailers</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <query>q=trailer</query>
-    <button>1</button>
-    <select>0</select>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <cms:query>q=trailer</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
   <category>
-    <status>1</status>
+    <cms:status>1</cms:status>
     <title>Interviews</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <query>q=interview</query>
-    <button>1</button>
-    <select>0</select>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <cms:query>q=interview</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>
   </category>
   <category>
     <name>faqs</name> 
     <title>Cheats, FAQs, Maps and Manuals</title>
-    <separate>0</separate>
-    <buttononly>0</buttononly>
-    <homepage></homepage> 
-    <query>c=faqs</query>
-    <iframe>http://files.pwnoogle.com/emulive/</iframe>
-    <button>1</button>
-    <select>0</select>    
-    <movable>0</movable>  
-    <voteable>0</voteable>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <cms:homepage></cms:homepage> 
+    <cms:query>c=faqs</cms:query>
+    <cms:iframe>http://files.pwnoogle.com/emulive/</cms:iframe>
+    <cms:button>1</cms:button>
+    <cms:select>0</cms:select>    
+    <rsscache:movable>0</rsscache:movable>  
+    <rsscache:votable>0</rsscache:votable>
   </category>
 
   <!-- category>
-    <logo>http://www.site5.com/creative/2008/4/468x60-2-495.gif</logo -->
-    <!-- logo>http://www.site5.com/creative/2008/4/125x125-495.gif</logo -->
-    <!-- logo>http://www.site5.com/creative/2008/4/234x60.gif</logo -->
-    <!-- logo>http://www.site5.com/creative/2008/4/120x60-2.gif</logo -->
-    <!-- logo>http://www.site5.com/creative/2008/4/120x600.gif</logo -->
-    <!-- separate>0</separate>
-    <buttononly>1</buttononly>
-    <query>http://www.site5.com/in.php?id=89152-51</query -->
-    <!-- query>http://www.site5.com/in.php?id=89152-50</query -->
-    <!-- query>http://www.site5.com/in.php?id=89152-43</query -->
-    <!-- query>http://www.site5.com/in.php?id=89152-40</query -->
-    <!-- query>http://www.site5.com/in.php?id=89152-41</query -->
-    <!-- button>1</button>    
-    <select>0</select>
+    <image>http://www.site5.com/creative/2008/4/468x60-2-495.gif</logo -->
+    <!-- image>http://www.site5.com/creative/2008/4/125x125-495.gif</logo -->
+    <!-- image>http://www.site5.com/creative/2008/4/234x60.gif</logo -->
+    <!-- image>http://www.site5.com/creative/2008/4/120x60-2.gif</logo -->
+    <!-- image>http://www.site5.com/creative/2008/4/120x600.gif</logo -->
+    <!-- cms:separate>0</cms:separate>
+    <cms:buttononly>1</cms:buttononly>
+    <cms:query>http://www.site5.com/in.php?id=89152-51</query -->
+    <!-- cms:query>http://www.site5.com/in.php?id=89152-50</query -->
+    <!-- cms:query>http://www.site5.com/in.php?id=89152-43</query -->
+    <!-- cms:query>http://www.site5.com/in.php?id=89152-40</query -->
+    <!-- cms:query>http://www.site5.com/in.php?id=89152-41</query -->
+    <!-- cms:button>1</cms:button>    
+    <cms:select>0</cms:select>
   </category -->
 </categories>

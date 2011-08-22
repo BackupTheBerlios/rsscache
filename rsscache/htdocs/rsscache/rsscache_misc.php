@@ -312,6 +312,8 @@ rsscache_download_feeds_by_category ($category_name)
 
   $category_name = trim ($category_name);
   $category = config_xml_by_category ($category_name);
+  if (isset ($category->children))
+    $category_rsscache = $category->children ('rsscache', TRUE);
 
   // TODO: single category using category_name   
   if ($category == NULL)
@@ -321,22 +323,22 @@ rsscache_download_feeds_by_category ($category_name)
     {
       // rsstool options
       $opts = '';
-      if (isset ($category->opts[$j]))
-        $opts = $category->opts[$j];
+      if (isset ($category_rsscache->opts[$j]))
+        $opts = $category_rsscache->opts[$j];
 
 //      $p = '';
 //      $p .= 'category: '.$category_name."\n"
-//           .'client: '.$category->client[$j]."\n"
+//           .'client: '.$category_rsscache->client[$j]."\n"
 //           .'opts: '.$opts."\n"
 //           .'url: '.$category->link[$j]."\n"; 
 //      echo $p;
 
       // get feed
-      $xml = rsscache_feed_get ($category->client[$j], $opts, $category->link[$j]);
+      $xml = rsscache_feed_get ($category_rsscache->client[$j], $opts, $category->link[$j]);
       // download thumbnails
       $xml = rsscache_download_thumbnails ($xml);
       // xml to sql
-      $sql_queries_s = rsstool_write_ansisql ($xml, $category_name, $category->table_suffix, $rsscache_sql_db->conn);
+      $sql_queries_s = rsstool_write_ansisql ($xml, $category_name, $category_rsscache->table_suffix, $rsscache_sql_db->conn);
 
       rsscache_sql_queries ($sql_queries_s);
     }
@@ -350,17 +352,19 @@ rsscache_title ($d = NULL)
   global $rsscache_time;
   $v = rsscache_get_request_value ('v');
   $c = rsscache_get_request_value ('c');
-  $category = config_xml_by_category ($c);
-
   $a = array ();
   if (trim ($rsscache_title) != '')
     $a[] = $rsscache_title
           .' 0.9.6beta-'.sprintf ("%u", $rsscache_time)
 ;
 
-  if ($category)
-    if (trim ($category->title) != '')
-      $a[] = $category->title;
+  if (trim ($c) != '')
+    {
+      $category = config_xml_by_category ($c);
+      if ($category)
+        if (trim ($category->title) != '')
+          $a[] = $category->title;
+    }
 
   if ($v && $d != NULL)
     $a[] = $d['rsstool_title'];

@@ -59,6 +59,7 @@ item[]
 */
 {
   // DEBUG
+//  echo '<pre><tt>';
 //  print_r ($channel);
 //  print_r ($item);
 

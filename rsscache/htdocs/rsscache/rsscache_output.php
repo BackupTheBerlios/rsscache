@@ -68,6 +68,9 @@ rsscache_write_stats_rss ()
          isset ($config->category[$i]->feed[0]->link_prefix)))
       {
         $category = $config->category[$i];
+//        if (isset ($category->children))
+//          $category_rsscache = $category->children ('rsscache', TRUE);
+
         $p = '';
         $p .= ''
              .($category->items * 1).' items<br>'
@@ -82,7 +85,7 @@ rsscache_write_stats_rss ()
 ,
                          'desc' => $p,
                          'date' => $rsscache_time,
-//                       'image' => $category->logo,
+//                       'image' => $category->image,
                          'category' => $category->name,
                          'media_duration' => 0,
 //                         'user' => NULL
@@ -317,7 +320,6 @@ rsscache_write_rss ($d_array)
       $date = ($f == 'new') ?
         $d_array[$i]['rsstool_dl_date'] :
         $d_array[$i]['rsstool_date'];
-
       $item[] = array ('title' => $d_array[$i]['rsstool_title'],
 //                       'link' => $d_array[$i]['rsstool_url'],
                        'link' => $link,
@@ -333,7 +335,8 @@ rsscache_write_rss ($d_array)
                        'related_id' => $d_array[$i]['rsstool_related_id'],
                        'event_start' => $d_array[$i]['rsstool_event_start'],
                        'event_end' => $d_array[$i]['rsstool_event_end'],
-                       'url_crc32' => sprintf ("%u", $d_array[$i]['rsstool_url_crc32']),
+//                       'url_crc32' => sprintf ("%u", $d_array[$i]['rsstool_url_crc32']),
+                       'url_crc32' => ($d_array[$i]['rsstool_url_crc32'] * 1),
 );
     }
 
@@ -381,8 +384,13 @@ rsscache_write_rss ($d_array)
   else if ($f == 'sitemap')
     return rsscache_write_sitemap ($channel, $item);
   else
+    {
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($item);
     return generate_rss2 ($channel, $item, 1, 1,
                                $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
+    }
 }
 
 

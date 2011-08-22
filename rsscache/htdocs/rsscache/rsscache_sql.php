@@ -233,9 +233,13 @@ rsscache_sql_query2boolean ($q, $c = NULL)
   if ($c)
     {
       $category = config_xml_by_category ($c);
-      if ($category)
-        if ($category->filter)
-          $filter = $category->filter;
+      if (isset ($category->children))
+        {
+          $category_rsscache = $category->children ('rsscache', TRUE);
+          if ($category_rsscache)
+            if ($category_rsscache->filter)
+              $filter = $category_rsscache->filter;
+        }
     }
 
   $q = trim ($q.' '.$filter);
@@ -372,9 +376,11 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 //  $start = $rsscache_sql_db->sql_stresc ($start);
 //  $num = $rsscache_sql_db->sql_stresc ($num);
   $category = config_xml_by_category ($c);
+  if (isset ($category->children))
+    $category_rsscache = $category->children ('rsscache', TRUE);
 
   if ($f == 'stats')
-    return rsscache_sql_stats ($rsscache_sql_db, isset ($category->table_suffix) ? $category->table_suffix : NULL, $c);
+    return rsscache_sql_stats ($rsscache_sql_db, isset ($category_rsscache->table_suffix) ? $category_rsscache->table_suffix : NULL, $c);
 
   $rsstool_table = 'rsstool_table';
   $keyword_table = 'keyword_table';
@@ -507,6 +513,60 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 
   return $d;
 }
+
+
+/*
+function
+tv2_sql_move ($rsstool_url_crc32, $new_category)
+{
+  // move item to different category
+  global $tv2_sql_db;
+  $debug = 0;
+
+  $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = \''.$tv2_sql_db->sql_stresc ($new_category).'\''
+                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32);
+
+  $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
+}
+
+
+function
+tv2_sql_vote ($rsstool_url_crc32, $new_score)
+{
+  global $tv2_sql_db;
+  $debug = 0;
+
+  $sql_query_s = 'SELECT tv2_votes,tv2_score FROM rsstool_table'
+                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32);
+  $tv2_sql_db->sql_write ($p, 0, $debug);
+  $r = $tv2_sql_db->sql_read (1, $debug);
+
+  if ($new_score > 0)
+    $new_score = ($r[0]['tv2_votes'] * $r[0]['tv2_score'] + $new_score) / ($r[0]['tv2_votes'] + 1);
+  else
+    $new_score = $r[0]['tv2_score'];
+
+  $sql_query_s = 'UPDATE rsstool_table SET tv2_votes = '.($r[0]['tv2_votes'] + 1).',tv2_score = '.$new_score
+                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32);
+
+  $tv2_sql_db->sql_write ($p, 1, $debug);
+}
+
+
+function
+tv2_sql_restore ($rsstool_url_crc32)
+{
+  // restore original category
+  global $tv2_sql_db;
+  $debug = 0;
+
+  $sql_query_s = 'UPDATE rsstool_table SET tv2_moved = tv2_category'
+                .' WHERE rsstool_url_crc32 = '.$tv2_sql_db->sql_stresc ($rsstool_url_crc32);
+
+  $tv2_sql_db->sql_write ($sql_query_s, 0, $debug);
+}
+*/
+
 
 
 }
