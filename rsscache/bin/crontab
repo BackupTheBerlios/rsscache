@@ -1,3 +1,3 @@
 # pwnoogle
-0 */2 * * *   root    /htdocs/rsscache/bin/rsscache_cronjob.php
-#0 */2 * * *   root    /htdocs/rsscache/bin/rsscache_cronjob.php; /htdocs/rsscache/bin/rsscache_upload.sh
+0 */2 * * *   root    /htdocs/rsscache/bin/rsscache_cronjob.sh
+#0 */2 * * *   root    /htdocs/rsscache/bin/rsscache_cronjob.sh; /htdocs/rsscache/bin/rsscache_upload.sh
