@@ -84,6 +84,9 @@ rsscache_sql_queries ($sql_queries_s)
 {
   $sql_array = explode ("\n", $sql_queries_s);
 
+  // DEBUG
+//  print_r ($sql_array);
+
   for ($i = 0; isset ($sql_array[$i]); $i++)
     {
       $sql_query_s = $sql_array[$i];
@@ -107,8 +110,7 @@ rsscache_sql_stats_func ($c = NULL, $table_suffix = NULL, $t = 0)
     if (trim ($table_suffix) != '')
       {      
         $rsstool_table .= '_'.$table_suffix;
-        // TODO
-//      $keyword_table .= '_'.$table_suffix;
+        $keyword_table .= '_'.$table_suffix;
       }
 
   if ($c)
@@ -233,7 +235,7 @@ rsscache_sql_query2boolean ($q, $c = NULL)
   if ($c)
     {
       $category = config_xml_by_category ($c);
-      if (isset ($category->children))
+      if (method_exists ($category, 'children'))
         {
           $category_rsscache = $category->children ('rsscache', TRUE);
           if ($category_rsscache)
@@ -298,8 +300,7 @@ rsscache_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table
     if (trim ($table_suffix) != '')
       {
         $rsstool_table .= '_'.$table_suffix;
-        // TODO
-//      $keyword_table .= '_'.$table_suffix;
+        $keyword_table .= '_'.$table_suffix;
       }
 
   // HACK: merge any and require since result is sorted by number of matches
@@ -310,10 +311,10 @@ rsscache_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table
        .' SELECT'
 //       .' DISTINCT'
        .' SQL_CACHE rsstool_url_crc32, COUNT(*) AS rsscache_rows'
-       .' FROM keyword_table'
-       .' WHERE keyword_table.rsstool_keyword_crc16'
-//       .' WHERE keyword_table.rsstool_keyword_crc24'
-//       .' WHERE keyword_table.rsstool_keyword_crc32'
+       .' FROM '.$keyword_table
+       .' WHERE '.$keyword_table.'.rsstool_keyword_crc16'
+//       .' WHERE '.$keyword_table.'.rsstool_keyword_crc24'
+//       .' WHERE '.$keyword_table.'.rsstool_keyword_crc32'
        .' IN ( '
 ;
 
@@ -376,7 +377,7 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 //  $start = $rsscache_sql_db->sql_stresc ($start);
 //  $num = $rsscache_sql_db->sql_stresc ($num);
   $category = config_xml_by_category ($c);
-  if (isset ($category->children))
+  if (method_exists ($category, 'children'))
     $category_rsscache = $category->children ('rsscache', TRUE);
 
   if ($f == 'stats')
@@ -388,8 +389,7 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
     if (trim ($table_suffix) != '')
       {
         $rsstool_table .= '_'.$table_suffix;
-        // TODO
-//      $keyword_table .= '_'.$table_suffix;
+        $keyword_table .= '_'.$table_suffix;
       }
 
   $sql_query_s = '';

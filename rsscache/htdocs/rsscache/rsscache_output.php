@@ -64,11 +64,10 @@ rsscache_write_stats_rss ()
 
   for ($i = 0; isset ($config->category[$i]); $i++)
     if (trim ($config->category[$i]->name) != '' &&
-        (isset ($config->category[$i]->feed[0]->link[0]) ||
-         isset ($config->category[$i]->feed[0]->link_prefix)))
+        trim ($config->category[$i]->link[0]) != '')
       {
         $category = $config->category[$i];
-//        if (isset ($category->children))
+//        if (method_exists ($category, 'children'))
 //          $category_rsscache = $category->children ('rsscache', TRUE);
 
         $p = '';
@@ -401,12 +400,21 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
   $rsscache_engine = 1;
   $p = '';
 
+  $rsstool_table = 'rsstool_table';
+  $keyword_table = 'keyword_table';
+  if ($table_suffix)
+    if (trim ($table_suffix) != '')
+      {   
+        $rsstool_table .= '_'.$table_suffix;
+        $keyword_table .= '_'.$table_suffix;
+      }
+
   $p .= '-- -----------------------------------------------------------'."\n"
        .'-- RSStool - read, parse, merge and write RSS and Atom feeds'."\n"
        .'-- -----------------------------------------------------------'."\n"
        ."\n"
-       .'-- DROP TABLE IF EXISTS rsstool_table;'."\n"
-       .'-- CREATE TABLE rsstool_table ('."\n"
+       .'-- DROP TABLE IF EXISTS '.$rsstool_table.';'."\n"
+       .'-- CREATE TABLE '.$rsstool_table.' ('."\n"
 //       .'--   rsstool_url_md5 varchar(32) NOT NULL default \'\','."\n"
        .'--   rsstool_url_crc32 int(10) unsigned NOT NULL default \'0\','."\n"
        .'--   rsstool_site text NOT NULL,'."\n"
@@ -434,8 +442,8 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
        ."\n";
 
   $p .= ''
-       .'-- DROP TABLE IF EXISTS rsstool_table;'."\n"
-       .'-- CREATE TABLE IF NOT EXISTS keyword_table ('."\n"
+       .'-- DROP TABLE IF EXISTS '.$rsstool_table.';'."\n"
+       .'-- CREATE TABLE IF NOT EXISTS '.$keyword_table.' ('."\n"
 //       .'--   rsstool_url_md5 varchar(32) NOT NULL,'."\n"
        .'--   rsstool_url_crc32 int(10) unsigned NOT NULL,'."\n"
 //       .'--   rsstool_keyword_crc32 int(10) unsigned NOT NULL,'."\n"
@@ -451,14 +459,8 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
   for ($i = 0; $i < $items; $i++)
     if ($xml->item[$i]->url != '')
     {
-      $p .= 'INSERT IGNORE INTO ';
       // rsstool_table
-      $s = 'rsstool_table';
-      if ($table_suffix)
-        if (trim ($table_suffix) != '')
-          $s = 'rsstool_table_'.$table_suffix;
-      $p .= $s;
-      $p .= ' ('
+      $p .= 'INSERT IGNORE INTO '.$rsstool_table.' ('
            .' rsstool_dl_url,'
 //           .' rsstool_dl_url_md5,'
            .' rsstool_dl_url_crc32,'
@@ -516,7 +518,7 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
       $p .= '-- just update if row exists'."\n";
       if ($sql_update == 0)
         $p .= '-- ';
-      $p .= 'UPDATE rsstool_table SET '
+      $p .= 'UPDATE '.$rsstool_table.' SET '
            .' rsstool_title = \''.misc_sql_stresc ($xml->item[$i]->title, $db_conn).'\','
 //           .' rsstool_title_md5 = \''.$xml->item[$i]->title_md5.'\','
            .' rsstool_title_crc32 = \''.$xml->item[$i]->title_crc32.'\','
@@ -529,7 +531,7 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
       $a = explode (' ', $xml->item[$i]->media_keywords);
       for ($j = 0; isset ($a[$j]); $j++)
         if (trim ($a[$j]) != '')
-          $p .= 'INSERT IGNORE INTO keyword_table ('
+          $p .= 'INSERT IGNORE INTO '.$keyword_table.' ('
 //               .' rsstool_url_md5,'
                .' rsstool_url_crc32,'
 //               .' rsstool_keyword_crc32,'

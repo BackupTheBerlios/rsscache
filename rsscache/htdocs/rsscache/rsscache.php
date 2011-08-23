@@ -93,7 +93,8 @@ else // write feed
 
     // category   
     $category = config_xml_by_category (strtolower ($c));
-    $category_rsscache = $category->children ('rsscache', TRUE);
+    if (method_exists ($category, 'children'))
+      $category_rsscache = $category->children ('rsscache', TRUE);
 
     // use SQL
     if ($item)

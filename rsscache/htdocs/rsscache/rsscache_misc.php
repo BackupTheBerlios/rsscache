@@ -57,6 +57,19 @@ rsscache_get_request_value ($name)
 
 
 function
+config_xml_by_category ($category_name)
+{
+  $config = config_xml ();
+
+  for ($i = 0; isset ($config->category[$i]); $i++)
+    if (trim ($config->category[$i]->name) == $category_name)
+      return $config->category[$i];
+
+  return NULL;
+}
+
+
+function
 config_xml_normalize ($config)
 {
   global $rsstool_path;
@@ -101,6 +114,8 @@ config_xml_normalize ($config)
     for ($j = 0; isset ($config->category[$i]->feed[$j]); $j++)
       {
         $feed = $config->category[$i]->feed[$j];
+        if (method_exists ($feed, 'children'))
+          $feed_rsscache = $feed->children ('rsscache', TRUE);
 
 //        $config->category[$i]->link = array ();
 //        $config->category[$i]->opts = array ();
@@ -109,25 +124,25 @@ config_xml_normalize ($config)
           if (trim ($feed->link[$k]) != '')
             {
               $config->category[$i]->link[] = $feed->link[$k];
-              $config->category[$i]->opts[] = $rsstool_opts.' '.$feed->opts;
-              $config->category[$i]->client[] = $feed->client; // ? $feed->client : $rsstool_path; 
+              $config->category[$i]->opts[] = $rsstool_opts.' '.$feed_rsscache->opts;
+              $config->category[$i]->client[] = $feed_rsscache->client; // ? $feed_rsscache->client : $rsstool_path;
             }
 
         // TODO: use new style config.xml
         //   link_prefix, link_search[], link_suffix
-        if (isset ($feed->link_prefix))
-          for ($k = 0; isset ($feed->link_search[$k]); $k++)
+        if (isset ($feed_rsscache->link_prefix))
+          for ($k = 0; isset ($feed_rsscache->link_search[$k]); $k++)
             {
               $p = '';
-//              if (isset ($feed->link_prefix))
-                $p .= $feed->link_prefix;
-//              if (isset ($feed->link_search[$k]))
-                $p .= $feed->link_search[$k];
-              if (isset ($feed->link_suffix))
-                $p .= $feed->link_suffix;
+//              if (isset ($feed_rsscache->link_prefix))
+                $p .= $feed_rsscache->link_prefix;
+//              if (isset ($feed_rsscache->link_search[$k]))
+                $p .= $feed_rsscache->link_search[$k];
+              if (isset ($feed_rsscache->link_suffix))
+                $p .= $feed_rsscache->link_suffix;
               $config->category[$i]->link[] = $p;
-              $config->category[$i]->opts[] = $rsstool_opts.' '.$feed->opts;
-              $config->category[$i]->client[] = $feed->client; //  ? $feed->client : $rsstool_path;
+              $config->category[$i]->opts[] = $rsstool_opts.' '.$feed_rsscache->opts;
+              $config->category[$i]->client[] = $feed_rsscache->client; //  ? $feed_rsscache->client : $rsstool_path;
             }
       }
 
@@ -197,25 +212,13 @@ if ($memcache_expire > 0)
 
 
 function
-config_xml_by_category ($category)
-{
-  $config = config_xml ();
-
-  for ($i = 0; isset ($config->category[$i]); $i++)
-    if (trim ($config->category[$i]->name) == $category)
-      return $config->category[$i];
-
-  return NULL;
-}
-
-
-function
 rsscache_download_thumbnails ($xml)
 {
   global $wget_path;
   global $wget_opts;
   global $rsscache_domain;
-  global $debug;
+//  global $debug;
+  $debug = 1;
   
   for ($i = 0; isset ($xml->item[$i]); $i++)
     {
@@ -243,7 +246,7 @@ rsscache_download_thumbnails ($xml)
 
       $p = '../htdocs/thumbnails/rsscache/'.$xml->item[$i]->url_crc32.'.jpg';
 //      echo 'media image: '.$s.' ('.$p.')'."\n";
-      $result = misc_exec_wget ($s, $p, $noclobber, $wget_path, $wget_opts);
+      $result = misc_exec_wget ($s, $p, $noclobber, $wget_path, $wget_opts, $debug);
 //      $result = misc_download_noclobber ($s, $p);
 //      0 = ok, 1 = thumbnail did exist download skipped, -1 = error
 
@@ -312,8 +315,14 @@ rsscache_download_feeds_by_category ($category_name)
 
   $category_name = trim ($category_name);
   $category = config_xml_by_category ($category_name);
-  if (isset ($category->children))
+  if (method_exists ($category, 'children'))
     $category_rsscache = $category->children ('rsscache', TRUE);
+
+  // DEBUG
+//  echo '$category'."\n";
+//  print_r ($category);
+//  echo '$category_rsscache'."\n";
+//  print_r ($category_rsscache);
 
   // TODO: single category using category_name   
   if ($category == NULL)
@@ -326,12 +335,12 @@ rsscache_download_feeds_by_category ($category_name)
       if (isset ($category_rsscache->opts[$j]))
         $opts = $category_rsscache->opts[$j];
 
-//      $p = '';
-//      $p .= 'category: '.$category_name."\n"
-//           .'client: '.$category_rsscache->client[$j]."\n"
-//           .'opts: '.$opts."\n"
-//           .'url: '.$category->link[$j]."\n"; 
-//      echo $p;
+      $p = '';
+      $p .= 'category: '.$category_name."\n"
+           .'client: '.$category->client[$j]."\n"
+           .'opts: '.$opts."\n"
+           .'url: '.$category->link[$j]."\n"; 
+      echo $p;
 
       // get feed
       $xml = rsscache_feed_get ($category_rsscache->client[$j], $opts, $category->link[$j]);
@@ -427,9 +436,9 @@ rsscache_event ($d)
   $t[3] = (100 * $t[2]) / (7 * 86400); // percent (week)
 
   // DEBUG
-echo '<pre><tt>';
-print_r ($d);
-print_r ($t);
+//echo '<pre><tt>';
+//print_r ($d);
+//print_r ($t);
 
   $p = '';
   $p .= '<br>Length: '.floor (($t[1] - $t[0]) / 60).' min';

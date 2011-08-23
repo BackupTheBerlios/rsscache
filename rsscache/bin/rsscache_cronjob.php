@@ -22,7 +22,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 //phpinfo ();
 //error_reporting(E_ALL | E_STRICT);
-chdir (dirname ($argv[0]));
 require_once ('../htdocs/rsscache/default.php');
 require_once ('../htdocs/config.php');
 require_once ('../htdocs/misc/misc.php');
@@ -43,7 +42,19 @@ set_time_limit (0);
 rsscache_sql_open ();
  
 // config.xml from inside htdocs
-$rsscache_config_xml = '../htdocs/'.$rsscache_config_xml;
+$a = array ();
+for ($i = 1; $i < $argc; $i++)
+  $a[] = $argv[$i];
+//$a[] = '../htdocs/'.$rsscache_config_xml;
+
+
+// DEBUG
+print_r ($a);
+
+
+for ($j = 0; isset ($a[$j]); $j++)
+  {
+$rsscache_config_xml = $a[$j];
 $config = config_xml ();
 
 echo misc_exec ('/etc/init.d/tor restart');
@@ -57,6 +68,7 @@ for ($i = 0; isset ($config->category[$i]); $i++)
       print_r ($config->category[$i]);
       rsscache_download_feeds_by_category ($config->category[$i]->name);
     }
+  }
 
 rsscache_sql_close ();
 
