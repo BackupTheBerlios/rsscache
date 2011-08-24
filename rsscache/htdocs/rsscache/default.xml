@@ -1,53 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- config for rsscache -->
 <!--
-format:
-categories
-  category[]
-    name         category name
-    title        name
-    feed[]           feed downloads
-      link[]         complete RSS feed url(s)
-                       unrelated to link_prefix, link_suffix or link_search
-      NOTE: use link_prefix, link_suffix and link_search when getting more than one RSS feed from the same place
-      link_prefix    RSS feed url prefix used for all link_search
-      link_search[]  RSS feed url search query(-ies) to be used between link_prefix and link_suffix
-      link_suffix    optional, RSS feed url suffix used for all link_search
-      opts           optional, options to be used with rsstool when downloading this RSS feed(s)
-    filter    optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
+rsscache uses a derivate of RSS for configuration
+  channels are categories
+  items are feeds
 
-Example: http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
-         http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
+format:
+rss
+  channel[]               categories
+    title                 category title
+    link                  same as rsscache:query
+    category              category name
+    image                 optional, category logo
+    desc                  category tooltip
+    item[]                    feed downloads
+TODO:      rsscache:filter         optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
+      link                    link of feed (RSS, etc.)
+                                http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
+                                http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
+      NOTE: use link_prefix, link_suffix and link_search when getting more than one RSS feed from the same place
+      rsscache:link_prefix    same as link
+      rsscache:link_search[]
+      rsscache:link_suffix
+      rsscache:opts    
+TODO:    rsscache:filter       optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
+    rsscache:table_suffix  
+TODO:    cms:button       show 32x32 button 
+    cms:separate     optional, adds a line-feed or separator before the next category
+                            0 == no separator (default)
+                            1 == line-feed
+                            2 == horizontal line (hr tag)
+    cms:buttononly   optional, show only button
+    cms:status       optional, adds a small status note
+                            0 == nothing (default)
+                            1 == "New!"
+                            2 == "Soon!"
+                            3 == "Preview!"
+                            4 == "Update!"
+    cms:select       add to select menu
+    cms:local        optional, local file to embed
+    cms:iframe       optional, url to embed
+    cms:proxy        optional, url to embed (proxy-style)
+    cms:query        optional, url of button or select
+                            &q=SEARCH       search
+
+                            *** functions ***
+                            &f=all          show all categories (sorted by time of RSS feed download)
+                            &f=new          show all categories (sorted by time of RSS item)
+                            &f=0_5min       show videos with <5 minutes duration
+                            &f=5_10min
+                            &f=10_min
+                            &f=score        sort by score/votes/popularity
+                            &f=4_3          4:3 ratio for videos 
+                            &f=16_9         16:9 ratio for videos
+
+                            *** output ***
+                            &output=rss     output page as RSS feed
+                            &output=mirror  output page as static HTML
+                            &output=wall    show search results as wall
+                            &output=cloud   same as wall
+                            &output=stats   show RSS feed download stats
+                            &output=1col    show videos in 1 column
+                            &output=2cols   show videos in 2 columns
+TODO:    rsscache:movable          if items can be moved to another category
+TODO:    rsscache:reportable       if items can be reported to the admins
+TODO:    rsscache:votable          if items of this category can be voted for
 -->
-<categories>
+<categories xmlns:cms="http://www.example.com/cms/" xmlns:rsscache="http://www.example.com/rsscache/">                     
   <category>
-    <name>quake1</name>
-    <title>Quake</title>
-    <filter>-hack -crack -japan -china -samoa -earthquake -earth-quake -earth -indones +quake +quakeworld</filter>
-    <!-- feed>
-      <link>http://video.google.com/videosearch?q=quake1&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-    </feed -->
+    <name>rsscache</name>
+    <title>RSScache</title>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
+    <image>/images/rsscache_icon.png</image>
+    <rsscache:filter></rsscache:filter>
     <feed>
-      <link>http://video.google.com/videosearch?q=quakeworld&amp;so=1&amp;output=rss&amp;ie=UTF-8&amp;num=100</link>
-      <opts>-enc=ISO-8859-15</opts>
+      <link>http://gdata.youtube.com/feeds/api/videos?vq=rss&amp;max-results=50</link>
     </feed>
-    <!-- feed> 
-      <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=quake1</link>
-    </feed>
-    <feed> 
-      <link>http://www.own3d.tv/feeds/rss.php?sort=date&amp;game=quakeworld</link>
-    </feed -->
-    <feed>
-      <link>http://www.dailymotion.com/rss/search/quake1/1</link>
-    </feed>
-    <feed>
-      <link>http://www.dailymotion.com/rss/search/quakeworld/1</link>     
-    </feed>   
-    <!-- feed>
-      <link>http://gdata.youtube.com/feeds/api/videos?vq=quake1&amp;max-results=50</link>
-    </feed -->
-    <feed>
-      <link>http://gdata.youtube.com/feeds/api/videos?vq=quakeworld&amp;max-results=50</link>
-    </feed>
+    <cms:query>c=rsscache</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <rsscache:movable>0</rsscache:movable>
+    <rsscache:reportable>0</rsscache:reportable>
+    <rsscache:votable>0</rsscache:votable>
   </category>
 </categories>
