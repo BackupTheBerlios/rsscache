@@ -24,7 +24,7 @@ if (!defined ('RSSCACHE_SQL_PHP'))
 define ('RSSCACHE_SQL_PHP', 1);
 //require_once ('config.php');
 //require_once ('misc/misc.php');
-require_once ('misc/sql.php');
+//require_once ('misc/sql.php');
 
 
 $rsscache_sql_db = NULL;

@@ -68,12 +68,9 @@ get_subdomain ()
 
 $config_domain = get_hostname ();
 $config_subdomain = get_subdomain ();
-$a = explode ('/', trim ($_SERVER['REQUEST_URI'], '/'));
-$config_uri = $a[0];
 // DEBUG
 //echo '$config_domain=='.$config_domain."<br>\n";
 //echo '$config_subdomain=='.$config_subdomain."<br>\n";
-//echo '$config_uri=='.$config_uri."<br>\n";
 
 // HACK
 if (in_array ($config_subdomain, array ('', 'www')))
@@ -87,12 +84,14 @@ else
 if (!file_exists ($pwd.'/'.$config_subdomain.'_config.php'))
   $config_subdomain = 'rsscache';
 
-$config_subdomain = $config_uri;
+$a = explode ('/', trim ($_SERVER['REQUEST_URI'], '/'));
+$config_subdomain = $a[0];
 
 if (trim ($config_subdomain) == '')
   $config_subdomain = 'rsscache';
 
-require_once ($config_subdomain.'_config.php');
+//require_once ($config_subdomain.'_config.php');
+require_once ('rsscache_config.php');
 
 
 }
