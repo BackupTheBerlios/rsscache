@@ -18,13 +18,13 @@ $rsstool_opts = '--hack-google --sbin --shtml';
 
 
 // configuration
-$rsscache_config_xml = $config_uri.'_config.xml';
+$rsscache_config_xml = $config_subdomain.'_config.xml';
 $rsscache_thumbnails_prefix = '';
 $rsscache_debug_sql = 0;
 $rsscache_enable_search = 1; // allow users to search
 $rsscache_related_search = 1; // make use of related searches (requires keywords)
-$rsscache_xsl_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache.xsl';
-$rsscache_js = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache.js';
+//$rsscache_xsl_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache.xsl';
+//$rsscache_js = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache.js';
 
 
 // database settings
@@ -32,12 +32,6 @@ $rsscache_dbhost = 'localhost';
 $rsscache_dbname = 'rsscache';
 $rsscache_dbuser = 'root';
 $rsscache_dbpass = 'nb';
-
-
-// set user agent for downloads
-require_once ('misc/misc.php');
-ini_set('rsscache_user_agent', random_user_agent ());
-$rsscache_user_agent = random_user_agent ();
 
 
 }

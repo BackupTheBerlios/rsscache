@@ -158,6 +158,7 @@ function
 config_xml ($memcache_expire = 0)
 {
   global $rsscache_config_xml;
+
   static $config = NULL;
 
   if ($config)

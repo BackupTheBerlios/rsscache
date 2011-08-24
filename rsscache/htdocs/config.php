@@ -88,7 +88,8 @@ if (!file_exists ($pwd.'/'.$config_subdomain.'_config.php'))
   $config_subdomain = 'rsscache';
 
 $config_subdomain = $config_uri;
-if (trim ($config_uri) == '')
+
+if (trim ($config_subdomain) == '')
   $config_subdomain = 'rsscache';
 
 require_once ($config_subdomain.'_config.php');
