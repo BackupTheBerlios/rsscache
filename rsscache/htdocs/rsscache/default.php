@@ -1,7 +1,7 @@
 <?php
-if (!defined ('RSSCACHE_CONFIG_PHP'))
+if (!defined ('RSSCACHE_DEFAULT_PHP'))
 {
-define ('RSSCACHE_CONFIG_PHP', 1);
+define ('RSSCACHE_DEFAULT_PHP', 1);
 
 
 // compression 1/0
