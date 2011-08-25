@@ -25,12 +25,17 @@ TODO:      rsscache:filter         optional, boolean full-text search query for 
       rsscache:opts    
 TODO:    rsscache:filter       optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
     rsscache:table_suffix  
-TODO:    cms:button       show 32x32 button 
+TODO:    rsscache:movable          if items can be moved to another category
+TODO:    rsscache:reportable       if items can be reported to the admins
+TODO:    rsscache:votable          if items of this category can be voted for
+
+non-rsscache options:
     cms:separate     optional, adds a line-feed or separator before the next category
                             0 == no separator (default)
                             1 == line-feed
                             2 == horizontal line (hr tag)
     cms:buttononly   optional, show only button
+TODO:    cms:button       show 32x32 button 
     cms:status       optional, adds a small status note
                             0 == nothing (default)
                             1 == "New!"
@@ -62,26 +67,23 @@ TODO:    cms:button       show 32x32 button
                             &output=stats   show RSS feed download stats
                             &output=1col    show videos in 1 column
                             &output=2cols   show videos in 2 columns
-TODO:    rsscache:movable          if items can be moved to another category
-TODO:    rsscache:reportable       if items can be reported to the admins
-TODO:    rsscache:votable          if items of this category can be voted for
 -->
 <categories xmlns:cms="http://www.example.com/cms/" xmlns:rsscache="http://www.example.com/rsscache/">                     
   <category>
     <name>rsscache</name>
     <title>RSScache</title>
-    <cms:separate>0</cms:separate>
-    <cms:buttononly>0</cms:buttononly>
     <image>/images/rsscache_icon.png</image>
-    <rsscache:filter></rsscache:filter>
     <feed>
       <link>http://gdata.youtube.com/feeds/api/videos?vq=rss&amp;max-results=50</link>
     </feed>
-    <cms:query>c=rsscache</cms:query>
-    <cms:button>1</cms:button>
-    <cms:select>1</cms:select>
+    <rsscache:filter></rsscache:filter>
     <rsscache:movable>0</rsscache:movable>
     <rsscache:reportable>0</rsscache:reportable>
     <rsscache:votable>0</rsscache:votable>
+    <cms:query>c=rsscache</cms:query>
+    <cms:button>1</cms:button>
+    <cms:select>1</cms:select>
+    <cms:separate>0</cms:separate>
+    <cms:buttononly>0</cms:buttononly>
   </category>
 </categories>

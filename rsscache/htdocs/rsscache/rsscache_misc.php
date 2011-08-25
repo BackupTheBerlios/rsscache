@@ -92,14 +92,9 @@ config_xml_normalize ($config)
         }
 
       for ($i = 0; isset ($config->category[$i]); $i++)
-//        if ($config->category[$i]->query)
-          {
-//            $a = array();
-//            parse_str ($config->category[$i]->query, $a);
-
-//            if (isset ($a['c']))
-              for ($j = 0; isset ($stats[$j]); $j++)
-                if ($stats[$j]['category'] == $config->category[$i]->name)
+        if ($config->category[$i]->feed[0])
+          for ($j = 0; isset ($stats[$j]); $j++)
+            if ($stats[$j]['category'] == $config->category[$i]->name)
               {
                 $config->category[$i]->items = $stats[$j]['items'];
                 $config->category[$i]->items_today = $stats[$j]['items_today'];
@@ -108,7 +103,6 @@ config_xml_normalize ($config)
                 $config->category[$i]->days = $stats[$j]['days'];
                 break;
               }
-          }
 
   for ($i = 0; isset ($config->category[$i]); $i++)
     for ($j = 0; isset ($config->category[$i]->feed[$j]); $j++)
