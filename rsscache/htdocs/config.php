@@ -72,6 +72,7 @@ $config_subdomain = get_subdomain ();
 //echo '$config_domain=='.$config_domain."<br>\n";
 //echo '$config_subdomain=='.$config_subdomain."<br>\n";
 
+/*
 // HACK
 if (in_array ($config_subdomain, array ('', 'www')))
   $config_subdomain = 'rsscache';
@@ -83,8 +84,10 @@ else
 
 if (!file_exists ($pwd.'/'.$config_subdomain.'_config.php'))
   $config_subdomain = 'rsscache';
+*/
 
 $a = explode ('/', trim ($_SERVER['REQUEST_URI'], '/'));
+$a = explode ('?', $a[0]);
 $config_subdomain = $a[0];
 
 if (trim ($config_subdomain) == '')
