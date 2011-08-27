@@ -39,29 +39,126 @@ format:
 channel
   title
   link
-  desc
+  description
+
 item[]
   title
   link
-  desc
-  date
+  description
+  date? -> pubDate
   image
-  enclosure
+  enclosure           private
   category
-  media_duration
-  user
-  dl_date
-  keywords
-  related_id
-  event_start
-  event_end
-  url_crc32
+
+  media_duration      private
+  user -> author                private
+  keywords            private
+
+rsscache:dl_date      private
+rsscache:date         private
+rsscache:related_id   private
+rsscache:event_start  private
+rsscache:event_end    private
+rsscache:url_crc32    private
+
+
+rsscache uses a derivate of RSS for configuration
+  channels are web sites
+  items are categories
+
+format:
+rss                       even config files are made of RSS :)
+  channel[]               site
+    title                 title
+    link                  site link
+    description
+    image                 optional
+      url                 image url
+      link                optional, image link
+      width               optional, image width
+      height              optional, image height
+TODO:    rsscache:filter  optional
+    item[]                    feed downloads
+      title                 category title
+      link                  same as rsscache:query
+      description
+      category              category name
+      image                 optional, category logo
+        url                 image url
+        link                optional, image link
+        width               optional, image width
+        height              optional, image height
+TODO:      rsscache:filter         optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
+      rsscache:feed[]
+        rsscache:link                   link of feed (RSS, etc.)
+                                http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
+                                http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
+        NOTE: use link_prefix, link_suffix and link_search when getting more than one RSS feed from the same place
+        rsscache:link_prefix    same as link
+        rsscache:link_search[]
+        rsscache:link_suffix
+        rsscache:opts    
+TODO:      rsscache:filter       optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
+      rsscache:table_suffix  
+TODO:      rsscache:votable          if items of this category can be voted for
+                                       0 = not (default)
+                                       1 = by everyone
+TODO:      rsscache:reportable       if items can be reported to the admins
+                                       0 = not (default)
+                                       1 = by everyone
+TODO:      rsscache:movable          if items can be moved to another category
+                                       0 = not (default)
+                                       1 = by the admin only
+                                       2 = by everyone
+                     CMS options, widget.php/widget_cms():
+
+    cms:separate     optional, adds a line-feed or separator before the next category
+                            0 == no separator (default)
+                            1 == line-feed
+                            2 == horizontal line (hr tag)
+    cms:buttononly   optional, show only button
+TODO:    cms:button       show 32x32 button 
+    cms:status       optional, adds a small status note
+                            0 == nothing (default)
+                            1 == "New!"
+                            2 == "Soon!"
+                            3 == "Preview!"
+                            4 == "Update!"
+    cms:select       add to select menu
+    cms:local        optional, local file to embed
+    cms:iframe       optional, url to embed
+    cms:proxy        optional, url to embed (proxy-style)
+    cms:query        optional, url of button or select
+                            &q=SEARCH       search
+
+                            *** functions ***
+                            &f=all          show all categories (sorted by time of RSS feed download)
+                            &f=new          show all categories (sorted by time of RSS item)
+                            &f=0_5min       show videos with <5 minutes duration
+                            &f=5_10min
+                            &f=10_min
+                            &f=score        sort by score/votes/popularity
+                            &f=4_3          4:3 ratio for videos 
+                            &f=16_9         16:9 ratio for videos
+
+                            *** output ***
+                            &output=rss     output page as RSS feed
+                            &output=mirror  output page as static HTML
+                            &output=wall    show search results as wall
+                            &output=cloud   same as wall
+                            &output=stats   show RSS feed download stats
+                            &output=1col    show videos in 1 column
+                            &output=2cols   show videos in 2 columns
 */
 {
   // DEBUG
 //  echo '<pre><tt>';
 //  print_r ($channel);
 //  print_r ($item);
+
+  $use_cms = 0; 
+  if ($use_rsscache == 1)
+    $use_cms = 1;
 
   $p = '';
 
@@ -76,14 +173,22 @@ item[]
     $p .= ' xmlns:media="http://search.yahoo.com/mrss/"';
 
   if ($use_rsscache == 1)
-    $p .= ' xmlns:rsscache="http://www.example.com/rsscache/"';
+    $p .= ' xmlns:rsscache="data:,rsscache"';
+
+  if ($use_cms == 1)
+    $p .= ' xmlns:cms="data:,cms"';
 
   $p .= '>'."\n";
+
+  if (isset ($channel['description']))
+    $desc = $channel['description'];
+  else
+    $desc = $channel['desc'];
 
   $p .= '  <channel>'."\n"
        .'    <title>'.generate_rss2_escape ($channel['title']).'</title>'."\n"
        .'    <link>'.generate_rss2_escape ($channel['link']).'</link>'."\n"
-       .'    <description>'.generate_rss2_escape ($channel['desc']).'</description>'."\n";
+       .'    <description>'.generate_rss2_escape ($desc).'</description>'."\n";
 
   if (isset ($channel['lastBuildDate']))
     $p .= '    <lastBuildDate>'.strftime ("%a, %d %h %Y %H:%M:%S %z", $channel['lastBuildDate']).'</lastBuildDate>'."\n";
@@ -186,6 +291,27 @@ item[]
         $p .= '        <rsscache:url_crc32>'.sprintf ("%u", $item[$i]['url_crc32']).'</rsscache:url_crc32>'."\n";
 
 //      $p .= '      </rsscache:group>'."\n";
+        }
+
+      if ($use_cms == 1)
+        {
+      if (isset ($item[$i]['dl_date']))
+        $p .= '        <cms:dl_date>'.sprintf ("%u", $item[$i]['dl_date']).'</cms:dl_date>'."\n";
+
+      if (isset ($item[$i]['date']))
+        $p .= '        <cms:date>'.sprintf ("%u", $item[$i]['date']).'</cms:date>'."\n";
+
+      if (isset ($item[$i]['related_id']))
+        $p .= '        <cms:related_id>'.sprintf ("%u", $item[$i]['related_id']).'</cms:related_id>'."\n";
+
+      if (isset ($item[$i]['event_start']))
+        $p .= '        <cms:event_start>'.sprintf ("%u", $item[$i]['event_start']).'</cms:event_start>'."\n";
+
+      if (isset ($item[$i]['event_end']))
+        $p .= '        <cms:event_end>'.sprintf ("%u", $item[$i]['event_end']).'</cms:event_end>'."\n";
+
+      if (isset ($item[$i]['url_crc32']))
+        $p .= '        <cms:url_crc32>'.sprintf ("%u", $item[$i]['url_crc32']).'</cms:url_crc32>'."\n";
         }
 
       $p .= '    </item>'."\n";
