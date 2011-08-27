@@ -90,7 +90,7 @@ else if ($rsscache_admin == 1 && $f == 'cache') // cache (new) items into databa
       }
     else
       $p = '&c=CATEGORY required';
-    $p = generate_rss2 (array ('title' => rsscache_title (), 'desc' => $p), NULL);
+    $p = generate_rss2 (array ('title' => rsscache_title (), 'description' => $p), NULL);
   }
 else // write feed
   {

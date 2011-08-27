@@ -80,9 +80,9 @@ rsscache_write_stats_rss ()
 ;
         $item[] = array ('title' => $category->title,
                          'link' => 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category->name
-.($output == 'html' ? '&output=html' : '')
+                                  .($output == 'html' ? '&output=html' : '')
 ,
-                         'desc' => $p,
+                         'description' => $p,
                          'date' => $rsscache_time,
 //                       'image' => $category->image,
                          'category' => $category->name,
@@ -109,7 +109,7 @@ rsscache_write_stats_rss ()
 ;
   return generate_rss2 (array ('title' => rsscache_title (),
                                'link' => $rsscache_link,
-                               'desc' => $p,
+                               'description' => $p,
                                'logo' => $rsscache_logo,
                                'lastBuildDate' => $rsscache_time), $item, 1, 1,
                                $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
@@ -192,7 +192,7 @@ rsscache_write_mediawiki ($channel, $item, $output_type = 0)
 //       .'['.$item[$i]['link'].' '.$item[$i]['title'].']'."\n"
 //       .'='.$item[$i]['title'].'='."\n"     
        .'{{#mw_media:'.$item[$i]['link'].'|640}}'."\n"."\n"
-       .$item[$i]['desc']."\n"."\n"
+       .$item[$i]['description']."\n"."\n"
        .'[[:Category:'.$item[$i]['category'].'|'.$item[$i]['category'].']]'."\n"."\n"
        .'==Keywords=='."\n"
        .'[[Category:'.str_replace (' ', ']][[Category:', trim ($item[$i]['keywords'])).']]'."\n";
@@ -232,7 +232,7 @@ rsscache_write_sitemap_video_func ($category_name, $item)
       $p .= ''
            .'<video:thumbnail_loc>'.rsscache_write_sitemap_escape ($item[$i]['image']).'</video:thumbnail_loc>'."\n"
            .'<video:title>'.rsscache_write_sitemap_escape ($item[$i]['title']).'</video:title>'."\n"
-           .'<video:description>'.rsscache_write_sitemap_escape ($item[$i]['desc']).'</video:description>'."\n"
+           .'<video:description>'.rsscache_write_sitemap_escape ($item[$i]['description']).'</video:description>'."\n"
            .'<video:duration>'.$item[$i]['media_duration'].'</video:duration>'."\n"
 ;
       $p .= '</video:video>'."\n";
@@ -322,7 +322,7 @@ rsscache_write_rss ($d_array)
       $item[] = array ('title' => $d_array[$i]['rsstool_title'],
 //                       'link' => $d_array[$i]['rsstool_url'],
                        'link' => $link,
-                       'desc' => $d_array[$i]['rsstool_desc'],
+                       'description' => $d_array[$i]['rsstool_desc'],
                        'date'  => $date,
                        'image' => rsscache_thumbnail ($d_array[$i]),
                        'enclosure' => rsscache_thumbnail ($d_array[$i]),
@@ -376,7 +376,7 @@ rsscache_write_rss ($d_array)
 ;
   $channel = array ('title' => rsscache_title (),
                                'link' => $rsscache_link,
-                               'desc' => $p,
+                               'description' => $p,
                                'logo' => $rsscache_logo,
                                'lastBuildDate' => $rsscache_time);
 

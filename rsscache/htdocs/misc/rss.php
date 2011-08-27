@@ -180,15 +180,13 @@ TODO:    cms:button       show 32x32 button
 
   $p .= '>'."\n";
 
-  if (isset ($channel['description']))
-    $desc = $channel['description'];
-  else
-    $desc = $channel['desc'];
-
   $p .= '  <channel>'."\n"
        .'    <title>'.generate_rss2_escape ($channel['title']).'</title>'."\n"
-       .'    <link>'.generate_rss2_escape ($channel['link']).'</link>'."\n"
-       .'    <description>'.generate_rss2_escape ($desc).'</description>'."\n";
+       .'    <link>'.generate_rss2_escape ($channel['link']).'</link>'."\n";
+
+  if (isset ($channel['description']))
+    $p .= ''
+         .'    <description>'.generate_rss2_escape ($channel['description']).'</description>'."\n";
 
   if (isset ($channel['lastBuildDate']))
     $p .= '    <lastBuildDate>'.strftime ("%a, %d %h %Y %H:%M:%S %z", $channel['lastBuildDate']).'</lastBuildDate>'."\n";
@@ -209,16 +207,14 @@ TODO:    cms:button       show 32x32 button
 
   for ($i = 0; isset ($item[$i]['link']); $i++)
     {
-      if (isset ($item[$i]['description']))
-        $desc = $item[$i]['description'];
-      else
-        $desc = $item[$i]['desc'];
-
       $p .= '    <item>'."\n";
 
       $p .= '      <title>'.generate_rss2_escape ($item[$i]['title']).'</title>'."\n"
-           .'      <link>'.generate_rss2_escape ($item[$i]['link']).'</link>'."\n"
-           .'      <description>'.generate_rss2_escape ($desc).'</description>'."\n";
+           .'      <link>'.generate_rss2_escape ($item[$i]['link']).'</link>'."\n";
+
+      if (isset ($item[$i]['description']))
+        $p .= ''
+             .'      <description>'.generate_rss2_escape ($item[$i]['description']).'</description>'."\n";
 
       if (isset ($item[$i]['pubDate']))
         $p .= ''
@@ -334,14 +330,14 @@ generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_d
   for ($i = 0; isset ($item_link_array[$i]); $i++)
     $item[] = array ('title' => $item_link_array[$i],
                      'link' => $item_link_array[$i],
-                     'desc' => $item_desc_array[$i],
+                     'description' => $item_desc_array[$i],
                      'media:duration' => $item_media_duration_array[$i],
                      'author' => $item_author_array[$i]);
 
 
   return generate_rss2 (array ('title' => $title,
                                'link' => $link,
-                               'desc' => $desc), $item, 1);
+                               'description' => $desc), $item, 1);
 }
 
 
@@ -427,7 +423,7 @@ rss_improve_relevance_s ($rss)
 
   $channel = array ('title' => $rss->channel->title,
                     'link' => $rss->channel->link,
-                    'desc' => $rss->channel->desc);
+                    'description' => $rss->channel->desc);
 
   $item = array ();
   for ($i = 0; isset ($title_a[$i]); $i++)

@@ -1364,7 +1364,7 @@ misc_seo_description ($html_body)
 {
   // generate meta tag from the body
   $p = strip_tags2 ($html_body);
-  $p = str_replace (array ('&nbsp;', '&gt;', '&lt;', "\n"), ' ', $p);
+  $p = str_replace (array ('&nbsp;', '&gt;', '&lt;', "\n", ','), ' ', $p);
   $p = misc_get_keywords ($p, 1);
   return '<meta name="Description" content="'.$p.'">'
         .'<meta name="keywords" content="'.$p.'">';
