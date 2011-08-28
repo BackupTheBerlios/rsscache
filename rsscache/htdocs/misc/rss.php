@@ -25,7 +25,7 @@ define ('MISC_RSS_PHP', 1);
 
 
 function
-generate_rss2_escape ($s)
+misc_xml_escape ($s)
 {
 //  return htmlspecialchars ($s, ENT_QUOTES);
   return '<![CDATA['.$s.']]>';
@@ -34,34 +34,25 @@ generate_rss2_escape ($s)
 
 function
 generate_rss2 ($channel, $item, $use_mrss = 0, $use_rsscache = 0, $xsl_stylesheet = NULL)
-/*
-format:
-channel
-  title
-  link
-  description
+{
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($channel);
+//  print_r ($item);
 
-item[]
-  title
-  link
-  description
-  date? -> pubDate
-  image
-  enclosure           private
-  category
+  $use_cms = 0; 
+  if ($use_rsscache == 1)
+    $use_cms = 1;
 
-  media_duration      private
-  user -> author                private
-  keywords            private
+  $p = '';
 
-rsscache:dl_date      private
-rsscache:date         private
-rsscache:related_id   private
-rsscache:event_start  private
-rsscache:event_end    private
-rsscache:url_crc32    private
+  $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 
+  if ($xsl_stylesheet)
+    $p .= '<?xml-stylesheet href="'.$xsl_stylesheet.'" type="text/xsl" media="screen"?>'."\n";
 
+  if ($use_cms == 1)
+$comment = '<!--
 rsscache uses a derivate of RSS for configuration
   channels are web sites
   items are categories
@@ -149,25 +140,26 @@ TODO:    cms:button       show 32x32 button
                             &output=stats   show RSS feed download stats
                             &output=1col    show videos in 1 column
                             &output=2cols   show videos in 2 columns
-*/
-{
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($channel);
-//  print_r ($item);
 
-  $use_cms = 0; 
-  if ($use_rsscache == 1)
-    $use_cms = 1;
+TODO:      pubDate               optional
+TODO:      enclosure             optional
+TODO:      author                optional
+TODO:      media:duration        optional
+TODO:      media:keywords        optional
+TODO:      rsscache:dl_date      optional
+TODO:      rsscache:date         optional
+TODO:      rsscache:related_id   optional
+TODO:      rsscache:event_start  optional
+TODO:      rsscache:event_end    optional
+TODO:      rsscache:url_crc32    optional
+-->';
 
-  $p = '';
-
-  $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n";
-
-  if ($xsl_stylesheet)
-    $p .= '<?xml-stylesheet href="'.$xsl_stylesheet.'" type="text/xsl" media="screen"?>'."\n";
+//  $p .= $comment;
 
   $p .= '<rss version="2.0"';
+
+  // base
+//  $p .= ' xml:base="http://rsscache.a1.25u.com/"';
 
   if ($use_mrss == 1)
     $p .= ' xmlns:media="http://search.yahoo.com/mrss/"';
@@ -181,55 +173,61 @@ TODO:    cms:button       show 32x32 button
   $p .= '>'."\n";
 
   $p .= '  <channel>'."\n"
-       .'    <title>'.generate_rss2_escape ($channel['title']).'</title>'."\n"
-       .'    <link>'.generate_rss2_escape ($channel['link']).'</link>'."\n";
+       .'    <title>'.misc_xml_escape ($channel['title']).'</title>'."\n"
+       .'    <link>'.misc_xml_escape ($channel['link']).'</link>'."\n";
 
   if (isset ($channel['description']))
     $p .= ''
-         .'    <description>'.generate_rss2_escape ($channel['description']).'</description>'."\n";
+         .'    <description>'.misc_xml_escape ($channel['description']).'</description>'."\n";
 
   if (isset ($channel['lastBuildDate']))
     $p .= '    <lastBuildDate>'.strftime ("%a, %d %h %Y %H:%M:%S %z", $channel['lastBuildDate']).'</lastBuildDate>'."\n";
 
-  if (isset ($channel['logo']))
+  if (isset ($channel['image']))
     $p .= ''
 //       .'    <language>en</language>'."\n"
        .'    <image>'."\n"
-//       .'      <title><![CDATA[]]></title>'."\n"
-
-       .'      <url>'.$channel['logo'].'</url>'."\n"
-
-//       .'      <link>'.generate_rss2_escape ($channel['link']).'</link>'."\n"
+       .'      <title>'.misc_xml_escape ($channel['title']).'</title>'."\n"
+       .'      <url>'.$channel['image'].'</url>'."\n"
+       .'      <link>'.misc_xml_escape ($channel['link']).'</link>'."\n"
 //       .'      <width></width>'."\n"
 //       .'      <height></height>'."\n"
        .'    </image>'."\n"
 ;
+  // textinput
+//  $p .= '    <textinput>'."\n"
+//       .'      <description>Search Google</description>'."\n"
+//       .'      <title>Search</title>'."\n"
+//       .'      <link>http://www.google.no/search?</link>'."\n"
+//       .'      <name>q</name>'."\n"
+//       .'    </textinput>'."\n"
+//;
 
   for ($i = 0; isset ($item[$i]['link']); $i++)
     {
       $p .= '    <item>'."\n";
 
-      $p .= '      <title>'.generate_rss2_escape ($item[$i]['title']).'</title>'."\n"
-           .'      <link>'.generate_rss2_escape ($item[$i]['link']).'</link>'."\n";
+      $p .= '      <title>'.misc_xml_escape ($item[$i]['title']).'</title>'."\n"
+           .'      <link>'.misc_xml_escape ($item[$i]['link']).'</link>'."\n";
 
       if (isset ($item[$i]['description']))
         $p .= ''
-             .'      <description>'.generate_rss2_escape ($item[$i]['description']).'</description>'."\n";
+             .'      <description>'.misc_xml_escape ($item[$i]['description']).'</description>'."\n";
 
+//                <pubDate>Fri, 05 Aug 2011 15:03:02 +0200</pubDate>
       if (isset ($item[$i]['pubDate']))
         $p .= ''
            .'      <pubDate>'
-//                <pubDate>Fri, 05 Aug 2011 15:03:02 +0200</pubDate>
            .strftime ("%a, %d %h %Y %H:%M:%S %z", $item[$i]['pubDate'])
 //           .strftime ("%a, %d %h %Y %H:%M:%S %Z", $item[$i]['pubDate'])
            .'</pubDate>'."\n"
 //           .'<comments>http://domain/bla.txt</comments>'."\n"
 ;
         if (isset ($item[$i]['category']))
-          $p .= '      <category><![CDATA['.$item[$i]['category'].']]></category>'."\n";
+          $p .= '      <category>'.misc_xml_escape ($item[$i]['category']).'</category>'."\n";
 
-        if (isset ($item[$i]['user']))
-          $p .= '      <author>'.generate_rss2_escape ($item[$i]['user']).'</author>'."\n";
+        if (isset ($item[$i]['author']))
+          $p .= '      <author>'.misc_xml_escape ($item[$i]['author']).'</author>'."\n";
 
         if (isset ($item[$i]['enclosure']))
           {
@@ -239,26 +237,31 @@ TODO:    cms:button       show 32x32 button
             if ($suffix == '.jpg') $suffix = '.jpeg';
 
             // TODO: get filesize from db
-            $p .= '      <enclosure url="'.$item[$i]['image'].'" length="" type="image/'.substr ($suffix, 1).'" />'."\n";
+            $p .= '      <enclosure url="'.$item[$i]['enclosure'].'"'
+//                 .' length=""'
+                 .' type="image/'.substr ($suffix, 1).'" />'."\n"
+;
           }
 
       // mrss
       if ($use_mrss == 1)
         {
-//      $p .= '      <media:group>'."\n";
+//      $p .= '    <media:group>'."\n";
 
-//      $p .= '        <media:content url="'.$item[$i]['link'].'" />'."\n";
+//      $p .= '      <media:content url="'.$item[$i]['link'].'" />'."\n";
 
-//      $p .= '        <media:category scheme="">'..'</media:category>';
+//      $p .= '      <media:embed>'.''.'</media:embed>'."\n";
+
+//      $p .= '      <media:category scheme="">'..'</media:category>';
 
       if (isset ($item[$i]['image']))
-        $p .= '        <media:thumbnail url="'.$item[$i]['image'].'" />'."\n";
+        $p .= '      <media:thumbnail url="'.$item[$i]['image'].'" />'."\n";
 
       if (isset ($item[$i]['media_duration']))
-        $p .= '        <media:duration>'.$item[$i]['media_duration'].'</media:duration>'."\n";
+        $p .= '      <media:duration>'.$item[$i]['media_duration'].'</media:duration>'."\n";
 
-      if (isset ($item[$i]['keywords']))
-        $p .= '        <media:keywords><![CDATA['.str_replace (' ', ', ', $item[$i]['keywords']).']]></media:keywords>'."\n";
+      if (isset ($item[$i]['media_keywords']))
+        $p .= '      <media:keywords>'.misc_xml_escape (str_replace (' ', ', ', $item[$i]['media_keywords'])).'</media:keywords>'."\n";
 
 //      $p .= '      </media:group>'."\n";
         }
@@ -266,48 +269,43 @@ TODO:    cms:button       show 32x32 button
       // rsscache
       if ($use_rsscache == 1)
         {
-//      $p .= '      <rsscache:group>'."\n";
+//      $p .= '    <rsscache:group>'."\n";
 
-      if (isset ($item[$i]['dl_date']))
-        $p .= '        <rsscache:dl_date>'.sprintf ("%u", $item[$i]['dl_date']).'</rsscache:dl_date>'."\n";
+      if (isset ($item[$i]['rsscache_dl_date']))
+        $p .= '      <rsscache:dl_date>'.sprintf ("%u", $item[$i]['rsscache_dl_date']).'</rsscache:dl_date>'."\n";
 
       if (isset ($item[$i]['date']))
-        $p .= '        <rsscache:date>'.sprintf ("%u", $item[$i]['date']).'</rsscache:date>'."\n";
+        $p .= '      <rsscache:date>'.sprintf ("%u", $item[$i]['date']).'</rsscache:date>'."\n";
 
-      if (isset ($item[$i]['related_id']))
-        $p .= '        <rsscache:related_id>'.sprintf ("%u", $item[$i]['related_id']).'</rsscache:related_id>'."\n";
+      if (isset ($item[$i]['rsscache_related_id']))
+        $p .= '      <rsscache:related_id>'.sprintf ("%u", $item[$i]['rsscache_related_id']).'</rsscache:related_id>'."\n";
 
-      if (isset ($item[$i]['event_start']))
-        $p .= '        <rsscache:event_start>'.sprintf ("%u", $item[$i]['event_start']).'</rsscache:event_start>'."\n";
+      if (isset ($item[$i]['rsscache_event_start']))
+        $p .= '      <rsscache:event_start>'.sprintf ("%u", $item[$i]['rsscache_event_start']).'</rsscache:event_start>'."\n";
 
-      if (isset ($item[$i]['event_end']))
-        $p .= '        <rsscache:event_end>'.sprintf ("%u", $item[$i]['event_end']).'</rsscache:event_end>'."\n";
+      if (isset ($item[$i]['rsscache_event_end']))
+        $p .= '      <rsscache:event_end>'.sprintf ("%u", $item[$i]['rsscache_event_end']).'</rsscache:event_end>'."\n";
 
-      if (isset ($item[$i]['url_crc32']))
-        $p .= '        <rsscache:url_crc32>'.sprintf ("%u", $item[$i]['url_crc32']).'</rsscache:url_crc32>'."\n";
+      if (isset ($item[$i]['rsscache_url_crc32']))
+        $p .= '      <rsscache:url_crc32>'.sprintf ("%u", $item[$i]['rsscache_url_crc32']).'</rsscache:url_crc32>'."\n";
 
 //      $p .= '      </rsscache:group>'."\n";
         }
 
+      // CMS
       if ($use_cms == 1)
         {
-      if (isset ($item[$i]['dl_date']))
-        $p .= '        <cms:dl_date>'.sprintf ("%u", $item[$i]['dl_date']).'</cms:dl_date>'."\n";
-
-      if (isset ($item[$i]['date']))
-        $p .= '        <cms:date>'.sprintf ("%u", $item[$i]['date']).'</cms:date>'."\n";
-
-      if (isset ($item[$i]['related_id']))
-        $p .= '        <cms:related_id>'.sprintf ("%u", $item[$i]['related_id']).'</cms:related_id>'."\n";
-
-      if (isset ($item[$i]['event_start']))
-        $p .= '        <cms:event_start>'.sprintf ("%u", $item[$i]['event_start']).'</cms:event_start>'."\n";
-
-      if (isset ($item[$i]['event_end']))
-        $p .= '        <cms:event_end>'.sprintf ("%u", $item[$i]['event_end']).'</cms:event_end>'."\n";
-
-      if (isset ($item[$i]['url_crc32']))
-        $p .= '        <cms:url_crc32>'.sprintf ("%u", $item[$i]['url_crc32']).'</cms:url_crc32>'."\n";
+//      $p .= '    <cms:group>'."\n";
+        $p .= '      <cms:separate>0</cms:separate>'."\n";
+        $p .= '      <cms:buttononly>0</cms:buttononly>'."\n";
+//        $p .= '      <cms:button>0</cms:button>'."\n";
+        $p .= '      <cms:status>0</cms:status>'."\n";
+        $p .= '      <cms:select>0</cms:select>'."\n";
+//        $p .= '      <cms:local></cms:local>'."\n";
+//        $p .= '      <cms:iframe></cms:iframe>'."\n";
+//        $p .= '      <cms:proxy></cms:proxy>'."\n";
+        $p .= '      <cms:query>'.misc_xml_escape ($item[$i]['link']).'</cms:query>'."\n";
+//      $p .= '    </cms:group>'."\n";
         }
 
       $p .= '    </item>'."\n";

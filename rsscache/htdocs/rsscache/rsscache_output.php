@@ -87,13 +87,13 @@ rsscache_write_stats_rss ()
 //                       'image' => $category->image,
                          'category' => $category->name,
                          'media_duration' => 0,
-//                         'user' => NULL
-                         'dl_date' => $rsscache_time,
-//                         'keywords' => NULL,
-//                         'related_id' => NULL,
-//                         'event_start' => 0,
-//                         'event_end' => 0,
-//                         'url_crc32' => sprintf ("%u", crc32 ())
+//                         'author' => NULL
+                         'rsscache_dl_date' => $rsscache_time,
+//                         'media_keywords' => NULL,
+//                         'rsscache_related_id' => NULL,
+//                         'rsscache_event_start' => 0,
+//                         'rsscache_event_end' => 0,
+//                         'rsscache_url_crc32' => sprintf ("%u", crc32 ())
 );
         $items += ($category->items * 1);
         $items_today += ($category->items_today * 1);
@@ -110,7 +110,7 @@ rsscache_write_stats_rss ()
   return generate_rss2 (array ('title' => rsscache_title (),
                                'link' => $rsscache_link,
                                'description' => $p,
-                               'logo' => $rsscache_logo,
+                               'image' => $rsscache_logo,
                                'lastBuildDate' => $rsscache_time), $item, 1, 1,
                                $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
 
@@ -123,8 +123,7 @@ rsscache_write_mediawiki_escape ($s)
 //  $s = str_replace('[', '&#91;', $s);
 //  $s = str_replace(']', '&#93;', $s);
   $s = str_replace('#', '&#35;', $s);
-//  return htmlspecialchars ($s, ENT_QUOTES);
-  return '<![CDATA['.$s.']]>';
+  return misc_xml_escape ($s);
 }
 
 
@@ -195,7 +194,7 @@ rsscache_write_mediawiki ($channel, $item, $output_type = 0)
        .$item[$i]['description']."\n"."\n"
        .'[[:Category:'.$item[$i]['category'].'|'.$item[$i]['category'].']]'."\n"."\n"
        .'==Keywords=='."\n"
-       .'[[Category:'.str_replace (' ', ']][[Category:', trim ($item[$i]['keywords'])).']]'."\n";
+       .'[[Category:'.str_replace (' ', ']][[Category:', trim ($item[$i]['media_keywords'])).']]'."\n";
 
       $p .= ''
        .rsscache_write_mediawiki_escape ($s)
@@ -211,14 +210,6 @@ rsscache_write_mediawiki ($channel, $item, $output_type = 0)
 
 
 function
-rsscache_write_sitemap_escape ($s)
-{
-//  return htmlspecialchars ($s, ENT_QUOTES);
-  return '<![CDATA['.$s.']]>';
-}
-
-
-function
 rsscache_write_sitemap_video_func ($category_name, $item)
 {
   global $rsscache_link;
@@ -230,9 +221,9 @@ rsscache_write_sitemap_video_func ($category_name, $item)
     {
       $p .= '<video:video>'."\n";
       $p .= ''
-           .'<video:thumbnail_loc>'.rsscache_write_sitemap_escape ($item[$i]['image']).'</video:thumbnail_loc>'."\n"
-           .'<video:title>'.rsscache_write_sitemap_escape ($item[$i]['title']).'</video:title>'."\n"
-           .'<video:description>'.rsscache_write_sitemap_escape ($item[$i]['description']).'</video:description>'."\n"
+           .'<video:thumbnail_loc>'.misc_xml_escape ($item[$i]['image']).'</video:thumbnail_loc>'."\n"
+           .'<video:title>'.misc_xml_escape ($item[$i]['title']).'</video:title>'."\n"
+           .'<video:description>'.misc_xml_escape ($item[$i]['description']).'</video:description>'."\n"
            .'<video:duration>'.$item[$i]['media_duration'].'</video:duration>'."\n"
 ;
       $p .= '</video:video>'."\n";
@@ -265,7 +256,7 @@ rsscache_write_sitemap ($channel, $item)
   for ($i = 0; isset ($config_xml->category[$i]); $i++)
     if (trim ($config_xml->category[$i]->name) != '')
     $p .= '<url>'."\n"
-         .'  <loc>'.rsscache_write_sitemap_escape ('http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml->category[$i]->name).'</loc>'."\n"
+         .'  <loc>'.misc_xml_escape ('http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml->category[$i]->name).'</loc>'."\n"
 /*
 The formats are as follows. Exactly the components shown here must be present, with exactly this punctuation. Note that the "T" appears literally in the string, to indicate the beginning of the time element, as specified in ISO 8601.
 
@@ -313,29 +304,29 @@ rsscache_write_rss ($d_array)
 
   for ($i = 0; isset ($d_array[$i]); $i++)
     {
-      $link = (substr (rsscache_link ($d_array[$i]), 0, 7) == 'http://') ? 
-        rsscache_link ($d_array[$i]) : 
-        ($rsscache_link.'?'.rsscache_link ($d_array[$i]));
-      $date = ($f == 'new') ?
-        $d_array[$i]['rsstool_dl_date'] :
-        $d_array[$i]['rsstool_date'];
+      $link = '';
+      if (substr (rsscache_link ($d_array[$i]), 0, 7) != 'http://')
+        $link .= $rsscache_link.'?';
+      $link .= rsscache_link ($d_array[$i]);
+
       $item[] = array ('title' => $d_array[$i]['rsstool_title'],
 //                       'link' => $d_array[$i]['rsstool_url'],
                        'link' => $link,
                        'description' => $d_array[$i]['rsstool_desc'],
-                       'date'  => $date,
+                       'date' => $d_array[$i]['rsstool_date'],
                        'image' => rsscache_thumbnail ($d_array[$i]),
                        'enclosure' => rsscache_thumbnail ($d_array[$i]),
                        'category' => $d_array[$i]['tv2_moved'],
+                       'author' => $d_array[$i]['rsstool_user'],
+
                        'media_duration' => $d_array[$i]['rsstool_media_duration'],
-                       'user' => $d_array[$i]['rsstool_user'],
-                       'dl_date' => $d_array[$i]['rsstool_dl_date'],
-                       'keywords' => $d_array[$i]['rsstool_keywords'],
-                       'related_id' => $d_array[$i]['rsstool_related_id'],
-                       'event_start' => $d_array[$i]['rsstool_event_start'],
-                       'event_end' => $d_array[$i]['rsstool_event_end'],
-//                       'url_crc32' => sprintf ("%u", $d_array[$i]['rsstool_url_crc32']),
-                       'url_crc32' => ($d_array[$i]['rsstool_url_crc32'] * 1),
+                       'media_keywords' => $d_array[$i]['rsstool_keywords'],
+
+                       'rsscache_dl_date' => $d_array[$i]['rsstool_dl_date'],
+                       'rsscache_related_id' => $d_array[$i]['rsstool_related_id'],
+                       'rsscache_event_start' => $d_array[$i]['rsstool_event_start'],
+                       'rsscache_event_end' => $d_array[$i]['rsstool_event_end'],
+                       'rsscache_url_crc32' => ($d_array[$i]['rsstool_url_crc32'] * 1),
 );
     }
 
@@ -375,11 +366,11 @@ rsscache_write_rss ($d_array)
       .'see apache2/sites-enabled/rsscache<br>'
 ;
   $channel = array ('title' => rsscache_title (),
-                               'link' => $rsscache_link,
-                               'description' => $p,
-                               'logo' => $rsscache_logo,
-                               'lastBuildDate' => $rsscache_time);
-
+                    'link' => $rsscache_link,
+                    'description' => $p,
+                    'image' => $rsscache_logo,
+                    'lastBuildDate' => $rsscache_time
+);
   if ($output == 'mediawiki')
     return rsscache_write_mediawiki ($channel, $item, 0);
   // TODO: generate sitemap without db use
@@ -387,11 +378,11 @@ rsscache_write_rss ($d_array)
     return rsscache_write_sitemap ($channel, $item);
   else
     {
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($item);
-    return generate_rss2 ($channel, $item, 1, 1,
-                               $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
+      // DEBUG
+//      echo '<pre><tt>';
+//      print_r ($item);
+      return generate_rss2 ($channel, $item, 1, 1,
+                            $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
     }
 }
 
