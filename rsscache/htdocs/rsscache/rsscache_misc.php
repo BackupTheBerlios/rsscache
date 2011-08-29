@@ -64,7 +64,10 @@ config_xml_by_category ($category_name)
   for ($i = 0; isset ($config->category[$i]); $i++)
     if (trim ($config->category[$i]->name) == $category_name)
       return $config->category[$i];
-
+//  for ($i = 0; isset ($config[$i]); $i++)
+//    for ($j = 0; isset ($config[$i]->category[$j]); $j++)
+//      if (trim ($config[$i]->category[$j]->name) == $category_name)
+//        return $config[$i]->category[$j];
   return NULL;
 }
 
@@ -192,8 +195,20 @@ if ($memcache_expire > 0)
 
   // DEBUG
 //  echo 'read config';
+/*
+  $config = array ();
+  if (!is_array ($rsscache_config_xml))
+    $config[] = simplexml_load_file ($rsscache_config_xml));
+  else
+    for ($i = 0; isset ($rsscache_config_xml[$i]); $i++)
+      $config[] = simplexml_load_file ($rsscache_config_xml[$i]);
+*/
+  $config = simplexml_load_file ($rsscache_config_xml[0]);
 
-  $config = simplexml_load_file ($rsscache_config_xml);
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($config);
+
   $config = config_xml_normalize ($config);
 
   // use memcache
