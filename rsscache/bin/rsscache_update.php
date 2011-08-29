@@ -40,18 +40,24 @@ $debug = 0;
 // main ()
 
 
+// unlimited execution time
 //ini_set('max_execution_time', '3600');
 set_time_limit (0);
 
-//$debug = 1;
 
-$db = new misc_sql;
-$db->sql_open ($rsscache_dbhost, $rsscache_dbuser, $rsscache_dbpass, $rsscache_dbname);
+rsscache_sql_open ();
+
+
+$config = config_xml ();
+
+echo misc_exec ('/etc/init.d/tor restart');
+
 // DEBUG
 echo 'database: '.$rsscache_dbname.' ('.$rsscache_dbuser.')'."\n";
+
 $table_suffix = '';
-//$table_suffix = '_cod4'; 
-//$table_suffix = '_css';
+//$table_suffix = '_cod4';
+//$table_suffix = '_css'; 
 //$table_suffix = '_halo3';
 //$table_suffix = '_minecraft';
 //$table_suffix = '_starcraft2';
@@ -74,55 +80,47 @@ $start = 0;
 //677000
 //742400
 $start = $argv[1];
-$chunk = 50;
-for ($i = $start; $i < $rows; $i += $chunk)
+$num = 50;
+for ($i = $start; $i < $rows; $i += $num)
   {
-    // current chunk
+    // current num
     echo ($i)."\n";
 
     $sql_query_s = 'SELECT rsstool_title,rsstool_desc,rsstool_url,rsstool_url_crc32,rsstool_keywords'
                   .' FROM rsstool_table'.$table_suffix
 //                  .' WHERE 1'
-                  .' LIMIT '.$i.','.$chunk.';';
-    $db->sql_write ($sql_query_s, $debug);
-    $r = $db->sql_read (0 /* $debug */);
+                  .' LIMIT '.$i.','.$num.';';
+
+//    $db->sql_write ($sql_query_s, $debug);
+//    $r = $db->sql_read (0 /* $debug */);
+    rsscache_sql_query ($sql_query_s);
 
 
     for ($j = 0; isset ($r[$j]); $j++)
       {
         // current row
-//        echo ($i + $j)."\n";
+//        echo ($i + $j)."\n"; // current row
 
-        // normalize
-//        rsscache_update_normalize ($r[$j]);
-
-        // rsscache_update keywords
-//        rsscache_update_keywords ($r[$j]);
-
-        // rsscache_update related id
-//        rsscache_update_related_id ($r[$j]);
-
-        // rsscache_update crc32 checksums
-//        rsscache_update_crc32 ($r[$j]);
-
-        // check dead link
-//        rsscache_update_dead_links ($r[$j]['rsstool_url'], $r[$j]['rsstool_url_crc32']);
+//        rsscache_update_normalize ($r[$j]);  // normalize
+//        rsscache_update_keywords ($r[$j]);   // update keywords
+//        rsscache_update_related_id ($r[$j]); // update related id
+//        rsscache_update_crc32 ($r[$j]);      // update crc32 checksums
+//        rsscache_update_dead_links ($r[$j]['rsstool_url'], $r[$j]['rsstool_url_crc32']); // check dead link
 
         // youtube specific
-        if (strstr ($r[$j]['rsstool_url'], '.youtube.'))
+        if (strstr ($r[$j]['rsstool_url'], '.youtube.')) 
           {
-            // get (missing) youtube thumbnails
-//            youtube_thumbnail ($r[$j]['rsstool_url']);
+//            youtube_thumbnail ($r[$j]['rsstool_url']); // get (missing) youtube thumbnails
           }
       }
 
-    if ($j < $chunk)
+    if ($j < $num)
       break;
 
 //    sleep (60);
   }
 
-$db->sql_close ();
+rsscache_sql_close ();
 
 
 exit;

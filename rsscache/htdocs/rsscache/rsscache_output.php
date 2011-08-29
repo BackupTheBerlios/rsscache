@@ -80,16 +80,15 @@ rsscache_write_stats_rss ()
 ;
         $item[] = array ('title' => $category->title,
                          'link' => 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category->name
-                                  .($output == 'html' ? '&output=html' : '')
-,
+                                  .($output == 'html' ? '&output=html' : ''),
                          'description' => $p,
-                         'date' => $rsscache_time,
+                         'pubDate' => $rsscache_time,
 //                       'image' => $category->image,
                          'category' => $category->name,
-                         'media_duration' => 0,
 //                         'author' => NULL
-                         'rsscache_dl_date' => $rsscache_time,
+                         'media_duration' => 0,
 //                         'media_keywords' => NULL,
+                         'rsscache_dl_date' => $rsscache_time,
 //                         'rsscache_related_id' => NULL,
 //                         'rsscache_event_start' => 0,
 //                         'rsscache_event_end' => 0,
@@ -111,7 +110,7 @@ rsscache_write_stats_rss ()
                                'link' => $rsscache_link,
                                'description' => $p,
                                'image' => $rsscache_logo,
-                               'lastBuildDate' => $rsscache_time), $item, 1, 1,
+                               'lastBuildDate' => $rsscache_time), $item, 0, 0,
                                $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
 
 }
@@ -179,7 +178,7 @@ rsscache_write_mediawiki ($channel, $item, $output_type = 0)
        .'    <id>'.($rsscache_time + $i).'</id>'."\n"
        .'    <revision>'."\n"
        .'      <id>'.($rsscache_time + $i + 1).'</id>'."\n"
-//       .'      <timestamp>'.strftime ("%Y-%m-%dT%H:%M:%SZ", $item[$i]['date']).'</timestamp>'."\n"
+//       .'      <timestamp>'.strftime ("%Y-%m-%dT%H:%M:%SZ", $item[$i]['pubDate']).'</timestamp>'."\n"
        .'      <timestamp>'.strftime ("%Y-%m-%dT%H:%M:%SZ", $rsscache_time).'</timestamp>'."\n"
        .'      <contributor>'."\n"
        .'        <ip>127.0.0.1</ip>'."\n"
@@ -237,7 +236,7 @@ function
 rsscache_write_sitemap ($channel, $item)
 {
 //    header ('Content-type: text/xml');
-//  header ('Content-type: application/xml');
+  header ('Content-type: application/xml');
 //    header ('Content-type: text/xml-external-parsed-entity');
 //    header ('Content-type: application/xml-external-parsed-entity');
 //    header ('Content-type: application/xml-dtd');
@@ -304,6 +303,13 @@ rsscache_write_rss ($d_array)
 
   for ($i = 0; isset ($d_array[$i]); $i++)
     {
+      $config_xml = config_xml_by_category ($d_array[$i]['tv2_moved']);
+      if (method_exists ($config_xml, 'children'))
+        $config_cms = $config_xml->children ('cms', TRUE);
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($config_cms);
+
       $link = '';
       if (substr (rsscache_link ($d_array[$i]), 0, 7) != 'http://')
         $link .= $rsscache_link.'?';
@@ -313,20 +319,31 @@ rsscache_write_rss ($d_array)
 //                       'link' => $d_array[$i]['rsstool_url'],
                        'link' => $link,
                        'description' => $d_array[$i]['rsstool_desc'],
-                       'date' => $d_array[$i]['rsstool_date'],
+                       'pubDate' => $d_array[$i]['rsstool_date'],
                        'image' => rsscache_thumbnail ($d_array[$i]),
                        'enclosure' => rsscache_thumbnail ($d_array[$i]),
                        'category' => $d_array[$i]['tv2_moved'],
                        'author' => $d_array[$i]['rsstool_user'],
 
-                       'media_duration' => $d_array[$i]['rsstool_media_duration'],
+                       'media_duration' => ($d_array[$i]['rsstool_media_duration'] * 1),
                        'media_keywords' => $d_array[$i]['rsstool_keywords'],
 
-                       'rsscache_dl_date' => $d_array[$i]['rsstool_dl_date'],
-                       'rsscache_related_id' => $d_array[$i]['rsstool_related_id'],
-                       'rsscache_event_start' => $d_array[$i]['rsstool_event_start'],
-                       'rsscache_event_end' => $d_array[$i]['rsstool_event_end'],
+                       'rsscache_dl_date' => ($d_array[$i]['rsstool_dl_date'] * 1),
+                       'rsscache_related_id' => ($d_array[$i]['rsstool_related_id'] * 1),
+                       'rsscache_event_start' => ($d_array[$i]['rsstool_event_start'] * 1),
+                       'rsscache_event_end' => ($d_array[$i]['rsstool_event_end'] * 1),
                        'rsscache_url_crc32' => ($d_array[$i]['rsstool_url_crc32'] * 1),
+                       'rsscache_category_items' => ($config_xml->items * 1),
+                       'rsscache_category_days' => ($config_xml->days * 1),
+
+                       'cms_separate' => ($config_cms->separate * 1),
+                       'cms_button_only' => ($config_cms->button_only * 1),
+                       'cms_status' => ($config_cms->status * 1),
+                       'cms_select' => ($config_cms->select * 1),
+                       'cms_query' => isset ($config_cms->query) ? $config_cms->query : NULL,
+                       'cms_local' => isset ($config_cms->local) ? $config_cms->local : NULL,
+                       'cms_iframe' => isset ($config_cms->iframe) ? $config_cms->iframe : NULL,
+                       'cms_proxy' => isset ($config_cms->proxy) ? $config_cms->proxy : NULL,
 );
     }
 
@@ -369,7 +386,8 @@ rsscache_write_rss ($d_array)
                     'link' => $rsscache_link,
                     'description' => $p,
                     'image' => $rsscache_logo,
-                    'lastBuildDate' => $rsscache_time
+                    'lastBuildDate' => $rsscache_time,
+                    'docs' => $rsscache_link,
 );
   if ($output == 'mediawiki')
     return rsscache_write_mediawiki ($channel, $item, 0);

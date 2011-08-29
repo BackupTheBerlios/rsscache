@@ -41,20 +41,7 @@ set_time_limit (0);
 
 rsscache_sql_open ();
  
-// config.xml from inside htdocs
-$a = array ();
-for ($i = 1; $i < $argc; $i++)
-  $a[] = $argv[$i];
-//$a[] = '../htdocs/'.$rsscache_config_xml;
 
-
-// DEBUG
-print_r ($a);
-
-
-for ($j = 0; isset ($a[$j]); $j++)
-  {
-$rsscache_config_xml = $a[$j];
 $config = config_xml ();
 
 echo misc_exec ('/etc/init.d/tor restart');

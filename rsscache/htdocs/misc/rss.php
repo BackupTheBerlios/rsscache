@@ -107,8 +107,7 @@ TODO:      rsscache:movable          if items can be moved to another category
                             0 == no separator (default)
                             1 == line-feed
                             2 == horizontal line (hr tag)
-    cms:buttononly   optional, show only button
-TODO:    cms:button       show 32x32 button 
+    cms:button_only  optional, show only button
     cms:status       optional, adds a small status note
                             0 == nothing (default)
                             1 == "New!"
@@ -141,17 +140,24 @@ TODO:    cms:button       show 32x32 button
                             &output=1col    show videos in 1 column
                             &output=2cols   show videos in 2 columns
 
-TODO:      pubDate               optional
-TODO:      enclosure             optional
-TODO:      author                optional
-TODO:      media:duration        optional
-TODO:      media:keywords        optional
-TODO:      rsscache:dl_date      optional
-TODO:      rsscache:date         optional
-TODO:      rsscache:related_id   optional
-TODO:      rsscache:event_start  optional
-TODO:      rsscache:event_end    optional
-TODO:      rsscache:url_crc32    optional
+optional:
+rss
+  channel[]
+    docs
+    item[]
+      pubDate
+      enclosure
+      author
+      media:duration
+      media:keywords
+      rsscache:dl_date
+      rsscache:pubDate      same as pubDate but as integer
+      rsscache:related_id
+      rsscache:event_start
+      rsscache:event_end
+      rsscache:url_crc32
+      rsscache:category_items
+      rsscache:category_days
 -->';
 
 //  $p .= $comment;
@@ -179,6 +185,10 @@ TODO:      rsscache:url_crc32    optional
   if (isset ($channel['description']))
     $p .= ''
          .'    <description>'.misc_xml_escape ($channel['description']).'</description>'."\n";
+
+  if (isset ($channel['docs']))
+    $p .= ''
+         .'    <docs>'.misc_xml_escape ($channel['docs']).'</docs>'."\n";
 
   if (isset ($channel['lastBuildDate']))
     $p .= '    <lastBuildDate>'.strftime ("%a, %d %h %Y %H:%M:%S %z", $channel['lastBuildDate']).'</lastBuildDate>'."\n";
@@ -274,8 +284,8 @@ TODO:      rsscache:url_crc32    optional
       if (isset ($item[$i]['rsscache_dl_date']))
         $p .= '      <rsscache:dl_date>'.sprintf ("%u", $item[$i]['rsscache_dl_date']).'</rsscache:dl_date>'."\n";
 
-      if (isset ($item[$i]['date']))
-        $p .= '      <rsscache:date>'.sprintf ("%u", $item[$i]['date']).'</rsscache:date>'."\n";
+      if (isset ($item[$i]['pubDate']))
+        $p .= '      <rsscache:pubDate>'.sprintf ("%u", $item[$i]['pubDate']).'</rsscache:pubDate>'."\n";
 
       if (isset ($item[$i]['rsscache_related_id']))
         $p .= '      <rsscache:related_id>'.sprintf ("%u", $item[$i]['rsscache_related_id']).'</rsscache:related_id>'."\n";
@@ -289,23 +299,45 @@ TODO:      rsscache:url_crc32    optional
       if (isset ($item[$i]['rsscache_url_crc32']))
         $p .= '      <rsscache:url_crc32>'.sprintf ("%u", $item[$i]['rsscache_url_crc32']).'</rsscache:url_crc32>'."\n";
 
+      if (isset ($item[$i]['rsscache_category_items']))
+        $p .= '      <rsscache:category_items>'.sprintf ("%u", $item[$i]['rsscache_category_items']).'</rsscache:category_items>'."\n";
+
+      if (isset ($item[$i]['rsscache_category_days']))
+        $p .= '      <rsscache:category_days>'.sprintf ("%u", $item[$i]['rsscache_category_days']).'</rsscache:category_days>'."\n";
+
 //      $p .= '      </rsscache:group>'."\n";
         }
 
       // CMS
       if ($use_cms == 1)
         {
-//      $p .= '    <cms:group>'."\n";
-        $p .= '      <cms:separate>0</cms:separate>'."\n";
-        $p .= '      <cms:buttononly>0</cms:buttononly>'."\n";
-//        $p .= '      <cms:button>0</cms:button>'."\n";
-        $p .= '      <cms:status>0</cms:status>'."\n";
-        $p .= '      <cms:select>0</cms:select>'."\n";
-//        $p .= '      <cms:local></cms:local>'."\n";
-//        $p .= '      <cms:iframe></cms:iframe>'."\n";
-//        $p .= '      <cms:proxy></cms:proxy>'."\n";
-        $p .= '      <cms:query>'.misc_xml_escape ($item[$i]['link']).'</cms:query>'."\n";
-//      $p .= '    </cms:group>'."\n";
+//          $p .= '    <cms:group>'."\n";
+
+          if (isset ($item[$i]['cms_separate']))
+            $p .= '      <cms:separate>'.$item[$i]['cms_separate'].'</cms:separate>'."\n";
+
+          if (isset ($item[$i]['cms_button_only']))
+            $p .= '      <cms:button_only>'.$item[$i]['cms_button_only'].'</cms:button_only>'."\n";
+
+          if (isset ($item[$i]['cms_status']))
+            $p .= '      <cms:status>'.$item[$i]['cms_status'].'</cms:status>'."\n";
+
+          if (isset ($item[$i]['cms_select']))
+            $p .= '      <cms:select>'.$item[$i]['cms_select'].'</cms:select>'."\n";
+
+          if (isset ($item[$i]['cms_local']))
+            $p .= '      <cms:local>'.$item[$i]['cms_local'].'</cms:local>'."\n";
+
+          if (isset ($item[$i]['cms_iframe']))
+            $p .= '      <cms:iframe>'.$item[$i]['cms_iframe'].'</cms:iframe>'."\n";
+
+          if (isset ($item[$i]['cms_proxy']))
+            $p .= '      <cms:proxy>'.$item[$i]['cms_proxy'].'</cms:proxy>'."\n";
+
+          if (isset ($item[$i]['cms_query']))
+            $p .= '      <cms:query>'.misc_xml_escape ($item[$i]['cms_query']).'</cms:query>'."\n";
+
+//          $p .= '    </cms:group>'."\n";
         }
 
       $p .= '    </item>'."\n";
