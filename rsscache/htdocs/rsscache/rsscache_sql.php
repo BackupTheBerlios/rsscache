@@ -144,18 +144,15 @@ rsscache_sql_stats ($db, $c = NULL, $table_suffix = NULL)
   $db->sql_write ($sql_query_s, 0, $debug);
   $r = $db->sql_read (0, $debug);
   for ($i = 0; isset ($r[$i]); $i++)
-    {
-      $a = array ('category' => $r[$i][0],
-                  'items' => (int) $r[$i][2],
-                  'days' => (int) (($rsscache_time - $r[$i][1]) / 86400));
-      $stats[] = $a;
-    }
+    $stats[] = array ('stats_category' => $r[$i][0],
+                  'stats_items' => (int) $r[$i][2],
+                  'stats_days' => (int) (($rsscache_time - $r[$i][1]) / 86400));
 
   for ($j = 0; isset ($stats[$j]); $j++)
     {
-      $stats[$j]['items_today'] = 0;
-      $stats[$j]['items_7_days'] = 0;
-      $stats[$j]['items_30_days'] = 0;
+      $stats[$j]['stats_items_today'] = 0;
+      $stats[$j]['stats_items_7_days'] = 0;
+      $stats[$j]['stats_items_30_days'] = 0;
     }
 
   // downloaded items today
@@ -166,9 +163,9 @@ rsscache_sql_stats ($db, $c = NULL, $table_suffix = NULL)
   $r = $db->sql_read (0, $debug);
   for ($i = 0; isset ($r[$i]); $i++)
     for ($j = 0; isset ($stats[$j]); $j++)
-      if ($r[$i]['tv2_moved'] == $stats[$j]['category'])
+      if ($r[$i]['tv2_moved'] == $stats[$j]['stats_category'])
         {
-          $stats[$j]['items_today'] = (int) $r[$i][2];
+          $stats[$j]['stats_items_today'] = (int) $r[$i][2];
           break;
         }
 
@@ -178,9 +175,9 @@ rsscache_sql_stats ($db, $c = NULL, $table_suffix = NULL)
   $r = $db->sql_read (0, $debug);
   for ($i = 0; isset ($r[$i]); $i++)
     for ($j = 0; isset ($stats[$j]); $j++)
-      if ($r[$i]['tv2_moved'] == $stats[$j]['category'])
+      if ($r[$i]['tv2_moved'] == $stats[$j]['stats_category'])
         {
-          $stats[$j]['items_7_days'] = (int) $r[$i][2];
+          $stats[$j]['stats_items_7_days'] = (int) $r[$i][2];
           break;
         }
 
@@ -190,9 +187,9 @@ rsscache_sql_stats ($db, $c = NULL, $table_suffix = NULL)
   $r = $db->sql_read (0, $debug);
   for ($i = 0; isset ($r[$i]); $i++)
     for ($j = 0; isset ($stats[$j]); $j++)
-      if ($r[$i]['tv2_moved'] == $stats[$j]['category'])
+      if ($r[$i]['tv2_moved'] == $stats[$j]['stats_category'])
         {
-          $stats[$j]['items_30_days'] = (int) $r[$i][2];
+          $stats[$j]['stats_items_30_days'] = (int) $r[$i][2];
           break;
         }
 
@@ -377,11 +374,16 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 //  $start = $rsscache_sql_db->sql_stresc ($start);
 //  $num = $rsscache_sql_db->sql_stresc ($num);
   $category = config_xml_by_category ($c);
+// DEBUG
+//echo '<pre><tt>';
+//print_r ($category);
+//exit;
   if (method_exists ($category, 'children'))
     $category_rsscache = $category->children ('rsscache', TRUE);
 
   if ($f == 'stats')
-    return rsscache_sql_stats ($rsscache_sql_db, isset ($category_rsscache->table_suffix) ? $category_rsscache->table_suffix : NULL, $c);
+//    return rsscache_sql_stats ($rsscache_sql_db, isset ($category_rsscache->table_suffix) ? $category_rsscache->table_suffix : NULL, $c);
+    return rsscache_sql_stats ($rsscache_sql_db, isset ($category['rsscache_table_suffix']) ? $category['rsscache_table_suffix'] : NULL, $c);
 
   $rsstool_table = 'rsstool_table';
   $keyword_table = 'keyword_table';

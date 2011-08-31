@@ -21,12 +21,12 @@ $rsstool_opts = '--hack-google --sbin --shtml';
 //$rsscache_config_xml = 'rsscache_config.xml';
 //$rsscache_config_xml = $config_subdomain.'_config.xml';
 $rsscache_config_xml = array (
+'videos_config.xml',
 //'demos_config.xml',
 'emulive_config.xml',
 //'live_config.xml',
 //'maps_config.xml',
 //'servers_config.xml',
-'videos_config.xml',
 );
 $rsscache_thumbnails_prefix = '';
 $rsscache_debug_sql = 0;

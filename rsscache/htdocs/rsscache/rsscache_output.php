@@ -62,42 +62,44 @@ rsscache_write_stats_rss ()
 
   $item = array ();
 
-  for ($i = 0; isset ($config->category[$i]); $i++)
-    if (trim ($config->category[$i]->name) != '' &&
-        trim ($config->category[$i]->link[0]) != '')
+  for ($i = 0; isset ($config['item'][$i]); $i++)
+    if (trim ($config['item'][$i]['category']) != '' &&
+        trim ($config['item'][$i]['rsscache:feed_0_link']) != ''
+)
       {
-        $category = $config->category[$i];
-//        if (method_exists ($category, 'children'))
-//          $category_rsscache = $category->children ('rsscache', TRUE);
+        $category = $config['item'][$i];
+// DEBUG
+//echo '<pre><tt>';
+//print_r ($category);
 
         $p = '';
         $p .= ''
-             .($category->items * 1).' items<br>'
-             .($category->items_today * 1).' items today<br>'
-             .($category->items_7_days * 1).' items last 7 days<br>'
-             .($category->items_30_days * 1).' items last 30 days<br>'
-             .($category->days * 1).' days since creation of category'
+             .($category['rsscache:stats_items'] * 1).' items<br>'
+             .($category['rsscache:stats_items_today'] * 1).' items today<br>'
+             .($category['rsscache:stats_items_7_days'] * 1).' items last 7 days<br>'
+             .($category['rsscache:stats_items_30_days'] * 1).' items last 30 days<br>'
+             .($category['rsscache:stats_days'] * 1).' days since creation of category'
 ;
-        $item[] = array ('title' => $category->title,
-                         'link' => 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category->name
+        $item[] = array ('title' => $category['title'],
+                         'link' => 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category['category']
                                   .($output == 'html' ? '&output=html' : ''),
                          'description' => $p,
                          'pubDate' => $rsscache_time,
-//                       'image' => $category->image,
-                         'category' => $category->name,
+                         'image' => $category['image'],
+                         'category' => $category['category'],
 //                         'author' => NULL
-                         'media_duration' => 0,
-//                         'media_keywords' => NULL,
-                         'rsscache_dl_date' => $rsscache_time,
-//                         'rsscache_related_id' => NULL,
-//                         'rsscache_event_start' => 0,
-//                         'rsscache_event_end' => 0,
-//                         'rsscache_url_crc32' => sprintf ("%u", crc32 ())
+                         'media:duration' => 0,
+//                         'media:keywords' => NULL,
+                         'rsscache:dl_date' => $rsscache_time,
+//                         'rsscache:related_id' => NULL,
+//                         'rsscache:event_start' => 0,
+//                         'rsscache:event_end' => 0,
+//                         'rsscache:url_crc32' => sprintf ("%u", crc32 ())
 );
-        $items += ($category->items * 1);
-        $items_today += ($category->items_today * 1);
-        $items_7_days += ($category->items_7_days * 1);
-        $items_30_days += ($category->items_30_days * 1);
+        $items += ($category['rsscache:stats_items'] * 1);
+        $items_today += ($category['rsscache:stats_items_today'] * 1);
+        $items_7_days += ($category['rsscache:stats_items_7_days'] * 1);
+        $items_30_days += ($category['rsscache:stats_items_30_days'] * 1);
       }
 
   $p = ''
@@ -110,7 +112,7 @@ rsscache_write_stats_rss ()
                                'link' => $rsscache_link,
                                'description' => $p,
                                'image' => $rsscache_logo,
-                               'lastBuildDate' => $rsscache_time), $item, 0, 0,
+                               'lastBuildDate' => $rsscache_time), $item, 1, 0,
                                $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
 
 }
@@ -193,7 +195,7 @@ rsscache_write_mediawiki ($channel, $item, $output_type = 0)
        .$item[$i]['description']."\n"."\n"
        .'[[:Category:'.$item[$i]['category'].'|'.$item[$i]['category'].']]'."\n"."\n"
        .'==Keywords=='."\n"
-       .'[[Category:'.str_replace (' ', ']][[Category:', trim ($item[$i]['media_keywords'])).']]'."\n";
+       .'[[Category:'.str_replace (' ', ']][[Category:', trim ($item[$i]['media:keywords'])).']]'."\n";
 
       $p .= ''
        .rsscache_write_mediawiki_escape ($s)
@@ -223,7 +225,7 @@ rsscache_write_sitemap_video_func ($category_name, $item)
            .'<video:thumbnail_loc>'.misc_xml_escape ($item[$i]['image']).'</video:thumbnail_loc>'."\n"
            .'<video:title>'.misc_xml_escape ($item[$i]['title']).'</video:title>'."\n"
            .'<video:description>'.misc_xml_escape ($item[$i]['description']).'</video:description>'."\n"
-           .'<video:duration>'.$item[$i]['media_duration'].'</video:duration>'."\n"
+           .'<video:duration>'.$item[$i]['media:duration'].'</video:duration>'."\n"
 ;
       $p .= '</video:video>'."\n";
     }
@@ -252,10 +254,10 @@ rsscache_write_sitemap ($channel, $item)
        .' xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"'
        .'>'."\n";
 
-  for ($i = 0; isset ($config_xml->category[$i]); $i++)
-    if (trim ($config_xml->category[$i]->name) != '')
+  for ($i = 0; isset ($config_xml['item'][$i]); $i++)
+    if (trim ($config_xml['item'][$i]['category']) != '')
     $p .= '<url>'."\n"
-         .'  <loc>'.misc_xml_escape ('http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml->category[$i]->name).'</loc>'."\n"
+         .'  <loc>'.misc_xml_escape ('http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml['item'][$i]['category']).'</loc>'."\n"
 /*
 The formats are as follows. Exactly the components shown here must be present, with exactly this punctuation. Note that the "T" appears literally in the string, to indicate the beginning of the time element, as specified in ISO 8601.
 
@@ -274,7 +276,7 @@ The formats are as follows. Exactly the components shown here must be present, w
 */
          .'<lastmod>'.strftime ('%F' /* 'T%T%Z' */).'</lastmod>'."\n"
          .'<changefreq>always</changefreq>'."\n"
-         .rsscache_write_sitemap_video_func ($config_xml->category[$i]->name, $item)
+         .rsscache_write_sitemap_video_func ($config_xml['item'][$i]['category'], $item)
          .'</url>'."\n";
   $p .= '</urlset>';
 
@@ -300,22 +302,24 @@ rsscache_write_rss ($d_array)
   $output = rsscache_get_request_value ('output');
 
   $item = array ();
+  $config = config_xml ();
 
   for ($i = 0; isset ($d_array[$i]); $i++)
     {
       $config_xml = config_xml_by_category ($d_array[$i]['tv2_moved']);
-      if (method_exists ($config_xml, 'children'))
-        $config_cms = $config_xml->children ('cms', TRUE);
+//      if (method_exists ($config_xml, 'children'))
+//        $config_cms = $config_xml->children ('cms', TRUE);
   // DEBUG
 //  echo '<pre><tt>';
-//  print_r ($config_cms);
+//  print_r ($config_xml);
+//exit;
 
       $link = '';
       if (substr (rsscache_link ($d_array[$i]), 0, 7) != 'http://')
         $link .= $rsscache_link.'?';
       $link .= rsscache_link ($d_array[$i]);
 
-      $item[] = array ('title' => $d_array[$i]['rsstool_title'],
+      $a = array ('title' => $d_array[$i]['rsstool_title'],
 //                       'link' => $d_array[$i]['rsstool_url'],
                        'link' => $link,
                        'description' => $d_array[$i]['rsstool_desc'],
@@ -325,26 +329,40 @@ rsscache_write_rss ($d_array)
                        'category' => $d_array[$i]['tv2_moved'],
                        'author' => $d_array[$i]['rsstool_user'],
 
-                       'media_duration' => ($d_array[$i]['rsstool_media_duration'] * 1),
-                       'media_keywords' => $d_array[$i]['rsstool_keywords'],
+                       'media:duration' => ($d_array[$i]['rsstool_media_duration'] * 1),
+                       'media:keywords' => $d_array[$i]['rsstool_keywords'],
 
-                       'rsscache_dl_date' => ($d_array[$i]['rsstool_dl_date'] * 1),
-                       'rsscache_related_id' => ($d_array[$i]['rsstool_related_id'] * 1),
-                       'rsscache_event_start' => ($d_array[$i]['rsstool_event_start'] * 1),
-                       'rsscache_event_end' => ($d_array[$i]['rsstool_event_end'] * 1),
-                       'rsscache_url_crc32' => ($d_array[$i]['rsstool_url_crc32'] * 1),
-                       'rsscache_category_items' => ($config_xml->items * 1),
-                       'rsscache_category_days' => ($config_xml->days * 1),
+                       'rsscache:dl_date' => ($d_array[$i]['rsstool_dl_date'] * 1),
+                       'rsscache:related_id' => ($d_array[$i]['rsstool_related_id'] * 1),
+                       'rsscache:event_start' => ($d_array[$i]['rsstool_event_start'] * 1),
+                       'rsscache:event_end' => ($d_array[$i]['rsstool_event_end'] * 1),
+                       'rsscache:url_crc32' => ($d_array[$i]['rsstool_url_crc32'] * 1),
 
-                       'cms_separate' => ($config_cms->separate * 1),
-                       'cms_button_only' => ($config_cms->button_only * 1),
-                       'cms_status' => ($config_cms->status * 1),
-                       'cms_select' => ($config_cms->select * 1),
-                       'cms_query' => isset ($config_cms->query) ? $config_cms->query : NULL,
-                       'cms_local' => isset ($config_cms->local) ? $config_cms->local : NULL,
-                       'cms_iframe' => isset ($config_cms->iframe) ? $config_cms->iframe : NULL,
-                       'cms_proxy' => isset ($config_cms->proxy) ? $config_cms->proxy : NULL,
+                       'rsscache:stats_category' => $config_xml['rsscache:stats_category'],
+                       'rsscache:stats_items' => ($config_xml['rsscache:stats_items'] * 1),
+                       'rsscache:stats_days' => ($config_xml['rsscache:stats_days'] * 1),
+                       'rsscache:stats_items_today' => ($config_xml['rsscache:stats_items_today'] * 1),
+                       'rsscache:stats_items_7_days' => ($config_xml['rsscache:stats_items_7_days'] * 1),
+                       'rsscache:stats_items_30_days' => ($config_xml['rsscache:stats_items_30_days'] * 1),
+
+                       'cms:separate' => ($config_xml['cms:separate'] * 1),
+                       'cms:button_only' => ($config_xml['cms:button_only'] * 1),
+                       'cms:status' => ($config_xml['cms:status'] * 1),
+                       'cms:select' => ($config_xml['cms:select'] * 1),
+                       'cms:query' => isset ($config_xml['cms:query']) ? $config_xml['cms:query'] : NULL,
+                       'cms:local' => isset ($config_xml['cms:local']) ? $config_xml['cms:local'] : NULL,
+                       'cms:iframe' => isset ($config_xml['cms:iframe']) ? $config_xml['cms:iframe'] : NULL,
+                       'cms:proxy' => isset ($config_xml['cms:proxy']) ? $config_xml['cms:proxy'] : NULL,
 );
+for ($j = 0; isset ($config_xml['rsscache:feed_'.$j.'_link']); $j++)
+    $a = array_merge ($a, array (
+       'rsscache:feed_'.$j.'_client' => $config_xml['rsscache:feed_'.$j.'_client'],
+       'rsscache:feed_'.$j.'_opts' => $config_xml['rsscache:feed_'.$j.'_opts'],
+       'rsscache:feed_'.$j.'_link' => $config_xml['rsscache:feed_'.$j.'_link'],
+)
+);
+
+$item[] = $a;
     }
 
   $p = ''
@@ -388,6 +406,12 @@ rsscache_write_rss ($d_array)
                     'image' => $rsscache_logo,
                     'lastBuildDate' => $rsscache_time,
                     'docs' => $rsscache_link,
+                       'rsscache:stats_category' => $config['channel']['rsscache:stats_category'],
+                       'rsscache:stats_items' => ($config['channel']['rsscache:stats_items'] * 1),
+                       'rsscache:stats_days' => ($config['channel']['rsscache:stats_days'] * 1),
+                       'rsscache:stats_items_today' => ($config['channel']['rsscache:stats_items_today'] * 1),
+                       'rsscache:stats_items_7_days' => ($config['channel']['rsscache:stats_items_7_days'] * 1),
+                       'rsscache:stats_items_30_days' => ($config['channel']['rsscache:stats_items_30_days'] * 1),
 );
   if ($output == 'mediawiki')
     return rsscache_write_mediawiki ($channel, $item, 0);

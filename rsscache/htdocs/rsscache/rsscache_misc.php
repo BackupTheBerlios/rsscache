@@ -25,7 +25,7 @@ define ('RSSCACHE_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 //require_once ('misc/misc.php');
 //require_once ('misc/wikipedia.php');
-//require_once ('misc/rss.php');
+require_once ('misc/rss.php');
 //require_once ('misc/sql.php');
 //require_once ('misc/youtube.php');
 require_once ('rsscache_sql.php');
@@ -61,13 +61,13 @@ config_xml_by_category ($category_name)
 {
   $config = config_xml ();
 
-  for ($i = 0; isset ($config->category[$i]); $i++)
-    if (trim ($config->category[$i]->name) == $category_name)
-      return $config->category[$i];
+  for ($i = 0; isset ($config['item'][$i]); $i++)
+    if (trim ($config['item'][$i]['category']) == $category_name)
+      return $config['item'][$i];
 //  for ($i = 0; isset ($config[$i]); $i++)
-//    for ($j = 0; isset ($config[$i]->category[$j]); $j++)
-//      if (trim ($config[$i]->category[$j]->name) == $category_name)
-//        return $config[$i]->category[$j];
+//    for ($j = 0; isset ($config[$i]['item'][$j]); $j++)
+//      if (trim ($config[$i]['item'][$j]->category) == $category_name)
+//        return $config[$i]['item'][$j];
   return NULL;
 }
 
@@ -75,79 +75,47 @@ config_xml_by_category ($category_name)
 function
 config_xml_normalize ($config)
 {
-  global $rsstool_path;
-  global $rsstool_opts;
-
 //rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
-      $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($config->category));
-      // DEBUG
-//echo '<pre><tt>';
-//print_r ($stats);
-
-      // add new variables
-      for ($j = 0; isset ($stats[$j]); $j++)
-        {
-          $config->items += $stats[$j]['items'];
-          $config->items_today += $stats[$j]['items_today'];
-          $config->items_7_days += $stats[$j]['items_7_days'];
-          $config->items_30_days += $stats[$j]['items_30_days'];
-          $config->days += $stats[$j]['days'];
-        }
-
-      for ($i = 0; isset ($config->category[$i]); $i++)
-        if ($config->category[$i]->feed[0])
-          for ($j = 0; isset ($stats[$j]); $j++)
-            if ($stats[$j]['category'] == $config->category[$i]->name)
-              {
-                $config->category[$i]->items = $stats[$j]['items'];
-                $config->category[$i]->items_today = $stats[$j]['items_today'];
-                $config->category[$i]->items_7_days = $stats[$j]['items_7_days'];
-                $config->category[$i]->items_30_days = $stats[$j]['items_30_days'];
-                $config->category[$i]->days = $stats[$j]['days'];
-                break;
-              }
-
-  for ($i = 0; isset ($config->category[$i]); $i++)
-    for ($j = 0; isset ($config->category[$i]->feed[$j]); $j++)
-      {
-        $feed = $config->category[$i]->feed[$j];
-        if (method_exists ($feed, 'children'))
-          $feed_rsscache = $feed->children ('rsscache', TRUE);
-
-//        $config->category[$i]->link = array ();
-//        $config->category[$i]->opts = array ();
-        // old style config.xml: link[]
-        for ($k = 0; isset ($feed->link[$k]); $k++)
-          if (trim ($feed->link[$k]) != '')
-            {
-              $config->category[$i]->link[] = $feed->link[$k];
-              $config->category[$i]->opts[] = $rsstool_opts.' '.$feed_rsscache->opts;
-              $config->category[$i]->client[] = $feed_rsscache->client; // ? $feed_rsscache->client : $rsstool_path;
-            }
-
-        // TODO: use new style config.xml
-        //   link_prefix, link_search[], link_suffix
-        if (isset ($feed_rsscache->link_prefix))
-          for ($k = 0; isset ($feed_rsscache->link_search[$k]); $k++)
-            {
-              $p = '';
-//              if (isset ($feed_rsscache->link_prefix))
-                $p .= $feed_rsscache->link_prefix;
-//              if (isset ($feed_rsscache->link_search[$k]))
-                $p .= $feed_rsscache->link_search[$k];
-              if (isset ($feed_rsscache->link_suffix))
-                $p .= $feed_rsscache->link_suffix;
-              $config->category[$i]->link[] = $p;
-              $config->category[$i]->opts[] = $rsstool_opts.' '.$feed_rsscache->opts;
-              $config->category[$i]->client[] = $feed_rsscache->client; //  ? $feed_rsscache->client : $rsstool_path;
-            }
-      }
-
+  $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($config->item));
   // DEBUG
 //echo '<pre><tt>';
-//print_r ($config);
+//print_r ($stats);
+//exit;
 
-  return $config;
+  $a = rss2array ($config);
+
+  // add db statistics
+  for ($i = 0; isset ($a['item'][$i]); $i++)
+        for ($j = 0; isset ($stats[$j]); $j++)
+          if ($stats[$j]['stats_category'] == $a['item'][$i]['category'])
+            {
+              $a['item'][$i] = array_merge ($a['item'][$i],
+                                              misc_array2array ($stats[$j], 'rsscache:'));
+              // DEBUG   
+//              echo '<pre><tt>';
+//              print_r ($a['item'][$i]);
+              break;
+            }
+
+  // add new variables
+  for ($j = 0; isset ($stats[$j]); $j++)
+    {
+      $a['channel']['rsscache:stats_items'] += $stats[$j]['stats_items'];
+      $a['channel']['rsscache:stats_items_today'] += $stats[$j]['stats_items_today'];
+      $a['channel']['rsscache:stats_items_7_days'] += $stats[$j]['stats_items_7_days'];
+      $a['channel']['rsscache:stats_items_30_days'] += $stats[$j]['stats_items_30_days'];
+      $a['channel']['rsscache:stats_days'] += $stats[$j]['stats_days'];
+    }
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($config);
+//  print_r ($stats);
+//  print_r ($a['item']);
+//  echo generate_rss2 ($a['channel'], $a['item'], 1, 1);
+//  exit;
+
+  return $a;
 }
 
 
@@ -204,12 +172,15 @@ if ($memcache_expire > 0)
       $config[] = simplexml_load_file ($rsscache_config_xml[$i]);
 */
   $config = simplexml_load_file ($rsscache_config_xml[0]);
+  $config = $config->channel;
 
   // DEBUG
 //  echo '<pre><tt>';
 //  print_r ($config);
 
   $config = config_xml_normalize ($config);
+//  echo generate_rss2 ($config['channel'], $config['item'], 1, 1);
+//  exit;
 
   // use memcache
 if ($memcache_expire > 0)
@@ -417,8 +388,8 @@ rsscache_link ($d)
 function
 rsscache_duration ($d)
 {
-  if ($d['rsstool_media_duration'] > 0)
-    return gmstrftime ($d['rsstool_media_duration'] > 3599 ? '%H:%M:%S' : '%M:%S', (int) $d['rsstool_media_duration']);
+  if ($d['rsstool:media_duration'] > 0)
+    return gmstrftime ($d['rsstool:media_duration'] > 3599 ? '%H:%M:%S' : '%M:%S', (int) $d['rsstool:media_duration']);
   return '';
 }
 
