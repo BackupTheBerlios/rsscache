@@ -25,7 +25,7 @@ define ('RSSCACHE_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 //require_once ('misc/misc.php');
 //require_once ('misc/wikipedia.php');
-require_once ('misc/rss.php');
+require_once ('misc/xml.php');
 //require_once ('misc/sql.php');
 //require_once ('misc/youtube.php');
 require_once ('rsscache_sql.php');

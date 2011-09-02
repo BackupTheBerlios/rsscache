@@ -61,11 +61,11 @@ rsscache_write_stats_rss ()
   $config = config_xml ();
 
   // DEBUG
-  echo '<pre><tt>';
-  print_r ($config);
-  exit;
+//  echo '<pre><tt>';
+//  print_r ($config);
+//  exit;
 
-  return generate_rss2 ($config['channel'], $config['item'], 1, 1);
+//  return generate_rss2 ($config['channel'], $config['item'], 1, 1);
 
   $item = array ();
 
