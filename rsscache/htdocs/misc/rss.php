@@ -85,6 +85,51 @@ misc_array2array ($a, $prefix = NULL)
 }
 
 
+/* 
+function
+rss_to_array ($tag, $rss_tags, $url)
+{
+  // TODO: use ->asXML() ?
+  $doc = new DOMdocument();
+  $doc->load($url);
+
+  $rss_array = array();
+  $items = array();
+
+  foreach($doc->getElementsByTagName($tag) AS $node)
+    {
+      foreach($rss_tags AS $key => $value)
+        {
+          $items[$value] = $node->getElementsByTagName($value)->item(0)->nodeValue;
+        }
+      array_push ($rss_array, $items);
+    }
+
+  return $rss_array;
+}
+
+
+function
+parse_rss_from_url ($rss_url)
+{
+  $rss_tags = array(
+    'title',
+    'link',
+    'guid',
+    'comments',
+    'description',
+    'pubDate',
+    'category',
+  );
+  $rss_item_tag = 'item';
+    
+  $rssfeed = rss_to_array ($rss_item_tag, $rss_tags, $rss_url);
+    
+  return $rssfeed;
+}
+*/
+
+
 function
 rss2array ($rss)
 {
@@ -106,19 +151,18 @@ rss2array ($rss)
         }
 
       $a = misc_object2array ($category);
+      $item_a = array_merge ($cms, $rsscache, $a);
 
-      $d = array_merge ($cms, $rsscache, $a);
-
-// DEBUG
-//echo '<pre><tt>';
-//print_r ($d);
-//exit;
+      // DEBUG
+//      echo '<pre><tt>';
+//      print_r ($item_a);
+//      exit;
 
       // feeds
       $t = array ();
-      for ($j = 0; isset ($d['rsscache:feed'][$j]); $j++)
+      for ($j = 0; isset ($item_a['rsscache:feed'][$j]); $j++)
         {
-          $feed = $d['rsscache:feed'][$j];
+          $feed = $item_a['rsscache:feed'][$j];
           // DEBUG
 //          echo '<pre><tt>';
 //          print_r ($feed);
@@ -131,7 +175,6 @@ rss2array ($rss)
                 'opts' => $rsstool_opts.' '.$feed['opts'],
                 'link' => $feed['link'],
 );
-
           // TODO: use new style config.xml
           //   link_prefix, link_search[], link_suffix
           if (isset ($feed['link_prefix']))
@@ -152,34 +195,26 @@ rss2array ($rss)
               }
         }
 
-unset ($d['rsscache:feed']);
-for ($j = 0; isset ($t[$j]); $j++)
-  {
-    $d['rsscache:feed_'.$j.'_client'] = $t[$j]['client'];
-    $d['rsscache:feed_'.$j.'_opts'] = $t[$j]['opts'];
-    $d['rsscache:feed_'.$j.'_link'] = $t[$j]['link'];
-  }
-      $item[] = $d;
+      unset ($item_a['rsscache:feed']);
+      for ($j = 0; isset ($t[$j]); $j++)
+        {
+          $item_a['rsscache:feed_'.$j.'_client'] = $t[$j]['client'];
+          $item_a['rsscache:feed_'.$j.'_opts'] = $t[$j]['opts'];
+          $item_a['rsscache:feed_'.$j.'_link'] = $t[$j]['link'];
+        }
+      $item_a['image'] = $item_a['image']['url'];
 
       // DEBUG
 //      echo '<pre><tt>';
-//      print_r ($d);
-    }
+//      print_r ($item_a);
 
-  for ($i = 0; isset ($item[$i]); $i++)
-    $item[$i]['image'] = $item[$i]['image']['url'];
+      $item[] = $item_a;
+    }
 
   $channel = array ();
   $channel = misc_object2array ($rss);
   unset ($channel['item']);
-
-
-
-
-
-
-
-
+  $channel['image'] = $channel['image']['url']; 
 
   // DEBUG
 //  echo '<pre><tt>';
@@ -423,12 +458,11 @@ $a = array (
         $p .= ''
              .'      <pubDate>'
              .strftime (
-"%a, %d %h %Y %H:%M:%S %z",
-//"%a, %d %h %Y %H:%M:%S %Z",
-$item[$i]['pubDate'])
+                "%a, %d %h %Y %H:%M:%S %z",
+//                "%a, %d %h %Y %H:%M:%S %Z",
+                $item[$i]['pubDate'])
              .'</pubDate>'."\n"
 ;
-
         if (isset ($item[$i]['enclosure']))
           {
             $suffix = strtolower (get_suffix ($item[$i]['enclosure']));
@@ -565,49 +599,6 @@ echo 'generate_rss() is deprecated, use generate_rss2() instead';
   return generate_rss2 (array ('title' => $title,
                                'link' => $link,
                                'description' => $desc), $item, 1);
-}
-
-
-function
-rss_to_array ($tag, $rss_tags, $url)
-{
-  // TODO: use ->asXML() ?
-  $doc = new DOMdocument();
-  $doc->load($url);
-
-  $rss_array = array();
-  $items = array();
-
-  foreach($doc->getElementsByTagName($tag) AS $node)
-    {
-      foreach($rss_tags AS $key => $value)
-        {
-          $items[$value] = $node->getElementsByTagName($value)->item(0)->nodeValue;
-        }
-      array_push ($rss_array, $items);
-    }
-
-  return $rss_array;
-}
-
-
-function
-parse_rss_from_url ($rss_url)
-{
-  $rss_tags = array(
-    'title',
-    'link',
-    'guid',
-    'comments',
-    'description',
-    'pubDate',
-    'category',
-  );
-  $rss_item_tag = 'item';
-    
-  $rssfeed = rss_to_array ($rss_item_tag, $rss_tags, $rss_url);
-    
-  return $rssfeed;
 }
 
 

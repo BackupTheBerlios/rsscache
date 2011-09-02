@@ -64,10 +64,6 @@ config_xml_by_category ($category_name)
   for ($i = 0; isset ($config['item'][$i]); $i++)
     if (trim ($config['item'][$i]['category']) == $category_name)
       return $config['item'][$i];
-//  for ($i = 0; isset ($config[$i]); $i++)
-//    for ($j = 0; isset ($config[$i]['item'][$j]); $j++)
-//      if (trim ($config[$i]['item'][$j]->category) == $category_name)
-//        return $config[$i]['item'][$j];
   return NULL;
 }
 
@@ -75,31 +71,27 @@ config_xml_by_category ($category_name)
 function
 config_xml_normalize ($config)
 {
-//rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
-  $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($config->item));
+  // turn XML into array
+  $a = rss2array ($config);
   // DEBUG
 //echo '<pre><tt>';
-//print_r ($stats);
+//print_r ($a);
 //exit;
 
-  $a = rss2array ($config);
-
   // add db statistics
-  for ($i = 0; isset ($a['item'][$i]); $i++)
-        for ($j = 0; isset ($stats[$j]); $j++)
-          if ($stats[$j]['stats_category'] == $a['item'][$i]['category'])
-            {
-              $a['item'][$i] = array_merge ($a['item'][$i],
-                                              misc_array2array ($stats[$j], 'rsscache:'));
-              // DEBUG   
-//              echo '<pre><tt>';
-//              print_r ($a['item'][$i]);
-              break;
-            }
+//rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
+  $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($config->item));
 
-  // add new variables
   for ($j = 0; isset ($stats[$j]); $j++)
     {
+      for ($i = 0; isset ($a['item'][$i]); $i++)
+        if ($stats[$j]['stats_category'] == $a['item'][$i]['category'])
+          {
+            $a['item'][$i] = array_merge ($a['item'][$i],
+              misc_array2array ($stats[$j], 'rsscache:'));
+            break;
+          }
+
       $a['channel']['rsscache:stats_items'] += $stats[$j]['stats_items'];
       $a['channel']['rsscache:stats_items_today'] += $stats[$j]['stats_items_today'];
       $a['channel']['rsscache:stats_items_7_days'] += $stats[$j]['stats_items_7_days'];
@@ -108,10 +100,6 @@ config_xml_normalize ($config)
     }
 
   // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($config);
-//  print_r ($stats);
-//  print_r ($a['item']);
 //  echo generate_rss2 ($a['channel'], $a['item'], 1, 1);
 //  exit;
 
@@ -179,8 +167,6 @@ if ($memcache_expire > 0)
 //  print_r ($config);
 
   $config = config_xml_normalize ($config);
-//  echo generate_rss2 ($config['channel'], $config['item'], 1, 1);
-//  exit;
 
   // use memcache
 if ($memcache_expire > 0)
