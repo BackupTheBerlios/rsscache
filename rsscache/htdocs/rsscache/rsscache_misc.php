@@ -62,8 +62,9 @@ config_xml_by_category ($category_name)
   $config = config_xml ();
 
   for ($i = 0; isset ($config['item'][$i]); $i++)
-    if (trim ($config['item'][$i]['category']) == $category_name)
-      return $config['item'][$i];
+    if (isset ($config['item'][$i]['category']))
+      if (trim ($config['item'][$i]['category']) == $category_name)
+        return $config['item'][$i];
   return NULL;
 }
 
@@ -84,10 +85,16 @@ config_xml_normalize ($config)
 //rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
   $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($config->item));
 
+  $a['channel']['rsscache:stats_items'] = 0;
+  $a['channel']['rsscache:stats_items_today'] = 0;
+  $a['channel']['rsscache:stats_items_7_days'] = 0;
+  $a['channel']['rsscache:stats_items_30_days'] = 0;
+  $a['channel']['rsscache:stats_days'] = 0;
   for ($j = 0; isset ($stats[$j]); $j++)
     {
       for ($i = 0; isset ($a['item'][$i]); $i++)
-        if ($stats[$j]['stats_category'] == $a['item'][$i]['category'])
+        if (isset ($a['item'][$i]['category']))
+          if ($stats[$j]['stats_category'] == $a['item'][$i]['category'])
           {
             $a['item'][$i] = array_merge ($a['item'][$i],
               misc_array2array ($stats[$j], 'rsscache:'));
@@ -102,8 +109,8 @@ config_xml_normalize ($config)
     }
 
   // DEBUG
-//  echo generate_rss2 ($a['channel'], $a['item'], 1, 1);
-//  exit;
+  echo generate_rss2 ($a['channel'], $a['item'], 1, 1);
+  exit;
 
   return $a;
 }
@@ -280,8 +287,6 @@ rsscache_download_feeds_by_category ($category_name)
 
   $category_name = trim ($category_name);
   $category = config_xml_by_category ($category_name);
-//  if (method_exists ($category, 'children'))
-//    $category_rsscache = $category->children ('rsscache', TRUE);
 
   // DEBUG
   echo '$category'."\n";

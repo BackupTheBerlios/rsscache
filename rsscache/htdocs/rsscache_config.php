@@ -21,9 +21,9 @@ $rsstool_opts = '--hack-google --sbin --shtml';
 //$rsscache_config_xml = 'rsscache_config.xml';
 //$rsscache_config_xml = $config_subdomain.'_config.xml';
 $rsscache_config_xml = array (
-'videos_config.xml',
+'../htdocs/videos_config.xml',
 //'demos_config.xml',
-'emulive_config.xml',
+'../htdocs/emulive_config.xml',
 //'live_config.xml',
 //'maps_config.xml',
 //'servers_config.xml',

@@ -141,6 +141,7 @@ misc_array2object ($a)
 function
 misc_object2array ($o, $prefix = NULL)
 {
+  $a = array ();
   foreach ((is_object ($o) ? get_object_vars ($o) : $o) as $key => $val)
     $a[($prefix ? $prefix : '').$key] = (is_array ($val) || is_object ($val)) ? misc_object2array ($val) : $val;
   return $a;
@@ -150,6 +151,7 @@ misc_object2array ($o, $prefix = NULL)
 function
 misc_array2array ($a, $prefix = NULL)
 {
+  $b = array ();
   foreach ($a as $key => $val)
     $b[($prefix ? $prefix : '').$key] = $val;
   return $b;
@@ -239,35 +241,37 @@ rss2array ($rss)
       // feeds
       $t = array ();
       for ($j = 0; isset ($item_a['rsscache:feed'][$j]); $j++)
+        if (isset ($item_a['rsscache:feed'][$j]))
         {
           $feed = $item_a['rsscache:feed'][$j];
+          
           // DEBUG
 //          echo '<pre><tt>';
 //          print_r ($feed);
 
           // old style config.xml: link[]
-          if (isset ($feed['link']))
-            if (trim ($feed['link']) != '')
+          if (isset ($feed['rsscache:link']))
+            if (trim ($feed['rsscache:link']) != '')
               $t[] = array (
-                'client' => $feed->client,
-                'opts' => $rsstool_opts.' '.$feed['opts'],
-                'link' => $feed['link'],
+                'client' => $feed['rsscache:client'],
+                'opts' => $rsstool_opts.' '.$feed['rsscache:opts'],
+                'link' => $feed['rsscache:link'],
 );
           // TODO: use new style config.xml
-          //   link_prefix, link_search[], link_suffix
-          if (isset ($feed['link_prefix']))
-            for ($k = 0; isset ($feed['link_search'][$k]); $k++)
+          //   rsscache:link_prefix, rsscache:link_search[], rsscache:link_suffix
+          if (isset ($feed['rsscache:link_prefix']))
+            for ($k = 0; isset ($feed['rsscache:link_search'][$k]); $k++)
               {
                 $p = '';
-//                if (isset ($feed['link_prefix']))
-                  $p .= $feed['link_prefix'];
-//                if (isset ($feed['link_search'][$k]))
-                  $p .= $feed['link_search'][$k];
-                if (isset ($feed['link_suffix']))
-                  $p .= $feed['link_suffix'];
+//                if (isset ($feed['rsscache:link_prefix']))
+                  $p .= $feed['rsscache:link_prefix'];
+//                if (isset ($feed['rsscache:link_search'][$k]))
+                  $p .= $feed['rsscache:link_search'][$k];
+                if (isset ($feed['rsscache:link_suffix']))
+                  $p .= $feed['rsscache:link_suffix'];
                 $t[] = array (
-                  'client' => $feed->client,
-                  'opts' => $rsstool_opts.' '.$feed['opts'],
+                  'client' => $feed['rsscache:client'],
+                  'opts' => $rsstool_opts.' '.$feed['rsscache:opts'],
                   'link' => $p,
 );
               }
@@ -280,7 +284,8 @@ rss2array ($rss)
           $item_a['rsscache:feed_'.$j.'_opts'] = $t[$j]['opts'];
           $item_a['rsscache:feed_'.$j.'_link'] = $t[$j]['link'];
         }
-      $item_a['image'] = $item_a['image']['url'];
+      if (isset ($item_a['image']['url']))
+        $item_a['image'] = $item_a['image']['url'];
 
       // DEBUG
 //      echo '<pre><tt>';
