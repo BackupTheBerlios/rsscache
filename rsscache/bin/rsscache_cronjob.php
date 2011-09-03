@@ -26,6 +26,7 @@ require_once ('../htdocs/rsscache/default.php');
 require_once ('../htdocs/config.php');
 require_once ('../htdocs/misc/misc.php');
 require_once ('../htdocs/misc/sql.php');
+require_once ('../htdocs/misc/rss.php');
 require_once ('../htdocs/misc/youtube.php');
 require_once ('../htdocs/rsscache/rsscache_sql.php');
 require_once ('../htdocs/rsscache/rsscache_misc.php');
@@ -49,13 +50,12 @@ echo misc_exec ('/etc/init.d/tor restart');
 // DEBUG
 echo 'database: '.$rsscache_dbname.' ('.$rsscache_dbuser.')'."\n";
 
-for ($i = 0; isset ($config->category[$i]); $i++)
-  if (isset ($config->category[$i]->name))
+for ($i = 0; isset ($config['item'][$i]); $i++)
+  if (isset ($config['item'][$i]['category']))
     {
-      print_r ($config->category[$i]);
-      rsscache_download_feeds_by_category ($config->category[$i]->name);
+      print_r ($config['item'][$i]);
+      rsscache_download_feeds_by_category ($config['item'][$i]['category']);
     }
-  }
 
 rsscache_sql_close ();
 

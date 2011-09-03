@@ -1,6 +1,6 @@
 <?php
 /*
-xml.php - miscellaneous XML functions
+rss.php - miscellaneous RSS functions
 
 Copyright (c) 2006 - 2011 NoisyB
 
@@ -19,9 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-if (!defined ('MISC_XML_PHP'))
+if (!defined ('MISC_RSS_PHP'))
 {
-define ('MISC_XML_PHP', 1);
+define ('MISC_RSS_PHP', 1);
 
 
 function
