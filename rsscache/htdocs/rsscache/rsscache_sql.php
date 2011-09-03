@@ -215,7 +215,8 @@ rsscache_sql_normalize ($d)
       // trim and lower-case categories
 //      $d[$i]['tv2_category'] = strtolower (trim ($d[$i]['tv2_category']));
       $d[$i]['tv2_moved'] = strtolower (trim ($d[$i]['tv2_moved']));
-      $d[$i]['rsstool_related_id'] = misc_related_string_id ($d[$i]['rsstool_title']);
+//      $d[$i]['rsstool_related_id'] = misc_related_string_id ($d[$i]['rsstool_title']);
+      $d[$i]['rsstool_related_id'] = sprintf ("%u", $d[$i]['rsstool_related_id']);
     }
 
   return $d;
@@ -411,7 +412,8 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
                  .' rsstool_event_end,'
                  .' rsstool_media_duration,'
                  .' rsstool_keywords,'
-                 .' rsstool_user'
+                 .' rsstool_user,'
+                 .' rsstool_related_id'
 //                 .' tv2_votes,'
 //                 .' tv2_score'
 ;
@@ -440,7 +442,9 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
       if ($c)
         $a[] = 'tv2_moved = \''.$c.'\'';
 
-      $a[] = 'rsstool_related_id = '.misc_related_string_id ($q); // super fast
+//      $a[] = 'rsstool_related_id = '.misc_related_string_id ($q); // super fast
+      $a[] = 'rsstool_related_id = '.sprintf ("%u", $q); // super fast
+//      $a[] = 'rsstool_related_id = '.$q; // super fast
 
       if (isset ($a[0]))
         $sql_query_s .= ' WHERE ( '.implode (' AND ', $a).' )';

@@ -206,6 +206,11 @@ rss2array ($rss)
 {
   global $rsstool_opts;
 
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($rss);
+//  exit;
+
   $item = array ();
   for ($i = 0; isset ($rss->item[$i]); $i++)
     {
@@ -226,6 +231,8 @@ rss2array ($rss)
 
       // DEBUG
 //      echo '<pre><tt>';
+//  print_r ($cms);
+//  print_r ($rsscache);
 //      print_r ($item_a);
 //      exit;
 
@@ -730,6 +737,7 @@ rss_improve_relevance_s ($rss)
 
   return generate_rss2 ($channel, $item, 0, 0);
 }
+
 
 
 }

@@ -94,18 +94,16 @@ else if ($rsscache_admin == 1 && $f == 'cache') // cache (new) items into databa
   }
 else // write feed
   {
-    $d_array = NULL;
-
     // category   
     $category = config_xml_by_category (strtolower ($c));
-    if (method_exists ($category, 'children'))
-      $category_rsscache = $category->children ('rsscache', TRUE);
+    $table_suffix = isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : NULL;
 
     // use SQL
+    $d_array = NULL;
     if ($item)
-      $d_array = rsscache_sql (NULL, NULL, $f, $item, 0, 0, isset ($category_rsscache->table_suffix) ? $category_rsscache->table_suffix : NULL);
+      $d_array = rsscache_sql (NULL, NULL, $f, $item, 0, 0, $table_suffix);
     else
-      $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, isset ($category_rsscache->table_suffix) ? $category_rsscache->table_suffix : NULL);
+      $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, $table_suffix);
 
 // DEBUG
 //echo '<pre><tt>';

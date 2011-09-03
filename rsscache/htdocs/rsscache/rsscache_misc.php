@@ -25,7 +25,7 @@ define ('RSSCACHE_MISC_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 //require_once ('misc/misc.php');
 //require_once ('misc/wikipedia.php');
-require_once ('misc/xml.php');
+//require_once ('misc/rss.php');
 //require_once ('misc/sql.php');
 //require_once ('misc/youtube.php');
 require_once ('rsscache_sql.php');
@@ -71,6 +71,8 @@ config_xml_by_category ($category_name)
 function
 config_xml_normalize ($config)
 {
+  $config = $config[0]->channel;
+
   // turn XML into array
   $a = rss2array ($config);
   // DEBUG
@@ -151,16 +153,12 @@ if ($memcache_expire > 0)
 
   // DEBUG
 //  echo 'read config';
-/*
   $config = array ();
   if (!is_array ($rsscache_config_xml))
-    $config[] = simplexml_load_file ($rsscache_config_xml));
+    $config[] = simplexml_load_file ($rsscache_config_xml);
   else
     for ($i = 0; isset ($rsscache_config_xml[$i]); $i++)
       $config[] = simplexml_load_file ($rsscache_config_xml[$i]);
-*/
-  $config = simplexml_load_file ($rsscache_config_xml[0]);
-  $config = $config->channel;
 
   // DEBUG
 //  echo '<pre><tt>';
@@ -282,14 +280,13 @@ rsscache_download_feeds_by_category ($category_name)
 
   $category_name = trim ($category_name);
   $category = config_xml_by_category ($category_name);
-  if (method_exists ($category, 'children'))
-    $category_rsscache = $category->children ('rsscache', TRUE);
+//  if (method_exists ($category, 'children'))
+//    $category_rsscache = $category->children ('rsscache', TRUE);
 
   // DEBUG
-//  echo '$category'."\n";
-//  print_r ($category);
-//  echo '$category_rsscache'."\n";
-//  print_r ($category_rsscache);
+  echo '$category'."\n";
+  print_r ($category);
+exit;
 
   // TODO: single category using category_name   
   if ($category == NULL)
