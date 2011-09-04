@@ -293,10 +293,10 @@ rss2array ($rss)
 //      exit;
 
       // feeds
-      $t = array ();
       for ($j = 0; isset ($item_a['rsscache:feed'][$j]); $j++)
         if (isset ($item_a['rsscache:feed'][$j]))
         {
+          $t = array ();
           $feed = $item_a['rsscache:feed'][$j];
           
           // DEBUG
@@ -306,11 +306,13 @@ rss2array ($rss)
           // old style config.xml: link[]
           if (isset ($feed['link']))
             if (trim ($feed['link']) != '')
-              $t[] = array (
-                'client' => isset ($feed['client']) ? $feed['client'] : '',
-                'opts' => $rsstool_opts.' '.(isset ($feed['opts']) ? $feed['opts'] : ''),
-                'link' => $feed['link'],
-);
+              {
+                if (isset ($feed['client']))
+                  $t['client'] = $feed['client'];
+                $t['opts'] = $rsstool_opts.' '.(isset ($feed['opts']) ? $feed['opts'] : '');
+                $t['link'] = $feed['link'];
+              }
+
           // TODO: use new style config.xml
           //   link_prefix, link_search[], link_suffix
           if (isset ($feed['link_prefix']))
@@ -323,35 +325,40 @@ rss2array ($rss)
                   $p .= $feed['link_search'][$k];
                 if (isset ($feed['link_suffix']))
                   $p .= $feed['link_suffix'];
-                $t[] = array (
-                  'client' => isset ($feed['client']) ? $feed['client'] : '',
-                  'opts' => $rsstool_opts.' '.(isset ($feed['opts']) ? $feed['opts'] : ''),
-                  'link' => $p,
-);
+
+                if (isset ($feed['client']))
+                  $t['client'] = $feed['client'];
+                $t['opts'] = $rsstool_opts.' '.(isset ($feed['opts']) ? $feed['opts'] : '');
+                $t['link'] = $p;
               }
+
+          if (isset ($t['client']))
+            $item_a['rsscache:feed_'.$j.'_client'] = $t['client'];
+          $item_a['rsscache:feed_'.$j.'_opts'] = $t['opts'];
+          $item_a['rsscache:feed_'.$j.'_link'] = $t['link'];
+        }
+
+      if (isset ($item_a['image']['url']))
+        {
+          $item_a['image'] = $item_a['image']['url'];
+          $item_a['enclosure'] = $item_a['image'];
         }
 
       unset ($item_a['rsscache:feed']);
-      for ($j = 0; isset ($t[$j]); $j++)
-        {
-          $item_a['rsscache:feed_'.$j.'_client'] = $t[$j]['client'];
-          $item_a['rsscache:feed_'.$j.'_opts'] = $t[$j]['opts'];
-          $item_a['rsscache:feed_'.$j.'_link'] = $t[$j]['link'];
-        }
-      if (isset ($item_a['image']['url']))
-        $item_a['image'] = $item_a['image']['url'];
 
       // DEBUG
 //      echo '<pre><tt>';
 //      print_r ($item_a);
+//exit;
 
       $item[] = $item_a;
     }
 
   $channel = array ();
   $channel = misc_object2array ($rss);
-  unset ($channel['item']);
   $channel['image'] = $channel['image']['url']; 
+
+  unset ($channel['item']);
 
   // DEBUG
 //  echo '<pre><tt>';
@@ -379,9 +386,10 @@ generate_rss2_func ($item, $a)
 //        print_r ($item);
 //        echo $t;
 
-        $p .= '      <'.$t.'>'
-             .(is_string ($item[$t]) ? misc_xml_escape ($item[$t]) : sprintf ("%u", $item[$t]))
-             .'</'.$t.'>'."\n";
+        if (isset ($item[$t]) && !is_array ($item[$t]))
+          $p .= '      <'.$t.'>'
+               .(is_string ($item[$t]) ? misc_xml_escape ($item[$t]) : sprintf ("%u", $item[$t]))
+               .'</'.$t.'>'."\n";
       }
   return $p;
 }
@@ -559,8 +567,12 @@ $a = array (
 //       .'    <language>en</language>'."\n"
        .'    <image>'."\n"
        .'      <title>'.misc_xml_escape ($channel['title']).'</title>'."\n"
-       .'      <url>'.$channel['image'].'</url>'."\n"
-       .'      <link>'.misc_xml_escape ($channel['link']).'</link>'."\n"
+       .'      <url>'.$channel['image'].'</url>'."\n";
+
+   if (isset ($channel['link']) && !is_array ($channel['link']))
+     $p .= '      <link>'.misc_xml_escape ($channel['link']).'</link>'."\n";
+
+   $p .= ''
 //       .'      <width></width>'."\n"
 //       .'      <height></height>'."\n"
        .'    </image>'."\n"
@@ -574,7 +586,8 @@ $a = array (
 //       .'    </textinput>'."\n"
 //;
 
-  for ($i = 0; isset ($item[$i]['link']); $i++)
+//  for ($i = 0; isset ($item[$i]['link']); $i++)
+  for ($i = 0; isset ($item[$i]); $i++)
     {
       $p .= '    <item>'."\n";
 
