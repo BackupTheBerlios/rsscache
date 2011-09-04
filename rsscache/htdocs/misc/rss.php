@@ -613,7 +613,7 @@ $a = array (
                 $item[$i]['pubDate'])
              .'</pubDate>'."\n"
 ;
-        if (isset ($item[$i]['enclosure']))
+        if (isset ($item[$i]['enclosure']) && !is_array ($item[$i]['enclosure']))
           {
             $suffix = strtolower (get_suffix ($item[$i]['enclosure']));
 
