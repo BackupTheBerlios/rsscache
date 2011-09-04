@@ -330,6 +330,7 @@ rsscache_write_rss ($d_array)
                        'rsscache:event_start' => ($d_array[$i]['rsstool_event_start'] * 1),
                        'rsscache:event_end' => ($d_array[$i]['rsstool_event_end'] * 1),
                        'rsscache:url_crc32' => ($d_array[$i]['rsstool_url_crc32'] * 1),
+                       'rsscache:table_suffix' => isset ($config_xml['rsscache:table_suffix']) ? $config_xml['rsscache:table_suffix'] : NULL,
 
                        'rsscache:stats_category' => $config_xml['rsscache:stats_category'],
                        'rsscache:stats_items' => ($config_xml['rsscache:stats_items'] * 1),

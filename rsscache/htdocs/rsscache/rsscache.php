@@ -72,6 +72,11 @@ if ($f == 'robots')
 rsscache_sql_open ();
 
 $config = config_xml ();
+// DEBUG
+//echo '<pre><tt>';
+//print_r ($config);
+//echo generate_rss2 ($config['channel'], $config['item'], 1, 1);
+//exit;
 $c = rsscache_get_request_value ('c'); // category
 
 if ($f == 'stats') // db statistics as feed
@@ -91,6 +96,10 @@ else if ($rsscache_admin == 1 && $f == 'cache') // cache (new) items into databa
     else
       $p = '&c=CATEGORY required';
     $p = generate_rss2 (array ('title' => rsscache_title (), 'description' => $p), NULL);
+  }
+else if ($rsscache_admin == 1 && $f == 'config') // dump config (w/ new indentation)
+  {
+    $p = generate_rss2 ($config['channel'], $config['item'], 1, 1);
   }
 else // write feed
   {
@@ -112,6 +121,7 @@ else // write feed
 
     $p = rsscache_write_rss ($d_array);
   }
+
 
 rsscache_sql_close ();
 

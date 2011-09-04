@@ -109,8 +109,8 @@ config_xml_normalize ($config)
     }
 
   // DEBUG
-  echo generate_rss2 ($a['channel'], $a['item'], 1, 1);
-  exit;
+//  echo generate_rss2 ($a['channel'], $a['item'], 1, 1);
+//  exit;
 
   return $a;
 }
@@ -289,34 +289,39 @@ rsscache_download_feeds_by_category ($category_name)
   $category = config_xml_by_category ($category_name);
 
   // DEBUG
-  echo '$category'."\n";
-  print_r ($category);
-exit;
+//  echo '<pre><tt>';
+//  echo '$category'."\n";
+//echo $category_name."\n";
+//  print_r ($category);
+//exit;
 
-  // TODO: single category using category_name   
   if ($category == NULL)
     return;
 
-  for ($j = 0; isset ($category->link[$j]); $j++)
+  for ($j = 0; isset ($category['rsscache:feed_'.$j.'_link']); $j++)
     {
       // rsstool options
       $opts = '';
-      if (isset ($category_rsscache->opts[$j]))
-        $opts = $category_rsscache->opts[$j];
+      if (isset ($category['rsscache:feed_'.$j.'_opts']))
+        $opts = $category['rsscache:feed_'.$j.'_opts'];
 
       $p = '';
       $p .= 'category: '.$category_name."\n"
-           .'client: '.$category->client[$j]."\n"
+           .'client: '.$category['rsscache:feed_'.$j.'_client']."\n"
            .'opts: '.$opts."\n"
-           .'url: '.$category->link[$j]."\n"; 
+           .'url: '.$category['rsscache:feed_'.$j.'_link']."\n"
+           .'table_suffix: '.(isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : '')."\n"
+; 
       echo $p;
 
       // get feed
-      $xml = rsscache_feed_get ($category_rsscache->client[$j], $opts, $category->link[$j]);
+      $xml = rsscache_feed_get ($category['rsscache:feed_'.$j.'_client'], $opts, $category['rsscache:feed_'.$j.'_link']);
       // download thumbnails
       $xml = rsscache_download_thumbnails ($xml);
       // xml to sql
-      $sql_queries_s = rsstool_write_ansisql ($xml, $category_name, $category_rsscache->table_suffix, $rsscache_sql_db->conn);
+      $sql_queries_s = rsstool_write_ansisql ($xml, $category_name, 
+        (isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : ''),
+        $rsscache_sql_db->conn);
 
       rsscache_sql_queries ($sql_queries_s);
     }
@@ -340,8 +345,8 @@ rsscache_title ($d = NULL)
     {
       $category = config_xml_by_category ($c);
       if ($category)
-        if (trim ($category->title) != '')
-          $a[] = $category->title;
+        if (trim ($category['title']) != '')
+          $a[] = $category['title'];
     }
 
   if ($v && $d != NULL)
@@ -376,8 +381,8 @@ rsscache_link ($d)
 function
 rsscache_duration ($d)
 {
-  if ($d['rsstool:media_duration'] > 0)
-    return gmstrftime ($d['rsstool:media_duration'] > 3599 ? '%H:%M:%S' : '%M:%S', (int) $d['rsstool:media_duration']);
+  if ($d['media_duration'] > 0)
+    return gmstrftime ($d['media_duration'] > 3599 ? '%H:%M:%S' : '%M:%S', (int) $d['media_duration']);
   return '';
 }
 
@@ -389,58 +394,6 @@ rsscache_thumbnail ($d)
          $rsscache_thumbnails_prefix;
   return $rsscache_link_static.'/thumbnails/'.$rsscache_thumbnails_prefix.'/rsscache/'.$d['rsstool_url_crc32'].'.jpg';
 }
-
-
-/*
-function
-rsscache_event ($d)
-{
-  global $rsscache_time;
-
-  $t[0] = $d['rsstool_event_start'];
-  $t[1] = $d['rsstool_event_end'];
-
-  $t[2] = $t[0] - $rsscache_time;
-  date_default_timezone_set ($tz);
-  $t[3] = (100 * $t[2]) / (7 * 86400); // percent (week)
-
-  // DEBUG
-//echo '<pre><tt>';
-//print_r ($d);
-//print_r ($t);
-
-  $p = '';
-  $p .= '<br>Length: '.floor (($t[1] - $t[0]) / 60).' min';
-  $p .= '<br>';
-  if ($t[2] > 0)
-    {
-      $p .= ''
-           .'<div style="float:left;font-size:16px;">'
-           .'<b>LIVE</b> in '
-//           .'Event in '
-           .floor ($t[2] / 3600).'h '.floor ($t[2] % 60).'m&nbsp;&nbsp;'
-           .'</div>'
-;
-      // progress
-      $p .= '<div style="width:'.floor ($t[3]).'px;background-color:#f00;float:left;">&nbsp;</div>';
-      $p .= '<div style="width:'.floor (100 - $t[3]).'px;background-color:#999;float:left;">&nbsp;</div>';
-//      $p .= '<div style="float:left;font-size:16px;">'
-//           .'&nbsp;(7 days)'
-//           .'</div>'
-//;
-      $p .= '<div style="clear:both;"></div>';
-    }
-  else
-    $p .= ''
-         .'<div style="float:left;font-size:16px;">'
-         .'Event was '
-         .(floor ($t[2] / 3600) * -1).'h '.(floor ($t[2] % 60) * -1).'m&nbsp;ago&nbsp;&nbsp;'
-         .'</div>'
-;
-
-  return $p;
-}
-*/
 
 
 }

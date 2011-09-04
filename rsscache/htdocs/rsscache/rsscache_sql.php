@@ -575,7 +575,6 @@ tv2_sql_restore ($rsstool_url_crc32)
 
 
 /*
-// done in rsscache_sql.php
 function
 rsscache_update_ttl ()
 {

@@ -24,6 +24,58 @@ if (!defined ('MISC_RSS_PHP'))
 define ('MISC_RSS_PHP', 1);
 
 
+/*
+function
+rsscache_event ($d)
+{
+  global $rsscache_time;
+
+  $t[0] = $d['rsstool_event_start'];
+  $t[1] = $d['rsstool_event_end'];
+
+  $t[2] = $t[0] - $rsscache_time;
+  date_default_timezone_set ($tz);
+  $t[3] = (100 * $t[2]) / (7 * 86400); // percent (week)
+
+  // DEBUG
+//echo '<pre><tt>';
+//print_r ($d);
+//print_r ($t);
+
+  $p = '';
+  $p .= '<br>Length: '.floor (($t[1] - $t[0]) / 60).' min';
+  $p .= '<br>';
+  if ($t[2] > 0)
+    {
+      $p .= ''
+           .'<div style="float:left;font-size:16px;">'
+           .'<b>LIVE</b> in '
+//           .'Event in '
+           .floor ($t[2] / 3600).'h '.floor ($t[2] % 60).'m&nbsp;&nbsp;'
+           .'</div>'
+;
+      // progress
+      $p .= '<div style="width:'.floor ($t[3]).'px;background-color:#f00;float:left;">&nbsp;</div>';
+      $p .= '<div style="width:'.floor (100 - $t[3]).'px;background-color:#999;float:left;">&nbsp;</div>';
+//      $p .= '<div style="float:left;font-size:16px;">'
+//           .'&nbsp;(7 days)'
+//           .'</div>'
+//;
+      $p .= '<div style="clear:both;"></div>';
+    }
+  else
+    $p .= ''
+         .'<div style="float:left;font-size:16px;">'
+         .'Event was '
+         .(floor ($t[2] / 3600) * -1).'h '.(floor ($t[2] % 60) * -1).'m&nbsp;ago&nbsp;&nbsp;'
+         .'</div>'
+;
+
+  return $p;
+}
+*/
+
+
 function
 simplexml_load_file2 ($xml_file)
 {
@@ -248,30 +300,30 @@ rss2array ($rss)
           // DEBUG
 //          echo '<pre><tt>';
 //          print_r ($feed);
-
+//exit;
           // old style config.xml: link[]
-          if (isset ($feed['rsscache:link']))
-            if (trim ($feed['rsscache:link']) != '')
+          if (isset ($feed['link']))
+            if (trim ($feed['link']) != '')
               $t[] = array (
-                'client' => $feed['rsscache:client'],
-                'opts' => $rsstool_opts.' '.$feed['rsscache:opts'],
-                'link' => $feed['rsscache:link'],
+                'client' => isset ($feed['client']) ? $feed['client'] : '',
+                'opts' => $rsstool_opts.' '.(isset ($feed['opts']) ? $feed['opts'] : ''),
+                'link' => $feed['link'],
 );
           // TODO: use new style config.xml
-          //   rsscache:link_prefix, rsscache:link_search[], rsscache:link_suffix
-          if (isset ($feed['rsscache:link_prefix']))
-            for ($k = 0; isset ($feed['rsscache:link_search'][$k]); $k++)
+          //   link_prefix, link_search[], link_suffix
+          if (isset ($feed['link_prefix']))
+            for ($k = 0; isset ($feed['link_search'][$k]); $k++)
               {
                 $p = '';
-//                if (isset ($feed['rsscache:link_prefix']))
-                  $p .= $feed['rsscache:link_prefix'];
-//                if (isset ($feed['rsscache:link_search'][$k]))
-                  $p .= $feed['rsscache:link_search'][$k];
-                if (isset ($feed['rsscache:link_suffix']))
-                  $p .= $feed['rsscache:link_suffix'];
+//                if (isset ($feed['link_prefix']))
+                  $p .= $feed['link_prefix'];
+//                if (isset ($feed['link_search'][$k]))
+                  $p .= $feed['link_search'][$k];
+                if (isset ($feed['link_suffix']))
+                  $p .= $feed['link_suffix'];
                 $t[] = array (
-                  'client' => $feed['rsscache:client'],
-                  'opts' => $rsstool_opts.' '.$feed['rsscache:opts'],
+                  'client' => isset ($feed['client']) ? $feed['client'] : '',
+                  'opts' => $rsstool_opts.' '.(isset ($feed['opts']) ? $feed['opts'] : ''),
                   'link' => $p,
 );
               }
@@ -600,6 +652,7 @@ $a = array (
            'rsscache:movable',
            'rsscache:reportable',
            'rsscache:votable',
+           'rsscache:table_suffix',
            'rsscache:stats_category',
 //           'rsscache:category_items',
 //           'rsscache:category_days',
