@@ -72,13 +72,15 @@ config_xml_by_category ($category_name)
 function
 config_xml_normalize ($config)
 {
-  $config = $config[0]->channel;
+  // TODO: merge multiple configs
+  $config = $config[0];
 
   // turn XML into array
   $a = rss2array ($config);
+
   // DEBUG
-//echo '<pre><tt>';
-//print_r ($a);
+//  echo '<pre><tt>';
+//  print_r ($a);
 //exit;
 
   // add db statistics

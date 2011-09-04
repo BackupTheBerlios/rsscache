@@ -341,7 +341,7 @@ rsscache_write_rss ($d_array)
 
                        'cms:separate' => ($config_xml['cms:separate'] * 1),
                        'cms:button_only' => ($config_xml['cms:button_only'] * 1),
-                       'cms:status' => ($config_xml['cms:status'] * 1),
+                       'cms:status' => isset ($config_xml['cms:status']) ? ($config_xml['cms:status'] * 1) : 0,
                        'cms:select' => ($config_xml['cms:select'] * 1),
                        'cms:query' => isset ($config_xml['cms:query']) ? $config_xml['cms:query'] : NULL,
                        'cms:local' => isset ($config_xml['cms:local']) ? $config_xml['cms:local'] : NULL,

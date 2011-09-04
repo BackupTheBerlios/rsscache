@@ -260,6 +260,8 @@ rss2array ($rss)
 {
   global $rsstool_opts;
 
+  $rss = $rss->channel;
+
   // DEBUG
 //  echo '<pre><tt>';
 //  print_r ($rss);
@@ -285,8 +287,8 @@ rss2array ($rss)
 
       // DEBUG
 //      echo '<pre><tt>';
-//  print_r ($cms);
-//  print_r ($rsscache);
+//      print_r ($cms);
+//      print_r ($rsscache);
 //      print_r ($item_a);
 //      exit;
 
