@@ -280,10 +280,14 @@ rss2array ($rss)
           $o = $category->children ('cms', TRUE);
           if ($o)
             $cms = misc_object2array ($o, 'cms:');
+
+          $o = $category->children ('media', TRUE);
+          if ($o)
+            $media = misc_object2array ($o, 'media:');
         }
 
       $a = misc_object2array ($category);
-      $item_a = array_merge ($cms, $rsscache, $a);
+      $item_a = array_merge ($cms, $rsscache, $media, $a);
 
       // DEBUG
 //      echo '<pre><tt>';

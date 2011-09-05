@@ -231,18 +231,9 @@ rsscache_sql_query2boolean ($q, $c = NULL)
   // filter
   $filter = '';
   if ($c)
-    {
-      $category = config_xml_by_category ($c);
-      if (method_exists ($category, 'children'))
-        {
-          $category_rsscache = $category->children ('rsscache', TRUE);
-          if ($category_rsscache)
-            if ($category_rsscache->filter)
-              $filter = $category_rsscache->filter;
-        }
-    }
+    $category = config_xml_by_category ($c);
 
-  $q = trim ($q.' '.$filter);
+  $q = trim ($q.' '.$category['rsscache:filter']);
   // DEBUG
   if ($debug == 1)
     echo 'search: '.$q.'<br>';
@@ -379,12 +370,9 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 //echo '<pre><tt>';
 //print_r ($category);
 //exit;
-  if (method_exists ($category, 'children'))
-    $category_rsscache = $category->children ('rsscache', TRUE);
 
   if ($f == 'stats')
-//    return rsscache_sql_stats ($rsscache_sql_db, isset ($category_rsscache->table_suffix) ? $category_rsscache->table_suffix : NULL, $c);
-    return rsscache_sql_stats ($rsscache_sql_db, isset ($category['rsscache_table_suffix']) ? $category['rsscache_table_suffix'] : NULL, $c);
+    return rsscache_sql_stats ($rsscache_sql_db, isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : NULL, $c);
 
   $rsstool_table = 'rsstool_table';
   $keyword_table = 'keyword_table';
