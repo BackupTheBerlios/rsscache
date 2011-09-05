@@ -271,42 +271,40 @@ rss2array ($rss)
   for ($i = 0; isset ($rss->item[$i]); $i++)
     {
       $category = $rss->item[$i];
+
+      $a = misc_object2array ($category);
       if (method_exists ($category, 'children'))
         {
           $o = $category->children ('rsscache', TRUE);
           if ($o)
-            $rsscache = misc_object2array ($o, 'rsscache:');
+            $a = array_merge ($a, misc_object2array ($o, 'rsscache:'));
 
           $o = $category->children ('cms', TRUE);
           if ($o)
-            $cms = misc_object2array ($o, 'cms:');
+            $a = array_merge ($a, misc_object2array ($o, 'cms:'));
 
           $o = $category->children ('media', TRUE);
           if ($o)
-            $media = misc_object2array ($o, 'media:');
+            $a = array_merge ($a, misc_object2array ($o, 'media:'));
         }
-
-      $a = misc_object2array ($category);
-      $item_a = array_merge ($cms, $rsscache, $media, $a);
 
       // DEBUG
 //      echo '<pre><tt>';
-//      print_r ($cms);
-//      print_r ($rsscache);
-//      print_r ($item_a);
+//      print_r ($a);
 //      exit;
 
       // feeds
-      for ($j = 0; isset ($item_a['rsscache:feed'][$j]); $j++)
-        if (isset ($item_a['rsscache:feed'][$j]))
+      for ($j = 0; isset ($a['rsscache:feed'][$j]); $j++)
+        if (isset ($a['rsscache:feed'][$j]))
         {
           $t = array ();
-          $feed = $item_a['rsscache:feed'][$j];
+          $feed = $a['rsscache:feed'][$j];
           
           // DEBUG
 //          echo '<pre><tt>';
 //          print_r ($feed);
-//exit;
+//          exit;
+
           // old style config.xml: link[]
           if (isset ($feed['link']))
             if (trim ($feed['link']) != '')
@@ -337,25 +335,25 @@ rss2array ($rss)
               }
 
           if (isset ($t['client']))
-            $item_a['rsscache:feed_'.$j.'_client'] = $t['client'];
-          $item_a['rsscache:feed_'.$j.'_opts'] = $t['opts'];
-          $item_a['rsscache:feed_'.$j.'_link'] = $t['link'];
+            $a['rsscache:feed_'.$j.'_client'] = $t['client'];
+          $a['rsscache:feed_'.$j.'_opts'] = $t['opts'];
+          $a['rsscache:feed_'.$j.'_link'] = $t['link'];
         }
 
-      if (isset ($item_a['image']['url']))
+      if (isset ($a['image']['url']))
         {
-          $item_a['image'] = $item_a['image']['url'];
-          $item_a['enclosure'] = $item_a['image'];
+          $a['image'] = $a['image']['url'];
+          $a['enclosure'] = $a['image'];
         }
 
-      unset ($item_a['rsscache:feed']);
+      unset ($a['rsscache:feed']);
 
       // DEBUG
 //      echo '<pre><tt>';
-//      print_r ($item_a);
-//exit;
+//      print_r ($a);
+//      exit;
 
-      $item[] = $item_a;
+      $item[] = $a;
     }
 
   $channel = array ();
@@ -368,9 +366,8 @@ rss2array ($rss)
 //  echo '<pre><tt>';
 //  print_r ($channel);
 //  print_r ($item);
-
-//echo generate_rss2 ($channel, $item, 1, 1);
-//exit;
+//  echo generate_rss2 ($channel, $item, 1, 1);
+//  exit;
 
   return array ('channel' => $channel, 'item' => $item);
 }
@@ -525,6 +522,7 @@ rss
       rsscache:url_crc32
       rsscache:category_items
       rsscache:category_days
+      cms:demux
 -->';
 
 //  $p .= $comment;
@@ -603,8 +601,6 @@ $a = array (
            'author',
            'comments',
 );
-
-
    $p .= generate_rss2_func ($item[$i], $a);
 
 //                <pubDate>Fri, 05 Aug 2011 15:03:02 +0200</pubDate>
@@ -673,8 +669,6 @@ $a = array (
            'rsscache:votable',
            'rsscache:table_suffix',
            'rsscache:stats_category',
-//           'rsscache:category_items',
-//           'rsscache:category_days',
            'rsscache:stats_items',
            'rsscache:stats_days',
            'rsscache:stats_items_today',
@@ -718,6 +712,7 @@ for ($j = 0; isset ($item[$i]['rsscache:feed_'.$j.'_link']); $j++)
             'cms:iframe',
             'cms:proxy',
             'cms:query',
+            'cms:demux',
 );
 
    $p .= generate_rss2_func ($item[$i], $a);
