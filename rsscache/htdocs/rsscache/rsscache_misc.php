@@ -309,7 +309,7 @@ rsscache_download_feeds_by_category ($category_name)
 
       $p = '';
       $p .= 'category: '.$category_name."\n"
-           .'client: '.$category['rsscache:feed_'.$j.'_client']."\n"
+           .'client: '.(isset ($category['rsscache:feed_'.$j.'_client']) ? $category['rsscache:feed_'.$j.'_client'] : '')."\n"
            .'opts: '.$opts."\n"
            .'url: '.$category['rsscache:feed_'.$j.'_link']."\n"
            .'table_suffix: '.(isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : '')."\n"
@@ -317,7 +317,8 @@ rsscache_download_feeds_by_category ($category_name)
       echo $p;
 
       // get feed
-      $xml = rsscache_feed_get ($category['rsscache:feed_'.$j.'_client'], $opts, $category['rsscache:feed_'.$j.'_link']);
+      $xml = rsscache_feed_get ((isset ($category['rsscache:feed_'.$j.'_client']) ? $category['rsscache:feed_'.$j.'_client'] : ''),
+                                $opts, $category['rsscache:feed_'.$j.'_link']);
       // download thumbnails
       $xml = rsscache_download_thumbnails ($xml);
       // xml to sql

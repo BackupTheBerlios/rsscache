@@ -256,16 +256,27 @@ parse_rss_from_url ($rss_url)
 
 
 function
-rss2array ($rss)
+rss2array ($rss, $debug = 0)
 {
   global $rsstool_opts;
 
-  $rss = $rss->channel;
-
+  if ($debug == 1)
+    {
   // DEBUG
 //  echo '<pre><tt>';
-//  print_r ($rss);
+//  print_r ($rss->asXML());
 //  exit;
+    }
+
+  $rss = $rss->channel;
+
+  if ($debug == 1)
+    {
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($rss->asXML());
+//  exit;
+    }
 
   $item = array ();
   for ($i = 0; isset ($rss->item[$i]); $i++)
@@ -288,16 +299,18 @@ rss2array ($rss)
             $a = array_merge ($a, misc_object2array ($o, 'media:'));
         }
 
+//  if ($debug == 1)
+//    {
       // DEBUG
 //      echo '<pre><tt>';
 //      print_r ($a);
 //      exit;
+//    }
 
       // feeds
       for ($j = 0; isset ($a['rsscache:feed'][$j]); $j++)
         if (isset ($a['rsscache:feed'][$j]))
         {
-          $t = array ();
           $feed = $a['rsscache:feed'][$j];
           
           // DEBUG
@@ -305,46 +318,45 @@ rss2array ($rss)
 //          print_r ($feed);
 //          exit;
 
-          // old style config.xml: link[]
+          $p = ''; 
           if (isset ($feed['link']))
-            if (trim ($feed['link']) != '')
-              {
-                if (isset ($feed['client']))
-                  $t['client'] = $feed['client'];
-                $t['opts'] = $rsstool_opts.' '.(isset ($feed['opts']) ? $feed['opts'] : '');
-                $t['link'] = $feed['link'];
-              }
-
-          // TODO: use new style config.xml
-          //   link_prefix, link_search[], link_suffix
-          if (isset ($feed['link_prefix']))
+            {
+              $p .= $feed['link'];
+            }
+          else if (isset ($feed['link_prefix']))
             for ($k = 0; isset ($feed['link_search'][$k]); $k++)
               {
-                $p = '';
 //                if (isset ($feed['link_prefix']))
                   $p .= $feed['link_prefix'];
 //                if (isset ($feed['link_search'][$k]))
                   $p .= $feed['link_search'][$k];
                 if (isset ($feed['link_suffix']))
                   $p .= $feed['link_suffix'];
-
-                if (isset ($feed['client']))
-                  $t['client'] = $feed['client'];
-                $t['opts'] = $rsstool_opts.' '.(isset ($feed['opts']) ? $feed['opts'] : '');
-                $t['link'] = $p;
               }
 
-          if (isset ($t['client']))
-            $a['rsscache:feed_'.$j.'_client'] = $t['client'];
-          $a['rsscache:feed_'.$j.'_opts'] = $t['opts'];
-          $a['rsscache:feed_'.$j.'_link'] = $t['link'];
+          if (isset ($feed['client']))
+            $a['rsscache:feed_'.$j.'_client'] = $feed['client'];
+          $a['rsscache:feed_'.$j.'_opts'] = $rsstool_opts.' '.(isset ($feed['opts']) ? $feed['opts'] : '');
+          $a['rsscache:feed_'.$j.'_link'] = $p;
         }
 
+      // DEBUG
+//      echo '<pre><tt>';
+//      print_r ($a);
+//      exit;
+
       if (isset ($a['image']['url']))
-        {
-          $a['image'] = $a['image']['url'];
-          $a['enclosure'] = $a['image'];
-        }
+        $a['image'] = $a['image']['url'];
+
+      if (isset ($a['enclosure']))
+        if (isset ($a['enclosure']['@attributes']))  
+          if (isset ($a['enclosure']['@attributes']['url']))
+            $a['enclosure'] = $a['enclosure']['@attributes']['url'];
+
+      if (isset ($a['media:thumbnail']))
+        if (isset ($a['media:thumbnail']['@attributes']))  
+          if (isset ($a['media:thumbnail']['@attributes']['url']))
+            $a['media:thumbnail'] = $a['media:thumbnail']['@attributes']['url'];
 
       unset ($a['rsscache:feed']);
 
@@ -358,7 +370,9 @@ rss2array ($rss)
 
   $channel = array ();
   $channel = misc_object2array ($rss);
-  $channel['image'] = $channel['image']['url']; 
+  if (isset ($channel['image']))
+    if (isset ($channel['image']['url']))
+      $channel['image'] = $channel['image']['url']; 
 
   unset ($channel['item']);
 
@@ -417,9 +431,7 @@ generate_rss2 ($channel, $item, $use_mrss = 0, $use_rsscache = 0, $xsl_styleshee
 
   if ($use_cms == 1)
 $comment = '<!--
-rsscache uses a derivate of RSS for configuration
-  channels are web sites
-  items are categories
+rsscache uses RSS 2.0 specification with extensions (rsscache and cms) for configuration
 
 format:
 rss                       even config files are made of RSS :)
@@ -438,11 +450,10 @@ TODO:    rsscache:filter  optional
       link                  same as rsscache:query
       description
       category              category name
-      image                 optional, category logo
+      enclosure             optional, category logo/image
         url                 image url
-        link                optional, image link
-        width               optional, image width
-        height              optional, image height
+        length              
+        type                
 TODO:      rsscache:filter         optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
       rsscache:feed[]
         rsscache:link                   link of feed (RSS, etc.)
@@ -514,14 +525,19 @@ rss
       author
       media:duration
       media:keywords
+      media:thumbnail
       rsscache:dl_date
       rsscache:pubDate      same as pubDate but as integer
       rsscache:related_id
       rsscache:event_start
       rsscache:event_end
       rsscache:url_crc32
-      rsscache:category_items
-      rsscache:category_days
+      rsscache:stats_category
+      rsscache:stats_items
+      rsscache:stats_days
+      rsscache:stats_items_today
+      rsscache:stats_items_7_days
+      rsscache:stats_items_30_days
       cms:demux
 -->';
 
@@ -638,8 +654,8 @@ $a = array (
 
 //      $p .= '      <media:category scheme="">'..'</media:category>';
 
-      if (isset ($item[$i]['image']))
-        $p .= '      <media:thumbnail url="'.$item[$i]['image'].'" />'."\n";
+      if (isset ($item[$i]['media:thumbnail']))
+        $p .= '      <media:thumbnail media:url="'.$item[$i]['media:thumbnail'].'" />'."\n";
 
       if (isset ($item[$i]['media:duration']))
         $p .= '      <media:duration>'.$item[$i]['media:duration'].'</media:duration>'."\n";
@@ -728,27 +744,6 @@ for ($j = 0; isset ($item[$i]['rsscache:feed_'.$j.'_link']); $j++)
   $p .= '</rss>'."\n";
 
   return $p;
-}
-
-
-function
-generate_rss ($title, $link, $desc, $item_title_array, $item_link_array, $item_desc_array,
-              $item_media_duration_array = NULL,
-              $item_author_array = NULL)
-{
-  $item = array ();
-echo 'generate_rss() is deprecated, use generate_rss2() instead';
-  for ($i = 0; isset ($item_link_array[$i]); $i++)
-    $item[] = array ('title' => $item_link_array[$i],
-                     'link' => $item_link_array[$i],
-                     'description' => $item_desc_array[$i],
-                     'media:duration' => $item_media_duration_array[$i],
-                     'author' => $item_author_array[$i]);
-
-
-  return generate_rss2 (array ('title' => $title,
-                               'link' => $link,
-                               'description' => $desc), $item, 1);
 }
 
 

@@ -317,13 +317,13 @@ rsscache_write_rss ($d_array)
                        'link' => $link,
                        'description' => $d_array[$i]['rsstool_desc'],
                        'pubDate' => $d_array[$i]['rsstool_date'],
-                       'image' => rsscache_thumbnail ($d_array[$i]),
-                       'enclosure' => rsscache_thumbnail ($d_array[$i]),
+                       'enclosure' => $config_xml['enclosure'],
                        'category' => $d_array[$i]['tv2_moved'],
                        'author' => $d_array[$i]['rsstool_user'],
 
                        'media:duration' => ($d_array[$i]['rsstool_media_duration'] * 1),
                        'media:keywords' => $d_array[$i]['rsstool_keywords'],
+                       'media:thumbnail' => rsscache_thumbnail ($d_array[$i]),
 
                        'rsscache:dl_date' => ($d_array[$i]['rsstool_dl_date'] * 1),
                        'rsscache:related_id' => ($d_array[$i]['rsstool_related_id'] * 1),
@@ -349,12 +349,14 @@ rsscache_write_rss ($d_array)
                        'cms:proxy' => isset ($config_xml['cms:proxy']) ? $config_xml['cms:proxy'] : NULL,
 );
       for ($j = 0; isset ($config_xml['rsscache:feed_'.$j.'_link']); $j++)
-        $a = array_merge ($a, array (
-                                'rsscache:feed_'.$j.'_client' => $config_xml['rsscache:feed_'.$j.'_client'],
-                                'rsscache:feed_'.$j.'_opts' => $config_xml['rsscache:feed_'.$j.'_opts'],
-                                'rsscache:feed_'.$j.'_link' => $config_xml['rsscache:feed_'.$j.'_link'],
-));
-
+        {
+          $b = array ();
+          if (isset ($config_xml['rsscache:feed_'.$j.'_client']))
+            $b['rsscache:feed_'.$j.'_client'] = $config_xml['rsscache:feed_'.$j.'_client'];
+          $b['rsscache:feed_'.$j.'_opts'] = $config_xml['rsscache:feed_'.$j.'_opts'];
+          $b['rsscache:feed_'.$j.'_link'] = $config_xml['rsscache:feed_'.$j.'_link'];
+          $a = array_merge ($b, $a);
+        }
       $item[] = $a;
     }
 
