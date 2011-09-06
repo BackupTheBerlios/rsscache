@@ -125,6 +125,16 @@ misc_array_unique_merge ($a)
 
 
 function
+misc_str_replace_once ($needle, $replace, $haystack)
+{
+  $pos = strpos ($haystack, $needle);
+  if ($pos === false)
+    return $haystack;
+  return substr_replace ($haystack, $replace, $pos, strlen ($needle));
+}  
+
+
+function
 misc_playlist_load_string ($playlist_s)
 {
 //  $line = file ();

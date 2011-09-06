@@ -98,55 +98,6 @@ simplexml_load_file2 ($xml_file)
 }
 
 
-// XML serializer
-/*
-function
-array2xml_func (&$xml, $a)
-{
-  foreach ($a as $name=>$value)
-    {
-//      $name = preg_replace ("^[0-9]{1,}^", 'data', $name);
-      $name = str_replace ('.', '_', $name);
- 
-      $xml .= '<'.$name.'>';
-
-      if (is_array ($value))
-        array2xml_func ($xml, $value);
-      else
-        {
-//          if ($name == 'gq_name' || $name == 'nick' || $name == 'NGU')
-//            $xml .= base64_encode ($value);
-//          else
-            $xml .= htmlspecialchars ($value, ENT_NOQUOTES, 'UTF-8');
-        }
-
-      $xml .= '</'.$name.'>'."\n";
-    }
-}
-
-
-function 
-array2xml ($a, $root_name = 'root')
-{
-  $xml = '';
-
-//  if (is_array ($a))
-//    if (count ($a) > 0)
-      {
-        array2xml_func ($xml, $a);
- 
-        return '<?xml version="1.0" encoding="utf-8"?>'."\n"
-              .'<'.$root_name.'>'."\n"
-              .$xml
-              .'</'.$root_name.'>'."\n"
-;
-      }
-
-  return '';
-}
-*/
-
- 
 function
 misc_xml_escape ($s)
 {
@@ -154,16 +105,6 @@ misc_xml_escape ($s)
     return '<![CDATA['.$s.']]>';
   return $s;
 }
-
-
-function
-misc_str_replace_once ($needle, $replace, $haystack)
-{
-    $pos = strpos ($haystack, $needle);
-    if ($pos === false)
-      return $haystack;
-    return substr_replace ($haystack, $replace, $pos, strlen ($needle));
-}  
 
 
 /*
@@ -201,7 +142,7 @@ misc_object2array ($o, $prefix = NULL)
 
 
 function
-misc_array2array ($a, $prefix = NULL)
+misc_prefixate_array ($a, $prefix = NULL)
 {
   $b = array ();
   foreach ($a as $key => $val)
@@ -212,9 +153,8 @@ misc_array2array ($a, $prefix = NULL)
 
 /* 
 function
-rss_to_array ($tag, $rss_tags, $url)
+misc_xml2array ($tag, $rss_tags, $url)
 {
-  // TODO: use ->asXML() ?
   $doc = new DOMdocument();
   $doc->load($url);
 
@@ -231,26 +171,6 @@ rss_to_array ($tag, $rss_tags, $url)
     }
 
   return $rss_array;
-}
-
-
-function
-parse_rss_from_url ($rss_url)
-{
-  $rss_tags = array(
-    'title',
-    'link',
-    'guid',
-    'comments',
-    'description',
-    'pubDate',
-    'category',
-  );
-  $rss_item_tag = 'item';
-    
-  $rssfeed = rss_to_array ($rss_item_tag, $rss_tags, $rss_url);
-    
-  return $rssfeed;
 }
 */
 

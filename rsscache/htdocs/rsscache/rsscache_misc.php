@@ -99,7 +99,7 @@ config_xml_normalize ($config)
           if ($stats[$j]['stats_category'] == $a['item'][$i]['category'])
           {
             $a['item'][$i] = array_merge ($a['item'][$i],
-              misc_array2array ($stats[$j], 'rsscache:'));
+              misc_prefixate_array ($stats[$j], 'rsscache:'));
             break;
           }
 
