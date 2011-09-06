@@ -26,6 +26,9 @@
 <br/>
 <br/>
 <xsl:for-each select="rss/channel/item">
+<img>
+<xsl:attribute name="src"><xsl:value-of disable-output-escaping="yes" select="enclosure/@url"/></xsl:attribute>
+</img>
 <a href="{link}"><xsl:value-of disable-output-escaping="yes" select="title"/></a>
 &#160;&#160;<xsl:value-of disable-output-escaping="yes" select="media:duration"/> seconds<br/>
 <xsl:value-of disable-output-escaping="yes" select="pubDate"/><br/>

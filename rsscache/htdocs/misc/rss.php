@@ -604,6 +604,7 @@ $a = array (
 //       .'    </textinput>'."\n"
 //;
 
+  // items
 //  for ($i = 0; isset ($item[$i]['link']); $i++)
   for ($i = 0; isset ($item[$i]); $i++)
     {
@@ -655,7 +656,7 @@ $a = array (
 //      $p .= '      <media:category scheme="">'..'</media:category>';
 
       if (isset ($item[$i]['media:thumbnail']))
-        $p .= '      <media:thumbnail media:url="'.$item[$i]['media:thumbnail'].'" />'."\n";
+        $p .= '      <media:thumbnail url="'.$item[$i]['media:thumbnail'].'" media:url="'.$item[$i]['media:thumbnail'].'" />'."\n";
 
       if (isset ($item[$i]['media:duration']))
         $p .= '      <media:duration>'.$item[$i]['media:duration'].'</media:duration>'."\n";
