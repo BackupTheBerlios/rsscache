@@ -51,12 +51,6 @@ rsscache_write_stats_rss ()
   global $rsscache_logo;
   global $rsscache_xsl_trans;
   global $rsscache_xsl_stylesheet;
-  global $output;
-
-  $stats_items = 0;
-  $stats_items_today = 0;
-  $stats_items_7_days = 0;
-  $stats_items_30_days = 0;
 
   $config = config_xml ();
 
@@ -65,50 +59,41 @@ rsscache_write_stats_rss ()
 //  print_r ($config);
 //  exit;
 
-//  return generate_rss2 ($config['channel'], $config['item'], 1, 1);
-
-  $item = array ();
-
   for ($i = 0; isset ($config['item'][$i]); $i++)
     if (trim ($config['item'][$i]['category']) != '' &&
         trim ($config['item'][$i]['rsscache:feed_0_link']) != '')
       {
-        $category = $config['item'][$i];
-
         // DEBUG
 //        echo '<pre><tt>';
-//        print_r ($category);
+//        print_r ($config['item'][$i]);
 
-        $p = ''
-             .$category['rsscache:stats_items'].' items<br>'
-             .$category['rsscache:stats_items_today'].' items today<br>'
-             .$category['rsscache:stats_items_7_days'].' items last 7 days<br>'
-             .$category['rsscache:stats_items_30_days'].' items last 30 days<br>'
-             .$category['rsscache:stats_days'].' days since creation of category'
-;
-        $item[] = array ('title' => $category['title'],
-                         'link' => 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$category['category']
-                                  .($output == 'html' ? '&output=html' : ''),
-                         'description' => $p,
-                         'pubDate' => $rsscache_time,
-                         'image' => $category['image'],
-                         'category' => $category['category'],
-);
+//        if (!isset ($config['item'][$i]['description']))
+//          $config['item'][$i]['description'] = '';
+        $config['item'][$i]['description'] = ''
+             .$config['item'][$i]['rsscache:stats_items'].' items<br>'
+             .$config['item'][$i]['rsscache:stats_items_today'].' items today<br>'
+             .$config['item'][$i]['rsscache:stats_items_7_days'].' items last 7 days<br>'
+             .$config['item'][$i]['rsscache:stats_items_30_days'].' items last 30 days<br>'
+             .$config['item'][$i]['rsscache:stats_days'].' days since creation of category';
+        $config['item'][$i]['link'] = 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$config['item'][$i]['category']
+                                     .($output == 'html' ? '&output=html' : '');
+        $config['item'][$i]['pubDate'] = $rsscache_time;
       }
 
-  $p = ''
-      .$channel['rsscache:stats_items'].' items<br>'
-      .$channel['rsscache:stats_items_today'].' items today<br>'
-      .$channel['rsscache:stats_items_7_days'].' items last 7 days<br>'
-      .$channel['rsscache:stats_items_30_days'].' items last 30 days<br>'
+//  if (!isset ($config['channel']['description']))
+//    $config['channel']['description'] = '';
+  $config['channel']['description'] = ''
+      .$config['channel']['rsscache:stats_items'].' items<br>'
+      .$config['channel']['rsscache:stats_items_today'].' items today<br>'
+      .$config['channel']['rsscache:stats_items_7_days'].' items last 7 days<br>'
+      .$config['channel']['rsscache:stats_items_30_days'].' items last 30 days<br>'
 ;
-  $channel = array ('title' => rsscache_title (),
-                    'link' => $rsscache_link, 
-                    'description' => $p,
-                    'image' => $rsscache_logo,
-                    'lastBuildDate' => $rsscache_time);
+  $config['channel']['title'] = rsscache_title ();
+  $config['channel']['link'] = $rsscache_link;
+  $config['channel']['image'] = $rsscache_logo;
+  $config['channel']['lastBuildDate'] = $rsscache_time;
 
-  return generate_rss2 ($channel, $item, 1, 1,
+  return generate_rss2 ($config['channel'], $config['item'], 1, 1,
                         $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
 }
 
@@ -314,6 +299,7 @@ rsscache_write_rss ($d_array)
 
       $a = array ('title' => $d_array[$i]['rsstool_title'],
 //                       'link' => $d_array[$i]['rsstool_url'],
+//                       'link' => isset ($config_xml['link']) ? $config_xml['link'] : NULL,
                        'link' => $link,
                        'description' => $d_array[$i]['rsstool_desc'],
                        'pubDate' => $d_array[$i]['rsstool_date'],
@@ -343,7 +329,6 @@ rsscache_write_rss ($d_array)
                        'cms:button_only' => ($config_xml['cms:button_only'] * 1),
                        'cms:status' => isset ($config_xml['cms:status']) ? ($config_xml['cms:status'] * 1) : 0,
                        'cms:select' => ($config_xml['cms:select'] * 1),
-                       'cms:query' => isset ($config_xml['cms:query']) ? $config_xml['cms:query'] : NULL,
                        'cms:local' => isset ($config_xml['cms:local']) ? $config_xml['cms:local'] : NULL,
                        'cms:iframe' => isset ($config_xml['cms:iframe']) ? $config_xml['cms:iframe'] : NULL,
                        'cms:proxy' => isset ($config_xml['cms:proxy']) ? $config_xml['cms:proxy'] : NULL,
