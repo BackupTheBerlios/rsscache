@@ -132,7 +132,20 @@ youtube_get_rss2 ($q, $user = NULL, $playlist_id = NULL, $use_tor = 0, $start = 
 //  echo '<pre><tt>';
 //print_r ($rss); 
 //exit;
-  return $rss;
+// normalize: remove items with low relevance
+$xml = $rss;
+if ($orderby == 'relevance' && $search)
+  if (trim ($search) != '')
+    {
+      $p = rss_improve_relevance_s ($rss, $relevance_threshold);
+      $xml = simplexml_load_string ($p, 'SimpleXMLElement', LIBXML_NOCDATA);
+//    echo 'a'.$rss->asXML ().'b';
+    }
+  // DEBUG
+//  echo '<pre><tt>';
+//print_r ($xml); 
+//exit;
+  return $xml;
 }
 
 
