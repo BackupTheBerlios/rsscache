@@ -47,7 +47,7 @@ wikipedia_get_xml ($q)
   ini_set ('user_agent', random_user_agent ()); // yawn  
   $f = file_get_contents ($url);
   ini_set ('user_agent', $ua);
-  $xml = simplexml_load_string ($f);
+  $xml = simplexml_load_string ($f, 'SimpleXMLElement', LIBXML_NOCDATA);
 // DEBUG
 //echo '<pre><tt>';
 //print_r ($xml->query->pages->page->revisions->rev);
@@ -67,7 +67,7 @@ wikipedia_get_html ($q)
                 'format' => 'xml',
                 'text' => $xml->query->pages->page->revisions->rev));
   ini_set ('user_agent', $ua);
-  $xml = simplexml_load_string ($p);
+  $xml = simplexml_load_string ($p, 'SimpleXMLElement', LIBXML_NOCDATA);
 
 // DEBUG  
 //echo '<pre><tt>';

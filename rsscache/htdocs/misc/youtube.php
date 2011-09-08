@@ -24,7 +24,7 @@ if (!defined ('MISC_YOUTUBE_PHP'))
 define ('MISC_YOUTUBE_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 require_once ('misc.php');
-require_once ('rss.php');
+//require_once ('rss.php');
 
 
 /*
@@ -55,7 +55,7 @@ youtube_get_thumbnail_urls ($url)
 
 
 function
-youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby = 'relevance', $use_tor = 0)
+youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby = 'relevance', $use_tor = 0, $start = 0, $num = 50)
 {
   /*
     $orderby
@@ -64,7 +64,8 @@ youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby = 'relevan
       'viewCount'  entries are ordered from most views to least views
       'rating'     entries are ordered from highest rating to lowest rating
   */
-  $maxresults = 50;
+//  $maxresults = 50;
+  $maxresults = $num;
   $q = urlencode ($search);
 
   if ($playlist)
@@ -97,7 +98,7 @@ youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby = 'relevan
   else
     $f = file_get_contents ($url);
 
-  $rss = simplexml_load_string ($f);
+  $rss = simplexml_load_string ($f, 'SimpleXMLElement', LIBXML_NOCDATA);
 
   // DEBUG
 //echo '<pre><tt>';
@@ -105,6 +106,34 @@ youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby = 'relevan
 
   return $rss;
 } 
+
+
+function
+youtube_get_rss2 ($q, $user = NULL, $playlist_id = NULL, $use_tor = 0, $start = 0, $num = 50)
+{
+// TODO: merge code from youtube_player.php blabla_related_bla() here
+
+  //  $orderby
+  //    'relevance'  entries are ordered by their relevance to a search query (default)
+  //    'published'  entries are returned in reverse chronological order
+  //    'viewCount'  entries are ordered from most views to least views
+  //    'rating'     entries are ordered from highest rating to lowest rating
+//  $orderby = 'published';
+  $orderby = 'relevance';
+
+  if ($q)
+    $rss = youtube_get_rss ($q, $user ? trim ($user) : NULL, NULL, $orderby, $use_tor, $start, $num);
+  else if ($user)
+    $rss = youtube_get_rss (NULL, trim ($user), NULL, $orderby, $use_tor, $start, $num);
+  else if ($playlist_id)
+    $rss = youtube_get_rss ('', NULL, trim ($playlist_id), $orderby, $use_tor, $start, $num);
+
+  // DEBUG
+//  echo '<pre><tt>';
+//print_r ($rss); 
+//exit;
+  return $rss;
+}
 
 
 function
@@ -212,6 +241,20 @@ youtube_download_single ($video_id, $use_tor = 0, $debug = 0)
   $url = substr ($url, strrpos ($url, 'http://'));
   $a['video_url'] = $url;
 
+    // TODO: youtube_download_single_normalize ()
+    for ($j = 0; isset ($a[$j]); $j++)
+      {
+    $p = urldecode ($a[$j]);
+    $o = strpos ($p, 'url=');
+    if ($o)
+      $p = substr ($p, $o + 4);
+    $o = strpos ($p, '; ');
+    if ($o)
+      $p = substr ($p, 0, $o);
+    $p = trim ($p);
+    $a[$j] = $p;
+      }
+
   return $a;
 }
 
@@ -228,7 +271,7 @@ youtube_download ($video_id, $use_tor = 0, $debug = 0)
       if ($use_tor)
         {
           $xml = tor_get_contents ($video_id);
-          $b = simplexml_load_string ($xml);
+          $b = simplexml_load_string ($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         }
       else
         $b = simplexml_load_file ($video_id);

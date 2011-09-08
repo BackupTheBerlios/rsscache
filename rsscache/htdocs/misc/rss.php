@@ -90,7 +90,7 @@ simplexml_load_file2 ($xml_file)
   $p = str_replace ($a, '', $p);
 
   // re-read as XML
-  $xml = simplexml_load_string ($p);
+  $xml = simplexml_load_string ($p, 'SimpleXMLElement', LIBXML_NOCDATA);
 
 // DEBUG
 //print_r ($xml);
@@ -350,7 +350,7 @@ generate_rss2_func ($item, $a)
 //        print_r ($item);
 //        echo $t;
 
-        if (isset ($item[$t]))
+//        if (isset ($item[$t]))
           $p .= '      <'.$t.'>'
                .(is_string ($item[$t]) ? misc_xml_escape ($item[$t]) : sprintf ("%u", $item[$t]))
                .'</'.$t.'>'."\n";

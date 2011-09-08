@@ -203,6 +203,12 @@ rsscache_sql_stats ($db, $c = NULL, $table_suffix = NULL)
 
 
 function
+rsscache_sql_extern ($c, $q, $f, $v, $start, $num)
+{
+}
+
+
+function
 rsscache_sql_normalize ($d)
 {
   global $rsscache_root,
@@ -376,6 +382,9 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 
   if ($f == 'stats')
     return rsscache_sql_stats ($rsscache_sql_db, isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : NULL, $c);
+
+  if ($f == 'extern')
+    return rsscache_sql_extern ($c, $q, $f, $v, $start, $num);
 
   $rsstool_table = 'rsstool_table';
   $keyword_table = 'keyword_table';
