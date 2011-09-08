@@ -76,6 +76,7 @@ rsscache_event ($d)
 */
 
 
+/*
 function
 simplexml_load_file2 ($xml_file)
 {
@@ -96,6 +97,7 @@ simplexml_load_file2 ($xml_file)
 //exit;
   return $xml;
 }
+*/
 
 
 function
@@ -107,56 +109,43 @@ misc_xml_escape ($s)
 }
 
 
-/*
-// TODO: recursive
-function
-misc_array2object ($a)
-{
-    if (is_array ($a))
-      {
-        $o = new StdClass ();
- 
-        foreach ($a as $key => $val)
-          {
-            $o->$key = $val;
-          }
-      }
-    else
-      {
-        $o = $a;
-      }
- 
-    return $o;
-}
-*/
-
-
-function
-misc_object2array ($o, $prefix = NULL)
-{
-  $a = array ();
-  foreach ((is_object ($o) ? get_object_vars ($o) : $o) as $key => $val)
-    $a[($prefix ? $prefix : '').$key] = (is_array ($val) || is_object ($val)) ? misc_object2array ($val) : $val;
-  return $a;
-}  
-
-
-function
-misc_prefixate_array ($a, $prefix = NULL)
-{
-  $b = array ();
+function  
+misc_object2array ($o, $prefix = NULL)  
+{  
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r (each ($o));
+//  while (list($key, $value) = each($o))
+//    echo $key.' => '.$value.'<br>';  
+//  exit;
+  $a = is_object ($o) ? get_object_vars ($o) : $o;
   foreach ($a as $key => $val)
-    $b[($prefix ? $prefix : '').$key] = $val;
-  return $b;
+    {
+      $v = NULL;
+      if (is_array ($val) || is_object ($val)) 
+        $v = misc_object2array ($val, $prefix);
+      if ($v == NULL)
+//      else
+        $v = $val;
+
+      $k = ($prefix ? $prefix : '').$key;
+
+      $b[$k] = $v;
+    }
+  return isset ($b) ? $b : NULL;
 }
 
 
-/* 
 function
-misc_xml2array ($tag, $rss_tags, $url)
+misc_xml2array ($o, $prefix = NULL)
 {
+/*
+  $tag = 'rss';
+  $rss_tags = array ('title', 'link', 'description');
+  $url = '';
+
   $doc = new DOMdocument();
-  $doc->load($url);
+  $doc->load ($url);
 
   $rss_array = array();
   $items = array();
@@ -164,15 +153,39 @@ misc_xml2array ($tag, $rss_tags, $url)
   foreach($doc->getElementsByTagName($tag) AS $node)
     {
       foreach($rss_tags AS $key => $value)
-        {
-          $items[$value] = $node->getElementsByTagName($value)->item(0)->nodeValue;
-        }
+        $items[$value] = $node->getElementsByTagName($value)->item(0)->nodeValue;
       array_push ($rss_array, $items);
     }
 
   return $rss_array;
-}
 */
+  return misc_object2array ($o, $prefix);
+}
+
+
+function
+misc_array2object ($a)
+{
+  $o = is_array ($a) ? new StdClass () : $a;
+  if (is_array ($a))
+    foreach ($a as $key => $val)
+      {
+        $v = is_array($val) ? misc_array2object ($val) : $val;
+        $o->$key = $v;
+      }
+  return $o;
+}
+
+
+function
+misc_prefixate_array ($a, $prefix = NULL)
+{
+//  $b = array ();
+  foreach ($a as $key => $val)
+    $b[($prefix ? $prefix : '').$key] = $val;
+//  return $b;
+  return isset ($b) ? $b : NULL;
+}
 
 
 function
@@ -188,7 +201,9 @@ rss2array ($rss, $debug = 0)
 //  exit;
     }
 
+//print_r ($rss);
   $rss = $rss->channel;
+//print_r ($rss);
 
   if ($debug == 1)
     {
@@ -228,10 +243,10 @@ rss2array ($rss, $debug = 0)
 //    }
 
       // feeds
-      for ($j = 0; isset ($a['rsscache:feed'][$j]); $j++)
-        if (isset ($a['rsscache:feed'][$j]))
+      for ($j = 0; isset ($a['rsscache:feed']['rsscache:'.$j]); $j++)
+        if (isset ($a['rsscache:feed']['rsscache:'.$j]))
         {
-          $feed = $a['rsscache:feed'][$j];
+          $feed = $a['rsscache:feed']['rsscache:'.$j];
           
           // DEBUG
 //          echo '<pre><tt>';
@@ -239,24 +254,24 @@ rss2array ($rss, $debug = 0)
 //          exit;
 
           $p = ''; 
-          if (isset ($feed['link']))
+          if (isset ($feed['rsscache:link']))
             {
-              $p .= $feed['link'];
+              $p .= $feed['rsscache:link'];
             }
-          else if (isset ($feed['link_prefix']))
-            for ($k = 0; isset ($feed['link_search'][$k]); $k++)
+          else if (isset ($feed['rsscache:link_prefix']))
+            for ($k = 0; isset ($feed['rsscache:link_search']['rsscache:'.$k]); $k++)
               {
-//                if (isset ($feed['link_prefix']))
-                  $p .= $feed['link_prefix'];
-//                if (isset ($feed['link_search'][$k]))
-                  $p .= $feed['link_search'][$k];
-                if (isset ($feed['link_suffix']))
-                  $p .= $feed['link_suffix'];
+//                if (isset ($feed['rsscache:link_prefix']))
+                  $p .= $feed['rsscache:link_prefix'];
+//                if (isset ($feed['rsscache:link_search']['rsscache:'.$k]))
+                  $p .= $feed['rsscache:link_search']['rsscache:'.$k];
+                if (isset ($feed['rsscache:link_suffix']))
+                  $p .= $feed['rsscache:link_suffix'];
               }
 
-          if (isset ($feed['client']))
-            $a['rsscache:feed_'.$j.'_client'] = $feed['client'];
-          $a['rsscache:feed_'.$j.'_opts'] = $rsstool_opts.' '.(isset ($feed['opts']) ? $feed['opts'] : '');
+          if (isset ($feed['rsscache:client']))
+            $a['rsscache:feed_'.$j.'_client'] = $feed['rsscache:client'];
+          $a['rsscache:feed_'.$j.'_opts'] = $rsstool_opts.' '.(isset ($feed['rsscache:opts']) ? $feed['rsscache:opts'] : '');
           $a['rsscache:feed_'.$j.'_link'] = $p;
         }
 
@@ -274,11 +289,15 @@ rss2array ($rss, $debug = 0)
             $a['enclosure'] = $a['enclosure']['@attributes']['url'];
 
       if (isset ($a['media:thumbnail']))
-        if (isset ($a['media:thumbnail']['@attributes']))  
-          if (isset ($a['media:thumbnail']['@attributes']['url']))
-            $a['media:thumbnail'] = $a['media:thumbnail']['@attributes']['url'];
+        if (isset ($a['media:thumbnail']['media:@attributes']))  
+          if (isset ($a['media:thumbnail']['media:@attributes']['media:url']))
+            $a['media:thumbnail'] = $a['media:thumbnail']['media:@attributes']['media:url'];
 
       unset ($a['rsscache:feed']);
+      unset ($a['comment']);
+      unset ($a['cms:comment']);
+      unset ($a['media:comment']);
+      unset ($a['rsscache:comment']);
 
       // DEBUG
 //      echo '<pre><tt>';
@@ -288,8 +307,18 @@ rss2array ($rss, $debug = 0)
       $item[] = $a;
     }
 
-  $channel = array ();
   $channel = misc_object2array ($rss);
+  if (method_exists ($rss, 'children'))
+    {
+      $o = $rss->children ('rsscache', TRUE);
+      if ($o)
+        $channel = array_merge ($channel, misc_object2array ($o, 'rsscache:'));
+
+//      $o = $rss->children ('cms', TRUE);
+//      if ($o)
+//        $channel = array_merge ($channel, misc_object2array ($o, 'cms:'));
+    }
+
   if (isset ($channel['image']))
     if (isset ($channel['image']['url']))
       $channel['image'] = $channel['image']['url']; 
@@ -321,7 +350,7 @@ generate_rss2_func ($item, $a)
 //        print_r ($item);
 //        echo $t;
 
-        if (isset ($item[$t]) && !is_array ($item[$t]))
+        if (isset ($item[$t]))
           $p .= '      <'.$t.'>'
                .(is_string ($item[$t]) ? misc_xml_escape ($item[$t]) : sprintf ("%u", $item[$t]))
                .'</'.$t.'>'."\n";
@@ -505,12 +534,8 @@ $a = array (
 //       .'    <language>en</language>'."\n"
        .'    <image>'."\n"
        .'      <title>'.misc_xml_escape ($channel['title']).'</title>'."\n"
-       .'      <url>'.$channel['image'].'</url>'."\n";
-
-   if (isset ($channel['link']) && !is_array ($channel['link']))
-     $p .= '      <link>'.misc_xml_escape ($channel['link']).'</link>'."\n";
-
-   $p .= ''
+       .'      <url>'.$channel['image'].'</url>'."\n"
+       .'      <link>'.misc_xml_escape ($channel['link']).'</link>'."\n"
 //       .'      <width></width>'."\n"
 //       .'      <height></height>'."\n"
        .'    </image>'."\n"
@@ -550,7 +575,7 @@ $a = array (
                 $item[$i]['pubDate'])
              .'</pubDate>'."\n"
 ;
-        if (isset ($item[$i]['enclosure']) && !is_array ($item[$i]['enclosure']))
+        if (isset ($item[$i]['enclosure']))
           {
             $suffix = strtolower (get_suffix ($item[$i]['enclosure']));
 
@@ -669,58 +694,52 @@ for ($j = 0; isset ($item[$i]['rsscache:feed_'.$j.'_link']); $j++)
 
 
 function
-rss_improve_relevance_s ($rss)
+rss_improve_relevance_s ($rss, $threshold = 66.6) 
 {
-  $threshold = 66.6; // 2/3 similarity is okay for (e.g.) parted movies, etc.
+  // DEBUG
+//  print_r ($rss->channel);
+//  exit;
 
-  $title_a = array ();
-  $link_a = array ();
-  $desc_a = array ();
-//  $media_duration_a = array ();
-//  $author_a = array ();
+//  $threshold = 66.6; // 2/3 similarity is okay for (e.g.) parted movies, etc.
+//  $threshold = 0.0;
 
-  $title_a[] = $rss->channel->item[0]->title;
-  $link_a[] = $rss->channel->item[0]->link;
-  $desc_a[] = $rss->channel->item[0]->desc;
-//  $media_duration_a[] = $rss->channel->item[0]->media->duration;
-//  $author_a[] = $rss->channel->item[0]->author;
+  $a = array ();
+  $a[0][] = (string) $rss->channel->item[0]->title;
+  $a[1][] = (string) $rss->channel->item[0]->link;
+  $a[2][] = (string) $rss->channel->item[0]->description;
 
   for ($i = 1; isset ($rss->channel->item[$i]); $i++)
     {
       similar_text ($rss->channel->item[0]->title, $rss->channel->item[$i]->title, $percent);
-//      if ($percent < $threshold)
+
+      if ($percent < $threshold)
 //        unset ($rss->channel->item[$i]);
-      if ($percent > $threshold)
-        {
-          $title_a[] = $rss->channel->item[$i]->title;
-          $link_a[] = $rss->channel->item[$i]->link;
-          $desc_a[] = $rss->channel->item[$i]->description;
-//          $media_duration_a[] = $rss->channel->item[$i]->media->duration;
-//          $author_a[] = $rss->channel->item[$i]->author;
-        }
+        continue;
+
+          $a[0][] = (string) $rss->channel->item[$i]->title;
+          $a[1][] = (string) $rss->channel->item[$i]->link;
+          $a[2][] = (string) $rss->channel->item[$i]->description;
     }
+//  print_r ($a[0][0]);
 
   // sort by title (useful for evtl. episodes/parts)
-  array_multisort ($title_a, SORT_ASC, SORT_STRING, $link_a, $desc_a
-//, $media_duration_a, $author_a
-);
-
-  $channel = array ('title' => $rss->channel->title,
-                    'link' => $rss->channel->link,
-                    'description' => $rss->channel->desc);
+  array_multisort ($a[0], SORT_ASC, SORT_STRING, $a[1], $a[2]);
 
   $item = array ();
-  for ($i = 0; isset ($title_a[$i]); $i++)
-    $item[] = array ('title' => $title_a[$i],
-                     'link' => $link_a[$i],
-                     'description' => $desc_a[$i],
-//                     'media:duration' => $media_duration_a[$i],
-//                     'author' => $author_a[$i],
+  for ($i = 0; isset ($a[0][$i]); $i++)
+    $item[] = array ('title' => $a[0][$i],
+                     'link' => $a[1][$i],
+                     'description' => '' // $a[2][$i]
+,
 );
+
+  $channel = array ('title' => (string) $rss->channel->title,
+                    'link' => (string) $rss->channel->link,
+                    'description' => (string) $rss->channel->description);
 
   // DEBUG
 //  print_r ($channel);
-//  print_r ($title_a);
+//  print_r ($item);
 //  exit;
 
   return generate_rss2 ($channel, $item, 0, 0);

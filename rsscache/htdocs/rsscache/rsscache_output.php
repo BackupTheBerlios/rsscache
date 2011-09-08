@@ -217,11 +217,6 @@ rsscache_write_sitemap_video_func ($category_name, $item)
 function
 rsscache_write_sitemap ($channel, $item)
 {
-//    header ('Content-type: text/xml');
-  header ('Content-type: application/xml');
-//    header ('Content-type: text/xml-external-parsed-entity');
-//    header ('Content-type: application/xml-external-parsed-entity');
-//    header ('Content-type: application/xml-dtd');
   $config_xml = config_xml ();
 
 //  echo '<pre>';
@@ -403,8 +398,14 @@ rsscache_write_rss ($d_array)
       // DEBUG
 //      echo '<pre><tt>';
 //      print_r ($item);
-      return generate_rss2 ($channel, $item, 1, 1,
-                            $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
+      if ($output == 'json')  
+        {
+          $channel['description'] = str_replace (array ('&amp;', '&nbsp;', '<br>'), array ('&', ' ', "\n"), $channel['description']);
+          return generate_json ($channel, $item, 1, 1);
+        }
+      else
+        return generate_rss2 ($channel, $item, 1, 1,
+                              $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
     }
 }
 

@@ -231,9 +231,12 @@ rsscache_sql_query2boolean ($q, $c = NULL)
   // filter
   $filter = '';
   if ($c)
-    $category = config_xml_by_category ($c);
+    {
+      $category = config_xml_by_category ($c);
 
-  $q = trim ($q.' '.$category['rsscache:filter']);
+      if ($category)
+        $q = trim ($q.' '.$category['rsscache:filter']);
+    }
   // DEBUG
   if ($debug == 1)
     echo 'search: '.$q.'<br>';

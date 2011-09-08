@@ -28,6 +28,7 @@ define ('RSSCACHE_PHP', 1);
 require_once ('default.php');
 require_once ('config.php');
 require_once ('misc/rss.php');
+require_once ('misc/json.php');
 require_once ('misc/sql.php');
 require_once ('misc/misc.php');
 require_once ('rsscache_misc.php');
@@ -150,13 +151,19 @@ if ($output == 'html')
       {
       }
   }
-else // if ($output == 'rss')
+else if ($output == 'json')
+  {
+    header ('Content-type: application/json');
+  }
+else if ($output == 'rss')
+  {
+    header ('Content-type: application/rss+xml');
+//    header ('Content-type: application/xml');
+  }
+else
   {
 //    header ('Content-type: text/xml');
     header ('Content-type: application/xml');
-//    header ('Content-type: text/xml-external-parsed-entity');
-//    header ('Content-type: application/xml-external-parsed-entity');
-//    header ('Content-type: application/xml-dtd');
   }
 
 // the _only_ echo
