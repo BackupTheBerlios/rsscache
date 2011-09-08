@@ -111,7 +111,8 @@ youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby = 'relevan
 function
 youtube_get_rss2 ($q, $user = NULL, $playlist_id = NULL, $use_tor = 0, $start = 0, $num = 50)
 {
-// TODO: merge code from youtube_player.php blabla_related_bla() here
+//$relevance_threshold = 66.6;
+$relevance_threshold = 10.0;
 
   //  $orderby
   //    'relevance'  entries are ordered by their relevance to a search query (default)
@@ -134,8 +135,8 @@ youtube_get_rss2 ($q, $user = NULL, $playlist_id = NULL, $use_tor = 0, $start = 
 //exit;
 // normalize: remove items with low relevance
 $xml = $rss;
-if ($orderby == 'relevance' && $search)
-  if (trim ($search) != '')
+if ($orderby == 'relevance' && $q)
+  if (trim ($q) != '')
     {
       $p = rss_improve_relevance_s ($rss, $relevance_threshold);
       $xml = simplexml_load_string ($p, 'SimpleXMLElement', LIBXML_NOCDATA);
