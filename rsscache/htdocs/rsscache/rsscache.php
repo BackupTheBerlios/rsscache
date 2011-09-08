@@ -31,6 +31,7 @@ require_once ('misc/rss.php');
 require_once ('misc/json.php');
 require_once ('misc/sql.php');
 require_once ('misc/misc.php');
+require_once ('misc/youtube.php');
 require_once ('rsscache_misc.php');
 require_once ('rsscache_sql.php');
 require_once ('rsscache_output.php');
@@ -44,6 +45,7 @@ ini_set('rsscache_user_agent', random_user_agent ());
 $rsscache_user_agent = random_user_agent ();
 
 
+$debug = 0;
 $f = rsscache_get_request_value ('f'); // function
 $output = rsscache_get_request_value ('output'); // output
 $q = rsscache_get_request_value ('q'); // search query
@@ -106,21 +108,48 @@ else // write feed
   {
     // category   
     $category = config_xml_by_category (strtolower ($c));
-    $table_suffix = isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : NULL;
 
     // use SQL
     $d_array = NULL;
     if ($item)
-      $d_array = rsscache_sql (NULL, NULL, $f, $item, 0, 0, $table_suffix);
+      $d_array = rsscache_sql (NULL, NULL, $f, $item, 0, 0);
     else
-      $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0, $table_suffix);
+      $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
 
 // DEBUG
 //echo '<pre><tt>';
-//print_r ($d_array);
+//print_r ($d_array[0]);
 //exit;
 
-    $p = rsscache_write_rss ($d_array);
+    if ($output == 'playlist')
+      {
+        $p = '';
+        for ($i = 0; isset ($d_array[$i]); $i++)
+          {
+//          $figlet = misc_exec ($figlet_exe.' "'.$d_array[$i]['rsstool_title'].'"');
+            $p .= ''
+                 .'#'."\n"
+//                 .str_replace ("\n", "\n# ", $figlet)."\n"
+//                 .'#'."\n"
+                 .'# '.$d_array[$i]['rsstool_title']."\n"
+                 .'# '.$d_array[$i]['rsstool_url']."\n"
+//                 .'#'."\n"
+;
+            $id = youtube_get_videoid ($d_array[$i]['rsstool_url']);
+            $b = youtube_download_single ($id, 0, $debug);
+   
+            // DEBUG
+//            print_r ($b);
+//            exit;
+            for ($j = 0; isset ($b[$j]); $j++);
+
+            $video_url = $b[max (0, $j - 2)];
+     
+            $p .=  $video_url."\n";
+          }
+      }
+    else
+      $p = rsscache_write_rss ($d_array);
   }
 
 
@@ -159,6 +188,10 @@ else if ($output == 'rss')
   {
     header ('Content-type: application/rss+xml');
 //    header ('Content-type: application/xml');
+  }
+else if ($output == 'playlist')
+  {
+    header ('Content-type: text/plain');
   }
 else
   {

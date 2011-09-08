@@ -100,10 +100,10 @@ rsscache_sql_queries ($sql_queries_s)
 
 
 function
-rsscache_sql_stats_func ($c = NULL, $table_suffix = NULL, $t = 0)
+rsscache_sql_stats_func ($c = NULL, $t = 0)
 {
   $a = array ();
-
+$table_suffix = NULL;
   $rsstool_table = 'rsstool_table';
   $keyword_table = 'keyword_table';
   if ($table_suffix)
@@ -131,16 +131,18 @@ rsscache_sql_stats_func ($c = NULL, $table_suffix = NULL, $t = 0)
 
 
 function
-rsscache_sql_stats ($db, $c = NULL, $table_suffix = NULL)
+rsscache_sql_stats ($db, $c = NULL)
 {
   global $rsscache_time;
+
+$table_suffix = NULL;
 
   $debug = 0;
 
   $stats = array ();
 
   // total items and days since creation
-  $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, 0);
+  $sql_query_s = rsscache_sql_stats_func ($c, 0);
   $db->sql_write ($sql_query_s, 0, $debug);
   $r = $db->sql_read (0, $debug);
   for ($i = 0; isset ($r[$i]); $i++)
@@ -156,9 +158,9 @@ rsscache_sql_stats ($db, $c = NULL, $table_suffix = NULL)
     }
 
   // downloaded items today
-  $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, mktime (0, 0, 0));
-//  $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, mktime (0, 0, 0, date ('n'), date ('j')));
-//  $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, $rsscache_time);
+  $sql_query_s = rsscache_sql_stats_func ($c, mktime (0, 0, 0));
+//  $sql_query_s = rsscache_sql_stats_func ($c, mktime (0, 0, 0, date ('n'), date ('j')));
+//  $sql_query_s = rsscache_sql_stats_func ($c, $rsscache_time);
   $db->sql_write ($sql_query_s, 0, $debug);
   $r = $db->sql_read (0, $debug);
   for ($i = 0; isset ($r[$i]); $i++)
@@ -170,7 +172,7 @@ rsscache_sql_stats ($db, $c = NULL, $table_suffix = NULL)
         }
 
   // downloaded items last 7 days   
-  $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, mktime (0, 0, 0, date ('n'), date ('j') - 7));
+  $sql_query_s = rsscache_sql_stats_func ($c, mktime (0, 0, 0, date ('n'), date ('j') - 7));
   $db->sql_write ($sql_query_s, 0, $debug);
   $r = $db->sql_read (0, $debug);
   for ($i = 0; isset ($r[$i]); $i++)
@@ -182,7 +184,7 @@ rsscache_sql_stats ($db, $c = NULL, $table_suffix = NULL)
         }
 
   // downloaded items last 30 days
-  $sql_query_s = rsscache_sql_stats_func ($c, $table_suffix, mktime (0, 0, 0, date ('n'), date ('j') - 30));
+  $sql_query_s = rsscache_sql_stats_func ($c, mktime (0, 0, 0, date ('n'), date ('j') - 30));
   $db->sql_write ($sql_query_s, 0, $debug);
   $r = $db->sql_read (0, $debug);
   for ($i = 0; isset ($r[$i]); $i++)
@@ -287,7 +289,6 @@ function
 rsscache_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table_suffix = NULL)
 {
   $debug = 0;
-
   // DEBUG
 //  if ($debug == 1)
 //    echo 'any: '.$any.'<br>require: '.$require.'<br>exclude: '.$exclude.'<br>';
@@ -344,8 +345,9 @@ rsscache_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table
 
 
 function
-rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
+rsscache_sql ($c, $q, $f, $v, $start, $num)
 {
+  $table_suffix = NULL;
   /*
     $c == category
     $q == query
@@ -381,7 +383,8 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
 //exit;
 
   if ($f == 'stats')
-    return rsscache_sql_stats ($rsscache_sql_db, isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : NULL, $c);
+    return rsscache_sql_stats ($rsscache_sql_db, $c);
+//      isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : $table_suffix);
 
   if ($f == 'extern')
     return rsscache_sql_extern ($c, $q, $f, $v, $start, $num);

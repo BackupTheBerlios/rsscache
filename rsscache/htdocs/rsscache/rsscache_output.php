@@ -71,10 +71,16 @@ rsscache_write_stats_rss ()
 //          $config['item'][$i]['description'] = '';
         $config['item'][$i]['description'] = ''
              .$config['item'][$i]['rsscache:stats_items'].' items<br>'
-             .$config['item'][$i]['rsscache:stats_items_today'].' items today<br>'
+             .'<b>'.$config['item'][$i]['rsscache:stats_items_today'].'</b> items today<br>'
              .$config['item'][$i]['rsscache:stats_items_7_days'].' items last 7 days<br>'
              .$config['item'][$i]['rsscache:stats_items_30_days'].' items last 30 days<br>'
              .$config['item'][$i]['rsscache:stats_days'].' days since creation of category';
+
+//        if (isset ($config['item'][$i]['rsscache:table_suffix']))
+          $config['item'][$i]['description'] .= '<br><br>table_suffix: <b>'.$config['item'][$i]['rsscache:table_suffix'].'</b>'
+;
+          $config['item'][$i]['description'] .= '<br>category: <b>'.$config['item'][$i]['category'].'</b>'
+;
         $config['item'][$i]['link'] = 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$config['item'][$i]['category']
                                      .($output == 'html' ? '&output=html' : '');
         $config['item'][$i]['pubDate'] = $rsscache_time;
@@ -347,7 +353,8 @@ rsscache_write_rss ($d_array)
       .'&amp;c=NAME&nbsp;&nbsp;     category (leave empty for all categories)<br>'
       .'&amp;item=URL_CRC32&nbsp;&nbsp; show single item<br>'
       .'&amp;f=FUNC&nbsp;&nbsp;     execute FUNCtion<br>'
-      .'&amp;output=FORMAT&nbsp;&nbsp; output in "rss", "mediawiki" or "html" (default: rss)<br>'
+// TODO: json and playlist
+      .'&amp;output=FORMAT&nbsp;&nbsp; output in "rss", "mediawiki", "json", "playlist" or "html" (default: rss)<br>'
 //      .'&amp;prefix=SUBDOMAIN&nbsp;&nbsp; prefix or SUBDOMAIN (leave empty for current subdomain)<br>'
       .'<br>'           
       .'*** functions ***<br>'
@@ -358,7 +365,6 @@ rsscache_write_rss ($d_array)
       .'&amp;f=30_60min&nbsp;&nbsp; media with duration 30-60 minutes<br>'
       .'&amp;f=60_min&nbsp;&nbsp;   media with duration 60+ minutes<br>'
       .'&amp;f=new&nbsp;&nbsp;      show only newly created items (default: download time)<br>'
-//      .'&amp;f=related&nbsp;&nbsp;  find related items (requires &amp;q=TITLE)<br>'
       .'&amp;f=related&nbsp;&nbsp;  find related items (requires &amp;q=RELATED_ID)<br>'
       .'&amp;f=stats&nbsp;&nbsp;    statistics<br>'
 //      .'&f=error404&nbsp;&nbsp;    <br>'

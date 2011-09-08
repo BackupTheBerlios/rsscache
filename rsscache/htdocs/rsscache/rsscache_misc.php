@@ -73,18 +73,46 @@ function
 config_xml_normalize ($config)
 {
   // TODO: merge multiple configs
-  $config = $config[0];
+//  $config = $config[0];
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($config);
+//exit;
 
   // turn XML into array
-  $a = rss2array ($config);
+  for ($i = 0; isset ($config[$i]); $i++)
+    $a[] = rss2array ($config[$i]);
 
+  for ($i = 1; isset ($a[$i]); $i++)
+    {
+      for ($j = 0; isset ($a[$i]['item'][$j]); $j++)
+        $a[0]['item'][] = $a[$i]['item'][$j];
+//      unset ($a[$i]);
+    }
+
+  $a = $a[0];
   // DEBUG
 //  echo '<pre><tt>';
 //  print_r ($a);
 //exit;
 
+  // sanity check
+/*
+  $insane = 0;
+  for ($i = 0; isset ($a['item'][$i]); $i++)
+    for ($j = $i + 1; isset ($a['item'][$j]); $j++)
+      if (trim ($a['item'][$i]['category']) == trim ($a['item'][$j]['category']) &&  trim ($a['item'][$j]['category']) != '')
+        {
+          echo 'ERROR: duplicate category: '.$a['item'][$j]['category']."<br>";
+          $insane = 1;
+        }
+  if ($insane == 1)
+    exit;
+*/
+
   // add db statistics
-//rsscache_sql ($c, $q, $f, $v, $start, $num, $table_suffix = NULL)
+//rsscache_sql ($c, $q, $f, $v, $start, $num)
   $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($config->item));
 
   $a['channel']['rsscache:stats_items'] = 0;
@@ -172,7 +200,7 @@ if ($memcache_expire > 0)
   // DEBUG
 //  echo '<pre><tt>';
 //  print_r ($config);
-
+//exit;
   $config = config_xml_normalize ($config);
 
   // use memcache

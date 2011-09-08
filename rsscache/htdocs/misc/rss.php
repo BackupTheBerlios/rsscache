@@ -285,7 +285,7 @@ rss2array ($rss, $debug = 0)
 
 
 function
-generate_rss2_func ($item, $a)
+generate_rss2_func ($item, $a, $whitespace = '      ')
 {
   $p = '';
   for ($i = 0; isset ($a[$i]); $i++)
@@ -299,7 +299,7 @@ generate_rss2_func ($item, $a)
 //        echo $t;
 
 //        if (isset ($item[$t]))
-          $p .= '      <'.$t.'>'
+          $p .= $whitespace.'<'.$t.'>'
                .(is_string ($item[$t]) ? misc_xml_escape ($item[$t]) : sprintf ("%u", $item[$t]))
                .'</'.$t.'>'."\n";
       }
@@ -464,15 +464,9 @@ $a = array (
            'link',
            'description',
            'docs',
-//           'rsscache:stats_category',
-           'rsscache:stats_items',
-           'rsscache:stats_days',
-           'rsscache:stats_items_today',
-           'rsscache:stats_items_7_days',
-           'rsscache:stats_items_30_days',
 );
 
-   $p .= generate_rss2_func ($channel, $a);
+   $p .= generate_rss2_func ($channel, $a, '    ');
 
   if (isset ($channel['lastBuildDate']))
     $p .= '    <lastBuildDate>'.strftime ("%a, %d %h %Y %H:%M:%S %z", $channel['lastBuildDate']).'</lastBuildDate>'."\n";
@@ -496,6 +490,17 @@ $a = array (
 //       .'      <name>q</name>'."\n"
 //       .'    </textinput>'."\n"
 //;
+
+$a = array (
+//           'rsscache:stats_category',
+           'rsscache:stats_items',
+           'rsscache:stats_days',
+           'rsscache:stats_items_today',
+           'rsscache:stats_items_7_days',
+           'rsscache:stats_items_30_days',
+);
+
+   $p .= generate_rss2_func ($channel, $a, '    ');
 
   // items
 //  for ($i = 0; isset ($item[$i]['link']); $i++)
@@ -578,6 +583,29 @@ $a = array (
            'rsscache:reportable',
            'rsscache:votable',
            'rsscache:table_suffix',
+);
+
+   $p .= generate_rss2_func ($item[$i], $a);
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($channel);
+//  print_r ($item);
+
+for ($j = 0; isset ($item[$i]['rsscache:feed_'.$j.'_link']); $j++)
+  {
+    $p .= '      <rsscache:feed>'."\n";
+    if (isset ($item[$i]['rsscache:feed_'.$j.'_client']))
+      $p .= '        <rsscache:client>'.misc_xml_escape ($item[$i]['rsscache:feed_'.$j.'_client']).'</rsscache:client>'."\n";
+    if (isset ($item[$i]['rsscache:feed_'.$j.'_opts']))
+      $p .= '        <rsscache:opts>'.misc_xml_escape ($item[$i]['rsscache:feed_'.$j.'_opts']).'</rsscache:opts>'."\n";
+    if (isset ($item[$i]['rsscache:feed_'.$j.'_link']))
+      $p .= '        <rsscache:link>'.misc_xml_escape ($item[$i]['rsscache:feed_'.$j.'_link']).'</rsscache:link>'."\n";
+    $p .= '      </rsscache:feed>'."\n";
+  }
+
+//      $p .= '      </rsscache:group>'."\n";
+        }
+$a = array (
            'rsscache:stats_category',
            'rsscache:stats_items',
            'rsscache:stats_days',
@@ -587,26 +615,6 @@ $a = array (
 );
 
    $p .= generate_rss2_func ($item[$i], $a);
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($channel);
-//  print_r ($item);
-
-
-for ($j = 0; isset ($item[$i]['rsscache:feed_'.$j.'_link']); $j++)
-  {
-    $p .= '    <rsscache:feed>'."\n";
-    if (isset ($item[$i]['rsscache:feed_'.$j.'_client']))
-      $p .= '      <rsscache:client>'.misc_xml_escape ($item[$i]['rsscache:feed_'.$j.'_client']).'</rsscache:client>'."\n";
-    if (isset ($item[$i]['rsscache:feed_'.$j.'_opts']))
-      $p .= '      <rsscache:opts>'.misc_xml_escape ($item[$i]['rsscache:feed_'.$j.'_opts']).'</rsscache:opts>'."\n";
-    if (isset ($item[$i]['rsscache:feed_'.$j.'_link']))
-      $p .= '      <rsscache:link>'.misc_xml_escape ($item[$i]['rsscache:feed_'.$j.'_link']).'</rsscache:link>'."\n";
-    $p .= '    </rsscache:feed>'."\n";
-  }
-
-//      $p .= '      </rsscache:group>'."\n";
-        }
 
       // CMS
       if ($use_cms == 1)

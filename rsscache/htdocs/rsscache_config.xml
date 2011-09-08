@@ -6,18 +6,15 @@
     <link></link>
     <description></description>
     <image>
-      <url>http://pwnoogle.com/images/i_love_fps.png</url>  
+      <url>http://localhost/images/rsscache_icon.png</url>  
     </image>
-    <rsscache:filter>-hack -crack</rsscache:filter>
 
     <item>
       <category>rsscache</category>
       <title>RSScache</title>
       <link>http:///?c=rsscache</link>
       <description></description>
-      <image>
-        <url>/images/rsscache_icon.png</url>
-      </image>
+      <enclosure url="http://localhost/images/rsscache_icon.png" />
       <rsscache:feed>
         <rsscache:link>http://gdata.youtube.com/feeds/api/videos?vq=rss&amp;max-results=50</rsscache:link>
       </rsscache:feed>
