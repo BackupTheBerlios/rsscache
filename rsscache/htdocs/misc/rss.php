@@ -74,7 +74,7 @@ misc_object2array ($o, $prefix = NULL)
         $v = misc_object2array ($val, $prefix);
       if ($v == NULL)
 //      else
-        $v = $val;
+        $v = (string) $val;
 
       $k = ($prefix ? $prefix : '').$key;
 

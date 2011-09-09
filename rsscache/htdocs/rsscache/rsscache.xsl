@@ -30,8 +30,8 @@
 <xsl:value-of disable-output-escaping="yes" select="rss/channel/rsscache:stats_items_7_days"/> items last 7 days<br/>
 <xsl:value-of disable-output-escaping="yes" select="rss/channel/rsscache:stats_items_30_days"/> items last 30 days<br/>
 </div>
-<hr/>
 <xsl:for-each select="rss/channel/item">
+<hr/>
 <img>
 <xsl:attribute name="src"><xsl:value-of disable-output-escaping="yes" select="enclosure/@url"/></xsl:attribute>
 </img>
@@ -60,7 +60,6 @@ category: <b><xsl:value-of disable-output-escaping="yes" select="category"/></b>
 <xsl:value-of disable-output-escaping="yes" select="rsscache:stats_days"/> days since creation of category<br/>
 table_suffix: <b><xsl:value-of disable-output-escaping="yes" select="rsscache:table_suffix"/></b><br/>
 </div>
-<hr/>
 </xsl:for-each>
 </body>
 </html>
