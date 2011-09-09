@@ -211,9 +211,9 @@ rsscache_write_stats_rss ()
 //  echo '<pre><tt>';
 //  print_r ($config);
 //  exit;
-  return generate_rss2 ($config['channel'], $config['item'], 1, 1,
-                        $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
-//  return rsscache_write_rss ($config['item']);
+//  return generate_rss2 ($config['channel'], $config['item'], 1, 1,
+//                        $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
+  return rsscache_write_rss ($config['item']);
 }
 
 

@@ -122,12 +122,12 @@ $relevance_threshold = 10.0;
 //  $orderby = 'published';
   $orderby = 'relevance';
 
-  if ($q)
-    $rss = youtube_get_rss ($q, $user ? trim ($user) : NULL, NULL, $orderby, $use_tor, $start, $num);
-  else if ($user)
+  if ($user)
     $rss = youtube_get_rss (NULL, trim ($user), NULL, $orderby, $use_tor, $start, $num);
   else if ($playlist_id)
     $rss = youtube_get_rss ('', NULL, trim ($playlist_id), $orderby, $use_tor, $start, $num);
+  else // if ($q)
+    $rss = youtube_get_rss ($q, $user ? trim ($user) : NULL, NULL, $orderby, $use_tor, $start, $num);
 
   // DEBUG
 //  echo '<pre><tt>';
