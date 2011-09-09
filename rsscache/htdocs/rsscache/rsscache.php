@@ -28,10 +28,10 @@ define ('RSSCACHE_PHP', 1);
 require_once ('default.php');
 require_once ('config.php');
 require_once ('misc/rss.php');
-require_once ('misc/json.php');
 require_once ('misc/sql.php');
 require_once ('misc/misc.php');
 require_once ('misc/youtube.php');
+require_once ('misc/json.php');
 require_once ('rsscache_misc.php');
 require_once ('rsscache_sql.php');
 require_once ('rsscache_output.php');
@@ -121,7 +121,7 @@ else // write feed
 //print_r ($d_array[0]);
 //exit;
 
-    if ($output == 'playlist')
+    if ($rsscache_admin == 1 && $output == 'playlist')
       {
         $p = '';
         for ($i = 0; isset ($d_array[$i]); $i++)
@@ -143,9 +143,7 @@ else // write feed
 //            exit;
             for ($j = 0; isset ($b[$j]); $j++);
 
-            $video_url = $b[max (0, $j - 2)];
-     
-            $p .=  $video_url."\n";
+            $p .= $b[max (0, $j - 2)]."\n";
           }
       }
     else
@@ -189,7 +187,7 @@ else if ($output == 'rss')
     header ('Content-type: application/rss+xml');
 //    header ('Content-type: application/xml');
   }
-else if ($output == 'playlist')
+else if ($rsscache_admin == 1 && $output == 'playlist')
   {
     header ('Content-type: text/plain');
   }

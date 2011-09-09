@@ -44,67 +44,6 @@ rsscache_write_robots ()
 
 
 function
-rsscache_write_stats_rss ()
-{
-  global $rsscache_link;
-  global $rsscache_time;
-  global $rsscache_logo;
-  global $rsscache_xsl_trans;
-  global $rsscache_xsl_stylesheet;
-
-  $config = config_xml ();
-
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($config);
-//  exit;
-
-  for ($i = 0; isset ($config['item'][$i]); $i++)
-    if (trim ($config['item'][$i]['category']) != '' &&
-        trim ($config['item'][$i]['rsscache:feed_0_link']) != '')
-      {
-        // DEBUG
-//        echo '<pre><tt>';
-//        print_r ($config['item'][$i]);
-
-//        if (!isset ($config['item'][$i]['description']))
-//          $config['item'][$i]['description'] = '';
-        $config['item'][$i]['description'] = ''
-             .$config['item'][$i]['rsscache:stats_items'].' items<br>'
-             .'<b>'.$config['item'][$i]['rsscache:stats_items_today'].'</b> items today<br>'
-             .$config['item'][$i]['rsscache:stats_items_7_days'].' items last 7 days<br>'
-             .$config['item'][$i]['rsscache:stats_items_30_days'].' items last 30 days<br>'
-             .$config['item'][$i]['rsscache:stats_days'].' days since creation of category';
-
-//        if (isset ($config['item'][$i]['rsscache:table_suffix']))
-          $config['item'][$i]['description'] .= '<br><br>table_suffix: <b>'.$config['item'][$i]['rsscache:table_suffix'].'</b>'
-;
-          $config['item'][$i]['description'] .= '<br>category: <b>'.$config['item'][$i]['category'].'</b>'
-;
-        $config['item'][$i]['link'] = 'http://'.$_SERVER['SERVER_NAME'].'/?c='.$config['item'][$i]['category']
-                                     .($output == 'html' ? '&output=html' : '');
-        $config['item'][$i]['pubDate'] = $rsscache_time;
-      }
-
-//  if (!isset ($config['channel']['description']))
-//    $config['channel']['description'] = '';
-  $config['channel']['description'] = ''
-      .$config['channel']['rsscache:stats_items'].' items<br>'
-      .$config['channel']['rsscache:stats_items_today'].' items today<br>'
-      .$config['channel']['rsscache:stats_items_7_days'].' items last 7 days<br>'
-      .$config['channel']['rsscache:stats_items_30_days'].' items last 30 days<br>'
-;
-  $config['channel']['title'] = rsscache_title ();
-  $config['channel']['link'] = $rsscache_link;
-  $config['channel']['image'] = $rsscache_logo;
-  $config['channel']['lastBuildDate'] = $rsscache_time;
-
-  return generate_rss2 ($config['channel'], $config['item'], 1, 1,
-                        $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
-}
-
-
-function
 rsscache_write_mediawiki_escape ($s)
 {
 //  $s = str_replace('[', '&#91;', $s);
@@ -129,9 +68,7 @@ rsscache_write_mediawiki ($channel, $item, $output_type = 0)
        .' version="0.4" xml:lang="en">'
        .'  <siteinfo>'
        .'    <sitename>'.rsscache_write_mediawiki_escape ($channel['title']).'</sitename>'
-/*
-       .'    <base>http://localhost/index.php/Main_Page</base>'
-*/
+//       .'    <base>http://localhost/index.php/Main_Page</base>'
        .'    <generator>'.$rsscache_name.'</generator>'
 /*
        .'    <case>first-letter</case>'
@@ -199,10 +136,7 @@ rsscache_write_mediawiki ($channel, $item, $output_type = 0)
 function
 rsscache_write_sitemap_video_func ($category_name, $item)
 {
-  global $rsscache_link;
-  global $rsscache_thumbnails_prefix;
   $p = '';
-
   for ($i = 0; isset ($item[$i]); $i++)
     if ($category_name == $item[$i]['category'])
     {
@@ -262,6 +196,24 @@ The formats are as follows. Exactly the components shown here must be present, w
   $p .= '</urlset>';
 
   return $p;
+}
+
+
+function
+rsscache_write_stats_rss ()
+{
+  global $rsscache_xsl_trans;
+  global $rsscache_xsl_stylesheet;
+
+  $config = config_xml ();
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($config);
+//  exit;
+  return generate_rss2 ($config['channel'], $config['item'], 1, 1,
+                        $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
+//  return rsscache_write_rss ($config['item']);
 }
 
 
@@ -353,31 +305,31 @@ rsscache_write_rss ($d_array)
       .'&amp;c=NAME&nbsp;&nbsp;     category (leave empty for all categories)<br>'
       .'&amp;item=URL_CRC32&nbsp;&nbsp; show single item<br>'
       .'&amp;f=FUNC&nbsp;&nbsp;     execute FUNCtion<br>'
-// TODO: json and playlist
-      .'&amp;output=FORMAT&nbsp;&nbsp; output in "rss", "mediawiki", "json", "playlist" or "html" (default: rss)<br>'
+      .'&amp;output=FORMAT&nbsp;&nbsp; output in "rss", "mediawiki", "json", "playlist" (admin) or "html" (default: rss)<br>'
 //      .'&amp;prefix=SUBDOMAIN&nbsp;&nbsp; prefix or SUBDOMAIN (leave empty for current subdomain)<br>'
       .'<br>'           
       .'*** functions ***<br>'
       .'&amp;f=author&nbsp;&nbsp;   find user/author/channel (requires &amp;q=SEARCH)<br>'
-      .'&amp;f=0_5min&nbsp;&nbsp;   media with duration 0-5 minutes<br>'
-      .'&amp;f=5_10min&nbsp;&nbsp;  media with duration 5-10 minutes<br>'
-      .'&amp;f=10_30min&nbsp;&nbsp; media with duration 10-30 minutes<br>'
-      .'&amp;f=30_60min&nbsp;&nbsp; media with duration 30-60 minutes<br>'
-      .'&amp;f=60_min&nbsp;&nbsp;   media with duration 60+ minutes<br>'
-      .'&amp;f=new&nbsp;&nbsp;      show only newly created items (default: download time)<br>'
+      .'&amp;<a href="?f=0_5min&output=html">f=0_5min</a>&nbsp;&nbsp;   media with duration 0-5 minutes<br>'
+      .'&amp;<a href="?f=5_10min&output=html">f=5_10min</a>&nbsp;&nbsp;  media with duration 5-10 minutes<br>'
+      .'&amp;<a href="?f=10_30min&output=html">f=10_30min</a>&nbsp;&nbsp; media with duration 10-30 minutes<br>'
+      .'&amp;<a href="?f=30_60min&output=html">f=30_60min</a>&nbsp;&nbsp; media with duration 30-60 minutes<br>'
+      .'&amp;<a href="?f=60min&output=html">f=60_min</a>&nbsp;&nbsp;   media with duration 60+ minutes<br>'
+      .'&amp;<a href="?f=new&output=html">f=new</a>&nbsp;&nbsp;      show only newly created items (default: download time)<br>'
       .'&amp;f=related&nbsp;&nbsp;  find related items (requires &amp;q=RELATED_ID)<br>'
-      .'&amp;f=stats&nbsp;&nbsp;    statistics<br>'
+      .'&amp;<a href="?f=stats&output=html">f=stats</a>&nbsp;&nbsp;    statistics<br>'
 //      .'&f=error404&nbsp;&nbsp;    <br>'
 //      .'&f=error304&nbsp;&nbsp;    <br>'
 //      .'&f=error300&nbsp;&nbsp;    <br>'
       .'<br>'
       .'*** admin functions ***<br>'
-      .'&amp;f=sitemap&nbsp;&nbsp;  sitemap.xml<br>'  
-      .'&amp;f=robots&nbsp;&nbsp;  robots.txt<br>'
+      .'&amp;<a href="?f=sitemap">f=sitemap</a>&nbsp;&nbsp;  sitemap.xml<br>'  
+      .'&amp;<a href="?f=robots">f=robots</a>&nbsp;&nbsp;  robots.txt<br>'
       .'<br>'
-      .'requires access to <a href="./rsscache/admin.php">admin.php</a>:<br>'
-      .'&amp;f=cache&nbsp;&nbsp;    cache (new) items into database (requires &amp;c=CATEGORY)<br>'
-      .'&amp;f=config&nbsp;&nbsp;  dump config.xml<br>'
+      .'requires access to <a href="admin.php?output=html">admin.php</a>:<br>'
+      .'&amp;<a href="?f=cache&output=html">f=cache</a>&nbsp;&nbsp;    cache (new) items into database (requires &amp;c=CATEGORY)<br>'
+      .'&amp;<a href="?f=config&output=html">f=config</a>&nbsp;&nbsp;  indent and dump config.xml<br>'
+      .'&amp;<a href="?output=playlist">output=playlist</a>&nbsp;&nbsp;  generate playlist.txt<br>'
       .'<br>'
       .'*** install ***<br>'
       .'see apache2/sites-enabled/rsscache<br>'

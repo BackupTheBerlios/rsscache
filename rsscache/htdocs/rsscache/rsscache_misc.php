@@ -84,6 +84,7 @@ config_xml_normalize ($config)
   for ($i = 0; isset ($config[$i]); $i++)
     $a[] = rss2array ($config[$i]);
 
+  // merge multiple config XML
   for ($i = 1; isset ($a[$i]); $i++)
     {
       for ($j = 0; isset ($a[$i]['item'][$j]); $j++)
@@ -112,14 +113,17 @@ config_xml_normalize ($config)
 */
 
   // add db statistics
-//rsscache_sql ($c, $q, $f, $v, $start, $num)
-  $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($config->item));
-
   $a['channel']['rsscache:stats_items'] = 0;
   $a['channel']['rsscache:stats_items_today'] = 0;
   $a['channel']['rsscache:stats_items_7_days'] = 0;
   $a['channel']['rsscache:stats_items_30_days'] = 0;
   $a['channel']['rsscache:stats_days'] = 0;
+
+  // DEBUG
+//echo count ($a['item']);
+//exit;
+//rsscache_sql ($c, $q, $f, $v, $start, $num)
+  $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($a['item']));
   for ($j = 0; isset ($stats[$j]); $j++)
     {
       for ($i = 0; isset ($a['item'][$i]); $i++)
@@ -162,7 +166,7 @@ if ($memcache_expire > 0)
     if ($memcache->connect ('localhost', 11211) == TRUE)
       {
         // data from the cache
-        $p = $memcache->get (md5 ($rsscache_config_xml));
+        $p = $memcache->get (md5 ($rsscache_config_xml[0]));
 
         if ($p != FALSE)
           {
@@ -206,7 +210,7 @@ if ($memcache_expire > 0)
   // use memcache
 if ($memcache_expire > 0)
   {
-    $memcache->set (md5 ($rsscache_config_xml), serialize ($config), 0, $memcache_expire);
+    $memcache->set (md5 ($rsscache_config_xml[0]), serialize ($config), 0, $memcache_expire);
   }
 
   return $config;

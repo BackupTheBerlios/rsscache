@@ -60,6 +60,10 @@ $rsscache_tor_enabled = 0;  // connect to extern sites using TOR
 $rsscache_item_ttl = 0; // delete older (in seconds) items from db (<=0 == never delete)
 $rsscache_xsl_trans = 0;  // XSL transformation for HTML output (0 == server, 1 == client, 2 == auto)
 $rsscache_xsl_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache/rsscache.xsl';
+$rsscache_json_xsl_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache/rsscache_json.xsl';
+$rsscache_mediawiki_xsl_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache/rsscache_mediawiki.xsl';
+$rsscache_playlist_xsl_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache/rsscache_playlist.xsl';
+$rsscache_stats_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache/rsscache_stats.xsl';
 $rsscache_js = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache/rsscache.js';
 
 

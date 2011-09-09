@@ -2,8 +2,8 @@
 <!-- config for rsscache -->
 <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/" xmlns:cms="data:,cms" xmlns:rsscache="data:,rsscache">
   <channel>
-    <title>pwnoogle \:D/</title>
-    <link></link>
+    <title>RSScache</title>
+    <link>http://rsscache.berlios.de</link>
     <description></description>
     <image>
       <url>http://localhost/images/rsscache_icon.png</url>  
