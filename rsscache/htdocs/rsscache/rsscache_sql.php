@@ -211,6 +211,92 @@ rsscache_sql_extern ($c, $q, $f, $v, $start, $num)
 
 
 function
+rsscache_sql2array ($d_array)
+{
+  global $rsscache_link;
+  global $rsscache_time;
+  global $rsscache_logo;
+  global $rsscache_results;
+  global $rsscache_xsl_trans;
+  global $rsscache_xsl_stylesheet;
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($d_array);
+//exit;
+
+  $f = rsscache_get_request_value ('f'); // function
+  $output = rsscache_get_request_value ('output');
+
+  $item = array ();
+//  $config = config_xml ();
+
+  for ($i = 0; isset ($d_array[$i]); $i++)
+    {
+      $config_xml = config_xml_by_category ($d_array[$i]['tv2_moved']);
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($config_xml);
+//exit;
+
+      $link = '';
+      if (substr (rsscache_link ($d_array[$i]), 0, 7) != 'http://')
+        $link .= $rsscache_link.'?';
+      $link .= rsscache_link ($d_array[$i]);
+
+      $a = array ('title' => $d_array[$i]['rsstool_title'],
+//                       'link' => $d_array[$i]['rsstool_url'],
+//                       'link' => isset ($config_xml['link']) ? $config_xml['link'] : NULL,
+                       'link' => $link,
+                       'description' => $d_array[$i]['rsstool_desc'],
+                       'pubDate' => $d_array[$i]['rsstool_date'],
+                       'enclosure' => $config_xml['enclosure'],
+                       'category' => $d_array[$i]['tv2_moved'],
+                       'author' => $d_array[$i]['rsstool_user'],
+
+                       'media:duration' => ($d_array[$i]['rsstool_media_duration'] * 1),
+                       'media:keywords' => $d_array[$i]['rsstool_keywords'],
+                       'media:thumbnail' => rsscache_thumbnail ($d_array[$i]),
+
+                       'rsscache:dl_date' => ($d_array[$i]['rsstool_dl_date'] * 1),
+                       'rsscache:related_id' => ($d_array[$i]['rsstool_related_id'] * 1),
+                       'rsscache:event_start' => ($d_array[$i]['rsstool_event_start'] * 1),
+                       'rsscache:event_end' => ($d_array[$i]['rsstool_event_end'] * 1),
+                       'rsscache:url_crc32' => ($d_array[$i]['rsstool_url_crc32'] * 1),
+                       'rsscache:table_suffix' => isset ($config_xml['rsscache:table_suffix']) ? $config_xml['rsscache:table_suffix'] : NULL,
+
+                       'rsscache:stats_category' => $config_xml['rsscache:stats_category'],
+                       'rsscache:stats_items' => ($config_xml['rsscache:stats_items'] * 1),
+                       'rsscache:stats_days' => ($config_xml['rsscache:stats_days'] * 1),
+                       'rsscache:stats_items_today' => ($config_xml['rsscache:stats_items_today'] * 1),
+                       'rsscache:stats_items_7_days' => ($config_xml['rsscache:stats_items_7_days'] * 1),
+                       'rsscache:stats_items_30_days' => ($config_xml['rsscache:stats_items_30_days'] * 1),
+
+                       'cms:separate' => ($config_xml['cms:separate'] * 1),
+                       'cms:button_only' => ($config_xml['cms:button_only'] * 1),
+                       'cms:status' => isset ($config_xml['cms:status']) ? ($config_xml['cms:status'] * 1) : 0,
+                       'cms:select' => ($config_xml['cms:select'] * 1),
+                       'cms:local' => isset ($config_xml['cms:local']) ? $config_xml['cms:local'] : NULL,
+                       'cms:iframe' => isset ($config_xml['cms:iframe']) ? $config_xml['cms:iframe'] : NULL,
+                       'cms:proxy' => isset ($config_xml['cms:proxy']) ? $config_xml['cms:proxy'] : NULL,
+);
+      for ($j = 0; isset ($config_xml['rsscache:feed_'.$j.'_link']); $j++)
+        {
+          $b = array ();
+          if (isset ($config_xml['rsscache:feed_'.$j.'_client']))
+            $b['rsscache:feed_'.$j.'_client'] = $config_xml['rsscache:feed_'.$j.'_client'];
+          $b['rsscache:feed_'.$j.'_opts'] = $config_xml['rsscache:feed_'.$j.'_opts'];
+          $b['rsscache:feed_'.$j.'_link'] = $config_xml['rsscache:feed_'.$j.'_link'];
+          $a = array_merge ($b, $a);
+        }
+      $item[] = $a;
+    }
+
+  return $item;
+}
+
+
+function
 rsscache_sql_normalize ($d)
 {
   global $rsscache_root,
@@ -227,7 +313,7 @@ rsscache_sql_normalize ($d)
       $d[$i]['rsstool_related_id'] = sprintf ("%u", $d[$i]['rsstool_related_id']);
     }
 
-  return $d;
+  return array ('channel' => rsscache_default_channel (), 'item' => rsscache_sql2array ($d));
 }
 
 

@@ -37,6 +37,36 @@ require_once ('rsscache_sql.php');
 require_once ('rsscache_output.php');
 
 
+function
+rsscache_write_playlist ($channel, $item)
+{
+$debug = 0;
+        $p = '';
+        for ($i = 0; isset ($item[$i]); $i++)
+          {
+//          $figlet = misc_exec ($figlet_exe.' "'.$item[$i]['title'].'"');
+            $p .= ''
+                 .'#'."\n"
+//                 .str_replace ("\n", "\n# ", $figlet)."\n"
+//                 .'#'."\n"
+                 .'# '.$item[$i]['title']."\n"
+                 .'# '.$item[$i]['link']."\n"
+//                 .'#'."\n"
+;
+            $id = youtube_get_videoid ($item[$i]['link']);
+            $b = youtube_download_single ($id, 0, $debug);
+   
+            // DEBUG
+//            print_r ($b);
+//            exit;
+            for ($j = 0; isset ($b[$j]); $j++);
+
+            $p .= $b[max (0, $j - 2)]."\n";
+          }
+  return $p;
+}
+
+
 // main ()
 
 
@@ -82,11 +112,7 @@ $config = config_xml ();
 //exit;
 $c = rsscache_get_request_value ('c'); // category
 
-if ($f == 'stats') // db statistics as feed
-  {
-    $p = rsscache_write_stats_rss ();
-  }
-else if ($rsscache_admin == 1 && $f == 'cache') // cache (new) items into database
+if ($rsscache_admin == 1 && $f == 'cache') // cache (new) items into database
   {
     if ($c)
       {
@@ -121,33 +147,36 @@ else // write feed
 //print_r ($d_array[0]);
 //exit;
 
-    if ($rsscache_admin == 1 && $output == 'playlist')
       {
-        $p = '';
-        for ($i = 0; isset ($d_array[$i]); $i++)
-          {
-//          $figlet = misc_exec ($figlet_exe.' "'.$d_array[$i]['rsstool_title'].'"');
-            $p .= ''
-                 .'#'."\n"
-//                 .str_replace ("\n", "\n# ", $figlet)."\n"
-//                 .'#'."\n"
-                 .'# '.$d_array[$i]['rsstool_title']."\n"
-                 .'# '.$d_array[$i]['rsstool_url']."\n"
-//                 .'#'."\n"
-;
-            $id = youtube_get_videoid ($d_array[$i]['rsstool_url']);
-            $b = youtube_download_single ($id, 0, $debug);
-   
-            // DEBUG
-//            print_r ($b);
-//            exit;
-            for ($j = 0; isset ($b[$j]); $j++);
 
-            $p .= $b[max (0, $j - 2)]."\n";
-          }
-      }
-    else
-      $p = rsscache_write_rss ($d_array);
+  if ($f = 'stats')
+    $a = $config; // rsscache_sql2array ($config['item']);
+  else
+    $a = rsscache_sql2array ($d_array);
+
+    if ($rsscache_admin == 1 && $output == 'playlist')
+      $p = rsscache_write_playlist ($a['channel'], $a['item']);
+    else if ($output == 'mediawiki')
+    $p = rsscache_write_mediawiki ($a['channel'], $a['item'], 0);
+  // TODO: generate sitemap without db use
+  else if ($f == 'sitemap')
+    $p = rsscache_write_sitemap ($a['channel'], $a['item']);
+  else
+    {
+      // DEBUG
+//      echo '<pre><tt>';
+//  print_r ($a);
+//  exit;
+      if ($output == 'json')  
+        {
+          $a['channel']['description'] = str_replace (array ('&amp;', '&nbsp;', '<br>'), array ('&', ' ', "\n"), $a['channel']['description']);
+          $p = generate_json ($a['channel'], $a['item'], 1, 1);
+        }
+      else
+        $p =  generate_rss2 ($a['channel'], $a['item'], 1, 1,
+                              $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
+     }
+       }
   }
 
 

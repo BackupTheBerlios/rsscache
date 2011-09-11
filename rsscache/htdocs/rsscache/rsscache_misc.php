@@ -57,13 +57,13 @@ rsscache_get_request_value ($name)
 
 
 function
-config_xml_by_category ($category_name)
+config_xml_by_category ($c)
 {
   $config = config_xml ();
 
   for ($i = 0; isset ($config['item'][$i]); $i++)
     if (isset ($config['item'][$i]['category']))
-      if (trim ($config['item'][$i]['category']) == $category_name)
+      if (trim ($config['item'][$i]['category']) == $c)
         return $config['item'][$i];
   return NULL;
 }
@@ -314,18 +314,18 @@ rsscache_feed_get ($client = NULL, $opts, $url)
 
 
 function
-rsscache_download_feeds_by_category ($category_name)
+rsscache_download_feeds_by_category ($c)
 {
   global $rsscache_sql_db;
   global $rsscache_user_agent;
 
-  $category_name = trim ($category_name);
-  $category = config_xml_by_category ($category_name);
+  $c = trim ($c);
+  $category = config_xml_by_category ($c);
 
   // DEBUG
 //  echo '<pre><tt>';
 //  echo '$category'."\n";
-//echo $category_name."\n";
+//echo $c."\n";
 //  print_r ($category);
 //exit;
 
@@ -340,7 +340,7 @@ rsscache_download_feeds_by_category ($category_name)
         $opts = $category['rsscache:feed_'.$j.'_opts'];
 
       $p = '';
-      $p .= 'category: '.$category_name."\n"
+      $p .= 'category: '.$c."\n"
            .'client: '.(isset ($category['rsscache:feed_'.$j.'_client']) ? $category['rsscache:feed_'.$j.'_client'] : '')."\n"
            .'opts: '.$opts."\n"
            .'url: '.$category['rsscache:feed_'.$j.'_link']."\n"
@@ -351,10 +351,11 @@ rsscache_download_feeds_by_category ($category_name)
       // get feed
       $xml = rsscache_feed_get ((isset ($category['rsscache:feed_'.$j.'_client']) ? $category['rsscache:feed_'.$j.'_client'] : ''),
                                 $opts, $category['rsscache:feed_'.$j.'_link']);
+      $a = rss2array ($xml);
       // download thumbnails
-      $xml = rsscache_download_thumbnails ($xml);
+      $xml = rsscache_download_thumbnails ($a);
       // xml to sql
-      $sql_queries_s = rsstool_write_ansisql ($xml, $category_name, 
+      $sql_queries_s = rsstool_write_ansisql ($xml, $c, 
         (isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : ''),
         $rsscache_sql_db->conn);
 
@@ -428,6 +429,68 @@ rsscache_thumbnail ($d)
   global $rsscache_link_static,
          $rsscache_thumbnails_prefix;
   return $rsscache_link_static.'/thumbnails/'.$rsscache_thumbnails_prefix.'/rsscache/'.$d['rsstool_url_crc32'].'.jpg';
+}
+
+
+function
+rsscache_default_channel ()
+{
+  global $rsscache_link;
+  global $rsscache_time;
+  global $rsscache_logo;
+  global $rsscache_results;
+
+  $config = config_xml ();
+
+  $p = ''
+      .'&amp;q=SEARCH&nbsp;&nbsp;   SEARCH query<br>'
+      .'&amp;start=N&nbsp;&nbsp;    start from result N<br>'
+      .'&amp;num=N&nbsp;&nbsp;      show N results (default: '.$rsscache_results.')<br>'
+      .'&amp;c=NAME&nbsp;&nbsp;     category (leave empty for all categories)<br>'
+      .'&amp;item=URL_CRC32&nbsp;&nbsp; show single item<br>'
+      .'&amp;f=FUNC&nbsp;&nbsp;     execute FUNCtion<br>'
+      .'&amp;output=FORMAT&nbsp;&nbsp; output in "rss", "mediawiki", "json", "playlist" (admin) or "html" (default: rss)<br>'
+//      .'&amp;prefix=SUBDOMAIN&nbsp;&nbsp; prefix or SUBDOMAIN (leave empty for current subdomain)<br>'
+      .'<br>'           
+      .'*** functions ***<br>'
+      .'&amp;f=author&nbsp;&nbsp;   find user/author/channel (requires &amp;q=SEARCH)<br>'
+      .'&amp;<a href="?f=0_5min&output=html">f=0_5min</a>&nbsp;&nbsp;   media with duration 0-5 minutes<br>'
+      .'&amp;<a href="?f=5_10min&output=html">f=5_10min</a>&nbsp;&nbsp;  media with duration 5-10 minutes<br>'
+      .'&amp;<a href="?f=10_30min&output=html">f=10_30min</a>&nbsp;&nbsp; media with duration 10-30 minutes<br>'
+      .'&amp;<a href="?f=30_60min&output=html">f=30_60min</a>&nbsp;&nbsp; media with duration 30-60 minutes<br>'
+      .'&amp;<a href="?f=60min&output=html">f=60_min</a>&nbsp;&nbsp;   media with duration 60+ minutes<br>'
+      .'&amp;<a href="?f=new&output=html">f=new</a>&nbsp;&nbsp;      show only newly created items (default: download time)<br>'
+      .'&amp;f=related&nbsp;&nbsp;  find related items (requires &amp;q=RELATED_ID)<br>'
+      .'&amp;<a href="?f=stats&output=html">f=stats</a>&nbsp;&nbsp;    statistics<br>'
+//      .'&f=error404&nbsp;&nbsp;    <br>'
+//      .'&f=error304&nbsp;&nbsp;    <br>'
+//      .'&f=error300&nbsp;&nbsp;    <br>'
+      .'<br>'
+      .'*** admin functions ***<br>'
+      .'&amp;<a href="?f=sitemap">f=sitemap</a>&nbsp;&nbsp;  sitemap.xml<br>'  
+      .'&amp;<a href="?f=robots">f=robots</a>&nbsp;&nbsp;  robots.txt<br>'
+      .'<br>'
+      .'requires access to <a href="admin.php?output=html">admin.php</a>:<br>'
+      .'&amp;<a href="?f=cache&output=html">f=cache</a>&nbsp;&nbsp;    cache (new) items into database (requires &amp;c=CATEGORY)<br>'
+      .'&amp;<a href="?f=config&output=html">f=config</a>&nbsp;&nbsp;  indent and dump config.xml<br>'
+      .'&amp;<a href="?output=playlist">output=playlist</a>&nbsp;&nbsp;  generate playlist.txt<br>'
+      .'<br>'
+      .'*** install ***<br>'
+      .'see apache2/sites-enabled/rsscache<br>'
+;
+  $channel = array ('title' => rsscache_title (),
+                    'link' => $rsscache_link,
+                    'description' => $p,
+                    'image' => $rsscache_logo,
+                    'lastBuildDate' => $rsscache_time,
+                    'docs' => $rsscache_link,
+                    'rsscache:stats_items' => ($config['channel']['rsscache:stats_items'] * 1),
+                    'rsscache:stats_days' => ($config['channel']['rsscache:stats_days'] * 1),
+                    'rsscache:stats_items_today' => ($config['channel']['rsscache:stats_items_today'] * 1),
+                    'rsscache:stats_items_7_days' => ($config['channel']['rsscache:stats_items_7_days'] * 1),
+                    'rsscache:stats_items_30_days' => ($config['channel']['rsscache:stats_items_30_days'] * 1),
+);
+  return $channel;
 }
 
 
