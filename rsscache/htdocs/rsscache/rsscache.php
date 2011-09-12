@@ -126,57 +126,48 @@ if ($rsscache_admin == 1 && $f == 'cache') // cache (new) items into database
       $p = '&c=CATEGORY required';
     $p = generate_rss2 (array ('title' => rsscache_title (), 'description' => $p), NULL);
   }
-else if ($rsscache_admin == 1 && $f == 'config') // dump config (w/ new indentation)
-  {
-    $p = generate_rss2 ($config['channel'], $config['item'], 1, 1);
-  }
 else // write feed
   {
-    // category   
-    $category = config_xml_by_category (strtolower ($c));
-
-    // use SQL
-    $d_array = NULL;
-    if ($item)
-      $d_array = rsscache_sql (NULL, NULL, $f, $item, 0, 0);
+    if ($f == 'stats' ||
+        ($rsscache_admin == 1 && $f == 'config')) // dump config (w/ new indentation)
+      $a = $config;
     else
-      $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
+      {
+        // use SQL
+        $d_array = NULL;
+        if ($item)
+          $d_array = rsscache_sql (NULL, NULL, $f, $item, 0, 0);
+        else
+          $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
 
 // DEBUG
 //echo '<pre><tt>';
 //print_r ($d_array[0]);
 //exit;
 
-      {
+        $a = $d_array;
+      }
 
-  if ($f = 'stats')
-    $a = $config; // rsscache_sql2array ($config['item']);
-  else
-    $a = rsscache_sql2array ($d_array);
-
-    if ($rsscache_admin == 1 && $output == 'playlist')
-      $p = rsscache_write_playlist ($a['channel'], $a['item']);
-    else if ($output == 'mediawiki')
-    $p = rsscache_write_mediawiki ($a['channel'], $a['item'], 0);
-  // TODO: generate sitemap without db use
-  else if ($f == 'sitemap')
-    $p = rsscache_write_sitemap ($a['channel'], $a['item']);
-  else
-    {
       // DEBUG
 //      echo '<pre><tt>';
 //  print_r ($a);
 //  exit;
-      if ($output == 'json')  
-        {
-          $a['channel']['description'] = str_replace (array ('&amp;', '&nbsp;', '<br>'), array ('&', ' ', "\n"), $a['channel']['description']);
-          $p = generate_json ($a['channel'], $a['item'], 1, 1);
-        }
-      else
-        $p =  generate_rss2 ($a['channel'], $a['item'], 1, 1,
-                              $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
-     }
-       }
+
+    if ($rsscache_admin == 1 && $output == 'playlist')
+      $p = rsscache_write_playlist ($a['channel'], $a['item']);
+    else if ($output == 'mediawiki')
+      $p = rsscache_write_mediawiki ($a['channel'], $a['item'], 0);
+    // TODO: generate sitemap without db use
+    else if ($f == 'sitemap')
+      $p = rsscache_write_sitemap ($a['channel'], $a['item']);
+    else if ($output == 'json')  
+      {
+        $a['channel']['description'] = str_replace (array ('&amp;', '&nbsp;', '<br>'), array ('&', ' ', "\n"), $a['channel']['description']);
+        $p = generate_json ($a['channel'], $a['item'], 1, 1);
+      }
+    else
+      $p =  generate_rss2 ($a['channel'], $a['item'], 1, 1,
+                          $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
   }
 
 
@@ -208,23 +199,16 @@ if ($output == 'html')
       }
   }
 else if ($output == 'json')
-  {
-    header ('Content-type: application/json');
-  }
+  header ('Content-type: application/json');
 else if ($output == 'rss')
-  {
-    header ('Content-type: application/rss+xml');
-//    header ('Content-type: application/xml');
-  }
+  header ('Content-type: application/rss+xml');
+//  header ('Content-type: application/xml');
 else if ($rsscache_admin == 1 && $output == 'playlist')
-  {
-    header ('Content-type: text/plain');
-  }
+  header ('Content-type: text/plain');
 else
-  {
-//    header ('Content-type: text/xml');
-    header ('Content-type: application/xml');
-  }
+//  header ('Content-type: text/xml');
+  header ('Content-type: application/xml');
+
 
 // the _only_ echo
 if ($use_gzip == 1)

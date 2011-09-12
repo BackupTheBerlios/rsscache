@@ -288,7 +288,7 @@ youtube_download ($video_id, $use_tor = 0, $debug = 0)
           $b = simplexml_load_string ($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         }
       else
-        $b = simplexml_load_file ($video_id);
+        $b = simplexml_load_file ($video_id, 'SimpleXMLElement', LIBXML_NOCDATA);
 
       if ($debug == 1)
         {

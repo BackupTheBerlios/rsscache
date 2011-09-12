@@ -196,10 +196,10 @@ if ($memcache_expire > 0)
 //  echo 'read config';
   $config = array ();
   if (!is_array ($rsscache_config_xml))
-    $config[] = simplexml_load_file ($rsscache_config_xml);
+    $config[] = simplexml_load_file ($rsscache_config_xml, 'SimpleXMLElement', LIBXML_NOCDATA);
   else
     for ($i = 0; isset ($rsscache_config_xml[$i]); $i++)
-      $config[] = simplexml_load_file ($rsscache_config_xml[$i]);
+      $config[] = simplexml_load_file ($rsscache_config_xml[$i], 'SimpleXMLElement', LIBXML_NOCDATA);
 
   // DEBUG
 //  echo '<pre><tt>';
@@ -301,7 +301,7 @@ rsscache_feed_get ($client = NULL, $opts, $url)
   echo $p."\n";
   echo misc_exec ($p, $debug);
 
-  $xml = simplexml_load_file ($tmp);
+  $xml = simplexml_load_file ($tmp, 'SimpleXMLElement', LIBXML_NOCDATA);
 
   // DEBUG
 //  print_r ($xml);
