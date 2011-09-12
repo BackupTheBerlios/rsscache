@@ -33,11 +33,7 @@ $rsscache_debug_sql = 0;
 $rsscache_enable_search = 1; // allow users to search
 $rsscache_related_search = 1; // make use of related searches (requires keywords)
 $rsscache_xsl_trans = 0; // XSL transformation for HTML output (0 == server, 1 == client, 2 == auto)
-//$rsscache_xsl_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache/rsscache.xsl';
-//$rsscache_json_xsl_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache/rsscache_json.xsl';
-//$rsscache_mediawiki_xsl_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache/rsscache_mediawiki.xsl';
-//$rsscache_playlist_xsl_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache/rsscache_playlist.xsl';
-//$rsscache_stats_stylesheet = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache/rsscache_stats.xsl';
+//$rsscache_xsl_stylesheet_path = 'rsscache/xsl';  // path to XSL files relative to htdocs/
 //$rsscache_js = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache.js';
 
 

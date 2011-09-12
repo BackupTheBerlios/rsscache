@@ -76,6 +76,7 @@ $rsscache_user_agent = random_user_agent ();
 
 
 $debug = 0;
+$c = rsscache_get_request_value ('c'); // category
 $f = rsscache_get_request_value ('f'); // function
 $output = rsscache_get_request_value ('output'); // output
 $q = rsscache_get_request_value ('q'); // search query
@@ -89,32 +90,27 @@ if (!($num))
 if ($num > $rsscache_max_results)
   $num = $rsscache_max_results;
 
+if ($output)
+  {
+    $s = ''
+//        .'http://'.$_SERVER['SERVER_NAME']
+        .$rsscache_xsl_stylesheet_path
+        .'/rsscache_'.$output.'.xsl';
+
+    if (!file_exists ($s))
+      {
+        $output = NULL;
+        $rsscache_xsl_trans = 0;
+        $rsscache_xsl_stylesheet_path = NULL;
+      }
+    else $rsscache_xsl_stylesheet_path = $s;
+  }
+
 if ($f == 'robots')
   {
     echo rsscache_write_robots ();
     exit;
   }
-
-//if ($f == 'sitemap')
-//  {
-        // generate sitemap.xml from config
-//      echo rsscache_write_sitemap ();        
-//      exit;
-//  }  
-
-    if ($output)
-      {
-        $s = $rsscache_xsl_stylesheet_path.'/rsscache_'.$output.'.xsl';
-        if (!file_exists ($s))
-          {
-            $output = NULL;
-            $rsscache_xsl_trans = 0;
-            $rsscache_xsl_stylesheet_path = NULL;
-          }
-        else $rsscache_xsl_stylesheet_path = $s;
-      }
-
-
 
 rsscache_sql_open ();
 
@@ -124,7 +120,6 @@ $config = config_xml ();
 //print_r ($config);
 //echo generate_rss2 ($config['channel'], $config['item'], 1, 1);
 //exit;
-$c = rsscache_get_request_value ('c'); // category
 
 if ($rsscache_admin == 1 && $f == 'cache') // cache (new) items into database
   {
@@ -154,26 +149,26 @@ else // write feed
         else
           $d_array = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
 
-// DEBUG
-//echo '<pre><tt>';
-//print_r ($d_array[0]);
-//exit;
+        // DEBUG
+//        echo '<pre><tt>';
+//        print_r ($d_array[0]);
+//        exit;
 
         $a = $d_array;
       }
 
-      // DEBUG
-//      echo '<pre><tt>';
-//  print_r ($a);
-//  exit;
+    // DEBUG
+//    echo '<pre><tt>';
+//    print_r ($a);
+//    exit;
 
-    if ($f == 'sitemap')
+    // TODO: generate sitemap without db use
+    if ($f == 'sitemap') // generate sitemap.xml from config
       $p = rsscache_write_sitemap ($a['channel'], $a['item']);
     else if ($rsscache_admin == 1 && $output == 'playlist')
       $p = rsscache_write_playlist ($a['channel'], $a['item']);
     else if ($output == 'mediawiki')
       $p = rsscache_write_mediawiki ($a['channel'], $a['item'], 0);
-    // TODO: generate sitemap without db use
     else if ($output == 'json')  
       {
         $a['channel']['description'] = str_replace (array ('&amp;', '&nbsp;', '<br>'),
@@ -189,7 +184,7 @@ rsscache_sql_close ();
 
 
 // XSL transformation
-if ($output)
+if ($output == 'html') // TODO: use XSL for everything
 if ($rsscache_xsl_stylesheet_path)
   {
     if ($rsscache_xsl_trans == 2) // check user-agent and decide
