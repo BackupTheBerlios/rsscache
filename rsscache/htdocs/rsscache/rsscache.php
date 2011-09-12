@@ -102,6 +102,20 @@ if ($f == 'robots')
 //      exit;
 //  }  
 
+    if ($output)
+      {
+        $s = $rsscache_xsl_stylesheet_path.'/rsscache_'.$output.'.xsl';
+        if (!file_exists ($s))
+          {
+            $output = NULL;
+            $rsscache_xsl_trans = 0;
+            $rsscache_xsl_stylesheet_path = NULL;
+          }
+        else $rsscache_xsl_stylesheet_path = $s;
+      }
+
+
+
 rsscache_sql_open ();
 
 $config = config_xml ();
@@ -153,21 +167,21 @@ else // write feed
 //  print_r ($a);
 //  exit;
 
-    if ($rsscache_admin == 1 && $output == 'playlist')
+    if ($f == 'sitemap')
+      $p = rsscache_write_sitemap ($a['channel'], $a['item']);
+    else if ($rsscache_admin == 1 && $output == 'playlist')
       $p = rsscache_write_playlist ($a['channel'], $a['item']);
     else if ($output == 'mediawiki')
       $p = rsscache_write_mediawiki ($a['channel'], $a['item'], 0);
     // TODO: generate sitemap without db use
-    else if ($f == 'sitemap')
-      $p = rsscache_write_sitemap ($a['channel'], $a['item']);
     else if ($output == 'json')  
       {
-        $a['channel']['description'] = str_replace (array ('&amp;', '&nbsp;', '<br>'), array ('&', ' ', "\n"), $a['channel']['description']);
+        $a['channel']['description'] = str_replace (array ('&amp;', '&nbsp;', '<br>'),
+                                                    array ('&', ' ', "\n"), $a['channel']['description']);
         $p = generate_json ($a['channel'], $a['item'], 1, 1);
       }
     else
-      $p =  generate_rss2 ($a['channel'], $a['item'], 1, 1,
-                          $rsscache_xsl_trans == 1 ? $rsscache_xsl_stylesheet : NULL);
+      $p =  generate_rss2 ($a['channel'], $a['item'], 1, 1, $rsscache_xsl_stylesheet_path);
   }
 
 
@@ -175,29 +189,31 @@ rsscache_sql_close ();
 
 
 // XSL transformation
-//if ($output == 'js')
-//  {
-//  }
-//else 
-if ($output == 'html')
+if ($output)
+if ($rsscache_xsl_stylesheet_path)
   {
     if ($rsscache_xsl_trans == 2) // check user-agent and decide
       {
         // TODO
         $rsscache_xsl_trans = 0;
       }
-
     if ($rsscache_xsl_trans == 0) // transform on server
       {
-        $xsl = file_get_contents ($rsscache_xsl_stylesheet);
+        $xsl = file_get_contents ($rsscache_xsl_stylesheet_path);
         $xslt = new XSLTProcessor (); 
-        $xslt->importStylesheet (new  SimpleXMLElement ($xsl));
+        $xslt->importStylesheet (new SimpleXMLElement ($xsl));
         $p = $xslt->transformToXml (new SimpleXMLElement ($p));
       }
     else if ($rsscache_xsl_trans == 1) // transform on client
       {
       }
   }
+
+
+if ($output == 'js')
+  header ('Content-type: text/javascript');
+else if ($output == 'html')
+  header ('Content-type: text/html');
 else if ($output == 'json')
   header ('Content-type: application/json');
 else if ($output == 'rss')

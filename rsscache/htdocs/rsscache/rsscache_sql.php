@@ -217,8 +217,6 @@ rsscache_sql2array ($d_array)
   global $rsscache_time;
   global $rsscache_logo;
   global $rsscache_results;
-  global $rsscache_xsl_trans;
-  global $rsscache_xsl_stylesheet;
 
   // DEBUG
 //  echo '<pre><tt>';
