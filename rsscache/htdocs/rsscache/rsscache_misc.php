@@ -124,17 +124,20 @@ config_xml_normalize ($config)
 //exit;
 //rsscache_sql ($c, $q, $f, $v, $start, $num)
   $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($a['item']));
-  for ($j = 0; isset ($stats[$j]); $j++)
+  for ($i = 0; isset ($a['item'][$i]); $i++)
     {
-      for ($i = 0; isset ($a['item'][$i]); $i++)
+      for ($j = 0; isset ($stats[$j]); $j++)
         if (isset ($a['item'][$i]['category']))
           if ($stats[$j]['stats_category'] == $a['item'][$i]['category'])
-          {
-            $a['item'][$i] = array_merge ($a['item'][$i],
-              misc_prefixate_array ($stats[$j], 'rsscache:'));
-            break;
-          }
+            {
+              $a['item'][$i] = array_merge ($a['item'][$i], misc_prefixate_array ($stats[$j], 'rsscache:'));
+              break;
+            }
+      $a['item'][$i]['rsscache:category_title'] = $a['item'][$i]['title'];
+    }
 
+  for ($j = 0; isset ($stats[$j]); $j++)
+    {
       $a['channel']['rsscache:stats_items'] += $stats[$j]['stats_items'];
       $a['channel']['rsscache:stats_items_today'] += $stats[$j]['stats_items_today'];
       $a['channel']['rsscache:stats_items_7_days'] += $stats[$j]['stats_items_7_days'];

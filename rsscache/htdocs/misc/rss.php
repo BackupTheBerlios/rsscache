@@ -221,6 +221,9 @@ rss2array ($rss, $debug = 0)
       if (isset ($a['image']['url']))
         $a['image'] = $a['image']['url'];
 
+      if (!isset ($a['rsscache:category_title']))
+        $a['rsscache:category_title'] = $a['title'];
+
       if (isset ($a['enclosure']))
         if (isset ($a['enclosure']['@attributes']))  
           if (isset ($a['enclosure']['@attributes']['url']))
@@ -453,6 +456,7 @@ $a = array (
         $p .= '      <rsscache:pubDate>'.sprintf ("%u", $item[$i]['pubDate']).'</rsscache:pubDate>'."\n";
 
 $a = array (
+           'rsscache:category_title',
            'rsscache:dl_date',
            'rsscache:related_id',
            'rsscache:event_start',
