@@ -141,17 +141,7 @@ rss2array ($rss, $debug = 0)
 {
   global $rsstool_opts;
 
-  if ($debug == 1)
-    {
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($rss->asXML());
-//  exit;
-    }
-
-//print_r ($rss);
   $rss = $rss->channel;
-//print_r ($rss);
 
   if ($debug == 1)
     {
@@ -324,126 +314,10 @@ generate_rss2 ($channel, $item, $use_mrss = 0, $use_rsscache = 0, $xsl_styleshee
   $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 
   if ($xsl_stylesheet)
-    $p .= '<?xml-stylesheet href="'.$xsl_stylesheet.'" type="text/xsl" media="screen"?>'."\n";
+    $p .= '<?xml-stylesheet href="'.$xsl_stylesheet.'" type="text/xsl"?>'."\n";
 
-  if ($use_cms == 1)
-    $comment = '<!--
-rsscache uses RSS 2.0 specification with extensions (rsscache and cms) for configuration
-
-format:
-rss                       even config files are made of RSS :)
-  channel[]               site
-    title                 title
-    link                  site link
-    description
-    image                 optional
-      url                 image url
-      link                optional, image link
-TODO:      width               optional, image width
-TODO:      height              optional, image height
-TODO:    rsscache:filter  optional
-    item[]                    feed downloads
-      title                 category title
-      link                  optional, url of button or select
-                              &q=SEARCH       search
-                              *** functions ***
-                              &f=all          show all categories (sorted by time of RSS feed download)
-                              &f=new          show all categories (sorted by time of RSS item)
-                              &f=0_5min       show media with <5 minutes duration
-                              &f=5_10min
-                              &f=10_30min
-                              &f=30_60min
-                              &f=60min
-                              &f=related
-                              &f=stats
-                              &f=author
-                              &f=sitemap
-                              &f=robots
-                              &f=cache
-                              &f=config
-                              &f=4_3          4:3 ratio for videos (CMS only)
-                              &f=16_9         16:9 ratio for videos (CMS only)
-TODO:                              &f=score        sort by score/votes/popularity
-                              *** output ***
-                              &output=rss     output page as RSS feed
-                              &output=mirror  output page as static HTML
-                              &output=wall    show search results as wall
-                              &output=cloud   same as wall
-                              &output=stats   show RSS feed download stats
-                              &output=1col    show videos in 1 column
-                              &output=2cols   show videos in 2 columns
-      description
-      category              category name
-      enclosure             optional, category logo/image
-        url                 image url
-        length              
-        type                
-TODO:      rsscache:filter         optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
-      rsscache:feed[]
-        rsscache:link                   link of feed (RSS, etc.)
-                                http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
-                                http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
-        NOTE: use link_prefix, link_suffix and link_search when getting more than one RSS feed from the same place
-        rsscache:link_prefix    same as link
-        rsscache:link_search[]
-        rsscache:link_suffix
-        rsscache:opts    
-TODO:      rsscache:filter       optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier
-      rsscache:table_suffix  
-TODO:      rsscache:votable          if items of this category can be voted for
-                                       0 = not (default)
-                                       1 = by everyone
-TODO:      rsscache:reportable       if items can be reported to the admins
-                                       0 = not (default)
-                                       1 = by everyone
-TODO:      rsscache:movable          if items can be moved to another category
-                                       0 = not (default)
-                                       1 = by the admin only
-                                       2 = by everyone
-
-CMS options, widget.php/widget_cms():
-    cms:separate     optional, adds a line-feed or separator before the next category
-                            0 == no separator (default)
-                            1 == line-feed
-                            2 == horizontal line (hr tag)
-    cms:button_only  optional, show only button
-    cms:status       optional, adds a small status note
-                            0 == nothing (default)
-                            1 == "New!"
-                            2 == "Soon!"
-                            3 == "Preview!"
-                            4 == "Update!"
-    cms:select       add to select menu
-    cms:local        optional, local file to embed
-    cms:iframe       optional, url to embed
-    cms:proxy        optional, url to embed (proxy-style)
-
-optional:
-rss
-  channel[]
-    docs
-    item[]
-      pubDate
-      author
-      media:duration
-      media:keywords
-      media:thumbnail
-      rsscache:dl_date
-      rsscache:pubDate      same as pubDate but as integer
-      rsscache:related_id
-      rsscache:event_start
-      rsscache:event_end
-      rsscache:url_crc32
-      rsscache:stats_category
-      rsscache:stats_items
-      rsscache:stats_days
-      rsscache:stats_items_today
-      rsscache:stats_items_7_days
-      rsscache:stats_items_30_days
-      cms:demux
--->';
-
-//  $p .= $comment;
+//  if ($use_cms == 1)
+//    $p .= '<!--'."\n".rss_default_channel_description ()."\n".'-->'."\n";
 
   $p .= '<rss version="2.0"';
 
@@ -706,6 +580,162 @@ rss_improve_relevance_s ($rss, $threshold = 66.6)
   return generate_rss2 ($channel, $item, 0, 0);
 }
 
+
+function
+rss_default_channel_description ()
+{
+  $p = 'RSScache uses RSS 2.0 specification with new namespaces (rsscache and cms) for configuration'."\n"
+      .''."\n"
+      .'format:'."\n"
+      .'rss                       even config files are made of RSS :)'."\n"
+      .'  channel[]               site'."\n"
+      .'    title                 title'."\n"
+      .'    link                  site link'."\n"
+      .'    description'."\n"
+      .'    image                 optional'."\n"
+      .'      url                 image url'."\n"
+      .'      link                optional, image link'."\n"
+      .'TODO:      width               optional, image width'."\n"
+      .'TODO:      height              optional, image height'."\n"
+      .'TODO:    rsscache:filter  optional'."\n"
+      .'    item[]                    feed downloads'."\n"
+      .'      title                 category title'."\n"
+      .'      link                  optional, url of button or select'."\n"
+      .'                              &q=SEARCH       search'."\n"
+      .'                              *** functions ***'."\n"
+      .'                              &f=all          show all categories (sorted by time of RSS feed download)'."\n"
+      .'                              &f=new          show all categories (sorted by time of RSS item)'."\n"
+      .'                              &f=0_5min       show media with <5 minutes duration'."\n"
+      .'                              &f=5_10min'."\n"
+      .'                              &f=10_30min'."\n"
+      .'                              &f=30_60min'."\n"
+      .'                              &f=60min'."\n"
+      .'                              &f=related'."\n"
+      .'                              &f=stats'."\n"
+      .'                              &f=author'."\n"
+      .'                              &f=sitemap'."\n"
+      .'                              &f=robots'."\n"
+      .'                              &f=cache'."\n"
+      .'                              &f=config'."\n"
+      .'                              &f=4_3          4:3 ratio for videos (CMS only)'."\n"
+      .'                              &f=16_9         16:9 ratio for videos (CMS only)'."\n"
+      .'TODO:                              &f=score        sort by score/votes/popularity'."\n"
+      .'                              *** output ***'."\n"
+      .'                              &output=rss     output page as RSS feed'."\n"
+      .'                              &output=mirror  output page as static HTML'."\n"
+      .'                              &output=wall    show search results as wall'."\n"
+      .'                              &output=cloud   same as wall'."\n"
+      .'                              &output=stats   show RSS feed download stats'."\n"
+      .'                              &output=1col    show videos in 1 column'."\n"
+      .'                              &output=2cols   show videos in 2 columns'."\n"
+      .'      description'."\n"
+      .'      category              category name'."\n"
+      .'      enclosure             optional, category logo/image'."\n"
+      .'        url                 image url'."\n"
+      .'        length              '."\n"
+      .'        type                '."\n"
+      .'TODO:      rsscache:filter         optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier'."\n"
+      .'      rsscache:feed[]'."\n"
+      .'        rsscache:link                   link of feed (RSS, etc.)'."\n"
+      .'                                http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50'."\n"
+      .'                                http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50'."\n"
+      .'        NOTE: use link_prefix, link_suffix and link_search when getting more than one RSS feed from the same place'."\n"
+      .'        rsscache:link_prefix    same as link'."\n"
+      .'        rsscache:link_search[]'."\n"
+      .'        rsscache:link_suffix'."\n"
+      .'        rsscache:opts    '."\n"
+      .'TODO:      rsscache:filter       optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier'."\n"
+      .'      rsscache:table_suffix  '."\n"
+      .'TODO:      rsscache:votable          if items of this category can be voted for'."\n"
+      .'                                       0 = not (default)'."\n"
+      .'                                       1 = by everyone'."\n"
+      .'TODO:      rsscache:reportable       if items can be reported to the admins'."\n"
+      .'                                       0 = not (default)'."\n"
+      .'                                       1 = by everyone'."\n"
+      .'TODO:      rsscache:movable          if items can be moved to another category'."\n"
+      .'                                       0 = not (default)'."\n"
+      .'                                       1 = by the admin only'."\n"
+      .'                                       2 = by everyone'."\n"
+      ."\n"
+      .'CMS options, widget.php/widget_cms():'."\n"
+      .'    cms:separate     optional, adds a line-feed or separator before the next category'."\n"
+      .'                            0 == no separator (default)'."\n"
+      .'                            1 == line-feed'."\n"
+      .'                            2 == horizontal line (hr tag)'."\n"
+      .'    cms:button_only  optional, show only button'."\n"
+      .'    cms:status       optional, adds a small status note'."\n"
+      .'                            0 == nothing (default)'."\n"
+      .'                            1 == "New!"'."\n"
+      .'                            2 == "Soon!"'."\n"
+      .'                            3 == "Preview!"'."\n"
+      .'                            4 == "Update!"'."\n"
+      .'    cms:select       add to select menu'."\n"
+      .'    cms:local        optional, local file to embed'."\n"
+      .'    cms:iframe       optional, url to embed'."\n"
+      .'    cms:proxy        optional, url to embed (proxy-style)'."\n"
+      ."\n"
+      .'optional:'."\n"
+      .'rss'."\n"
+      .'  channel[]'."\n"
+      .'    docs'."\n"
+      .'    item[]'."\n"
+      .'      pubDate'."\n"
+      .'      author'."\n"
+      .'      media:duration'."\n"
+      .'      media:keywords'."\n"
+      .'      media:thumbnail'."\n"
+      .'      rsscache:dl_date'."\n"
+      .'      rsscache:pubDate      same as pubDate but as integer'."\n"
+      .'      rsscache:related_id'."\n"
+      .'      rsscache:event_start'."\n"
+      .'      rsscache:event_end'."\n"
+      .'      rsscache:url_crc32'."\n"
+      .'      rsscache:stats_category'."\n"
+      .'      rsscache:stats_items'."\n"
+      .'      rsscache:stats_days'."\n"
+      .'      rsscache:stats_items_today'."\n"
+      .'      rsscache:stats_items_7_days'."\n"
+      .'      rsscache:stats_items_30_days'."\n"
+      .'      cms:demux'."\n"
+      ."\n"
+      .'*** queries ***'."\n"
+      .'&q=SEARCH     SEARCH query'."\n"
+      .'&start=N      start from result N'."\n"
+      .'&num=N        show N results (default: '.$rsscache_results.')'."\n"
+      .'&c=NAME       category (leave empty for all categories)'."\n"
+      .'&item=URL_CRC32   show single item'."\n"
+      .'&f=FUNC       execute FUNCtion'."\n"
+      .'&output=FORMAT   output in "rss", "mediawiki", "json", "playlist" (admin) or "html" (default: rss)'."\n"
+//      .'&prefix=SUBDOMAIN   prefix or SUBDOMAIN (leave empty for current subdomain)'."\n"
+      ."\n"           
+      .'*** functions ***'."\n"
+      .'&f=author     find user/author/channel (requires &q=SEARCH)'."\n"
+      .'&<a href="?f=0_5min&output=html">f=0_5min</a>     media with duration 0-5 minutes'."\n"
+      .'&<a href="?f=5_10min&output=html">f=5_10min</a>    media with duration 5-10 minutes'."\n"
+      .'&<a href="?f=10_30min&output=html">f=10_30min</a>   media with duration 10-30 minutes'."\n"
+      .'&<a href="?f=30_60min&output=html">f=30_60min</a>   media with duration 30-60 minutes'."\n"
+      .'&<a href="?f=60min&output=html">f=60_min</a>     media with duration 60+ minutes'."\n"
+      .'&<a href="?f=new&output=html">f=new</a>        show only newly created items (default: download time)'."\n"
+      .'&f=related    find related items (requires &q=RELATED_ID)'."\n"
+      .'&<a href="?f=stats&output=html">f=stats</a>      statistics'."\n"
+//      .'&f=error404      '."\n"
+//      .'&f=error304      '."\n"
+//      .'&f=error300      '."\n"
+      ."\n"
+      .'*** admin functions ***'."\n"
+      .'&<a href="?f=sitemap">f=sitemap</a>    sitemap.xml'."\n"  
+      .'&<a href="?f=robots">f=robots</a>    robots.txt'."\n"
+      ."\n"
+      .'requires access to <a href="admin.php?output=html">admin.php</a>:'."\n"
+      .'&<a href="?f=cache&output=html">f=cache</a>      cache (new) items into database (requires &c=CATEGORY)'."\n"
+      .'&<a href="?f=config&output=html">f=config</a>    indent and dump config.xml'."\n"
+      .'&<a href="?output=playlist">output=playlist</a>    generate playlist.txt'."\n"
+      ."\n"
+      .'*** install ***'."\n"
+      .'see apache2/sites-enabled/rsscache'."\n"
+;
+  return str_replace (array ('&', "\n", ' '), array ('&amp;', '<br>', '&nbsp;'), $p);
+}
 
 
 }

@@ -439,45 +439,9 @@ rsscache_default_channel ()
 
   $config = config_xml ();
 
-  $p = ''
-      .'&amp;q=SEARCH&nbsp;&nbsp;   SEARCH query<br>'
-      .'&amp;start=N&nbsp;&nbsp;    start from result N<br>'
-      .'&amp;num=N&nbsp;&nbsp;      show N results (default: '.$rsscache_results.')<br>'
-      .'&amp;c=NAME&nbsp;&nbsp;     category (leave empty for all categories)<br>'
-      .'&amp;item=URL_CRC32&nbsp;&nbsp; show single item<br>'
-      .'&amp;f=FUNC&nbsp;&nbsp;     execute FUNCtion<br>'
-      .'&amp;output=FORMAT&nbsp;&nbsp; output in "rss", "mediawiki", "json", "playlist" (admin) or "html" (default: rss)<br>'
-//      .'&amp;prefix=SUBDOMAIN&nbsp;&nbsp; prefix or SUBDOMAIN (leave empty for current subdomain)<br>'
-      .'<br>'           
-      .'*** functions ***<br>'
-      .'&amp;f=author&nbsp;&nbsp;   find user/author/channel (requires &amp;q=SEARCH)<br>'
-      .'&amp;<a href="?f=0_5min&output=html">f=0_5min</a>&nbsp;&nbsp;   media with duration 0-5 minutes<br>'
-      .'&amp;<a href="?f=5_10min&output=html">f=5_10min</a>&nbsp;&nbsp;  media with duration 5-10 minutes<br>'
-      .'&amp;<a href="?f=10_30min&output=html">f=10_30min</a>&nbsp;&nbsp; media with duration 10-30 minutes<br>'
-      .'&amp;<a href="?f=30_60min&output=html">f=30_60min</a>&nbsp;&nbsp; media with duration 30-60 minutes<br>'
-      .'&amp;<a href="?f=60min&output=html">f=60_min</a>&nbsp;&nbsp;   media with duration 60+ minutes<br>'
-      .'&amp;<a href="?f=new&output=html">f=new</a>&nbsp;&nbsp;      show only newly created items (default: download time)<br>'
-      .'&amp;f=related&nbsp;&nbsp;  find related items (requires &amp;q=RELATED_ID)<br>'
-      .'&amp;<a href="?f=stats&output=html">f=stats</a>&nbsp;&nbsp;    statistics<br>'
-//      .'&f=error404&nbsp;&nbsp;    <br>'
-//      .'&f=error304&nbsp;&nbsp;    <br>'
-//      .'&f=error300&nbsp;&nbsp;    <br>'
-      .'<br>'
-      .'*** admin functions ***<br>'
-      .'&amp;<a href="?f=sitemap">f=sitemap</a>&nbsp;&nbsp;  sitemap.xml<br>'  
-      .'&amp;<a href="?f=robots">f=robots</a>&nbsp;&nbsp;  robots.txt<br>'
-      .'<br>'
-      .'requires access to <a href="admin.php?output=html">admin.php</a>:<br>'
-      .'&amp;<a href="?f=cache&output=html">f=cache</a>&nbsp;&nbsp;    cache (new) items into database (requires &amp;c=CATEGORY)<br>'
-      .'&amp;<a href="?f=config&output=html">f=config</a>&nbsp;&nbsp;  indent and dump config.xml<br>'
-      .'&amp;<a href="?output=playlist">output=playlist</a>&nbsp;&nbsp;  generate playlist.txt<br>'
-      .'<br>'
-      .'*** install ***<br>'
-      .'see apache2/sites-enabled/rsscache<br>'
-;
   $channel = array ('title' => rsscache_title (),
                     'link' => $rsscache_link,
-                    'description' => $p,
+                    'description' => rss_default_channel_description (),
                     'image' => $rsscache_logo,
                     'lastBuildDate' => $rsscache_time,
                     'docs' => $rsscache_link,

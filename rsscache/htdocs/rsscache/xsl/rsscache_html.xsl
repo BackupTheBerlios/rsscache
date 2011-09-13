@@ -36,13 +36,18 @@
 <xsl:attribute name="src"><xsl:value-of disable-output-escaping="yes" select="enclosure/@url"/></xsl:attribute>
 </img>
 <a href="{link}"><xsl:value-of disable-output-escaping="yes" select="title"/></a>
-&#160;&#160;<xsl:value-of disable-output-escaping="yes" select="media:duration"/> seconds<br/>
-<xsl:value-of disable-output-escaping="yes" select="pubDate"/>; 
+&#160;&#160;
+<xsl:if test="media:duration &gt; 0"><xsl:value-of disable-output-escaping="yes" select="media:duration"/> seconds<br/></xsl:if>
+<xsl:value-of disable-output-escaping="yes" select="pubDate"/>
+<xsl:if test="rsscache:related_id &gt; 0">; 
 Related: <a><xsl:attribute name="href">?f=related&amp;q=<xsl:value-of disable-output-escaping="yes" select="rsscache:related_id"/>&amp;output=html</xsl:attribute><xsl:value-of disable-output-escaping="yes" select="rsscache:related_id"/></a><br/>
+</xsl:if>
+<xsl:if test="media:thumbnail/@url != ''">
 <a href="{link}"><img border="0">
 <xsl:attribute name="src"><xsl:value-of disable-output-escaping="yes" select="media:thumbnail/@url"/></xsl:attribute>
 </img></a>
 <br/>
+</xsl:if>
 <xsl:value-of disable-output-escaping="yes" select="description"/><br/>
 <br/>
 Category: 
@@ -50,7 +55,9 @@ Category:
 <xsl:attribute name="src"><xsl:value-of disable-output-escaping="yes" select="enclosure/@url"/></xsl:attribute>
 </img>
 <a><xsl:attribute name="href">?c=<xsl:value-of disable-output-escaping="yes" select="category"/>&amp;output=html</xsl:attribute><xsl:value-of disable-output-escaping="yes" select="category"/></a><br/>
+<xsl:if test="media:keywords != ''">
 Tags: <xsl:value-of disable-output-escaping="yes" select="media:keywords"/><br/>
+</xsl:if>
 <div style="background-color:#999;">
 category: <b><xsl:value-of disable-output-escaping="yes" select="category"/></b><br/>
 <xsl:value-of disable-output-escaping="yes" select="rsscache:stats_items"/> items<br/>

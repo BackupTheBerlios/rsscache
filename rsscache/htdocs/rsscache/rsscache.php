@@ -105,6 +105,8 @@ if ($output)
       }
     else $rsscache_xsl_stylesheet_path = $s;
   }
+else
+  $rsscache_xsl_stylesheet_path = NULL;
 
 if ($f == 'robots')
   {
