@@ -324,8 +324,6 @@ rsscache_download_feeds_by_category ($c)
 
   // DEBUG
 //  echo '<pre><tt>';
-//  echo '$category'."\n";
-//echo $c."\n";
 //  print_r ($category);
 //exit;
 
@@ -351,9 +349,8 @@ rsscache_download_feeds_by_category ($c)
       // get feed
       $xml = rsscache_feed_get ((isset ($category['rsscache:feed_'.$j.'_client']) ? $category['rsscache:feed_'.$j.'_client'] : ''),
                                 $opts, $category['rsscache:feed_'.$j.'_link']);
-      $a = rss2array ($xml);
       // download thumbnails
-      $xml = rsscache_download_thumbnails ($a);
+      $xml = rsscache_download_thumbnails ($xml);
       // xml to sql
       $sql_queries_s = rsstool_write_ansisql ($xml, $c, 
         (isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : ''),

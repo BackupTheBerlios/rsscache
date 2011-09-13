@@ -327,7 +327,7 @@ generate_rss2 ($channel, $item, $use_mrss = 0, $use_rsscache = 0, $xsl_styleshee
     $p .= '<?xml-stylesheet href="'.$xsl_stylesheet.'" type="text/xsl" media="screen"?>'."\n";
 
   if ($use_cms == 1)
-$comment = '<!--
+    $comment = '<!--
 rsscache uses RSS 2.0 specification with extensions (rsscache and cms) for configuration
 
 format:
@@ -339,12 +339,39 @@ rss                       even config files are made of RSS :)
     image                 optional
       url                 image url
       link                optional, image link
-      width               optional, image width
-      height              optional, image height
+TODO:      width               optional, image width
+TODO:      height              optional, image height
 TODO:    rsscache:filter  optional
     item[]                    feed downloads
       title                 category title
-      link                  same as rsscache:query
+      link                  optional, url of button or select
+                              &q=SEARCH       search
+                              *** functions ***
+                              &f=all          show all categories (sorted by time of RSS feed download)
+                              &f=new          show all categories (sorted by time of RSS item)
+                              &f=0_5min       show media with <5 minutes duration
+                              &f=5_10min
+                              &f=10_30min
+                              &f=30_60min
+                              &f=60min
+                              &f=related
+                              &f=stats
+                              &f=author
+                              &f=sitemap
+                              &f=robots
+                              &f=cache
+                              &f=config
+                              &f=4_3          4:3 ratio for videos (CMS only)
+                              &f=16_9         16:9 ratio for videos (CMS only)
+TODO:                              &f=score        sort by score/votes/popularity
+                              *** output ***
+                              &output=rss     output page as RSS feed
+                              &output=mirror  output page as static HTML
+                              &output=wall    show search results as wall
+                              &output=cloud   same as wall
+                              &output=stats   show RSS feed download stats
+                              &output=1col    show videos in 1 column
+                              &output=2cols   show videos in 2 columns
       description
       category              category name
       enclosure             optional, category logo/image
@@ -373,8 +400,8 @@ TODO:      rsscache:movable          if items can be moved to another category
                                        0 = not (default)
                                        1 = by the admin only
                                        2 = by everyone
-                     CMS options, widget.php/widget_cms():
 
+CMS options, widget.php/widget_cms():
     cms:separate     optional, adds a line-feed or separator before the next category
                             0 == no separator (default)
                             1 == line-feed
@@ -390,27 +417,6 @@ TODO:      rsscache:movable          if items can be moved to another category
     cms:local        optional, local file to embed
     cms:iframe       optional, url to embed
     cms:proxy        optional, url to embed (proxy-style)
-    cms:query        optional, url of button or select
-                            &q=SEARCH       search
-
-                            *** functions ***
-                            &f=all          show all categories (sorted by time of RSS feed download)
-                            &f=new          show all categories (sorted by time of RSS item)
-                            &f=0_5min       show videos with <5 minutes duration
-                            &f=5_10min
-                            &f=10_min
-                            &f=score        sort by score/votes/popularity
-                            &f=4_3          4:3 ratio for videos 
-                            &f=16_9         16:9 ratio for videos
-
-                            *** output ***
-                            &output=rss     output page as RSS feed
-                            &output=mirror  output page as static HTML
-                            &output=wall    show search results as wall
-                            &output=cloud   same as wall
-                            &output=stats   show RSS feed download stats
-                            &output=1col    show videos in 1 column
-                            &output=2cols   show videos in 2 columns
 
 optional:
 rss
@@ -418,7 +424,6 @@ rss
     docs
     item[]
       pubDate
-      enclosure
       author
       media:duration
       media:keywords
