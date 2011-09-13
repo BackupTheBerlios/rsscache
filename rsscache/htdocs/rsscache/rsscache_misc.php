@@ -123,18 +123,16 @@ config_xml_normalize ($config)
 //echo count ($a['item']);
 //exit;
 //rsscache_sql ($c, $q, $f, $v, $start, $num)
+
   $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($a['item']));
   for ($i = 0; isset ($a['item'][$i]); $i++)
-    {
+    if (isset ($a['item'][$i]['category']))
       for ($j = 0; isset ($stats[$j]); $j++)
-        if (isset ($a['item'][$i]['category']))
-          if ($stats[$j]['stats_category'] == $a['item'][$i]['category'])
-            {
-              $a['item'][$i] = array_merge ($a['item'][$i], misc_prefixate_array ($stats[$j], 'rsscache:'));
-              break;
-            }
-      $a['item'][$i]['rsscache:category_title'] = $a['item'][$i]['title'];
-    }
+        if ($stats[$j]['stats_category'] == $a['item'][$i]['category'])
+          {
+            $a['item'][$i] = array_merge ($a['item'][$i], misc_prefixate_array ($stats[$j], 'rsscache:'));
+            break;
+          }
 
   for ($j = 0; isset ($stats[$j]); $j++)
     {

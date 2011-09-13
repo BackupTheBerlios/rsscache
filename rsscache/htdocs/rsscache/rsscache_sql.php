@@ -262,6 +262,7 @@ rsscache_sql2array ($d_array)
                        'rsscache:event_end' => ($d_array[$i]['rsstool_event_end'] * 1),
                        'rsscache:url_crc32' => ($d_array[$i]['rsstool_url_crc32'] * 1),
                        'rsscache:table_suffix' => isset ($config_xml['rsscache:table_suffix']) ? $config_xml['rsscache:table_suffix'] : NULL,
+                       'rsscache:category_title' => $config_xml['title'],
 
                        'rsscache:stats_category' => $config_xml['rsscache:stats_category'],
                        'rsscache:stats_items' => ($config_xml['rsscache:stats_items'] * 1),

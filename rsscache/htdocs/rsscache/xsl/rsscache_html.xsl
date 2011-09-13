@@ -54,7 +54,7 @@ Category:
 <img>
 <xsl:attribute name="src"><xsl:value-of disable-output-escaping="yes" select="enclosure/@url"/></xsl:attribute>
 </img>
-<a><xsl:attribute name="href">?c=<xsl:value-of disable-output-escaping="yes" select="category"/>&amp;output=html</xsl:attribute><xsl:value-of disable-output-escaping="yes" select="category"/></a><br/>
+<a><xsl:attribute name="href">?c=<xsl:value-of disable-output-escaping="yes" select="category"/>&amp;output=html</xsl:attribute><xsl:value-of disable-output-escaping="yes" select="rsscache:category_title"/></a><br/>
 <xsl:if test="media:keywords != ''">
 Tags: <xsl:value-of disable-output-escaping="yes" select="media:keywords"/><br/>
 </xsl:if>
