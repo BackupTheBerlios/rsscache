@@ -65,7 +65,7 @@ if ($output)
     $s = ''
 //        .'http://'.$_SERVER['SERVER_NAME']
         .$rsscache_xsl_stylesheet_path
-        .'/rsscache_'.$output.'.xsl';
+        .'/rsscache_'.basename ($output).'.xsl';
 
     if (!file_exists ($s))
       {
@@ -112,7 +112,7 @@ else if ($rsscache_admin == 1 && $f == 'config') // dump config (w/ new indentat
   {
     $a = $config;
   }
-else if ($f == 'stats')
+else if ($f == 'stats' || $output == 'sitemap')
   {
     $a = $config;
   }
@@ -130,14 +130,15 @@ else
 //print_r ($a);
 //exit;
 
-if ($f == 'sitemap') // generate sitemap.xml from config
-  $p = rsscache_write_sitemap ($a['channel'], $a['item']);
-else if ($rsscache_admin == 1 && $output == 'playlist')
+//if ($f == 'sitemap') // generate sitemap.xml from config
+//  $p = rsscache_write_sitemap ($a['channel'], $a['item']);
+//else 
+if ($rsscache_admin == 1 && $output == 'playlist')
   {
   $p =  generate_rss2 ($a['channel'], $a['item'], 1, 1, $rsscache_xsl_stylesheet_path);
   }
-else if ($output == 'mediawiki')
-  $p = rsscache_write_mediawiki ($a['channel'], $a['item'], 0);
+//else if ($output == 'mediawiki')
+//  $p = rsscache_write_mediawiki ($a['channel'], $a['item'], 0);
 else if ($output == 'json')  
   {
     $a['channel']['description'] = str_replace (array ('&amp;', '&nbsp;', '<br>'),
@@ -150,7 +151,7 @@ else
 rsscache_sql_close ();
 
 // XSL transformation
-if ($output == 'html' || $output == 'json' || $output == 'playlist')
+if ($output == 'html' || $output == 'json' || $output == 'playlist' || $output == 'mediawiki' || $output == 'sitemap')
   if ($rsscache_xsl_stylesheet_path)
   {
     if ($rsscache_xsl_trans == 2) // check user-agent and decide

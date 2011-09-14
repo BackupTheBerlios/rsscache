@@ -44,162 +44,6 @@ rsscache_write_robots ()
 
 
 function
-rsscache_write_mediawiki_escape ($s)
-{
-//  $s = str_replace('[', '&#91;', $s);
-//  $s = str_replace(']', '&#93;', $s);
-  $s = str_replace('#', '&#35;', $s);
-  return misc_xml_escape ($s);
-}
-
-
-function
-rsscache_write_mediawiki ($channel, $item, $output_type = 0)
-{
-  global $rsscache_name;
-  global $rsscache_time;
-
-// TODO: escape []'s
-
-  $p = ''
-       .'<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.4/"'
-       .' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'
-       .' xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.4/ http://www.mediawiki.org/xml/export-0.4.xsd"'
-       .' version="0.4" xml:lang="en">'
-       .'  <siteinfo>'
-       .'    <sitename>'.rsscache_write_mediawiki_escape ($channel['title']).'</sitename>'
-//       .'    <base>http://localhost/index.php/Main_Page</base>'
-       .'    <generator>'.$rsscache_name.'</generator>'
-/*
-       .'    <case>first-letter</case>'
-       .'    <namespaces>'
-       .'      <namespace key="-2" case="first-letter">Media</namespace>'
-       .'      <namespace key="-1" case="first-letter">Special</namespace>'
-       .'      <namespace key="0" case="first-letter" />'
-       .'      <namespace key="1" case="first-letter">Talk</namespace>'
-       .'      <namespace key="2" case="first-letter">User</namespace>'
-       .'      <namespace key="3" case="first-letter">User talk</namespace>'
-       .'      <namespace key="4" case="first-letter">Hiddenwiki</namespace>'
-       .'      <namespace key="5" case="first-letter">Hiddenwiki talk</namespace>'
-       .'      <namespace key="6" case="first-letter">File</namespace>'
-       .'      <namespace key="7" case="first-letter">File talk</namespace>'
-       .'      <namespace key="8" case="first-letter">MediaWiki</namespace>'
-       .'      <namespace key="9" case="first-letter">MediaWiki talk</namespace>'
-       .'      <namespace key="10" case="first-letter">Template</namespace>'
-       .'      <namespace key="11" case="first-letter">Template talk</namespace>'
-       .'      <namespace key="12" case="first-letter">Help</namespace>'
-       .'      <namespace key="13" case="first-letter">Help talk</namespace>'
-       .'      <namespace key="14" case="first-letter">Category</namespace>'
-       .'      <namespace key="15" case="first-letter">Category talk</namespace>'
-       .'    </namespaces>'
-*/
-       .'  </siteinfo>';
-
-  for ($i = 0; isset ($item[$i]); $i++)
-    {
-    $p .= ''
-       .'  <page>'."\n"
-       .'    <title>'.rsscache_write_mediawiki_escape ($item[$i]['title']).'</title>'."\n"
-       .'    <id>'.($rsscache_time + $i).'</id>'."\n"
-       .'    <revision>'."\n"
-       .'      <id>'.($rsscache_time + $i + 1).'</id>'."\n"
-//       .'      <timestamp>'.strftime ("%Y-%m-%dT%H:%M:%SZ", $item[$i]['pubDate']).'</timestamp>'."\n"
-       .'      <timestamp>'.strftime ("%Y-%m-%dT%H:%M:%SZ", $rsscache_time).'</timestamp>'."\n"
-       .'      <contributor>'."\n"
-       .'        <ip>127.0.0.1</ip>'."\n"
-       .'      </contributor>'."\n"
-       .'      <text xml:space="preserve">';
-
-     $s = ''
-       .'__NOTOC__'
-//       .'['.$item[$i]['link'].' '.$item[$i]['title'].']'."\n"
-//       .'='.$item[$i]['title'].'='."\n"     
-       .'{{#mw_media:'.$item[$i]['link'].'|640}}'."\n"."\n"
-       .$item[$i]['description']."\n"."\n"
-       .'[[:Category:'.$item[$i]['category'].'|'.$item[$i]['category'].']]'."\n"."\n"
-       .'==Keywords=='."\n"
-       .'[[Category:'.str_replace (' ', ']][[Category:', trim ($item[$i]['media:keywords'])).']]'."\n";
-
-      $p .= ''
-       .rsscache_write_mediawiki_escape ($s)
-       .'</text>'."\n"
-       .'    </revision>'."\n"
-       .'  </page>'."\n";
-    }
-
-  $p .= '</mediawiki>'."\n";
-
-  return $p;
-}
-
-
-function
-rsscache_write_sitemap_video_func ($category_name, $item)
-{
-  $p = '';
-  for ($i = 0; isset ($item[$i]); $i++)
-    if ($category_name == $item[$i]['category'])
-    {
-      $p .= '<video:video>'."\n";
-      $p .= ''
-           .'<video:thumbnail_loc>'.misc_xml_escape ($item[$i]['image']).'</video:thumbnail_loc>'."\n"
-           .'<video:title>'.misc_xml_escape ($item[$i]['title']).'</video:title>'."\n"
-           .'<video:description>'.misc_xml_escape ($item[$i]['description']).'</video:description>'."\n"
-           .'<video:duration>'.$item[$i]['media:duration'].'</video:duration>'."\n"
-;
-      $p .= '</video:video>'."\n";
-    }
-
-  return $p;
-}
-
-
-function
-rsscache_write_sitemap ($channel, $item)
-{
-  $config_xml = config_xml ();
-
-//  echo '<pre>';
-//  print_r ($config_xml);
-
-  $p = '';
-  $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n"
-       .'<urlset'
-       .' xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'
-       .' xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"'
-       .'>'."\n";
-
-  for ($i = 0; isset ($config_xml['item'][$i]); $i++)
-    if (trim ($config_xml['item'][$i]['category']) != '')
-    $p .= '<url>'."\n"
-         .'  <loc>'.misc_xml_escape ('http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml['item'][$i]['category']).'</loc>'."\n"
-/*
-The formats are as follows. Exactly the components shown here must be present, with exactly this punctuation. Note that the "T" appears literally in the string, to indicate the beginning of the time element, as specified in ISO 8601.
-
-   Year:
-      YYYY (eg 1997)
-   Year and month:
-      YYYY-MM (eg 1997-07)
-   Complete date:
-      YYYY-MM-DD (eg 1997-07-16)
-   Complete date plus hours and minutes:
-      YYYY-MM-DDThh:mmTZD (eg 1997-07-16T19:20+01:00)
-   Complete date plus hours, minutes and seconds:
-      YYYY-MM-DDThh:mm:ssTZD (eg 1997-07-16T19:20:30+01:00)
-   Complete date plus hours, minutes, seconds and a decimal fraction of a second
-      YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
-*/
-         .'<lastmod>'.strftime ('%F' /* 'T%T%Z' */).'</lastmod>'."\n"
-         .'<changefreq>always</changefreq>'."\n"
-         .rsscache_write_sitemap_video_func ($config_xml['item'][$i]['category'], $item)
-         .'</url>'."\n";
-  $p .= '</urlset>';
-
-  return $p;
-}
-
-
-function
 rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn = NULL)
 {
   $sql_update = 0;
@@ -356,6 +200,73 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
   return $p;
 }
 
+
+/*
+function
+rsscache_write_sitemap_video_func ($category_name, $item)
+{
+  $p = '';
+  for ($i = 0; isset ($item[$i]); $i++)
+    if ($category_name == $item[$i]['category'])
+    {
+      $p .= '<video:video>'."\n";
+      $p .= ''
+           .'<video:thumbnail_loc>'.misc_xml_escape ($item[$i]['image']).'</video:thumbnail_loc>'."\n"
+           .'<video:title>'.misc_xml_escape ($item[$i]['title']).'</video:title>'."\n"
+           .'<video:description>'.misc_xml_escape ($item[$i]['description']).'</video:description>'."\n"
+           .'<video:duration>'.$item[$i]['media:duration'].'</video:duration>'."\n"
+;
+      $p .= '</video:video>'."\n";
+    }
+
+  return $p;
+}
+
+
+function
+rsscache_write_sitemap ($channel, $item)
+{
+  $config_xml = config_xml ();
+
+//  echo '<pre>';
+//  print_r ($config_xml);
+
+  $p = '';
+  $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n"
+       .'<urlset'
+       .' xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'
+       .' xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"'
+       .'>'."\n";
+
+  for ($i = 0; isset ($config_xml['item'][$i]); $i++)
+    if (trim ($config_xml['item'][$i]['category']) != '')
+    $p .= '<url>'."\n"
+         .'  <loc>'.misc_xml_escape ('http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml['item'][$i]['category']).'</loc>'."\n"
+/*
+The formats are as follows. Exactly the components shown here must be present, with exactly this punctuation. Note that the "T" appears literally in the string, to indicate the beginning of the time element, as specified in ISO 8601.
+
+   Year:
+      YYYY (eg 1997)
+   Year and month:
+      YYYY-MM (eg 1997-07)
+   Complete date:
+      YYYY-MM-DD (eg 1997-07-16)
+   Complete date plus hours and minutes:
+      YYYY-MM-DDThh:mmTZD (eg 1997-07-16T19:20+01:00)
+   Complete date plus hours, minutes and seconds:
+      YYYY-MM-DDThh:mm:ssTZD (eg 1997-07-16T19:20:30+01:00)
+   Complete date plus hours, minutes, seconds and a decimal fraction of a second
+      YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
+*/
+         .'<lastmod>'.strftime ('%F' /* 'T%T%Z' */).'</lastmod>'."\n"
+         .'<changefreq>always</changefreq>'."\n"
+         .rsscache_write_sitemap_video_func ($config_xml['item'][$i]['category'], $item)
+         .'</url>'."\n";
+  $p .= '</urlset>';
+
+  return $p;
+}
+*/
 
 }
 
