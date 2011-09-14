@@ -217,6 +217,8 @@ rsscache_sql2array ($d_array)
   global $rsscache_time;
   global $rsscache_logo;
   global $rsscache_results;
+  global $rsscache_admin;
+  global $output;
 
   // DEBUG
 //  echo '<pre><tt>';
@@ -253,8 +255,9 @@ rsscache_sql2array ($d_array)
                        'author' => $d_array[$i]['rsstool_user'],
 
                        'media:duration' => ($d_array[$i]['rsstool_media_duration'] * 1),
-                       'media:keywords' => $d_array[$i]['rsstool_keywords'],
+                       'media:keywords' => str_replace (' ', ', ', $d_array[$i]['rsstool_keywords']),
                        'media:thumbnail' => rsscache_thumbnail ($d_array[$i]),
+                       'media:embed' => 'widget_media()',
 
                        'rsscache:dl_date' => ($d_array[$i]['rsstool_dl_date'] * 1),
                        'rsscache:related_id' => ($d_array[$i]['rsstool_related_id'] * 1),
@@ -279,6 +282,9 @@ rsscache_sql2array ($d_array)
                        'cms:iframe' => isset ($config_xml['cms:iframe']) ? $config_xml['cms:iframe'] : NULL,
                        'cms:proxy' => isset ($config_xml['cms:proxy']) ? $config_xml['cms:proxy'] : NULL,
 );
+      if ($rsscache_admin == 1 && $output == 'playlist')
+        $a['rsscache:download'] = rsscache_download_videos ($d_array[$i]);
+
       for ($j = 0; isset ($config_xml['rsscache:feed_'.$j.'_link']); $j++)
         {
           $b = array ();
@@ -288,6 +294,7 @@ rsscache_sql2array ($d_array)
           $b['rsscache:feed_'.$j.'_link'] = $config_xml['rsscache:feed_'.$j.'_link'];
           $a = array_merge ($b, $a);
         }
+
       $item[] = $a;
     }
 

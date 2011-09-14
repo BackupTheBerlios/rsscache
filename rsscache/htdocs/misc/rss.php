@@ -218,8 +218,8 @@ rss2array ($rss, $debug = 0)
 //      print_r ($a);
 //      exit;
 
-      if (isset ($a['image']['url']))
-        $a['image'] = $a['image']['url'];
+//      if (isset ($a['media:keywords']))
+//        $a['media:keywords'] = str_replace (' ', ', ', $a['media:keywords']);
 
       if (!isset ($a['rsscache:category_title']))
         $a['rsscache:category_title'] = $a['title'];
@@ -553,27 +553,19 @@ Optional element to specify various scenes within a media object. It can have mu
         </media:scene>
     </media:scenes>
 */
-
-
-
-
-
-
-
 //      $p .= '    <media:group>'."\n";
 
 //      $p .= '      <media:content url="'.$item[$i]['link'].'" />'."\n";
 
-//      $p .= '      <media:embed>'.''.'</media:embed>'."\n";
-
-//      $p .= '      <media:category scheme="">'..'</media:category>';
+//      $p .= '      <media:category scheme="">'.'</media:category>';
 
       if (isset ($item[$i]['media:thumbnail']))
         $p .= '      <media:thumbnail url="'.$item[$i]['media:thumbnail'].'" media:url="'.$item[$i]['media:thumbnail'].'" />'."\n";
 
 $a = array (
            'media:duration',
-//           'media:keywords',
+           'media:keywords',
+           'media:embed',
 );
   
    $p .= generate_rss2_func ($item[$i], $a);
@@ -600,6 +592,7 @@ $a = array (
            'rsscache:reportable',
            'rsscache:votable',
            'rsscache:table_suffix',
+           'rsscache:download',
 );
 
    $p .= generate_rss2_func ($item[$i], $a);
@@ -839,7 +832,7 @@ rss_default_channel_description ()
       .'*** queries ***'."\n"
       .'&q=SEARCH     SEARCH query'."\n"
       .'&start=N      start from result N'."\n"
-      .'&num=N        show N results (default: '.$rsscache_results.')'."\n"
+      .'&num=N        show N results'."\n"
       .'&c=NAME       category (leave empty for all categories)'."\n"
       .'&item=URL_CRC32   show single item'."\n"
       .'&f=FUNC       execute FUNCtion'."\n"

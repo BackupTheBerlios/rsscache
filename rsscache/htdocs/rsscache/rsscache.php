@@ -130,13 +130,10 @@ else
 //print_r ($a);
 //exit;
 
-// TODO: generate sitemap without db use
-// TODO: replace rsscache_output.php with XSL
 if ($f == 'sitemap') // generate sitemap.xml from config
   $p = rsscache_write_sitemap ($a['channel'], $a['item']);
 else if ($rsscache_admin == 1 && $output == 'playlist')
   {
-//  $p = rsscache_write_playlist ($a['channel'], $a['item']);
   $p =  generate_rss2 ($a['channel'], $a['item'], 1, 1, $rsscache_xsl_stylesheet_path);
   }
 else if ($output == 'mediawiki')
@@ -145,7 +142,6 @@ else if ($output == 'json')
   {
     $a['channel']['description'] = str_replace (array ('&amp;', '&nbsp;', '<br>'),
                                                 array ('&', ' ', "\n"), $a['channel']['description']);
-//    $p = generate_json ($a['channel'], $a['item'], 1, 1);
     $p =  generate_rss2 ($a['channel'], $a['item'], 1, 1, $rsscache_xsl_stylesheet_path);
   }
 else
@@ -154,8 +150,8 @@ else
 rsscache_sql_close ();
 
 // XSL transformation
-if ($output == 'html' || $output == 'json' || $output == 'playlist') // TODO: use XSL for everything
-if ($rsscache_xsl_stylesheet_path)
+if ($output == 'html' || $output == 'json' || $output == 'playlist')
+  if ($rsscache_xsl_stylesheet_path)
   {
     if ($rsscache_xsl_trans == 2) // check user-agent and decide
       {

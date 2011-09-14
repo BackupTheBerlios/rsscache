@@ -72,9 +72,6 @@ config_xml_by_category ($c)
 function
 config_xml_normalize ($config)
 {
-  // TODO: merge multiple configs
-//  $config = $config[0];
-
   // DEBUG
 //  echo '<pre><tt>';
 //  print_r ($config);

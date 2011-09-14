@@ -255,20 +255,13 @@ $a = array (
       // mrss
       if ($use_mrss == 1)
         {
-//      $p .= '      "media:content": "'.$item[$i]['link'].'",'."\n";
-
-//      $p .= '      "media:embed": "'.'",'."\n";
-
-//      $p .= '      "media:category": "'.'",'."\n";
-
 $a = array (
            'media:thumbnail',
            'media:duration',
+           'media:keywords',
+           'media:embed',
 );
    $p .= generate_json_func ($item[$i], $a);
-
-      if (isset ($item[$i]['media:keywords']))
-        $p .= '      "media:keywords": "'.str_replace (' ', ', ', $item[$i]['media:keywords']).'",'."\n";
         }
 
       // rsscache
