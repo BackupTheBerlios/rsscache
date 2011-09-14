@@ -48,6 +48,10 @@ Related: <a><xsl:attribute name="href">?f=related&amp;q=<xsl:value-of disable-ou
 </img></a>
 <br/>
 </xsl:if>
+<!-- <xsl:if test="media:embed != ''">
+<xsl:value-of disable-output-escaping="yes" select="media:embed"/>
+<br/>
+</xsl:if> -->
 <xsl:value-of disable-output-escaping="yes" select="description"/><br/>
 <br/>
 Category: 

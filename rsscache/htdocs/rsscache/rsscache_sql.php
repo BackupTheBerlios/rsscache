@@ -25,6 +25,7 @@ define ('RSSCACHE_SQL_PHP', 1);
 //require_once ('config.php');
 //require_once ('misc/misc.php');
 //require_once ('misc/sql.php');
+//require_once ('misc/widget_media.php');
 
 
 $rsscache_sql_db = NULL;
@@ -257,7 +258,6 @@ rsscache_sql2array ($d_array)
                        'media:duration' => ($d_array[$i]['rsstool_media_duration'] * 1),
                        'media:keywords' => str_replace (' ', ', ', $d_array[$i]['rsstool_keywords']),
                        'media:thumbnail' => rsscache_thumbnail ($d_array[$i]),
-                       'media:embed' => 'widget_media()',
 
                        'rsscache:dl_date' => ($d_array[$i]['rsstool_dl_date'] * 1),
                        'rsscache:related_id' => ($d_array[$i]['rsstool_related_id'] * 1),
@@ -282,6 +282,13 @@ rsscache_sql2array ($d_array)
                        'cms:iframe' => isset ($config_xml['cms:iframe']) ? $config_xml['cms:iframe'] : NULL,
                        'cms:proxy' => isset ($config_xml['cms:proxy']) ? $config_xml['cms:proxy'] : NULL,
 );
+
+//widget_media_demux ($media_url)
+//widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0, $blackbg = 0)
+      $demux = widget_media_demux ($d_array[$i]['rsstool_url']);
+      if ($demux != 0)
+        $a['media:embed'] = widget_media ($d_array[$i]['rsstool_url'], -1, -1);
+
       if ($rsscache_admin == 1 && $output == 'playlist')
         $a['rsscache:download'] = rsscache_download_videos ($d_array[$i]);
 

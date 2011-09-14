@@ -468,7 +468,7 @@ rsscache_default_channel ()
 
   $channel = array ('title' => rsscache_title (),
                     'link' => $rsscache_link,
-                    'description' => rss_default_channel_description (),
+                    'description' => generate_rss2_default_channel_description (1, 1),
                     'image' => $rsscache_logo,
                     'lastBuildDate' => $rsscache_time,
                     'docs' => $rsscache_link,

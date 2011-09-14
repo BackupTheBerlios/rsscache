@@ -31,7 +31,7 @@ require_once ('misc/rss.php');
 require_once ('misc/sql.php');
 require_once ('misc/misc.php');
 require_once ('misc/youtube.php');
-require_once ('misc/json.php');
+require_once ('misc/widget_media.php');
 require_once ('rsscache_misc.php');
 require_once ('rsscache_sql.php');
 require_once ('rsscache_output.php');
