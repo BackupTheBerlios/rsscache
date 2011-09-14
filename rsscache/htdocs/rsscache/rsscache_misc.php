@@ -219,6 +219,35 @@ if ($memcache_expire > 0)
 
 
 function
+//rsscache_download_videos ($channel, $item)
+rsscache_download_videos ($item)
+{
+  $debug = 0;
+      // DEBUG
+//      echo '<pre><tt>';
+//      print_r ($item);
+//      exit;
+//  for ($i = 0; isset ($item[$i]); $i++)
+    {
+//      $id = youtube_get_videoid ($item[$i]['link']);
+      $id = youtube_get_videoid ($item['rsstool_url']);
+      $b = youtube_download_single ($id, 0, $debug);
+   
+      // DEBUG
+//      print_r ($b);
+//      exit;
+      for ($j = 0; isset ($b[$j]); $j++);
+
+//      $item[$i]['rsscache:download'] = $b[max (0, $j - 2)]; // lowest quality
+      return $b[max (0, $j - 2)]; // lowest quality
+    }
+
+//  return array ('channel' => $channel, 'item' => $item);
+  return NULL;
+}
+
+
+function
 rsscache_download_thumbnails ($xml)
 {
   global $wget_path;
