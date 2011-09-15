@@ -17,7 +17,6 @@
 <xsl:for-each select="rss/channel/item">
 <xsl:if test="media:embed != ''">
 <xsl:value-of disable-output-escaping="yes" select="media:embed"/>
-<br/>
 </xsl:if>
 </xsl:for-each>
 </body>
