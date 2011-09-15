@@ -148,7 +148,7 @@ if ($output == 'json')
 $p =  generate_rss2 ($a['channel'], $a['item'], 1, 1, $rsscache_xsl_stylesheet_path);
 
 // XSL transformation
-if (in_array ($output, array ('html', 'json', 'playlist', 'mediawiki', 'sitemap', 'media')))
+if (in_array ($output, array ('html', 'json', 'playlist', 'mediawiki', 'sitemap', 'html_media')))
   if ($rsscache_xsl_stylesheet_path)
   {
     if ($rsscache_xsl_trans == 2) // check user-agent and decide
@@ -170,7 +170,7 @@ if (in_array ($output, array ('html', 'json', 'playlist', 'mediawiki', 'sitemap'
 
 if ($output == 'js')
   header ('Content-type: text/javascript');
-else if ($output == 'html' || $output == 'media')
+else if ($output == 'html' || $output == 'html_media')
   header ('Content-type: text/html');
 else if ($output == 'json')
   header ('Content-type: application/json');
