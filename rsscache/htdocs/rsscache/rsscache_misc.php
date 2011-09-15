@@ -228,7 +228,7 @@ rsscache_download_videos ($item)
     {
 //      $id = youtube_get_videoid ($item[$i]['link']);
       $id = youtube_get_videoid ($item['rsstool_url']);
-      $b = youtube_download_single ($id, 0, $debug);
+      $b = youtube_get_download_urls ($id, 0, $debug);
    
       // DEBUG
 //      print_r ($b);

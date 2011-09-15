@@ -24,130 +24,7 @@ if (!defined ('MISC_YOUTUBE_PHP'))
 define ('MISC_YOUTUBE_PHP', 1);
 //error_reporting(E_ALL | E_STRICT);
 require_once ('misc.php');
-//require_once ('rss.php');
-
-
-/*
-Standard (fmt=0 ?) > MP3, ~64 kbps, 22.05 KHz, mono (1 channel)
-fmt=5 > MP3, ~64 kbps, 22.05 KHz, mono (1 channel) (little difference in video bitrate)
-fmt=6 > MP3, ~66 kbps, 44.1 KHz, mono (1 channel)
-fmt=18 > AAC, ~126 kbps, 44.1 KHz, stereo (2 channels)
-fmt=22 > AAC, ~248 kbps, 44.1 KHz, stereo (2 channels) (it's rare, only if uploaded video have 720p)
-fmt=34 > AAC, ~68 kbps, 22.05 KHz, stereo (2 channels)
-fmt=35 > AAC, ~112 kbps, 44.1 KHz, stereo (2 channels) (it's rare)
-fmt=13 and fmt=17 > only on mobile devices (3GP with AMR or AAC audio)
-*/
-
-
-function
-youtube_get_thumbnail_urls ($url)
-{
-  $video_id = youtube_get_videoid ($url);
-  $a = array ();
-  for ($i = 0; $i < 4; $i++)
-    {
-      $a[] = 'http://i.ytimg.com/vi/'.$video_id.'/'.($i + 1).'.jpg';
-    }
-  // DEBUG
-//  print_r ($a);
-  return $a;
-}
-
-
-function
-youtube_get_rss ($search, $channel = NULL, $playlist = NULL, $orderby = 'relevance', $use_tor = 0, $start = 0, $num = 50)
-{
-  /*
-    $orderby
-      'relevance'  entries are ordered by their relevance to a search query (default)
-      'published'  entries are returned in reverse chronological order
-      'viewCount'  entries are ordered from most views to least views
-      'rating'     entries are ordered from highest rating to lowest rating
-  */
-//  $maxresults = 50;
-  $maxresults = $num;
-  $q = urlencode ($search);
-
-  if ($playlist)
-    {
-      $url = 'http://gdata.youtube.com/feeds/base/playlists/'.$playlist;
-      $url .= '?alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
-    }
-  else if ($channel)
-    {
-      // OLD: http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
-//    http://gdata.youtube.com/feeds/base/users/'.$v_user.'/uploads?max-results=50
-      $url = 'http://gdata.youtube.com/feeds/base/videos?author='.$channel.'&q='.$q;
-      $url .= '&orderby='.$orderby;
-      $url .= '&alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
-    }
-  else
-    {
-      // OLD: http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
-      // http://gdata.youtube.com/feeds/base/videos?q=SEARCH&orderby=published&alt=rss&client=ytapi-youtube-search&v=2   
-      $url = 'http://gdata.youtube.com/feeds/base/videos?q='.$q;
-      $url .= '&orderby='.$orderby;
-      $url .= '&alt=rss&client=ytapi-youtube-search&v=2&max-results='.$maxresults;
-    }
-
-  // DEBUG
-//  echo $url."\n";
-
-  if ($use_tor)
-    $f = tor_get_contents ($url);
-  else
-    $f = file_get_contents ($url);
-
-  $rss = simplexml_load_string ($f, 'SimpleXMLElement', LIBXML_NOCDATA);
-
-  // DEBUG
-//echo '<pre><tt>';
-//print_r ($rss);
-
-  return $rss;
-} 
-
-
-function
-youtube_get_rss2 ($q, $user = NULL, $playlist_id = NULL, $use_tor = 0, $start = 0, $num = 50)
-{
-//$relevance_threshold = 66.6;
-$relevance_threshold = 10.0;
-
-  //  $orderby
-  //    'relevance'  entries are ordered by their relevance to a search query (default)
-  //    'published'  entries are returned in reverse chronological order
-  //    'viewCount'  entries are ordered from most views to least views
-  //    'rating'     entries are ordered from highest rating to lowest rating
-//  $orderby = 'published';
-  $orderby = 'relevance';
-
-  if ($user)
-    $rss = youtube_get_rss (NULL, trim ($user), NULL, $orderby, $use_tor, $start, $num);
-  else if ($playlist_id)
-    $rss = youtube_get_rss ('', NULL, trim ($playlist_id), $orderby, $use_tor, $start, $num);
-  else // if ($q)
-    $rss = youtube_get_rss ($q, $user ? trim ($user) : NULL, NULL, $orderby, $use_tor, $start, $num);
-
-  // DEBUG
-//  echo '<pre><tt>';
-//print_r ($rss); 
-//exit;
-// normalize: remove items with low relevance
-$xml = $rss;
-if ($orderby == 'relevance' && $q)
-  if (trim ($q) != '')
-    {
-      $p = rss_improve_relevance_s ($rss, $relevance_threshold);
-      $xml = simplexml_load_string ($p, 'SimpleXMLElement', LIBXML_NOCDATA);
-//    echo 'a'.$rss->asXML ().'b';
-    }
-  // DEBUG
-//  echo '<pre><tt>';
-//print_r ($xml); 
-//exit;
-  return $xml;
-}
+require_once ('rss.php');
 
 
 function
@@ -187,7 +64,107 @@ youtube_get_videoid ($url)
 
 
 function
-youtube_download_single ($video_id, $use_tor = 0, $debug = 0)
+youtube_get_thumbnail_urls ($url)
+{
+  $video_id = youtube_get_videoid ($url);
+  $a = array ();
+  for ($i = 0; $i < 4; $i++)
+    {
+      $a[] = 'http://i.ytimg.com/vi/'.$video_id.'/'.($i + 1).'.jpg';
+    }
+  // DEBUG
+//  print_r ($a);
+  return $a;
+}
+
+
+function
+misc_youtube_search ($search = NULL, $channel = NULL, $playlist_id = NULL, $orderby = 'relevance', $start = 0, $num = 50)
+{
+      // OLD: http://gdata.youtube.com/feeds/api/videos?author=USERNAME&vq=SEARCH&max-results=50
+//    http://gdata.youtube.com/feeds/base/users/'.$v_user.'/uploads?max-results=50
+      // OLD: http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50
+      // http://gdata.youtube.com/feeds/base/videos?q=SEARCH&orderby=published&alt=rss&client=ytapi-youtube-search&v=2   
+// http://www.youtube.com/rss/global/recently_added.rss
+// http://www.youtube.com/rss/tag/%s.rss
+// &search_sort=video_date_uploaded
+// http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&max-results=50&search_sort=video_date_uploaded
+// http://gdata.youtube.com/feeds/api/videos?author=USER&vq=SEARCH&max-results=50&search_sort=video_date_uploaded
+// http://gdata.youtube.com/feeds/base/videos?q=quakelive&orderby=published&alt=rss&client=ytapi-youtube-search&v=2
+
+  /*
+    $orderby
+      'relevance'  entries are ordered by their relevance to a search query (default)
+      'published'  entries are returned in reverse chronological order
+      'viewCount'  entries are ordered from most views to least views
+      'rating'     entries are ordered from highest rating to lowest rating
+  */
+//  $maxresults = 50;
+  $maxresults = $num;
+
+  $a = array (
+    'alt=rss',
+    'client=ytapi-youtube-search',
+    'v=2',
+    'max-results='.$maxresults,
+);
+
+  $p = '';
+  if ($playlist_id)
+      $p .= 'http://gdata.youtube.com/feeds/base/playlists/'.$playlist_id;
+  else
+    {
+      $p .= 'http://gdata.youtube.com/feeds/base/videos';
+      $a[] = 'q='.($search ? urlencode ($search) : '');
+      if ($channel)
+        $a[] = 'author='.$channel;
+      if ($orderby)
+        $a[] = 'orderby='.$orderby;
+    }
+
+  $p .= '?'.implode ($a, '&');
+  // DEBUG
+//  echo $p."\n";
+
+  return $p;
+} 
+
+
+function
+youtube_get_rss ($search = NULL, $channel = NULL, $playlist_id = NULL, $use_tor = 0, $start = 0, $num = 50)
+{
+//  $relevance_threshold = 66.6;
+  $relevance_threshold = 10.0;
+//  $orderby = 'published';
+  $orderby = 'relevance';
+
+  $url = misc_youtube_search ($search, $channel, $playlist_id, $orderby, $start, $num);
+  $rss = misc_download2 ($url, $use_tor, 1); // is XML
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($rss); 
+//  exit;
+
+  // additional relevance threshold
+  if ($orderby == 'relevance' && $search)
+    if (trim ($search) != '')
+    {
+      $p = rss_improve_relevance_s ($rss, $relevance_threshold);
+      $xml = simplexml_load_string ($p, 'SimpleXMLElement', LIBXML_NOCDATA);
+//    echo 'a'.$rss->asXML ().'b';
+      // DEBUG
+//      echo '<pre><tt>';
+//      print_r ($xml); 
+//      exit;
+      return $xml;
+    }
+
+  return $rss;
+}
+
+
+function
+youtube_get_download_urls ($video_id, $use_tor = 0, $debug = 0)
 {
   // normalize
   $video_id = youtube_get_videoid ($video_id);
@@ -206,18 +183,13 @@ youtube_download_single ($video_id, $use_tor = 0, $debug = 0)
   if (misc_url_exists ($url) === true)
     {
       $h = get_headers ($url);
-
       // DEBUG
 //      print_r ($h);
-
       return $h[19];
     }
 */
 
-  if ($use_tor)
-    $page = tor_get_contents ($url);
-  else
-    $page = file_get_contents ($url);
+   $page = misc_download2 ($url, $use_tor); // text/plain
   // DEBUG
 //  echo $page;
 
@@ -228,87 +200,95 @@ youtube_download_single ($video_id, $use_tor = 0, $debug = 0)
     {
       echo '<pre><tt>';
       print_r ($a);
-      echo '</tt></pre>';
     }
 
-//  if (!isset ($a['fmt_url_map']))
+  // DEBUG
+//  echo $a['status'];
+
+//  if (!isset ($a['fmt_url_map']))   // changed by yt in august 2011 
 //    return NULL;
-//  $b = explode (',', $a['fmt_url_map']);
-  // changed by yt in august 2011
   if (!isset ($a['url_encoded_fmt_stream_map']))
     return NULL;
+
+//  if (isset ($a['fmt_list']))
+//    {
+//  [fmt_list] => 35/854x480/9/0/115,34/640x360/9/0/115,18/640x360/9/0/115,5/320x240/7/0/0
+//      $t = explode (',', $a['fmt_list']);
+//      for ($i = 0; isset ($t[$i]); $i++)
+//        $b['fmt_list_'.$i] = $t[$i];
+/*
+Standard (fmt=0 ?) > MP3, ~64 kbps, 22.05 KHz, mono (1 channel)
+fmt=5 > MP3, ~64 kbps, 22.05 KHz, mono (1 channel) (little difference in video bitrate)
+fmt=6 > MP3, ~66 kbps, 44.1 KHz, mono (1 channel)
+fmt=18 > AAC, ~126 kbps, 44.1 KHz, stereo (2 channels)
+fmt=22 > AAC, ~248 kbps, 44.1 KHz, stereo (2 channels) (it's rare, only if uploaded video have 720p)
+fmt=34 > AAC, ~68 kbps, 22.05 KHz, stereo (2 channels)
+fmt=35 > AAC, ~112 kbps, 44.1 KHz, stereo (2 channels) (it's rare)
+fmt=13 and fmt=17 > only on mobile devices (3GP with AMR or AAC audio)
+*/
+//      $a = array_merge ($a, $b);
+//    }
+
   $b = explode (',', $a['url_encoded_fmt_stream_map']);
   for ($i = 0; isset ($b[$i]); $i++)
     $b[$i] = substr ($b[$i], 4);
+  $a = array_merge ($a, $b);
 
   if ($debug == 1)
     {
       echo '<pre><tt>';
-      print_r ($b);
-      echo '</tt></pre>';
+      print_r ($a);
     }
 
-  $a = array_merge ($a, $b);
+  // normalize
+  for ($j = 0; isset ($a[$j]); $j++)
+    {
+      $p = urldecode ($a[$j]);
+      $p = misc_substr2 ($p, 'url=', '; ', NULL);
+      // DEBUG
+      echo $p."\n";
+//      $a[$j] = $p;
+    }
 
-  $url = urldecode ($b[0]); // high quality
-//  $url = urldecode ($b[max (0, count ($b) - 1)]); // low quality
-  $url = substr ($url, strrpos ($url, 'http://'));
-  $a['video_url'] = $url;
-
-    // TODO: youtube_download_single_normalize ()
-    for ($j = 0; isset ($a[$j]); $j++)
-      {
-    $p = urldecode ($a[$j]);
-    $o = strpos ($p, 'url=');
-    if ($o)
-      $p = substr ($p, $o + 4);
-    $o = strpos ($p, '; ');
-    if ($o)
-      $p = substr ($p, 0, $o);
-    $p = trim ($p);
-    $a[$j] = $p;
-      }
+//  if ($debug == 1)
+    {
+//      echo '<pre><tt>';
+//      print_r ($a);
+exit;
+    }
 
   return $a;
 }
 
 
+/*
 function
 youtube_download ($video_id, $use_tor = 0, $debug = 0)
 {
   $a = array ();
 
-  if (strstr ($video_id, '?v='))
-    $a[0] = youtube_download_single ($video_id, $debug);
-  else if (strstr ($video_id, 'http://')) // RSS feed
-    {
-      if ($use_tor)
-        {
-          $xml = tor_get_contents ($video_id);
-          $b = simplexml_load_string ($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
-        }
-      else
-        $b = simplexml_load_file ($video_id, 'SimpleXMLElement', LIBXML_NOCDATA);
+  if (!strstr ($video_id, 'http://'))
+    return youtube_get_download_urls ($video_id, $use_tor, $debug);
+    
+  // RSS feed
+   $b = misc_download2 ($url, $use_tor, 1); // is XML
 
       if ($debug == 1)
         {
           echo '<pre><tt>';
           print_r ($b);
-          echo '</tt></pre>';
         }
 
       for ($i = 0; isset ($b->channel->item[$i]); $i++)
         {
-          $c = youtube_download_single ($b->channel->item[$i]->link, $use_tor, $debug);
+          $c = youtube_get_download_urls ($b->channel->item[$i]->link, $use_tor, $debug);
           if ($c)
             $a[] = $c;
         }
-    }
-  else
-    $a[0] = youtube_download_single ($video_id, $use_tor, $debug);
 
   return $a;
 }
+*/
 
 
 function

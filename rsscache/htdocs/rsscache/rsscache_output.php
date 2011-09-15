@@ -33,7 +33,6 @@ require_once ('rsscache_sql.php');
 function
 rsscache_write_robots ()
 {
-  header ('Content-type: text/plain');
   $p .= '';
   $p .= 'Sitemap: http://'.$_SERVER['SERVER_NAME'].'/sitemap.xml'."\n"
        .'User-agent: *'."\n"
@@ -242,23 +241,7 @@ rsscache_write_sitemap ($channel, $item)
     if (trim ($config_xml['item'][$i]['category']) != '')
     $p .= '<url>'."\n"
          .'  <loc>'.misc_xml_escape ('http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml['item'][$i]['category']).'</loc>'."\n"
-/*
-The formats are as follows. Exactly the components shown here must be present, with exactly this punctuation. Note that the "T" appears literally in the string, to indicate the beginning of the time element, as specified in ISO 8601.
-
-   Year:
-      YYYY (eg 1997)
-   Year and month:
-      YYYY-MM (eg 1997-07)
-   Complete date:
-      YYYY-MM-DD (eg 1997-07-16)
-   Complete date plus hours and minutes:
-      YYYY-MM-DDThh:mmTZD (eg 1997-07-16T19:20+01:00)
-   Complete date plus hours, minutes and seconds:
-      YYYY-MM-DDThh:mm:ssTZD (eg 1997-07-16T19:20:30+01:00)
-   Complete date plus hours, minutes, seconds and a decimal fraction of a second
-      YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
-*/
-         .'<lastmod>'.strftime ('%F' /* 'T%T%Z' */).'</lastmod>'."\n"
+         .'<lastmod>'.strftime ('%F' ).'</lastmod>'."\n"
          .'<changefreq>always</changefreq>'."\n"
          .rsscache_write_sitemap_video_func ($config_xml['item'][$i]['category'], $item)
          .'</url>'."\n";

@@ -40,14 +40,25 @@ misc_substr2 ($t, $left, $cont, $right = NULL)
   // ...]<-b--[<-a--
 
   // DEBUG
+//  echo $t."\n";
 //  echo 'left:"'.$left.'" cont:"'.$cont.'" right:"'.$right.'"'."\n";
 
   $l = $c = $r = 0; 
   if ($left != NULL)
-    $l = strpos ($t, $left) + strlen ($left);
+    {
+      $l = strpos ($t, $left);
+      if ($l == FALSE)
+        $l = 0;
+      else
+        $l += strlen ($left);
+    }
 
   if ($right != NULL)
-    $r = strrpos ($t, $right);
+    {
+      $r = strrpos ($t, $right);
+      if ($r == FALSE)
+        $r = strlen ($t);
+    }
 
   if ($cont != NULL)
     {
@@ -71,7 +82,7 @@ misc_substr2 ($t, $left, $cont, $right = NULL)
 } 
   
 
-/*  
+/*
 function
 misc_substr2_debug ()
 {
@@ -415,26 +426,49 @@ misc_dirmtime ($directory, $recursive = true)
 
 
 function
-misc_download ($url, $path, $use_tor = 0)
+misc_download ($url, $path = NULL, $use_tor = 0, $is_xml = 0)
 {
   if ($use_tor == 1)
+    $t = tor_get_contents ($url);
+  else
     {
-      if (!($img = tor_get_contents ($url)))
-        return -1;
+//      if ($is_xml == 1)
+//        $t = simplexml_load_file ($url, 'SimpleXMLElement', LIBXML_NOCDATA);
+//      else
+        $t = file_get_contents ($url);
     }
-  else if (!($img = file_get_contents ($url)))
-    return -1;
+
+  if ($is_xml == 1)
+    $t = simplexml_load_string ($t, 'SimpleXMLElement', LIBXML_NOCDATA);
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($t);
+//  exit;
+
+  if (!($t))
+    return $path ? -1 : NULL;
+
+  if ($path == NULL || $is_xml == 1)
+    return $t;
 
   if (!($out = fopen ($path, 'wb')))
-    return -1;
+    return $path ? -1 : NULL;
  
-  fwrite ($out, $img);
+  fwrite ($out, $t);
   fclose ($out);
 
   // error
   if (!file_exists ($path))
-    return -1;
-  return 0;
+    return $path ? -1 : NULL;
+  return $path ? 0 : NULL;
+}
+
+
+function
+misc_download2 ($url, $use_tor = 0, $is_xml = 0)
+{
+  return misc_download ($url, NULL, $use_tor, $is_xml);
 }
 
 
