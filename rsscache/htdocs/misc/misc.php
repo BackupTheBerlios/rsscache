@@ -47,7 +47,7 @@ misc_substr2 ($t, $left, $cont, $right = NULL)
   if ($left != NULL)
     {
       $l = strpos ($t, $left);
-      if ($l == FALSE)
+      if ($l === FALSE)
         $l = 0;
       else
         $l += strlen ($left);
@@ -56,7 +56,7 @@ misc_substr2 ($t, $left, $cont, $right = NULL)
   if ($right != NULL)
     {
       $r = strrpos ($t, $right);
-      if ($r == FALSE)
+      if ($r === FALSE)
         $r = strlen ($t);
     }
 

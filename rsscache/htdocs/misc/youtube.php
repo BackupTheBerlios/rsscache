@@ -28,6 +28,42 @@ require_once ('rss.php');
 
 
 function
+youtube_get_format ($f)
+{
+// 2011/09/14 source: http://en.wikipedia.org/wiki/Youtube#Quality_and_codecs
+// container, video codec, width, height, min. mbit/s, max mbit/s, audio codec, channels, Hz, kbit/s
+$format = array (
+  array (45, '.webm',                'VP8', 1280,  720,  2.0,  2.0, 'vorbis',      2, 44100, 192),
+  array (44, '.webm',                'VP8',  854,  480,  1.0,  1.0, 'vorbis',      2, 44100, 128),
+  array (43, '.webm',                'VP8',  640,  360,  0.5,  0.5, 'vorbis',      2, 44100, 128),
+
+  array (38,  '.mp4', 'MPEG-4 AVC (H.264)', 4096, 3072,  0.0,  0.0,    'aac',      2, 44100, 152),
+  array (37,  '.mp4', 'MPEG-4 AVC (H.264)', 1920, 1080,  3.5,  5.0,    'aac',      2, 44100, 152),
+  array (22,  '.mp4', 'MPEG-4 AVC (H.264)', 1280,  720,  2.0,  2.9,    'aac',      2, 44100, 152),
+  array (18,  '.mp4', 'MPEG-4 AVC (H.264)',  640,  360,  0.5,  0.5,    'aac',      2, 44100,  96),
+
+  array (35,  '.flv', 'MPEG-4 AVC (H.264)',  854,  480,  0.8,  1.0,    'aac',      2, 44100, 128),
+  array (34,  '.flv', 'MPEG-4 AVC (H.264)',  640,  360,  0.5,  0.5,    'aac',      2, 44100, 128),
+//array ( 6,      '',                   '',    0,    0,  0.0,  0.0,       '',      0,     0,   0),
+  array ( 5,  '.flv',     'Sorenson H.263',  400,  240, 0.25, 0.25,    'mp3', 1/*2*/, 22050,  64),
+//array ( 0,  '.flv',                   '',    0,    0,  0.0,  0.0,       '',      0,     0,   0),
+
+//array (13,  '.3gp',                   '',    0,    0,  0.0,  0.0,       '',      0,     0,   0),
+  array (17,  '.3gp',      'MPEG-4 Visual',  176,  144,  0.0,  0.0,    'aac',      2, 44100,   0),
+);
+  for ($i = 0; isset ($format[$i]); $i++)
+    if ($format[$i][0] == $f)
+      return $format[$i];
+    else
+      {
+        if (is_string ($f))
+          if (strstr ($format[$i][1], $f))
+            return $format[$i];
+      }
+  return youtube_get_format (5); // default
+}
+
+function
 youtube_get_videoid ($url)
 {
   // DEBUG
@@ -64,14 +100,44 @@ youtube_get_videoid ($url)
 
 
 function
+youtube_get_status ($url, $use_tor)
+{
+  $id = youtube_get_videoid ($url);
+  if ($id != '')
+    {
+      $a = youtube_get_download_urls ($id, $use_tor, 0);
+      if (isset ($a))
+        {
+          // DEBUG
+//          echo $a['status']."\n";
+          return $a['status'];
+        }
+    }
+
+  return NULL;
+}
+
+
+function
+youtube_check_dead_link ($url, $use_tor)
+{
+  $s = youtube_get_status ($url, $use_tor);
+  // DEBUG
+//  echo $s."\n";
+  if ($s)
+    if ($s == 'ok') // is alive
+      return 0;
+  return 1; // is dead
+}
+
+
+function
 youtube_get_thumbnail_urls ($url)
 {
   $video_id = youtube_get_videoid ($url);
   $a = array ();
   for ($i = 0; $i < 4; $i++)
-    {
-      $a[] = 'http://i.ytimg.com/vi/'.$video_id.'/'.($i + 1).'.jpg';
-    }
+    $a[] = 'http://i.ytimg.com/vi/'.$video_id.'/'.($i + 1).'.jpg';
   // DEBUG
 //  print_r ($a);
   return $a;
@@ -189,7 +255,7 @@ youtube_get_download_urls ($video_id, $use_tor = 0, $debug = 0)
     }
 */
 
-   $page = misc_download2 ($url, $use_tor); // text/plain
+  $page = misc_download2 ($url, $use_tor); // text/plain
   // DEBUG
 //  echo $page;
 
@@ -210,106 +276,38 @@ youtube_get_download_urls ($video_id, $use_tor = 0, $debug = 0)
   if (!isset ($a['url_encoded_fmt_stream_map']))
     return NULL;
 
-//  if (isset ($a['fmt_list']))
-//    {
-//  [fmt_list] => 35/854x480/9/0/115,34/640x360/9/0/115,18/640x360/9/0/115,5/320x240/7/0/0
-//      $t = explode (',', $a['fmt_list']);
-//      for ($i = 0; isset ($t[$i]); $i++)
-//        $b['fmt_list_'.$i] = $t[$i];
-/*
-Standard (fmt=0 ?) > MP3, ~64 kbps, 22.05 KHz, mono (1 channel)
-fmt=5 > MP3, ~64 kbps, 22.05 KHz, mono (1 channel) (little difference in video bitrate)
-fmt=6 > MP3, ~66 kbps, 44.1 KHz, mono (1 channel)
-fmt=18 > AAC, ~126 kbps, 44.1 KHz, stereo (2 channels)
-fmt=22 > AAC, ~248 kbps, 44.1 KHz, stereo (2 channels) (it's rare, only if uploaded video have 720p)
-fmt=34 > AAC, ~68 kbps, 22.05 KHz, stereo (2 channels)
-fmt=35 > AAC, ~112 kbps, 44.1 KHz, stereo (2 channels) (it's rare)
-fmt=13 and fmt=17 > only on mobile devices (3GP with AMR or AAC audio)
-*/
-//      $a = array_merge ($a, $b);
-//    }
-
   $b = explode (',', $a['url_encoded_fmt_stream_map']);
-  for ($i = 0; isset ($b[$i]); $i++)
-    $b[$i] = substr ($b[$i], 4);
+//  for ($i = 0; isset ($b[$i]); $i++)
+//    $b[$i] = substr ($b[$i], 4);
   $a = array_merge ($a, $b);
 
   if ($debug == 1)
     {
       echo '<pre><tt>';
       print_r ($a);
+exit;
     }
 
   // normalize
   for ($j = 0; isset ($a[$j]); $j++)
     {
       $p = urldecode ($a[$j]);
-      $p = misc_substr2 ($p, 'url=', '; ', NULL);
       // DEBUG
-      echo $p."\n";
-//      $a[$j] = $p;
+//      echo $p."\n";
+      $p = misc_substr2 ($p, 'url=', NULL, '; ');
+      // DEBUG
+//      echo $p."\n";
+      $a[$j] = $p;
     }
 
 //  if ($debug == 1)
     {
 //      echo '<pre><tt>';
 //      print_r ($a);
-exit;
+//exit;
     }
 
   return $a;
-}
-
-
-/*
-function
-youtube_download ($video_id, $use_tor = 0, $debug = 0)
-{
-  $a = array ();
-
-  if (!strstr ($video_id, 'http://'))
-    return youtube_get_download_urls ($video_id, $use_tor, $debug);
-    
-  // RSS feed
-   $b = misc_download2 ($url, $use_tor, 1); // is XML
-
-      if ($debug == 1)
-        {
-          echo '<pre><tt>';
-          print_r ($b);
-        }
-
-      for ($i = 0; isset ($b->channel->item[$i]); $i++)
-        {
-          $c = youtube_get_download_urls ($b->channel->item[$i]->link, $use_tor, $debug);
-          if ($c)
-            $a[] = $c;
-        }
-
-  return $a;
-}
-*/
-
-
-function
-youtube_check_dead_link ($url, $use_tor)
-{
-  $s = youtube_get_videoid ($url);
-
-  if (!strlen($s))
-    return;
-
-  $a = youtube_download ($s, $use_tor, 0);
-
-  if (!($a[0]))
-    return;
-
-  // DEBUG
-//  echo $a[0]['status']."\n";
-
-  if ($a[0]['status'] == 'ok') // is alive
-    return 0;
-  return 1; // is dead
 }
 
 

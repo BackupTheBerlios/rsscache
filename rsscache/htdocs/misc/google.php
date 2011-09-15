@@ -24,6 +24,11 @@ if (!defined ('MISC_GOOGLE_PHP'))
 define ('MISC_GOOGLE_PHP', 1);
 
 
+//http://thepiratebay.org/search/SEARCH/0/7/0
+//http://isohunt.com/torrents/SEARCH?iht=-1&ihp=1&ihs1=2&iho1=d
+//http://www.imdb.com/find?s=all&x=8&y=2&q=SEARCH
+
+
 /*
 define:phrase
   Show a list of definitions for phrase
