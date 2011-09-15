@@ -4,7 +4,7 @@
  xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.4/ http://www.mediawiki.org/xml/export-0.4.xsd"
  version="0.4" xml:lang="en">
   <siteinfo>
-    <sitename><xsl:value-of disable-output-escaping="yes" select="title"/></sitename>
+    <sitename><xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/></sitename>
     <!-- base>http://localhost/index.php/Main_Page</base -->
     <generator>RSScache</generator>
     <!-- case>first-letter</case -->

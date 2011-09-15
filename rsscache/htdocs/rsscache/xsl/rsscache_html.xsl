@@ -48,7 +48,9 @@ Related: <a><xsl:attribute name="href">?f=related&amp;q=<xsl:value-of disable-ou
 </img></a>
 <br/>
 </xsl:if>
-<a><xsl:attribute name="href">?item=<xsl:value-of disable-output-escaping="yes" select="rsscache:url_crc32"/>&amp;output=media</xsl:attribute>Play</a><br/>
+<br/>
+<a><xsl:attribute name="href">?item=<xsl:value-of disable-output-escaping="yes" select="rsscache:url_crc32"/>&amp;output=media</xsl:attribute>Media</a><br/>
+<br/>
 <!-- xsl:if test="media:embed != ''">
 <xsl:value-of disable-output-escaping="yes" select="media:embed"/>
 <br/>
