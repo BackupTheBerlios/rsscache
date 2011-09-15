@@ -146,123 +146,6 @@ misc_str_replace_once ($needle, $replace, $haystack)
 
 
 function
-misc_playlist_load_string ($playlist_s)
-{
-//  $line = file ();
-  $line = explode ("\n", $playlist_s);
-
-  // demux
-  $demux = 0;
-  for ($i = 0; isset ($line[$i]); $i++)
-    if (strstr ($line[$i], '#EXTM3U'))
-      {
-        $demux = 1; // m3u
-        break;
-      }
-    else if (strstr ($line[$i], '[playlist]'))
-      {
-        $demux = 2; // pls
-        break;
-      }
-  // TODO: support xspf and wpl too
-
-  // parse
-  if ($demux == 1) // m3u
-    {
-/*
-#EXTM3U
-
-#EXTINF:123,Sample Artist - Sample title
-C:\Documents and Settings\I\My Music\Sample.mp3
-
-#EXTINF:321,Example Artist - Example title
-C:\Documents and Settings\I\My Music\Greatest Hits\Example.ogg
-*/
-      $a = array ();
-      for ($i = 0; isset ($line[$i]) && isset ($line[$i + 1]); $i++)
-        {
-          $p = $line[$i];
-
-          if (strstr ($p, '#EXTINF:'))
-            {
-              $p = substr ($p, 8);
-              $o = strpos ($p, ',');
-              $link = $line[++$i];
-              $a[] = array ('title' => trim (substr ($p, $o + 1)),
-                            'link' => $link,
-                            'media_duration' => trim (substr ($p, 0, $o))
-);
-            }
-//          else
-//            $a[] = array ('title' => trim ($p, ' #-'));
-        }
-
-      // DEBUG
-//      echo '<pre><tt>';
-//      print_r ($a);
-
-      return $a;
-    }
-  else if ($demux == 2) // pls
-    {
-/*
-[playlist]
-
-File1=http://streamexample.com:80
-Title1=My Favorite Online Radio
-Length1=-1
-
-File2=http://example.com/song.mp3
-Title2=Remote MP3
-Length2=286
-
-File3=/home/myaccount/album.flac
-Title3=Local album
-Length3=3487
-
-NumberOfEntries=3
-
-Version=2
-*/
-      $a = array ();
-      for ($i = 0; isset ($line[$i]); $i++)
-        {
-          $p = $line[$i];
-
-          if (strtolower (substr ($p, 0, 4)) == 'file')
-            {
-              $n = substr ($p, 4, strpos ($p, '=') - 4);
-              $s = substr ($p, strpos ($p, '=') + 1);
-              $a[$n * 1 - 1]['link'] = $s;
-            }
-          else if (strtolower (substr ($p, 0, 5)) == 'title')
-            {
-              $n = substr ($p, 5, strpos ($p, '=') - 5); 
-              $s = substr ($p, strpos ($p, '=') + 1);
-              $a[$n * 1 - 1]['title'] = $s;
-            }
-          else if (strtolower (substr ($p, 0, 6)) == 'length')
-            {
-              $n = substr ($p, 6, strpos ($p, '=') - 6);
-              $s = substr ($p, strpos ($p, '=') + 1);
-              $a[$n * 1 - 1]['media_duration'] = $s;             
-            }
-        }
-
-      // DEBUG
-//      echo '<pre><tt>';
-//      print_r ($a);
-
-      return $a;
-    }
-//  else if ($demux == 0)
-//    echo 'unknown playlist format';
-
-  return NULL;
-}
-
-
-function
 misc_crc8 ($s, $crc = 0)
 {
   $polynomial = (0x1070 << 3);
@@ -543,7 +426,8 @@ function
 strip_tags2 ($s)
 {
   // so one text does not get glued to another because of strip_tags()
-  return strip_tags (str_replace (array ('>',   '<'), array ('> ', ' <'), $s));
+//  return strip_tags (str_replace (array ('><', '>', '<'), array ('> <', '> ', ' <'), $s));
+  return strip_tags (str_replace (array ('>', '<'), array ('> ', ' <'), $s));
 }
 
 

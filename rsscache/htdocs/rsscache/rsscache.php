@@ -28,6 +28,7 @@ define ('RSSCACHE_PHP', 1);
 require_once ('default.php');
 require_once ('config.php');
 require_once ('misc/rss.php');
+require_once ('misc/json.php');
 require_once ('misc/sql.php');
 require_once ('misc/misc.php');
 require_once ('misc/youtube.php');
@@ -145,10 +146,16 @@ if ($output == 'json')
 //print_r ($a);
 //exit;
 
-$p =  generate_rss2 ($a['channel'], $a['item'], 1, 1, $rsscache_xsl_stylesheet_path);
+if ($output == 'json')
+  {
+$p = generate_json ($a['channel'], $a['item'], 1, 1);
+  }
+else
+  {
+$p = generate_rss2 ($a['channel'], $a['item'], 1, 1, $rsscache_xsl_stylesheet_path);
 
 // XSL transformation
-if (in_array ($output, array ('html', 'json', 'playlist', 'mediawiki', 'sitemap', 'html_media')))
+if (in_array ($output, array ('html', 'playlist', 'mediawiki', 'sitemap', 'html_media')))
   if ($rsscache_xsl_stylesheet_path)
   {
     if ($rsscache_xsl_trans == 2) // check user-agent and decide
@@ -166,6 +173,7 @@ if (in_array ($output, array ('html', 'json', 'playlist', 'mediawiki', 'sitemap'
     else if ($rsscache_xsl_trans == 1) // transform on client
       {
       }
+  }
   }
 
 if ($output == 'js')
