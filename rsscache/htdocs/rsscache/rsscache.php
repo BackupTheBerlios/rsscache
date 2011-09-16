@@ -41,8 +41,12 @@ require_once ('rsscache_output.php');
 // main ()
 
 
+// remove timezone warning
+//$tz = date_default_timezone_get ();
+//date_default_timezone_set ('UTC');
+
 // set user agent for downloads
-ini_set('rsscache_user_agent', random_user_agent ());
+ini_set('user_agent', random_user_agent ());
 $rsscache_user_agent = random_user_agent ();
 
 
@@ -146,6 +150,15 @@ if ($output == 'json')
 //print_r ($a);
 //exit;
 
+
+// TODO: filter array depending on if ($rsscache_admin == 0)
+
+
+// DEBUG
+//echo '<pre><tt>';
+//print_r ($a);
+//exit;
+
 if ($output == 'json')
   {
 $p = generate_json ($a['channel'], $a['item'], 1, 1);
@@ -198,6 +211,7 @@ if ($use_gzip == 1)
 else
   echo $p;
 
+//date_default_timezone_set ($tz);
 
 exit;
 
