@@ -18,6 +18,15 @@
 </link>
 </head>
 <body>
+<xsl:if test="count(rss/channel/item) = 1">
+<xsl:attribute name="style">background-color:#000;</xsl:attribute>
+<xsl:for-each select="rss/channel/item">
+<xsl:if test="media:embed != ''">
+<xsl:value-of disable-output-escaping="yes" select="media:embed"/>
+</xsl:if>
+</xsl:for-each>
+</xsl:if>
+<xsl:if test="count(rss/channel/item) &gt; 1">
 <img src="images/rsscache_logo.png"/><br/>
 <br/>
 <xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/><br/>
@@ -49,7 +58,7 @@ Related: <a><xsl:attribute name="href">?f=related&amp;q=<xsl:value-of disable-ou
 <br/>
 </xsl:if>
 <br/>
-<a><xsl:attribute name="href">?item=<xsl:value-of disable-output-escaping="yes" select="rsscache:url_crc32"/>&amp;output=html_media</xsl:attribute>Media</a><br/>
+<a><xsl:attribute name="href">?item=<xsl:value-of disable-output-escaping="yes" select="rsscache:url_crc32"/>&amp;output=html</xsl:attribute>Media</a><br/>
 <br/>
 <!-- xsl:if test="media:embed != ''">
 <xsl:value-of disable-output-escaping="yes" select="media:embed"/>
@@ -75,6 +84,7 @@ category: <b><xsl:value-of disable-output-escaping="yes" select="category"/></b>
 table_suffix: <b><xsl:value-of disable-output-escaping="yes" select="rsscache:table_suffix"/></b><br/>
 </div>
 </xsl:for-each>
+</xsl:if>
 </body>
 </html>
 </xsl:template>
