@@ -68,7 +68,7 @@ if ($num > $rsscache_max_results)
 // NOT admin
 if ($rsscache_admin == 0)
   {
-    if ($output == 'playlist' || $f == 'cache' || $f == 'config')
+    if ($output == 'pls' || $f == 'cache' || $f == 'config')
       {
         header ('Content-type: text/plain');
         echo 'admin access required';
@@ -168,7 +168,7 @@ else
 $p = generate_rss2 ($a['channel'], $a['item'], 1, 1, $rsscache_xsl_stylesheet_path);
 
 // XSL transformation
-if (in_array ($output, array ('html', 'playlist', 'mediawiki', 'sitemap', 'html_media')))
+if (in_array ($output, array ('html', 'pls', 'mediawiki', 'sitemap')))
   if ($rsscache_xsl_stylesheet_path)
   {
     if ($rsscache_xsl_trans == 2) // check user-agent and decide
@@ -191,14 +191,14 @@ if (in_array ($output, array ('html', 'playlist', 'mediawiki', 'sitemap', 'html_
 
 if ($output == 'js')
   header ('Content-type: text/javascript');
-else if ($output == 'html' || $output == 'html_media')
+else if ($output == 'html')
   header ('Content-type: text/html');
 else if ($output == 'json')
   header ('Content-type: application/json');
 else if ($output == 'rss')
   header ('Content-type: application/rss+xml');
 //  header ('Content-type: application/xml');
-else if ($rsscache_admin == 1 && $output == 'playlist')
+else if ($rsscache_admin == 1 && $output == 'pls')
   header ('Content-type: text/plain');
 else
 //  header ('Content-type: text/xml');

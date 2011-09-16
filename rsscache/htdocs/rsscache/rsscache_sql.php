@@ -289,7 +289,7 @@ rsscache_sql2array ($d_array)
       if ($demux != 0)
         $a['media:embed'] = widget_media ($d_array[$i]['rsstool_url'], -1, -1);
 
-      if ($rsscache_admin == 1 && $output == 'playlist')
+      if ($rsscache_admin == 1 && $output == 'pls')
         $a['rsscache:download'] = rsscache_download_videos ($d_array[$i]);
 
       for ($j = 0; isset ($config_xml['rsscache:feed_'.$j.'_link']); $j++)
