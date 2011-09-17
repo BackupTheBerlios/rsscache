@@ -128,18 +128,27 @@ rsscache_sql_close ();
 
 // normalize again
 if ($rsscache_admin == 0)
-{
-  for ($i = 0; isset ($a['item'][$i]); $i++)
-    {
-      // hide feeds
+  {
+    for ($i = 0; isset ($a['item'][$i]); $i++)
       for ($j = 0; isset ($a['item'][$i]['rsscache:feed_'.$j.'_link']); $j++)
         {
+          // hide feeds
           unset ($a['item'][$i]['rsscache:feed_'.$j.'_link']);
           unset ($a['item'][$i]['rsscache:feed_'.$j.'_opts']);
           unset ($a['item'][$i]['rsscache:feed_'.$j.'_client']);
+          // hide direct download
+          unset ($a['item'][$i]['rsscache:download']);
         }
-    }
-}
+  }
+else
+  {
+    if ($output == 'pls')
+      {
+        // this is slow and requires external resources (admin, only)
+        for ($i = 0; isset ($a['item'][$i]); $i++)
+          $a['item'][$i]['rsscache:download'] = rsscache_download_videos ($a['item'][$i]);
+      }
+  }
 
 
 // DEBUG
@@ -162,9 +171,9 @@ else // generate RSS (and transform using XSL)
     if ($output)
       {
         $s = ''
-//                       .'http://'.$_SERVER['SERVER_NAME']
-                       .$rsscache_xsl_stylesheet_path
-                       .'/rsscache_'.basename ($output).'.xsl';
+//            .'http://'.$_SERVER['SERVER_NAME']
+            .$rsscache_xsl_stylesheet_path
+            .'/rsscache_'.basename ($output).'.xsl';
 
         if (!file_exists ($s))
           {
@@ -197,17 +206,17 @@ else // generate RSS (and transform using XSL)
       }
   }
 
-if ($output == 'js')
-  header ('Content-type: text/javascript');
-else if ($output == 'html')
-  header ('Content-type: text/html');
-else if ($output == 'json')
-  header ('Content-type: application/json');
-else if ($output == 'rss')
-  header ('Content-type: application/rss+xml');
-//  header ('Content-type: application/xml');
-else if ($rsscache_admin == 1 && $output == 'pls')
-  header ('Content-type: text/plain');
+
+$a = array (
+  'js' =>    'Content-type: text/javascript',
+  'html' =>  'Content-type: text/html',
+  'json' =>  'Content-type: application/json',
+  'rss' =>   'Content-type: application/rss+xml', 
+//  'rss' => 'Content-type: application/xml',
+  'pls' =>   'Content-type: text/plain',
+);
+if (isset ($a[$output]))
+  header ($a[$output]);
 else
 //  header ('Content-type: text/xml');
   header ('Content-type: application/xml');

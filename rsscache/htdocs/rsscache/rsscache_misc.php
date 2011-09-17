@@ -227,7 +227,7 @@ rsscache_download_videos ($item)
 //  for ($i = 0; isset ($item[$i]); $i++)
     {
 //      $id = youtube_get_videoid ($item[$i]['link']);
-      $id = youtube_get_videoid ($item['rsstool_url']);
+      $id = youtube_get_videoid ($item['link']);
       $b = youtube_get_download_urls ($id, 0, $debug);
    
       // DEBUG

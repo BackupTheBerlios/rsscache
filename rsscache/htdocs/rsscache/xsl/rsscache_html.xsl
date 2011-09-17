@@ -44,6 +44,7 @@
 <img>
 <xsl:attribute name="src"><xsl:value-of disable-output-escaping="yes" select="enclosure/@url"/></xsl:attribute>
 </img>
+<!-- a><xsl:attribute name="href">?c=<xsl:value-of disable-output-escaping="yes" select="category"/>&amp;output=html</xsl:attribute><xsl:value-of disable-output-escaping="yes" select="title"/></a -->
 <a href="{link}"><xsl:value-of disable-output-escaping="yes" select="title"/></a>
 &#160;&#160;
 <xsl:if test="media:duration &gt; 0"><xsl:value-of disable-output-escaping="yes" select="media:duration"/> seconds<br/></xsl:if>
@@ -56,14 +57,10 @@ Related: <a><xsl:attribute name="href">?f=related&amp;q=<xsl:value-of disable-ou
 <xsl:attribute name="src"><xsl:value-of disable-output-escaping="yes" select="media:thumbnail/@url"/></xsl:attribute>
 </img></a>
 <br/>
-</xsl:if>
 <br/>
 <a><xsl:attribute name="href">?item=<xsl:value-of disable-output-escaping="yes" select="rsscache:url_crc32"/>&amp;output=html</xsl:attribute>Media</a><br/>
+</xsl:if>
 <br/>
-<!-- xsl:if test="media:embed != ''">
-<xsl:value-of disable-output-escaping="yes" select="media:embed"/>
-<br/>
-</xsl:if -->
 <xsl:value-of disable-output-escaping="yes" select="description"/><br/>
 <br/>
 Category: 

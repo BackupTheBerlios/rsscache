@@ -287,10 +287,10 @@ rsscache_sql2array ($d_array)
 //widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0, $blackbg = 0)
       $demux = widget_media_demux ($d_array[$i]['rsstool_url']);
       if ($demux != 0)
-        $a['media:embed'] = widget_media ($d_array[$i]['rsstool_url'], -1, -1);
-
-      if ($rsscache_admin == 1 && $output == 'pls')
-        $a['rsscache:download'] = rsscache_download_videos ($d_array[$i]);
+        {
+          $a['media:embed'] = widget_media ($d_array[$i]['rsstool_url'], -1, -1);
+          $a['cms:demux'] = $demux;
+        }
 
       for ($j = 0; isset ($config_xml['rsscache:feed_'.$j.'_link']); $j++)
         {
