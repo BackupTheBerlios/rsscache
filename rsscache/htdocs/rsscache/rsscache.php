@@ -163,7 +163,7 @@ else
                width="300" 
                lang="en" />
 */
-        if ($output == 'pls')
+//        if ($output == 'pls')
           {
             $b = rsscache_download_videos ($a['item'][$i]);
             for ($j = 0; isset ($b[$j]); $j++)
@@ -177,9 +177,9 @@ else
 
 
 // DEBUG
-echo '<pre><tt>';
-print_r ($a);
-exit;
+//echo '<pre><tt>';
+//print_r ($a);
+//exit;
 
 if ($output == 'json')
   {

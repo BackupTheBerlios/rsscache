@@ -236,7 +236,7 @@ rsscache_download_videos ($item)
       for ($j = 0; isset ($b[$j]); $j++);
 
 //      $item[$i]['rsscache:download'] = $b[max (0, $j - 2)]; // lowest quality
-      return $b[max (0, $j - 2)]; // lowest quality
+      return array ($b[max (0, $j - 2)]); // lowest quality
     }
 
 //  return array ('channel' => $channel, 'item' => $item);

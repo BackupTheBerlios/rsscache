@@ -361,14 +361,6 @@ $a = array (
 //       .'      <height></height>'."\n"
        .'    </image>'."\n"
 ;
-  // textinput
-//  $p .= '    <textinput>'."\n"
-//       .'      <description>Search Google</description>'."\n"
-//       .'      <title>Search</title>'."\n"
-//       .'      <link>http://www.google.no/search?</link>'."\n"
-//       .'      <name>q</name>'."\n"
-//       .'    </textinput>'."\n"
-//;
 
 $a = array (
 //           'rsscache:stats_category',
@@ -424,135 +416,7 @@ $a = array (
       // mrss
       if ($use_mrss == 1)
         {
-/*
-
-<media:title>
-
-The title of the particular media object. It has 1 optional attribute.
-
-        <media:title type="plain">The Judy's - The Moo Song</media:title>
-
-type specifies the type of text embedded. Possible values are either 'plain' or 'html'. Default value is 'plain'. All html must be entity-encoded. It is an optional attribute.
-
-<media:description>
-
-Short description describing the media object typically a sentence in length. It has 1 optional attribute.
-
-        <media:description type="plain">This was some really bizarre band I listened to as a young lad.</media:description>
-
-type specifies the type of text embedded. Possible values are either 'plain' or 'html'. Default value is 'plain'. All html must be entity-encoded. It is an optional attribute.
-
-<media:player>
-
-Allows the media object to be accessed through a web browser media player console. This element is required only if a direct media url attribute is not specified in the <media:content> element. It has 1 required attribute, and 2 optional attributes.
-
-        <media:player url="http://www.foo.com/player?id=1111" height="200" width="400" />
-
-url is the url of the player console that plays the media. It is a required attribute.
-
-height is the height of the browser window that the url should be opened in. It is an optional attribute.
-
-width is the width of the browser window that the url should be opened in. It is an optional attribute.
-
-<media:text>
-
-Allows the inclusion of a text transcript, closed captioning, or lyrics of the media content. Many of these elements are permitted to provide a time series of text. In such cases, it is encouraged, but not required, that the elements be grouped by language and appear in time sequence order based on the start time. Elements can have overlapping start and end times. It has 4 optional attributes.
-
-        <media:text type="plain" lang="en" start="00:00:03.000" 
-        end="00:00:10.000"> Oh, say, can you see</media:text>
-        <media:text type="plain" lang="en" start="00:00:10.000" 
-        end="00:00:17.000">By the dawn's early light</media:text>
-
-type specifies the type of text embedded. Possible values are either 'plain' or 'html'. Default value is 'plain'. All html must be entity-encoded. It is an optional attribute.
-
-lang is the primary language encapsulated in the media object. Language codes possible are detailed in RFC 3066. This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third Edition). It is an optional attribute.
-
-start specifies the start time offset that the text starts being relevant to the media object. An example of this would be for closed captioning. It uses the NTP time code format (see: the time attribute used in <media:thumbnail>).   It is an optional attribute.
-
-end specifies the end time that the text is relevant. If this attribute is not provided, and a start time is used, it is expected that the end time is either the end of the clip or the start of the next <media:text> element.
-
-<media:embed>
-
-Sometimes player specific embed code is needed for a player to play any video. <media:embed> allows inclusion of such information in the form of key value pairs.
-
-     <media:embed url="http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.2" width="512" height="323" >
-                <media:param name="type">application/x-shockwave-flash</media:param>
-                <media:param name="width">512</media:param>
-                <media:param name="height">323</media:param>
-                <media:param name="allowFullScreen">true</media:param>
-                <media:param name="flashVars">id=7809705&vid=2666306&lang=en-us&intl=us&thumbUrl=http%3A//us.i1.yimg.com/us.yimg.com/i/us/sch/cn/video06/2666306_rndf1e4205b_19.jpg</media:param>
-     </media:embed>
-
-<media:status>
-
-Optional tag to specify the status of a media object - whether it's still active or it has been blocked/deleted.
-
-     <media:status state="blocked" reason="http://www.reasonforblocking.com"/>
-
-state can have values "active", "blocked" or "deleted". "active" means a media object is active in the system, "blocked" means a media object is blocked by the publisher, "deleted" means a media object has been deleted by the publisher.
-
-reason is a reason explaining why a media object has been blocked/deleted. It can be plain text or a url.
-
-<media:subTitle>
-
-Optional element for subtitle/CC link. It contains type and language attributes. Language is based on RFC 3066. There can be more than one such tag per media element e.g. one per language. Please refer to Timed Text spec - W3C for more information on Timed Text and Real Time Subtitling.
-
- 
-        <media:subTitle type="application/smil" lang="en-us"  href="http://www.example.org/subtitle.smil"  />
-
-<media:peerLink>
-
-Optional element for P2P link.
-
-        <media:peerLink type="application/x-bittorrent " href="http://www.example.org/sampleFile.torrent"  />
-
-For a valid mRSS item, at least one of the following links is required:
-
-    media:content
-
-    media:player
-    media:peerLink
-
-<media:location>
-
-Optional element to specify geographical information about various locations captured in the content of a media object. The format conforms to geoRSS.
-
-  <media:location description="My house" start="00:01" end="01:00">
-       <georss:where>
-       <gml:Point>
-         <gml:pos>35.669998 139.770004</gml:pos>
-       </gml:Point>
-       </georss:where>
-      </media:location>
-
-description description of the place whose location is being specified.
-
-start time at which the reference to a particular location starts in the media object.
-
-end time at which the reference to a particular location ends in the media object.
-
-<media:scenes>
-
-Optional element to specify various scenes within a media object. It can have multiple child <media:scene> elements, where each <media:scene> element contains information about a particular scene. <media:scene> has optional sub-elements as "sceneTitle","sceneDescription", "sceneStartTime" and "sceneEndTime", which contains title, description, start and end time of a particular scene in the media respectively.
-
-    <media:scenes>
-        <media:scene>
-            <sceneTitle>sceneTitle1</sceneTitle>
-            <sceneDescription>sceneDesc1</sceneDescription>
-            <sceneStartTime>00:15</sceneStartTime>
-            <sceneEndTime>00:45</sceneEndTime>
-        </media:scene>
-        <media:scene>
-            <sceneTitle>sceneTitle2</sceneTitle>
-            <sceneDescription>sceneDesc2</sceneDescription>
-            <sceneStartTime>00:57</sceneStartTime>
-            <sceneEndTime>01:45</sceneEndTime>
-        </media:scene>
-    </media:scenes>
-*/
 //      $p .= '    <media:group>'."\n";
-
-//      $p .= '      <media:content url="'.$item[$i]['link'].'" />'."\n";
 
 //      $p .= '      <media:category scheme="">'.'</media:category>';
 
@@ -567,13 +431,29 @@ $a = array (
   
    $p .= generate_rss2_func ($item[$i], $a);
 
-              $a['item'][$i]['media:content_'.$j] = $b[$j];
 
+/*
+        <media:content 
+               url="http://www.foo.com/movie.mov"
+               fileSize="12216320" 
+               type="video/quicktime"
+               medium="video"
+               isDefault="true"
+               expression="full"
+               bitrate="128"
+               framerate="25"
+               samplingrate="44.1"
+               channels="2"
+               duration="185"
+               height="200"
+               width="300"
+               lang="en" />
+*/ 
 
 for ($j = 0; isset ($item[$i]['media:content_'.$j]); $j++)
   {
     if (isset ($item[$i]['media:content_'.$j]))
-      $p .= '        <media:content url="'.misc_xml_escape ($item[$i]['media:content_'.$j]).'" />'."\n";
+      $p .= '      <media:content url="'.$item[$i]['media:content_'.$j].'" />'."\n";
   }
 
 //      $p .= '      </media:group>'."\n";
@@ -598,7 +478,7 @@ $a = array (
            'rsscache:reportable',
            'rsscache:votable',
            'rsscache:table_suffix',
-           'rsscache:download',
+//           'rsscache:download',
 );
 
    $p .= generate_rss2_func ($item[$i], $a);
