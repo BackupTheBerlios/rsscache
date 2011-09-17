@@ -636,7 +636,7 @@ $a = array (
             'cms:local',
             'cms:iframe',
             'cms:proxy',
-            'cms:query',
+//            'cms:query',
             'cms:demux',
 );
 
