@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 if (!defined ('MISC_WIKIPEDIA_PHP'))
 {
-//phpinfo ();
 define ('MISC_WIKIPEDIA_PHP', 1);
+//phpinfo ();
 //error_reporting(E_ALL | E_STRICT);
 require_once ('misc.php');
 //require_once ('embed.php');
@@ -43,10 +43,7 @@ wikipedia_get_xml ($q)
 ;
 //  $url = 'http://en.wikipedia.org/w/api.php?action=opensearch&search='.$q.'&limit=1&format=xml';
 //Category:Films
-  $ua = ini_get ('user_agent'); 
-  ini_set ('user_agent', random_user_agent ()); // yawn  
   $f = file_get_contents ($url);
-  ini_set ('user_agent', $ua);
   $xml = simplexml_load_string ($f, 'SimpleXMLElement', LIBXML_NOCDATA);
 // DEBUG
 //echo '<pre><tt>';
@@ -59,14 +56,11 @@ function
 wikipedia_get_html ($q)
 {
   $xml = wikipedia_get_xml ($q);
-  $ua = ini_get ('user_agent');
-  ini_set ('user_agent', random_user_agent ()); // yawn  
   $p = file_post_contents (
          'http://en.wikipedia.org/w/api.php',
          array ('action' => 'parse',
                 'format' => 'xml',
                 'text' => $xml->query->pages->page->revisions->rev));
-  ini_set ('user_agent', $ua);
   $xml = simplexml_load_string ($p, 'SimpleXMLElement', LIBXML_NOCDATA);
 
 // DEBUG  
