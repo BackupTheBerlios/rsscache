@@ -68,12 +68,10 @@ if ($num > $rsscache_max_results)
 // NOT admin
 if ($rsscache_admin == 0)
   {
-    if ($output == 'pls' || $f == 'cache' || $f == 'config')
-      {
-        header ('Content-type: text/plain');
-        echo 'admin access required';
-        exit;
-      }
+    if (in_array ($output, array ('pls', )))
+      $output = NULL;
+    if (in_array ($f, array ('cache', 'config')))
+      $f = NULL;
   }
 
 if ($f == 'robots')
@@ -82,24 +80,6 @@ if ($f == 'robots')
     echo rsscache_write_robots ();
     exit;
   }
-
-if ($output)
-  {
-    $s = ''
-//        .'http://'.$_SERVER['SERVER_NAME']
-        .$rsscache_xsl_stylesheet_path
-        .'/rsscache_'.basename ($output).'.xsl';
-
-    if (!file_exists ($s))
-      {
-        $output = NULL;
-        $rsscache_xsl_trans = 0;
-        $rsscache_xsl_stylesheet_path = NULL;
-      }
-    else $rsscache_xsl_stylesheet_path = $s;
-  }
-else
-  $rsscache_xsl_stylesheet_path = NULL;
 
 rsscache_sql_open ();
 
@@ -125,8 +105,7 @@ if ($f == 'cache') // cache (new) items into database
     $a = array ('config' => array ('title' => rsscache_title (), 'description' => $p),
                 'item' => NULL);
   }
-else if ($f == 'config' || // dump config (w/ new indentation)
-  $f == 'stats' || $output == 'sitemap')
+else if ($f == 'config' || $f == 'stats' || $output == 'sitemap')
   {
     $a = $config;
   }
@@ -141,17 +120,26 @@ else
 
 rsscache_sql_close ();
 
-if ($output == 'json')  
-  $a['channel']['description'] = str_replace (array ('&amp;', '&nbsp;', '<br>'),
-                                              array ('&', ' ', "\n"), $a['channel']['description']);
-
 // DEBUG
 //echo '<pre><tt>';
 //print_r ($a);
 //exit;
 
 
-// TODO: filter array depending on if ($rsscache_admin == 0)
+// normalize again
+if ($rsscache_admin == 0)
+{
+  for ($i = 0; isset ($a['item'][$i]); $i++)
+    {
+      // hide feeds
+      for ($j = 0; isset ($a['item'][$i]['rsscache:feed_'.$j.'_link']); $j++)
+        {
+          unset ($a['item'][$i]['rsscache:feed_'.$j.'_link']);
+          unset ($a['item'][$i]['rsscache:feed_'.$j.'_opts']);
+          unset ($a['item'][$i]['rsscache:feed_'.$j.'_client']);
+        }
+    }
+}
 
 
 // DEBUG
@@ -161,32 +149,52 @@ if ($output == 'json')
 
 if ($output == 'json')
   {
-$p = generate_json ($a['channel'], $a['item'], 1, 1);
+    $a['channel']['description'] = str_replace (array ('&amp;', '&nbsp;', '<br>'),
+                                                array ('&', ' ', "\n"), $a['channel']['description']);
+    $p = generate_json ($a['channel'], $a['item'], 1, 1);
   }
-else
+else if ($output == 'atom')
   {
-$p = generate_rss2 ($a['channel'], $a['item'], 1, 1, $rsscache_xsl_stylesheet_path);
+  }
+else // generate RSS (and transform using XSL)
+  {
+    $s = NULL;
+    if ($output)
+      {
+        $s = ''
+//                       .'http://'.$_SERVER['SERVER_NAME']
+                       .$rsscache_xsl_stylesheet_path
+                       .'/rsscache_'.basename ($output).'.xsl';
 
-// XSL transformation
-if (in_array ($output, array ('html', 'pls', 'mediawiki', 'sitemap')))
-  if ($rsscache_xsl_stylesheet_path)
-  {
-    if ($rsscache_xsl_trans == 2) // check user-agent and decide
-      {
-        // TODO
-        $rsscache_xsl_trans = 0;
+        if (!file_exists ($s))
+          {
+            $output = NULL;
+            $rsscache_xsl_trans = 0;
+            $s = NULL;
+          }
       }
-    if ($rsscache_xsl_trans == 0) // transform on server
+
+    $p = generate_rss2 ($a['channel'], $a['item'], 1, 1, $s);
+
+    // XSL transformation
+    if ($s)
       {
-        $xsl = file_get_contents ($rsscache_xsl_stylesheet_path);
-        $xslt = new XSLTProcessor (); 
-        $xslt->importStylesheet (new SimpleXMLElement ($xsl));
-        $p = $xslt->transformToXml (new SimpleXMLElement ($p));
+        if ($rsscache_xsl_trans == 2) // check user-agent and decide
+          {
+            // TODO
+            $rsscache_xsl_trans = 0;
+          }
+        if ($rsscache_xsl_trans == 0) // transform on server
+          {
+            $xsl = file_get_contents ($s);
+            $xslt = new XSLTProcessor (); 
+            $xslt->importStylesheet (new SimpleXMLElement ($xsl));
+            $p = $xslt->transformToXml (new SimpleXMLElement ($p));
+          }
+        else if ($rsscache_xsl_trans == 1) // transform on client
+          {
+          }
       }
-    else if ($rsscache_xsl_trans == 1) // transform on client
-      {
-      }
-  }
   }
 
 if ($output == 'js')
@@ -211,10 +219,11 @@ if ($use_gzip == 1)
 else
   echo $p;
 
+
 //date_default_timezone_set ($tz);
 
-exit;
 
+exit;
 }
 
 
