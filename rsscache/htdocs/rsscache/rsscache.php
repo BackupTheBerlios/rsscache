@@ -32,6 +32,7 @@ require_once ('misc/json.php');
 require_once ('misc/sql.php');
 require_once ('misc/misc.php');
 require_once ('misc/youtube.php');
+require_once ('misc/wikipedia.php');
 require_once ('misc/widget_media.php');
 require_once ('rsscache_misc.php');
 require_once ('rsscache_sql.php');
@@ -142,11 +143,14 @@ if ($rsscache_admin == 0)
   }
 else
   {
-    if ($output == 'pls')
+    // this is slow and requires external resources
+    for ($i = 0; isset ($a['item'][$i]); $i++)
       {
-        // this is slow and requires external resources (admin, only)
-        for ($i = 0; isset ($a['item'][$i]); $i++)
+        if ($output == 'pls')
           $a['item'][$i]['rsscache:download'] = rsscache_download_videos ($a['item'][$i]);
+
+        // enrich with information from wikipedia
+//        $a['item'][$i]['rsscache:wikipedia'] = 
       }
   }
 

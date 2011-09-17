@@ -609,8 +609,7 @@ rsscache_default_channel_description ($use_mrss = 0, $use_rsscache = 0)
       .'*** install ***<br>'."\n"
       .'see apache2/sites-enabled/rsscache<br>'."\n"
 ;
-//  return str_replace (array ('&', "\n", '  '), array ('&amp;', '<br>', '&nbsp;&nbsp;'), $p);
-  return $p;
+  return str_replace ('  ', '&nbsp;&nbsp;', $p);
 }
 
 
