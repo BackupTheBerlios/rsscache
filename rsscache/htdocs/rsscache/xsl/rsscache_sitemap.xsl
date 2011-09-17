@@ -5,7 +5,7 @@
 <xsl:for-each select="rss/channel/item">
 <!--    if (trim ($config_xml['item'][$i]['category']) != '') -->
 <url>
-  <loc>?c=<xsl:value-of disable-output-escaping="yes" select="category"/></loc>
+  <loc>http://rsscache.a1.25u.com/?c=<xsl:value-of disable-output-escaping="yes" select="category"/></loc>
 <!--
 The formats are as follows. Exactly the components shown here must be present, with exactly this punctuation. Note that the "T" appears literally in the string, to indicate the beginning of the time element, as specified in ISO 8601.
 
@@ -22,8 +22,8 @@ The formats are as follows. Exactly the components shown here must be present, w
    Complete date plus hours, minutes, seconds and a decimal fraction of a second
       YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
 -->
-<lastmod>strftime ('%F' /* 'T%T%Z' */)</lastmod>
-<changefreq>always</changefreq>
+<!-- lastmod>strftime ('%F' /* 'T%T%Z' */)</lastmod>
+<changefreq>always</changefreq -->
 <video:video>
 <video:thumbnail_loc><xsl:value-of disable-output-escaping="yes" select="image"/></video:thumbnail_loc>
 <video:title><xsl:value-of disable-output-escaping="yes" select="title"/></video:title>
