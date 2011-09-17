@@ -146,6 +146,18 @@ else
     // this is slow and requires external resources
     for ($i = 0; isset ($a['item'][$i]); $i++)
       {
+        // GeoIP of link
+//$qstat_path = '/usr/local/bin/qstat';
+//$qstat_opts = '-cn -P -R -sort F -xml';
+//$geoip_path = 'geoiplookup';
+//$geoip_opts = '-f ./GeoLiteCity.dat';
+    // get latitude and longitude of game server
+//    $geoip = misc_exec ($geoip_path.' '.$geoip_opts.' '.$a[0]);
+//    $geoip = str_replace ("\n", '', $geoip);
+    // DEBUG
+//    echo $geoip;
+
+
 /*
         <media:content 
                url="http://www.foo.com/movie.mov" 
@@ -163,6 +175,7 @@ else
                width="300" 
                lang="en" />
 */
+        // direct download
 //        if ($output == 'pls')
           {
             $b = rsscache_download_videos ($a['item'][$i]);

@@ -1,3 +1,62 @@
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:media="http://search.yahoo.com/mrss/" xmlns:rsscache="data:,rsscache" xmlns:cms="data:,cms">
+<xsl:output method="text" omit-xml-declaration="yes"/>
+<xsl:template match="/">
+-- -----------------------------------------------------------
+-- RSStool - read, parse, merge and write RSS and Atom feeds
+-- -----------------------------------------------------------
+
+-- DROP TABLE IF EXISTS rsstool_table;
+-- CREATE TABLE rsstool_table (
+--   rsstool_url_md5 varchar(32) NOT NULL default '',
+--   rsstool_url_crc32 int(10) unsigned NOT NULL default '0',
+--   rsstool_site text NOT NULL,
+--   rsstool_dl_url text NOT NULL,
+--   rsstool_dl_url_md5 varchar(32) NOT NULL default '',
+--   rsstool_dl_url_crc32 int(10) unsigned NOT NULL default '0',
+--   rsstool_title text NOT NULL,
+--   rsstool_title_md5 varchar(32) NOT NULL default '',
+--   rsstool_title_crc32 int(10) unsigned NOT NULL default '0',
+--   rsstool_desc text NOT NULL,
+--   rsstool_date bigint(20) unsigned NOT NULL default '0',
+--   rsstool_dl_date bigint(20) unsigned NOT NULL default '0',
+--   rsstool_keywords text NOT NULL,
+--   rsstool_media_duration bigint(20) unsigned NOT NULL default '0',
+--   rsstool_image text NOT NULL,
+--   rsstool_event_start bigint(20) unsigned NOT NULL default '0',
+--   rsstool_event_end bigint(20) unsigned NOT NULL default '0',
+--   UNIQUE KEY rsstool_url_crc32 (rsstool_url_crc32),
+--   UNIQUE KEY rsstool_url_md5 (rsstool_url_md5),
+--   UNIQUE KEY rsstool_title_crc32 (rsstool_title_crc32),
+--   UNIQUE KEY rsstool_title_md5 (rsstool_title_md5),
+--   FULLTEXT KEY rsstool_title (rsstool_title),
+--   FULLTEXT KEY rsstool_desc (rsstool_desc)
+-- ) TYPE=MyISAM;
+
+-- DROP TABLE IF EXISTS keyword_table;
+-- CREATE TABLE IF NOT EXISTS keyword_table (
+--   rsstool_url_md5 varchar(32) NOT NULL,
+--   rsstool_url_crc32 int(10) unsigned NOT NULL,
+--   rsstool_keyword_crc32 int(10) unsigned NOT NULL,
+--   rsstool_keyword_crc24 int(10) unsigned NOT NULL,
+--   rsstool_keyword_crc16 smallint(5) unsigned NOT NULL,
+--   PRIMARY KEY (rsstool_url_crc32,rsstool_keyword_crc16),
+--   KEY rsstool_keyword_24bit (rsstool_keyword_crc24),
+--   KEY rsstool_keyword_16bit (rsstool_keyword_crc16)
+-- ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+<xsl:for-each select="rss/channel/item">
+
+# <xsl:value-of disable-output-escaping="yes" select="title"/>
+<xsl:value-of disable-output-escaping="yes" select="link"/><xsl:text>
+</xsl:text><xsl:value-of disable-output-escaping="yes" select="rsscache:download"/><xsl:text>
+</xsl:text>
+
+
+
+
+<!--
+
+
 function
 rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn = NULL)
 {
@@ -13,52 +72,6 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
         $rsstool_table .= '_'.$table_suffix;
         $keyword_table .= '_'.$table_suffix;
       }
-
-  $p .= '-- -----------------------------------------------------------'."\n"
-       .'-- RSStool - read, parse, merge and write RSS and Atom feeds'."\n"
-       .'-- -----------------------------------------------------------'."\n"
-       ."\n"
-       .'-- DROP TABLE IF EXISTS '.$rsstool_table.';'."\n"
-       .'-- CREATE TABLE '.$rsstool_table.' ('."\n"
-//       .'--   rsstool_url_md5 varchar(32) NOT NULL default \'\','."\n"
-       .'--   rsstool_url_crc32 int(10) unsigned NOT NULL default \'0\','."\n"
-       .'--   rsstool_site text NOT NULL,'."\n"
-       .'--   rsstool_dl_url text NOT NULL,'."\n"
-//       .'--   rsstool_dl_url_md5 varchar(32) NOT NULL default \'\','."\n"
-       .'--   rsstool_dl_url_crc32 int(10) unsigned NOT NULL default \'0\','."\n"
-       .'--   rsstool_title text NOT NULL,'."\n"
-//       .'--   rsstool_title_md5 varchar(32) NOT NULL default \'\','."\n"
-       .'--   rsstool_title_crc32 int(10) unsigned NOT NULL default \'0\','."\n"
-       .'--   rsstool_desc text NOT NULL,'."\n"
-       .'--   rsstool_date bigint(20) unsigned NOT NULL default \'0\','."\n"
-       .'--   rsstool_dl_date bigint(20) unsigned NOT NULL default \'0\','."\n"
-       .'--   rsstool_keywords text NOT NULL,'."\n"
-       .'--   rsstool_media_duration bigint(20) unsigned NOT NULL default \'0\','."\n"
-       .'--   rsstool_image text NOT NULL,'."\n"
-       .'--   rsstool_event_start bigint(20) unsigned NOT NULL default \'0\','."\n"
-       .'--   rsstool_event_end bigint(20) unsigned NOT NULL default \'0\','."\n"
-       .'--   UNIQUE KEY rsstool_url_crc32 (rsstool_url_crc32),'."\n"
-//       .'--   UNIQUE KEY rsstool_url_md5 (rsstool_url_md5),'."\n"
-//       .'--   UNIQUE KEY rsstool_title_crc32 (rsstool_title_crc32),'."\n"
-//       .'--   UNIQUE KEY rsstool_title_md5 (rsstool_title_md5),'."\n"
-//       .'--   FULLTEXT KEY rsstool_title (rsstool_title),'."\n"
-//       .'--   FULLTEXT KEY rsstool_desc (rsstool_desc)'."\n"
-       .'-- ) TYPE=MyISAM;'."\n"
-       ."\n";
-
-  $p .= ''
-       .'-- DROP TABLE IF EXISTS '.$rsstool_table.';'."\n"
-       .'-- CREATE TABLE IF NOT EXISTS '.$keyword_table.' ('."\n"
-//       .'--   rsstool_url_md5 varchar(32) NOT NULL,'."\n"
-       .'--   rsstool_url_crc32 int(10) unsigned NOT NULL,'."\n"
-//       .'--   rsstool_keyword_crc32 int(10) unsigned NOT NULL,'."\n"
-//       .'--   rsstool_keyword_crc24 int(10) unsigned NOT NULL,'."\n"
-       .'--   rsstool_keyword_crc16 smallint(5) unsigned NOT NULL,'."\n"
-       .'--   PRIMARY KEY (rsstool_url_crc32,rsstool_keyword_crc16),'."\n"
-//       .'--   KEY rsstool_keyword_24bit (rsstool_keyword_crc24),'."\n"
-       .'--   KEY rsstool_keyword_16bit (rsstool_keyword_crc16)'."\n"
-       .'-- ) ENGINE=MyISAM DEFAULT CHARSET=utf8;'."\n"
-       ."\n";
 
   $items = count ($xml->item);
   for ($i = 0; $i < $items; $i++)
@@ -155,5 +168,7 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
   return $p;
 }
 
-
-
+-->
+</xsl:for-each>
+</xsl:template>
+</xsl:stylesheet>
