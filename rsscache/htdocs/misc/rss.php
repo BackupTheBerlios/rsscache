@@ -567,6 +567,15 @@ $a = array (
   
    $p .= generate_rss2_func ($item[$i], $a);
 
+              $a['item'][$i]['media:content_'.$j] = $b[$j];
+
+
+for ($j = 0; isset ($item[$i]['media:content_'.$j]); $j++)
+  {
+    if (isset ($item[$i]['media:content_'.$j]))
+      $p .= '        <media:content url="'.misc_xml_escape ($item[$i]['media:content_'.$j]).'" />'."\n";
+  }
+
 //      $p .= '      </media:group>'."\n";
         }
 

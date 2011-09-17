@@ -146,8 +146,29 @@ else
     // this is slow and requires external resources
     for ($i = 0; isset ($a['item'][$i]); $i++)
       {
+/*
+        <media:content 
+               url="http://www.foo.com/movie.mov" 
+               fileSize="12216320" 
+               type="video/quicktime"
+               medium="video"
+               isDefault="true" 
+               expression="full" 
+               bitrate="128" 
+               framerate="25"
+               samplingrate="44.1"
+               channels="2"
+               duration="185" 
+               height="200"
+               width="300" 
+               lang="en" />
+*/
         if ($output == 'pls')
-          $a['item'][$i]['rsscache:download'] = rsscache_download_videos ($a['item'][$i]);
+          {
+            $b = rsscache_download_videos ($a['item'][$i]);
+            for ($j = 0; isset ($b[$j]); $j++)
+              $a['item'][$i]['media:content_'.$j] = $b[$j];
+          }
 
         // enrich with information from wikipedia
 //        $a['item'][$i]['rsscache:wikipedia'] = 
@@ -156,9 +177,9 @@ else
 
 
 // DEBUG
-//echo '<pre><tt>';
-//print_r ($a);
-//exit;
+echo '<pre><tt>';
+print_r ($a);
+exit;
 
 if ($output == 'json')
   {
