@@ -147,6 +147,26 @@ else
     for ($i = 0; isset ($a['item'][$i]); $i++)
       {
         // GeoIP of link
+// uncomment for Shared Memory support
+// geoip_load_shared_mem("/usr/local/share/GeoIP/GeoIPCity.dat");
+// $gi = geoip_open("/usr/local/share/GeoIP/GeoIPCity.dat",GEOIP_SHARED_MEMORY);
+
+$gi = geoip_open("/usr/local/share/GeoIP/GeoIPCity.dat",GEOIP_STANDARD);
+
+$record = geoip_record_by_addr($gi,"24.24.24.24");
+print $record->country_code . " " . $record->country_code3 . " " . $record->country_name . "\n";
+print $record->region . " " . $GEOIP_REGION_NAME[$record->country_code][$record->region] . "\n";
+print $record->city . "\n";
+print $record->postal_code . "\n";
+print $record->latitude . "\n";
+print $record->longitude . "\n";
+print $record->metro_code . "\n";
+print $record->area_code . "\n";
+print $record->continent_code . "\n";
+
+geoip_close($gi);
+
+
 //$qstat_path = '/usr/local/bin/qstat';
 //$qstat_opts = '-cn -P -R -sort F -xml';
 //$geoip_path = 'geoiplookup';
