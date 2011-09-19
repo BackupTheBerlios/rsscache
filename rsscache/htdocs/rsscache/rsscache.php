@@ -69,7 +69,7 @@ if ($num > $rsscache_max_results)
 // NOT admin
 if ($rsscache_admin == 0)
   {
-    if (in_array ($output, array ('pls', 'm3u',)))
+    if (in_array ($output, array ('pls', 'm3u', 'ansisql',)))
       $output = NULL;
     if (in_array ($f, array ('cache', 'config')))
       $f = NULL;
@@ -172,7 +172,7 @@ else
                lang="en" />
 */
         // direct download
-//        if (in_array ($output, array ('pls', 'm3u',)))
+//        if (in_array ($output, array ('pls', 'm3u', 'ansisql',)))
           {
             $b = rsscache_download_videos ($a['item'][$i]);
             for ($j = 0; isset ($b[$j]); $j++)
@@ -207,7 +207,13 @@ else // generate RSS (and transform using XSL)
     $s = NULL;
     if ($output)
       {
-        $s = ''
+        if ($output == 'ansisql')
+          $s = ''
+//            .'http://'.$_SERVER['SERVER_NAME']
+            .$rsscache_xsl_stylesheet_path
+            .'/rsstool_'.basename ($output).'.xsl';
+        else
+          $s = ''
 //            .'http://'.$_SERVER['SERVER_NAME']
             .$rsscache_xsl_stylesheet_path
             .'/rsscache_'.basename ($output).'.xsl';
@@ -252,6 +258,7 @@ $a = array (
 //  'rss' => 'Content-type: application/xml',
   'pls' =>   'Content-type: text/plain',
   'm3u' =>   'Content-type: text/plain',
+  'ansisql' => 'Content-type: text/plain',
 );
 if (isset ($a[$output]))
   header ($a[$output]);
