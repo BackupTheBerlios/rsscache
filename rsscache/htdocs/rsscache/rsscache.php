@@ -172,13 +172,17 @@ else
                lang="en" />
 */
         // direct download
-//        if (in_array ($output, array ('pls', 'm3u', 'ansisql',)))
+        $b = rsscache_download_videos ($a['item'][$i]);
+        for ($j = 0; isset ($b[$j]); $j++)
           {
-            $b = rsscache_download_videos ($a['item'][$i]);
-            for ($j = 0; isset ($b[$j]); $j++)
-//              $a['item'][$i]['media:content_'.$j] = urldecode ($b[$j]);
-              $a['item'][$i]['media:content_'.$j] = urlencode ($b[$j]);
-//              $a['item'][$i]['media:content_'.$j] = $b[$j];
+//            if (in_array ($output, array ('pls', 'm3u',)))
+              $a['item'][$i]['media:content_'.$j.'_url'] = urlencode ($b[$j]);
+//            else
+//              $a['item'][$i]['media:content_'.$j.'_url'] = $b[$j];
+            $a['item'][$i]['media:content_'.$j.'_medium'] = 'video';
+//            $a['item'][$i]['media:content_'.$j.'_width'] = $a['item'][$i]['media:duration'];
+//            $a['item'][$i]['media:content_'.$j.'_height'] = 400;
+//            $a['item'][$i]['media:content_'.$j.'_duration'] = 300;
           }
 
         // enrich with information from wikipedia

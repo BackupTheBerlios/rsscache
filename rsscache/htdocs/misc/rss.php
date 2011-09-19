@@ -450,10 +450,13 @@ $a = array (
                lang="en" />
 */ 
 
-for ($j = 0; isset ($item[$i]['media:content_'.$j]); $j++)
+for ($j = 0; isset ($item[$i]['media:content_'.$j.'_url']); $j++)
   {
-    if (isset ($item[$i]['media:content_'.$j]))
-      $p .= '      <media:content url="'.$item[$i]['media:content_'.$j].'" />'."\n";
+    if (isset ($item[$i]['media:content_'.$j.'_url']))
+      $p .= '      <media:content url="'.$item[$i]['media:content_'.$j.'_url'].'"'
+//           .' media:url="'.$item[$i]['media:content_'.$j.'_url'].'"'
+           .' medium="'.$item[$i]['media:content_'.$j.'_medium'].'"'
+           .' />'."\n";
   }
 
 //      $p .= '      </media:group>'."\n";
