@@ -986,7 +986,8 @@ widget_video_youtube_download ($media_url, $tor_enabled)
 {
   $p = '';
 
-  $yt_array = youtube_download ($media_url, $tor_enabled, 0);
+//  $yt_array = youtube_download ($media_url, $tor_enabled, 0);
+  $yt_array = youtube_get_download_urls ($media_url, $tor_enabled, 0);
 
   // DEBUG
 //  echo '<pre><tt>';
