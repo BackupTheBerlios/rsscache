@@ -200,57 +200,6 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
 }
 
 
-/*
-function
-rsscache_write_sitemap_video_func ($category_name, $item)
-{
-  $p = '';
-  for ($i = 0; isset ($item[$i]); $i++)
-    if ($category_name == $item[$i]['category'])
-    {
-      $p .= '<video:video>'."\n";
-      $p .= ''
-           .'<video:thumbnail_loc>'.misc_xml_escape ($item[$i]['image']).'</video:thumbnail_loc>'."\n"
-           .'<video:title>'.misc_xml_escape ($item[$i]['title']).'</video:title>'."\n"
-           .'<video:description>'.misc_xml_escape ($item[$i]['description']).'</video:description>'."\n"
-           .'<video:duration>'.$item[$i]['media:duration'].'</video:duration>'."\n"
-;
-      $p .= '</video:video>'."\n";
-    }
-
-  return $p;
-}
-
-
-function
-rsscache_write_sitemap ($channel, $item)
-{
-  $config_xml = config_xml ();
-
-//  echo '<pre>';
-//  print_r ($config_xml);
-
-  $p = '';
-  $p .= '<?xml version="1.0" encoding="UTF-8"?>'."\n"
-       .'<urlset'
-       .' xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'
-       .' xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"'
-       .'>'."\n";
-
-  for ($i = 0; isset ($config_xml['item'][$i]); $i++)
-    if (trim ($config_xml['item'][$i]['category']) != '')
-    $p .= '<url>'."\n"
-         .'  <loc>'.misc_xml_escape ('http://'.$_SERVER['SERVER_NAME'].'/?c='.$config_xml['item'][$i]['category']).'</loc>'."\n"
-         .'<lastmod>'.strftime ('%F' ).'</lastmod>'."\n"
-         .'<changefreq>always</changefreq>'."\n"
-         .rsscache_write_sitemap_video_func ($config_xml['item'][$i]['category'], $item)
-         .'</url>'."\n";
-  $p .= '</urlset>';
-
-  return $p;
-}
-*/
-
 }
 
 
