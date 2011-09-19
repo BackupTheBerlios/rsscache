@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:media="http://search.yahoo.com/mrss/" xmlns:rsscache="data:,rsscache" xmlns:cms="data:,cms">
-<xsl:output method="html" version="4.0" indent="yes"/>
+<xsl:output method="html" version="4.0" indent="no"/>
 <xsl:template match="/">
 <html>
 <head>
@@ -10,22 +10,22 @@
 </style>
 <!-- style type="text/css" src="rsscache/rsscache.css"></style -->
 <link rel="alternate" type="application/rss+xml">
-<xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/></xsl:attribute>
-<xsl:attribute name="title"><xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/></xsl:attribute>
+  <xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/></xsl:attribute>
+  <xsl:attribute name="title"><xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/></xsl:attribute>
 </link>
 <link rel="alternate" type="application/rss+xml">
-<xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/>?f=stats</xsl:attribute>
-<xsl:attribute name="title">Statistics</xsl:attribute>
+  <xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/>?f=stats</xsl:attribute>
+  <xsl:attribute name="title">Statistics</xsl:attribute>
 </link>
 </head>
 <body>
 <xsl:if test="count(rss/channel/item) = 1">
-<xsl:attribute name="style">background-color:#000;</xsl:attribute>
-<xsl:for-each select="rss/channel/item">
-<xsl:if test="media:embed != ''">
-<xsl:value-of disable-output-escaping="yes" select="media:embed"/>
-</xsl:if>
-</xsl:for-each>
+  <xsl:attribute name="style">background-color:#000;</xsl:attribute>
+  <xsl:for-each select="rss/channel/item">
+    <xsl:if test="media:embed != ''">
+      <xsl:value-of disable-output-escaping="yes" select="media:embed"/>
+    </xsl:if>
+  </xsl:for-each>
 </xsl:if>
 <xsl:if test="count(rss/channel/item) &gt; 1">
 <img src="images/rsscache_logo.png"/><br/>

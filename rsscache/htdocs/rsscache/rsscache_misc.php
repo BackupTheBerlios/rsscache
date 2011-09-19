@@ -220,27 +220,18 @@ function
 rsscache_download_videos ($item)
 {
   $debug = 0;
-      // DEBUG
-//      echo '<pre><tt>';
-//      print_r ($item);
-//      exit;
-//  for ($i = 0; isset ($item[$i]); $i++)
-    {
-//      $id = youtube_get_videoid ($item[$i]['link']);
-      $id = youtube_get_videoid ($item['link']);
-      $b = youtube_get_download_urls ($id, 0, $debug);
+//  $id = youtube_get_videoid ($item[$i]['link']);
+  $id = youtube_get_videoid ($item['link']);
+  $b = youtube_get_download_urls ($id, 0, $debug);
    
-      // DEBUG
-//      print_r ($b);
-//      exit;
-      for ($j = 0; isset ($b[$j]); $j++);
+  for ($j = 0; isset ($b[$j]); $j++)
+    $a[] = $b[$j];
 
-//      $item[$i]['rsscache:download'] = $b[max (0, $j - 2)]; // lowest quality
-      return array ($b[max (0, $j - 2)]); // lowest quality
-    }
-
-//  return array ('channel' => $channel, 'item' => $item);
-  return NULL;
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($a);
+//  exit;
+  return $a; // lowest quality
 }
 
 
@@ -581,7 +572,10 @@ rsscache_default_channel_description ($use_mrss = 0, $use_rsscache = 0)
       .'&amp;c=NAME       category (leave empty for all categories)<br>'."\n"
       .'&amp;item=URL_CRC32   show single item<br>'."\n"
       .'&amp;f=FUNC       execute FUNCtion<br>'."\n"
-      .'&amp;output=FORMAT   output in "rss", "mediawiki", "json", "sitemap", "pls" (admin) or "html" (default: rss)<br>'."\n"
+      .'&amp;output=FORMAT   output in "rss", "html", "mediawiki",'
+// TODO: .' "json", "atom",'
+.' or "sitemap" (default: rss)<br>'."\n"
+      .'                     "pls" and "m3u" for admin, only<br>'."\n"
 //      .'&amp;prefix=SUBDOMAIN   prefix or SUBDOMAIN (leave empty for current subdomain)<br>'."\n"
       .'<br>'."\n"           
       .'*** functions ***<br>'."\n"

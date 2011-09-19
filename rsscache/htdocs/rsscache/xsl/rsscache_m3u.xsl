@@ -1,5 +1,5 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:media="http://search.yahoo.com/mrss/" xmlns:rsscache="data:,rsscache" xmlns:cms="data:,cms">
-<xsl:output method="text" omit-xml-declaration="yes" indent="no"/>
+<xsl:output method="text" omit-xml-declaration="yes"/>
 
 <xsl:variable name="hex" select="'0123456789ABCDEF'"/>
 <xsl:variable name="ascii"> !"#$%&amp;'()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~</xsl:variable>
@@ -31,14 +31,11 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="/">[playlist]
+<xsl:template match="/">#EXTM3U
 <xsl:for-each select="rss/channel/item">
-File<xsl:value-of select="position()"/>=<xsl:call-template name="decode"><xsl:with-param name="encoded" select="media:content/@url"/></xsl:call-template>
-Title<xsl:value-of select="position()"/>=<xsl:value-of disable-output-escaping="yes" select="title"/>
-Length<xsl:value-of select="position()"/>=-1
+#EXTINF:<xsl:value-of select="media:duration"/>,<xsl:value-of disable-output-escaping="yes" select="title"/><xsl:text>
+</xsl:text><xsl:call-template name="decode"><xsl:with-param name="encoded" select="media:content/@url"/></xsl:call-template><xsl:text>
+</xsl:text>
 </xsl:for-each>
-NumberOfEntries=<xsl:value-of select="count(rss/channel/item)"/>
-
-Version=2
 </xsl:template>
 </xsl:stylesheet>

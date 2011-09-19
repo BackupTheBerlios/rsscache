@@ -69,7 +69,7 @@ if ($num > $rsscache_max_results)
 // NOT admin
 if ($rsscache_admin == 0)
   {
-    if (in_array ($output, array ('pls', )))
+    if (in_array ($output, array ('pls', 'm3u',)))
       $output = NULL;
     if (in_array ($f, array ('cache', 'config')))
       $f = NULL;
@@ -172,11 +172,13 @@ else
                lang="en" />
 */
         // direct download
-//        if ($output == 'pls')
+//        if (in_array ($output, array ('pls', 'm3u',)))
           {
             $b = rsscache_download_videos ($a['item'][$i]);
             for ($j = 0; isset ($b[$j]); $j++)
-              $a['item'][$i]['media:content_'.$j] = $b[$j];
+//              $a['item'][$i]['media:content_'.$j] = urldecode ($b[$j]);
+              $a['item'][$i]['media:content_'.$j] = urlencode ($b[$j]);
+//              $a['item'][$i]['media:content_'.$j] = $b[$j];
           }
 
         // enrich with information from wikipedia
@@ -188,6 +190,7 @@ else
 // DEBUG
 //echo '<pre><tt>';
 //print_r ($a);
+//echo generate_rss2 ($a['channel'], $a['item'], 1, 1);
 //exit;
 
 if ($output == 'json')
@@ -248,6 +251,7 @@ $a = array (
   'rss' =>   'Content-type: application/rss+xml', 
 //  'rss' => 'Content-type: application/xml',
   'pls' =>   'Content-type: text/plain',
+  'm3u' =>   'Content-type: text/plain',
 );
 if (isset ($a[$output]))
   header ($a[$output]);
