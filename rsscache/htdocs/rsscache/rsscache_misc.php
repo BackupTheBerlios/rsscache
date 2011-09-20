@@ -298,36 +298,13 @@ rsscache_download_thumbnails ($xml)
 
 
 function
-rsscache_feed_get ($client = NULL, $opts, $url)
+rsscache_feed_get ($exec, $url)
 {
-  global $rsscache_user_agent;
-  global $rsstool_path;
-  global $rsstool_opts;
-  $debug = 0;
-
-  $tmp = tempnam (sys_get_temp_dir (), 'rsscache_');
-
-  // DEBUG
-//  echo $tmp."\n";
-
-  if ($client)
-    $p = $client.' '.$opts.' "'.$url.'" > '.$tmp;
-  else  // default: download and parse feed with rsstool and write proprietary XML
-    $p = $rsstool_path.' '.$rsstool_opts.' -u "'.$rsscache_user_agent.'" '.$opts.' --xml "'.$url.'" -o '.$tmp;
-
-  // DEBUG
-  echo $p."\n";
-  echo misc_exec ($p, $debug);
-
-  $xml = simplexml_load_file ($tmp, 'SimpleXMLElement', LIBXML_NOCDATA);
-
-  // DEBUG
-//  print_r ($xml);
-//  exit;
-   
-  unlink ($tmp);
-
-  return $xml;
+//string exec ( string $command [, array &$output [, int &$return_var ]] )
+//  echo misc_exec ($p, $debug);
+  exec ($exec.' '.$url, $a);
+  $p = implode ("\n", $a)
+  return simplexml_load_file ($p, 'SimpleXMLElement', LIBXML_NOCDATA);
 }
 
 
@@ -498,10 +475,11 @@ rsscache_default_channel_description ($use_mrss = 0, $use_rsscache = 0)
       .'      category              category name<br>'."\n"
       .'      enclosure             optional, category logo/image<br>'."\n"
       .'        url                 image url<br>'."\n"
-      .'        length              <br>'."\n"
-      .'        type                <br>'."\n"
+      .'        length<br>'."\n"
+      .'        type<br>'."\n"
       .'TODO:      rsscache:filter         optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier<br>'."\n"
       .'      rsscache:feed[]<br>'."\n"
+      .'        rsscache:update                 optional, "cron" (default), "always" or "never"'."\n"
       .'        rsscache:link                   link of feed (RSS, etc.)<br>'."\n"
       .'                                http://gdata.youtube.com/feeds/api/videos?author=USERNAME&amp;vq=SEARCH&amp;max-results=50<br>'."\n"
       .'                                http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&amp;max-results=50<br>'."\n"
@@ -509,7 +487,7 @@ rsscache_default_channel_description ($use_mrss = 0, $use_rsscache = 0)
       .'        rsscache:link_prefix    same as link<br>'."\n"
       .'        rsscache:link_search[]<br>'."\n"
       .'        rsscache:link_suffix<br>'."\n"
-      .'        rsscache:opts    <br>'."\n"
+      .'        rsscache:exec           cmdline where feed link(s) are passed to<br>'."\n"
       .'TODO:      rsscache:filter       optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier<br>'."\n"
       .'      rsscache:table_suffix  <br>'."\n"
       .'TODO:      rsscache:votable          if items of this category can be voted for<br>'."\n"

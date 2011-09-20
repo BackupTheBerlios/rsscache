@@ -16,6 +16,7 @@
       <description></description>
       <enclosure url="http://localhost/images/rsscache_icon.png" />
       <rsscache:feed>
+      <rsscache:update>cron</rsscache:update>
         <rsscache:link>http://gdata.youtube.com/feeds/api/videos?vq=rss&amp;max-results=50</rsscache:link>
       </rsscache:feed>
       <rsscache:filter></rsscache:filter>
