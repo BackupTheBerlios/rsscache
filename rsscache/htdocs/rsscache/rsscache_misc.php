@@ -522,10 +522,8 @@ rsscache_default_channel ()
   global $rsscache_link;
   global $rsscache_time;
   global $rsscache_logo;
-  global $rsscache_results;
 
   $config = config_xml ();
-
   $channel = array ('title' => rsscache_title (),
                     'link' => $rsscache_link,
                     'description' => rsscache_default_channel_description (1, 1),
