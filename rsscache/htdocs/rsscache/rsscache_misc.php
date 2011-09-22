@@ -576,7 +576,7 @@ rsscache_default_channel_description ($use_mrss = 0, $use_rsscache = 0)
       .'requires access to <a href="admin.php?output=html">admin.php</a>:<br>'."\n"
       .'&amp;<a href="?f=cache&output=html">f=cache</a>      cache (new) items into database (requires &c=CATEGORY)<br>'."\n"
       .'&amp;<a href="?f=config&output=html">f=config</a>    indent and dump config.xml<br>'."\n"
-      .'&amp;<a href="?output=pls">output=pls</a>    generate playlist<br>'."\n"
+//      .'&amp;<a href="?output=pls">output=pls</a>    generate playlist<br>'."\n"
       .'<br>'."\n"
       .'*** install ***<br>'."\n"
       .'see apache2/sites-enabled/rsscache<br>'."\n"
