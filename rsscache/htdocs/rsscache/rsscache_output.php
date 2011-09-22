@@ -43,7 +43,7 @@ rsscache_write_robots ()
 
 
 function
-rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn = NULL)
+rsstool_write_ansisql ($a, $rsscache_category, $table_suffix = NULL, $db_conn = NULL)
 {
   $sql_update = 0;
   $rsscache_engine = 1;
@@ -104,9 +104,9 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
        .'-- ) ENGINE=MyISAM DEFAULT CHARSET=utf8;'."\n"
        ."\n";
 
-  $items = count ($xml->item);
+  $items = count ($a['item']);
   for ($i = 0; $i < $items; $i++)
-    if ($xml->item[$i]->url != '')
+    if ($a['item'][$i]['link'] != '')
     {
       // rsstool_table
       $p .= 'INSERT IGNORE INTO '.$rsstool_table.' ('
@@ -136,26 +136,26 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
         $p .= ', tv2_category, tv2_moved';
 
       $p .= ' ) VALUES ('
-           .' \''.misc_sql_stresc ($xml->item[$i]->dl_url, $db_conn).'\','
-//           .' \''.$xml->item[$i]->dl_url_md5.'\','
-           .' \''.$xml->item[$i]->dl_url_crc32.'\','
-           .' \''.$xml->item[$i]->dl_date.'\','
-           .' \''.misc_sql_stresc ($xml->item[$i]->site, $db_conn).'\','
-           .' \''.misc_sql_stresc ($xml->item[$i]->url, $db_conn).'\','
-//           .' \''.$xml->item[$i]->url_md5.'\','
-           .' \''.$xml->item[$i]->url_crc32.'\','
-           .' \''.$xml->item[$i]->date.'\','
-           .' \''.misc_sql_stresc ($xml->item[$i]->title, $db_conn).'\','
-//           .' \''.$xml->item[$i]->title_md5.'\','
-           .' \''.$xml->item[$i]->title_crc32.'\','
-           .' \''.misc_sql_stresc ($xml->item[$i]->desc, $db_conn).'\','
-           .' \''.misc_sql_stresc ($xml->item[$i]->media_keywords, $db_conn).'\','
-           .' '.sprintf ("%u", misc_related_string_id ($xml->item[$i]->title)).','
-           .' \''.($xml->item[$i]->media_duration * 1).'\','
-           .' \''.$xml->item[$i]->image.'\','  
-           .' \''.$xml->item[$i]->user.'\','  
-           .' \''.($xml->item[$i]->event_start * 1).'\','
-           .' \''.($xml->item[$i]->event_end * 1).'\'';
+           .' \''.misc_sql_stresc ($a['item'][$i]['rsscache:dl_url'], $db_conn).'\','
+//           .' \''.$a['item'][$i]['rsscache:dl_url_md5'].'\','
+           .' \''.$a['item'][$i]['rsscache:dl_url_crc32'].'\','
+           .' \''.$a['item'][$i]['rsscache:dl_date'].'\','
+           .' \''.misc_sql_stresc ($a['item'][$i]['rsscache:site'], $db_conn).'\','
+           .' \''.misc_sql_stresc ($a['item'][$i]['link'], $db_conn).'\','
+//           .' \''.$a['item'][$i]['rsscache:url_md5'].'\','
+           .' \''.$a['item'][$i]['rsscache:url_crc32'].'\','
+           .' \''.$a['item'][$i]['pubDate'].'\','
+           .' \''.misc_sql_stresc ($a['item'][$i]['title'], $db_conn).'\','
+//           .' \''.$a['item'][$i]['rsscache:title_md5'].'\','
+           .' \''.$a['item'][$i]['rsscache:title_crc32'].'\','
+           .' \''.misc_sql_stresc ($a['item'][$i]['description'], $db_conn).'\','
+           .' \''.misc_sql_stresc ($a['item'][$i]['media_keywords'], $db_conn).'\','
+           .' '.sprintf ("%u", misc_related_string_id ($a['item'][$i]['title'])).','
+           .' \''.($a['item'][$i]['media_duration'] * 1).'\','
+           .' \''.$a['item'][$i]['image'].'\','  
+           .' \''.$a['item'][$i]['user'].'\','  
+           .' \''.($a['item'][$i]['event_start'] * 1).'\','
+           .' \''.($a['item'][$i]['event_end'] * 1).'\'';
 
       // HACK: rsscache category
       if ($rsscache_engine == 1)
@@ -168,16 +168,16 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
       if ($sql_update == 0)
         $p .= '-- ';
       $p .= 'UPDATE '.$rsstool_table.' SET '
-           .' rsstool_title = \''.misc_sql_stresc ($xml->item[$i]->title, $db_conn).'\','
-//           .' rsstool_title_md5 = \''.$xml->item[$i]->title_md5.'\','
-           .' rsstool_title_crc32 = \''.$xml->item[$i]->title_crc32.'\','
-           .' rsstool_desc = \''.misc_sql_stresc ($xml->item[$i]->desc, $db_conn).'\''
-           .' WHERE rsstool_url_crc32 = '.$xml->item[$i]->url_crc32
+           .' rsstool_title = \''.misc_sql_stresc ($a['item'][$i]['title'], $db_conn).'\','
+//           .' rsstool_title_md5 = \''.$a['item'][$i]['title_md5'].'\','
+           .' rsstool_title_crc32 = \''.$a['item'][$i]['title_crc32'].'\','
+           .' rsstool_desc = \''.misc_sql_stresc ($a['item'][$i]['description'], $db_conn).'\''
+           .' WHERE rsstool_url_crc32 = '.$a['item'][$i]['rsscache:url_crc32']
            .';'
            ."\n";
 
       // keyword_table
-      $a = explode (' ', $xml->item[$i]->media_keywords);
+      $a = explode (' ', $a['item'][$i]['media_keywords']);
       for ($j = 0; isset ($a[$j]); $j++)
         if (trim ($a[$j]) != '')
           $p .= 'INSERT IGNORE INTO '.$keyword_table.' ('
@@ -187,8 +187,8 @@ rsstool_write_ansisql ($xml, $rsscache_category, $table_suffix = NULL, $db_conn 
 //               .' rsstool_keyword_crc24,'
                .' rsstool_keyword_crc16'
                .' ) VALUES ('
-//               .' \''.$xml->item[$i]->url_md5.'\','
-               .' '.$xml->item[$i]->url_crc32.','
+//               .' \''.$a['item'][$i]['url_md5'].'\','
+               .' '.$a['item'][$i]['url_crc32'].','
 //               .' '.sprintf ("%u", crc32 ($a[$j])).','
 //               .' '.sprintf ("%u", misc_crc24 ($a[$j])).','
                .' '.misc_crc16 ($a[$j])

@@ -65,8 +65,12 @@ rsscache_sql_query ($sql_query_s)
   $debug = 0;
 
   // DEBUG
-//  if ($debug == 1)
-//    echo $sql_query_s.'<br>';
+  if ($debug == 1)
+    {
+      echo $sql_query_s.'<br>';
+      exit;
+    }
+
   $rsscache_sql_db->sql_write ($sql_query_s, 1, $debug);
 
   $debug = 0;
@@ -220,6 +224,8 @@ rsscache_sql2array ($d_array)
   global $rsscache_results;
   global $rsscache_admin;
   global $output;
+  global $rsscache_link_static,   
+         $rsscache_thumbnails_prefix;
 
   // DEBUG
 //  echo '<pre><tt>';
@@ -240,15 +246,9 @@ rsscache_sql2array ($d_array)
 //  print_r ($config_xml);
 //exit;
 
-      $link = '';
-      if (substr (rsscache_link ($d_array[$i]), 0, 7) != 'http://')
-        $link .= $rsscache_link.'?';
-      $link .= rsscache_link ($d_array[$i]);
-
       $a = array ('title' => $d_array[$i]['rsstool_title'],
-//                       'link' => $d_array[$i]['rsstool_url'],
-//                       'link' => isset ($config_xml['link']) ? $config_xml['link'] : NULL,
-                       'link' => $link,
+//                       'link' => rsscache_link ($d_array[$i]),
+                       'link' => $d_array[$i]['rsstool_url'],
                        'description' => $d_array[$i]['rsstool_desc'],
                        'pubDate' => $d_array[$i]['rsstool_date'],
                        'enclosure' => $config_xml['enclosure'],
@@ -257,7 +257,12 @@ rsscache_sql2array ($d_array)
 
                        'media:duration' => ($d_array[$i]['rsstool_media_duration'] * 1),
                        'media:keywords' => str_replace (' ', ', ', $d_array[$i]['rsstool_keywords']),
-                       'media:thumbnail' => rsscache_thumbnail ($d_array[$i]),
+                       'media:thumbnail' => $rsscache_link_static
+                                           .'/thumbnails/'
+                                           .$rsscache_thumbnails_prefix
+                                           .'/rsscache/'
+                                           .$d_array[$i]['rsstool_url_crc32']
+                                           .'.jpg',
 
                        'rsscache:dl_date' => ($d_array[$i]['rsstool_dl_date'] * 1),
                        'rsscache:related_id' => ($d_array[$i]['rsstool_related_id'] * 1),

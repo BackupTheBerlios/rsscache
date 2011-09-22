@@ -307,7 +307,11 @@ exit;
 //exit;
     }
 
-  return $a;
+  $b = array ();
+  for ($j = 0; isset ($a[$j]); $j++)
+    $b[] = $a[$j];
+
+  return $b;
 }
 
 

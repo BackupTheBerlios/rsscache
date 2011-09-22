@@ -103,8 +103,8 @@ if ($f == 'cache') // cache (new) items into database
       }
     else
       $p = '&c=CATEGORY required';
-    $a = array ('config' => array ('title' => rsscache_title (), 'description' => $p),
-                'item' => NULL);
+    $a = array ('channel' => rsscache_default_channel (), 'item' => NULL);
+    $a['channel']['description'] = $p;
   }
 else if ($f == 'config' || $f == 'stats' || $output == 'sitemap')
   {
@@ -172,7 +172,8 @@ else
                lang="en" />
 */
         // direct download
-        $b = rsscache_download_videos ($a['item'][$i]);
+        $id = youtube_get_videoid ($a['item'][$i]['link']);
+        $b = youtube_get_download_urls ($id, 0, $debug);
         for ($j = 0; isset ($b[$j]); $j++)
           {
 //            if (in_array ($output, array ('pls', 'm3u',)))

@@ -216,27 +216,7 @@ if ($memcache_expire > 0)
 
 
 function
-//rsscache_download_videos ($channel, $item)
-rsscache_download_videos ($item)
-{
-  $debug = 0;
-//  $id = youtube_get_videoid ($item[$i]['link']);
-  $id = youtube_get_videoid ($item['link']);
-  $b = youtube_get_download_urls ($id, 0, $debug);
-   
-  for ($j = 0; isset ($b[$j]); $j++)
-    $a[] = $b[$j];
-
-  // DEBUG
-//  echo '<pre><tt>';
-//  print_r ($a);
-//  exit;
-  return $a; // lowest quality
-}
-
-
-function
-rsscache_download_thumbnails ($xml)
+rsscache_download_thumbnails ($a)
 {
   global $wget_path;
   global $wget_opts;
@@ -244,31 +224,31 @@ rsscache_download_thumbnails ($xml)
 //  global $debug;
   $debug = 1;
   
-  for ($i = 0; isset ($xml->item[$i]); $i++)
+  for ($i = 0; isset ($a['item'][$i]); $i++)
     {
       // DEBUG
-//  print_r ($xml->item[$i]);
+//  print_r ($a['item'][$i]);
 //  exit;
       $s = NULL;
-      if (trim ($xml->item[$i]->media_image) != '')
-        $s = $xml->item[$i]->media_image;
+      if (trim ($a['item'][$i]->media_image) != '')
+        $s = $a['item'][$i]->media_image;
 
-      if (strstr ($xml->item[$i]->url, '.youtube.')) // HACK: prefer smaller yt thumbnails
+      if (strstr ($a['item'][$i]['link'], '.youtube.')) // HACK: prefer smaller yt thumbnails
         {
-          $a = youtube_get_thumbnail_urls ($xml->item[$i]->url);
+          $a = youtube_get_thumbnail_urls ($a['item'][$i]['link']);
           $s = $a[0];
         }
 
       if ($s == NULL)
         {
-//          unset ($xml->item[$i]); // drop this item
+//          unset ($a['item'][$i]); // drop this item
           continue; // no thumbnail url
         }
 
       $result = 0;
       $noclobber = 1;
 
-      $p = '../htdocs/thumbnails/rsscache/'.$xml->item[$i]->url_crc32.'.jpg';
+      $p = '../htdocs/thumbnails/rsscache/'.$a['item'][$i]['rsscache:url_crc32'].'.jpg';
 //      echo 'media image: '.$s.' ('.$p.')'."\n";
       $result = misc_exec_wget ($s, $p, $noclobber, $wget_path, $wget_opts, $debug);
 //      $result = misc_download_noclobber ($s, $p);
@@ -278,7 +258,7 @@ rsscache_download_thumbnails ($xml)
         {
           if ($result == 1)
             {
-              $xml->item[$i]->url = ''; // drop this item
+              $a['item'][$i]['link'] = ''; // drop this item
 
               // copy thumbnails to a different directory
 //              $s = 'cp '.$p.' ../htdocs/thumbnails/rsscache_/';
@@ -287,24 +267,13 @@ rsscache_download_thumbnails ($xml)
 //              echo misc_exec ($s, $debug);
             }   
 //          if ($result == -1)
-//            $xml->item[$i]->url = ''; // drop this item
+//            $a['item'][$i]['link'] = ''; // drop this item
         }
     }
 
-//  $xml->item = misc_array_unique_merge ($xml->item);
+//  $a['item'] = misc_array_unique_merge ($a['item']);
 
-  return $xml;
-}
-
-
-function
-rsscache_feed_get ($exec, $url)
-{
-//string exec ( string $command [, array &$output [, int &$return_var ]] )
-//  echo misc_exec ($p, $debug);
-  exec ($exec.' '.$url, $a);
-  $p = implode ("\n", $a)
-  return simplexml_load_file ($p, 'SimpleXMLElement', LIBXML_NOCDATA);
+  return $a;
 }
 
 
@@ -327,27 +296,28 @@ rsscache_download_feeds_by_category ($c)
 
   for ($j = 0; isset ($category['rsscache:feed_'.$j.'_link']); $j++)
     {
-      // rsstool options
-      $opts = '';
-      if (isset ($category['rsscache:feed_'.$j.'_opts']))
-        $opts = $category['rsscache:feed_'.$j.'_opts'];
-
       $p = '';
       $p .= 'category: '.$c."\n"
-           .'client: '.(isset ($category['rsscache:feed_'.$j.'_client']) ? $category['rsscache:feed_'.$j.'_client'] : '')."\n"
-           .'opts: '.$opts."\n"
-           .'url: '.$category['rsscache:feed_'.$j.'_link']."\n"
+           .'exec: '.(isset ($category['rsscache:feed_'.$j.'_exec']) ? $category['rsscache:feed_'.$j.'_exec'] : '')."\n"
+           .'link: '.$category['rsscache:feed_'.$j.'_link']."\n"
            .'table_suffix: '.(isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : '')."\n"
 ; 
       echo $p;
 
       // get feed
-      $xml = rsscache_feed_get ((isset ($category['rsscache:feed_'.$j.'_client']) ? $category['rsscache:feed_'.$j.'_client'] : ''),
-                                $opts, $category['rsscache:feed_'.$j.'_link']);
+//      string exec ( string $command [, array &$output [, int &$return_var ]] )
+//      echo misc_exec ($p, $debug);
+      $exec = (isset ($category['rsscache:feed_'.$j.'_exec']) ? $category['rsscache:feed_'.$j.'_exec'] : '');
+      $url = $category['rsscache:feed_'.$j.'_link'];
+      exec ($exec.' '.$url, $a);
+      $p = implode ("\n", $a);
+      $rss = simplexml_load_file ($p, 'SimpleXMLElement', LIBXML_NOCDATA);
+      $a = rss2array ($rss);
+
       // download thumbnails
-      $xml = rsscache_download_thumbnails ($xml);
-      // xml to sql
-      $sql_queries_s = rsstool_write_ansisql ($xml, $c, 
+      $a = rsscache_download_thumbnails ($a);
+
+      $sql_queries_s = rsstool_write_ansisql ($a, $c, 
         (isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : ''),
         $rsscache_sql_db->conn);
 
@@ -363,6 +333,7 @@ rsscache_title ($d = NULL)
   global $rsscache_time;
   $v = rsscache_get_request_value ('v');
   $c = rsscache_get_request_value ('c');
+
   $a = array ();
   if (trim ($rsscache_title) != '')
     $a[] = $rsscache_title
@@ -381,46 +352,6 @@ rsscache_title ($d = NULL)
     $a[] = $d['rsstool_title'];
 
   return implode (' - ', $a);
-}
-
-
-function
-rsscache_link ($d)
-{
-  // checks is file is on local server or on static server and returns correct link
-  global $rsscache_root,
-         $rsscache_link,
-         $rsscache_link_static;
-  $link = urldecode ($d['rsstool_url']);
-  $p = $link;
-
-  if (strncmp ($p, $rsscache_link, strlen ($rsscache_link)) || // extern link
-      !$rsscache_link_static) // no static server
-    return $link;
-
-  $p = str_replace ($rsscache_link, $rsscache_root, $link); // file on local server?
-  if (file_exists ($p))
-    return $link;
-
-  return str_replace ($rsscache_link, $rsscache_link_static, $link); // has to be on static server then
-}
-
-
-function
-rsscache_duration ($d)
-{
-  if ($d['media_duration'] > 0)
-    return gmstrftime ($d['media_duration'] > 3599 ? '%H:%M:%S' : '%M:%S', (int) $d['media_duration']);
-  return '';
-}
-
-
-function
-rsscache_thumbnail ($d)
-{
-  global $rsscache_link_static,
-         $rsscache_thumbnails_prefix;
-  return $rsscache_link_static.'/thumbnails/'.$rsscache_thumbnails_prefix.'/rsscache/'.$d['rsstool_url_crc32'].'.jpg';
 }
 
 
