@@ -135,8 +135,7 @@ if ($rsscache_admin == 0)
         {
           // hide feeds
           unset ($a['item'][$i]['rsscache:feed_'.$j.'_link']);
-          unset ($a['item'][$i]['rsscache:feed_'.$j.'_opts']);
-          unset ($a['item'][$i]['rsscache:feed_'.$j.'_client']);
+          unset ($a['item'][$i]['rsscache:feed_'.$j.'_exec']);
           // hide direct download
           unset ($a['item'][$i]['rsscache:download']);
         }
@@ -146,10 +145,28 @@ else
     // this is slow and requires external resources
     for ($i = 0; isset ($a['item'][$i]); $i++)
       {
+/*
+Optional element to specify geographical information about various locations
+captured in the content of a media object.  The format conforms to geoRSS.
+
+<media:location description="My house" start="00:01" end="01:00">
+  <georss:where>
+    <gml:Point>
+      <gml:pos>35.669998 139.770004</gml:pos>
+    </gml:Point>
+  </georss:where>
+</media:location>
+
+description description of the place whose location is being specified.
+
+start time at which the reference to a particular location starts in the media object.
+
+end time at which the reference to a particular location ends in the media object.
+*/
         // GeoIP of link
-//        geoip_load_shared_mem ('GeoIPCity.dat');
-//        $t = geoip_open ('GeoIPCity.dat', GEOIP_SHARED_MEMORY);
-//        $t = geoip_open ('GeoIPCity.dat', GEOIP_STANDARD);
+//        geoip_load_shared_mem ($rsscache_geoip_dat);
+//        $t = geoip_open ($rsscache_geoip_dat, GEOIP_SHARED_MEMORY);
+//        $t = geoip_open ($rsscache_geoip_dat, GEOIP_STANDARD);
 //        $t = geoip_record_by_addr ($t, '24.24.24.24');
 //print_r ($t);
 //geoip_close ($t);
