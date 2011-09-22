@@ -139,8 +139,6 @@ misc_prefixate_array ($a, $prefix = NULL)
 function
 rss2array ($rss, $debug = 0)
 {
-  global $rsstool_opts;
-
   $rss = $rss->channel;
 
   if ($debug == 1)
@@ -207,9 +205,7 @@ rss2array ($rss, $debug = 0)
                   $p .= $feed['rsscache:link_suffix'];
               }
 
-          if (isset ($feed['rsscache:client']))
-            $a['rsscache:feed_'.$j.'_client'] = $feed['rsscache:client'];
-          $a['rsscache:feed_'.$j.'_opts'] = $rsstool_opts.' '.(isset ($feed['rsscache:opts']) ? $feed['rsscache:opts'] : '');
+          $a['rsscache:feed_'.$j.'_exec'] = (isset ($feed['rsscache:exec']) ? $feed['rsscache:exec'] : '');
           $a['rsscache:feed_'.$j.'_link'] = $p;
         }
 
@@ -493,10 +489,8 @@ $a = array (
 for ($j = 0; isset ($item[$i]['rsscache:feed_'.$j.'_link']); $j++)
   {
     $p .= '      <rsscache:feed>'."\n";
-    if (isset ($item[$i]['rsscache:feed_'.$j.'_client']))
-      $p .= '        <rsscache:client>'.misc_xml_escape ($item[$i]['rsscache:feed_'.$j.'_client']).'</rsscache:client>'."\n";
-    if (isset ($item[$i]['rsscache:feed_'.$j.'_opts']))
-      $p .= '        <rsscache:opts>'.misc_xml_escape ($item[$i]['rsscache:feed_'.$j.'_opts']).'</rsscache:opts>'."\n";
+    if (isset ($item[$i]['rsscache:feed_'.$j.'_exec']))
+      $p .= '        <rsscache:exec>'.misc_xml_escape ($item[$i]['rsscache:feed_'.$j.'_exec']).'</rsscache:exec>'."\n";
     if (isset ($item[$i]['rsscache:feed_'.$j.'_link']))
       $p .= '        <rsscache:link>'.misc_xml_escape ($item[$i]['rsscache:feed_'.$j.'_link']).'</rsscache:link>'."\n";
     $p .= '      </rsscache:feed>'."\n";

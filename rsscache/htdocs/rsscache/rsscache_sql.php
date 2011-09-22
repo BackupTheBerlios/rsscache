@@ -300,9 +300,9 @@ rsscache_sql2array ($d_array)
       for ($j = 0; isset ($config_xml['rsscache:feed_'.$j.'_link']); $j++)
         {
           $b = array ();
-          if (isset ($config_xml['rsscache:feed_'.$j.'_client']))
-            $b['rsscache:feed_'.$j.'_client'] = $config_xml['rsscache:feed_'.$j.'_client'];
-          $b['rsscache:feed_'.$j.'_opts'] = $config_xml['rsscache:feed_'.$j.'_opts'];
+//          if (isset ($config_xml['rsscache:feed_'.$j.'_client']))
+//            $b['rsscache:feed_'.$j.'_client'] = $config_xml['rsscache:feed_'.$j.'_client'];
+          $b['rsscache:feed_'.$j.'_exec'] = $config_xml['rsscache:feed_'.$j.'_exec'];
           $b['rsscache:feed_'.$j.'_link'] = $config_xml['rsscache:feed_'.$j.'_link'];
           $a = array_merge ($b, $a);
         }

@@ -16,13 +16,6 @@ $wget_path = '/usr/bin/wget';
 $wget_opts = '-q --limit-rate=100000';
 
 
-// rsstool path and options
-//$rsstool_path = '/usr/bin/torify /usr/local/bin/rsstool';
-$rsstool_path = '/usr/local/bin/rsstool';
-$rsstool_opts = '--hack-google --hack-event --sbin --shtml';
-//$rsstool_opts = '--hack-google --sbin --shtml';
-
-
 // configuration
 $rsscache_config_xml = 'rsscache/default.xml';
 $rsscache_thumbnails_prefix = '';

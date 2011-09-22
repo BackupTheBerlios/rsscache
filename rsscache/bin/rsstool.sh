@@ -1,8 +1,12 @@
 #!/bin/bash
 #
-# RSScache wrapper script for running RSStool
+# wrapper script for running RSStool
 #
-TMP=$(mktemp)
+RSSTOOL_PATH="/usr/bin/torify /usr/local/bin/rsstool"
+RSSTOOL_OPTS=""
+RSSTOOL_OPTS+=" --hack-google --sbin --shtml"
+#RSSTOOL_OPTS+=" --hack-event"
+RSSTOOL_OPTS+=" -xml"
 
 
 random_user_agent ()
@@ -11,14 +15,20 @@ random_user_agent ()
 }
 
 
+# main ()
+
+
+TMP=$(mktemp)
+
+
 cd $(dirname ${0})
 
 
-/usr/local/bin/rsstool -u "$(random_user_agent)" -xml $@ -o ${TMP} 2>&1 >rsstool.log
+${RSSTOOL_PATH} -u "$(random_user_agent)" ${RSSTOOL_OPTS} $@ -o ${TMP} 2>&1 >rsstool.log
 
 
 #cat ${TMP}
-/usr/bin/xsltproc rsstool_xml2rss.xsl ${TMP}
+/usr/bin/xsltproc /htdocs/rsscache/bin/rsstool_xml2rss.xsl ${TMP}
 
 
 rm -f ${TMP}

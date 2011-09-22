@@ -311,7 +311,9 @@ rsscache_download_feeds_by_category ($c)
       $url = $category['rsscache:feed_'.$j.'_link'];
       exec ($exec.' '.$url, $a);
       $p = implode ("\n", $a);
-      $rss = simplexml_load_file ($p, 'SimpleXMLElement', LIBXML_NOCDATA);
+      $rss = simplexml_load_string ($p, 'SimpleXMLElement', LIBXML_NOCDATA);
+print_r ($rss);
+exit;
       $a = rss2array ($rss);
 
       // download thumbnails
@@ -481,9 +483,7 @@ rsscache_default_channel_description ($use_mrss = 0, $use_rsscache = 0)
       .'&amp;c=NAME       category (leave empty for all categories)<br>'."\n"
       .'&amp;item=URL_CRC32   show single item<br>'."\n"
       .'&amp;f=FUNC       execute FUNCtion<br>'."\n"
-      .'&amp;output=FORMAT   output in "rss", "html", "mediawiki",'
-// TODO: .' "json", "atom",'
-.' or "sitemap" (default: rss)<br>'."\n"
+      .'&amp;output=FORMAT   output in "rss", "html", "mediawiki", "json" or "sitemap" (default: rss)<br>'."\n"
       .'                     "pls" and "m3u" for admin, only<br>'."\n"
 //      .'&amp;prefix=SUBDOMAIN   prefix or SUBDOMAIN (leave empty for current subdomain)<br>'."\n"
       .'<br>'."\n"           

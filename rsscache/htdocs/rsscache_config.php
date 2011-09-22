@@ -12,9 +12,6 @@ $memcache_expire = 0;
 
 // wget path and options
 $wget_path = '/usr/bin/torify /usr/bin/wget'; // use TOR for greedy RSS feeds
-// rsstool path and options
-$rsstool_path = '/usr/bin/torify /usr/local/bin/rsstool';
-$rsstool_opts = '--hack-google --sbin --shtml';
 
 
 // configuration
