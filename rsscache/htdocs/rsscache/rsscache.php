@@ -85,6 +85,7 @@ if ($f == 'robots')
 rsscache_sql_open ();
 
 $config = config_xml ();
+
 // DEBUG
 //echo '<pre><tt>';
 //print_r ($config);
@@ -108,13 +109,14 @@ if ($f == 'cache') // cache (new) items into database
   }
 else if ($f == 'config' || $f == 'stats' || $output == 'sitemap')
   {
+$config = rsscache_add_stats ($config);
     $a = $config;
   }
 else
   {
     // use SQL
     if ($item)
-      $a = rsscache_sql (NULL, NULL, $f, $item, 0, 0);
+      $a = rsscache_sql ($c, NULL, $f, $item, 0, 0);
     else
       $a = rsscache_sql ($c, $q, $f, NULL, $start, $num ? $num : 0);
   }
@@ -193,10 +195,10 @@ end time at which the reference to a particular location ends in the media objec
         $b = youtube_get_download_urls ($id, 0, $debug);
         for ($j = 0; isset ($b[$j]); $j++)
           {
-//            if (in_array ($output, array ('pls', 'm3u',)))
+            if (in_array ($output, array ('pls', 'm3u',)))
               $a['item'][$i]['media:content_'.$j.'_url'] = urlencode ($b[$j]);
-//            else
-//              $a['item'][$i]['media:content_'.$j.'_url'] = $b[$j];
+            else
+              $a['item'][$i]['media:content_'.$j.'_url'] = $b[$j];
             $a['item'][$i]['media:content_'.$j.'_medium'] = 'video';
 //            $a['item'][$i]['media:content_'.$j.'_width'] = $a['item'][$i]['media:duration'];
 //            $a['item'][$i]['media:content_'.$j.'_height'] = 400;

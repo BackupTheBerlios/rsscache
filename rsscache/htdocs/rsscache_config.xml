@@ -16,14 +16,10 @@
       <description></description>
       <enclosure url="http://localhost/images/rsscache_icon.png" />
       <rsscache:feed>
-        <rsscache:update>cron</rsscache:update>
-        <rsscache:link>http://gdata.youtube.com/feeds/api/videos?vq=rss&amp;max-results=50</rsscache:link>
+          <rsscache:link>http://gdata.youtube.com/feeds/api/videos?vq=rss&amp;max-results=50</rsscache:link>
         <rsscache:exec>rsstool.sh</rsscache:exec>                 
       </rsscache:feed>
       <rsscache:filter></rsscache:filter>
-      <rsscache:movable>0</rsscache:movable>
-      <rsscache:reportable>0</rsscache:reportable>
-      <rsscache:votable>0</rsscache:votable>
       <cms:select>1</cms:select>
       <cms:separate>0</cms:separate>
       <cms:button_only>0</cms:button_only>

@@ -28,6 +28,15 @@ if (file_exists ('stemmer.php'))
 
 
 function
+misc_cleanup_slashes ($p)
+{
+  // strip redundant slashes from file path or url
+  $p = str_replace (array ('/////', '////', '///', '//'), '/', $p);
+  return str_replace (':/', '://', $p);
+}
+
+
+function
 misc_substr2 ($t, $left, $cont, $right = NULL)
 {
   // $left='a' $cont='b' $right=NULL

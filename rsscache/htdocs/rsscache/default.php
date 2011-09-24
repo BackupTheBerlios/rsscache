@@ -18,7 +18,6 @@ $wget_opts = '-q --limit-rate=100000';
 
 // configuration
 $rsscache_config_xml = 'rsscache/default.xml';
-$rsscache_thumbnails_prefix = '';
 $rsscache_maintenance = 0; // down for maintenance?
 $rsscache_root = dirname(__FILE__).'/';
 $rsscache_link = 'http://'.$_SERVER['SERVER_NAME'].'/';

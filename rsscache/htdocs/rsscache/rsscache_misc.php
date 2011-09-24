@@ -33,6 +33,78 @@ require_once ('rsscache_output.php');
 
 
 function
+rsscache_item_has_feed ($item, $j = 0)
+{
+  return (isset ($item['rsscache:feed_'.$j.'_link']) ||
+      isset ($item['rsscache:feed_'.$j.'_exec']));
+}
+
+
+function
+rsscache_add_stats ($a)
+{
+
+  // add db statistics
+  $a['channel']['rsscache:stats_items'] = 0;
+  $a['channel']['rsscache:stats_items_today'] = 0;
+  $a['channel']['rsscache:stats_items_7_days'] = 0;
+  $a['channel']['rsscache:stats_items_30_days'] = 0;
+  $a['channel']['rsscache:stats_days'] = 0;
+
+  // DEBUG
+//echo count ($a['item']);
+//exit;
+  for ($i = 0; isset ($a['item'][$i]); $i++)
+    if (rsscache_item_has_feed ($a['item'][$i]))
+          {
+            $stats = rsscache_sql_stats ($a['item'][$i]['category']);
+//            $stats = rsscache_sql_stats ();
+// DEBUG
+//echo '<pre><tt>123';
+//print_r ($stats);
+//exit;
+            $a['item'][$i] = array_merge ($a['item'][$i], misc_prefixate_array ($stats[$j], 'rsscache:'));
+      $a['channel']['rsscache:stats_items'] += $stats[$j]['stats_items'];
+      $a['channel']['rsscache:stats_items_today'] += $stats[$j]['stats_items_today'];
+      $a['channel']['rsscache:stats_items_7_days'] += $stats[$j]['stats_items_7_days'];
+      $a['channel']['rsscache:stats_items_30_days'] += $stats[$j]['stats_items_30_days'];
+      $a['channel']['rsscache:stats_days'] += $stats[$j]['stats_days'];
+          }
+
+  return $a;
+}
+
+function
+rsscache_tablename ($table_prefix, $table_suffix = NULL)
+{
+  if ($table_suffix)
+    if (trim ($table_suffix) != '')
+      return $table_prefix.'_table_'.$table_suffix;
+  return $table_prefix.'_table';
+}
+
+
+function
+rsscache_tablename_by_category ($table_prefix, $c = NULL)
+{
+  $category = NULL;
+  if ($c)
+    {
+      $category = config_xml_by_category ($c);
+// DEBUG
+//echo '<pre><tt>';
+//print_r ($category);
+//exit;
+      if ($category)
+        if (isset ($category['rsscache:table_suffix']))
+          return rsscache_tablename ($table_prefix, $category['rsscache:table_suffix']);
+   }
+
+  return rsscache_tablename ($table_prefix, NULL);
+}
+
+
+function
 rsscache_get_request_value ($name)
 {
   // wrapper for get_request_value() 
@@ -108,39 +180,9 @@ config_xml_normalize ($config)
   if ($insane == 1)
     exit;
 */
-
-  // add db statistics
-  $a['channel']['rsscache:stats_items'] = 0;
-  $a['channel']['rsscache:stats_items_today'] = 0;
-  $a['channel']['rsscache:stats_items_7_days'] = 0;
-  $a['channel']['rsscache:stats_items_30_days'] = 0;
-  $a['channel']['rsscache:stats_days'] = 0;
-
   // DEBUG
-//echo count ($a['item']);
-//exit;
-//rsscache_sql ($c, $q, $f, $v, $start, $num)
-
-  $stats = rsscache_sql (NULL, NULL, 'stats', NULL, 0, count ($a['item']));
-  for ($i = 0; isset ($a['item'][$i]); $i++)
-    if (isset ($a['item'][$i]['category']))
-      for ($j = 0; isset ($stats[$j]); $j++)
-        if ($stats[$j]['stats_category'] == $a['item'][$i]['category'])
-          {
-            $a['item'][$i] = array_merge ($a['item'][$i], misc_prefixate_array ($stats[$j], 'rsscache:'));
-            break;
-          }
-
-  for ($j = 0; isset ($stats[$j]); $j++)
-    {
-      $a['channel']['rsscache:stats_items'] += $stats[$j]['stats_items'];
-      $a['channel']['rsscache:stats_items_today'] += $stats[$j]['stats_items_today'];
-      $a['channel']['rsscache:stats_items_7_days'] += $stats[$j]['stats_items_7_days'];
-      $a['channel']['rsscache:stats_items_30_days'] += $stats[$j]['stats_items_30_days'];
-      $a['channel']['rsscache:stats_days'] += $stats[$j]['stats_days'];
-    }
-
-  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($a);
 //  echo generate_rss2 ($a['channel'], $a['item'], 1, 1);
 //  exit;
 
@@ -204,6 +246,10 @@ if ($memcache_expire > 0)
 //  print_r ($config);
 //exit;
   $config = config_xml_normalize ($config);
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($config);
+//exit;
 
   // use memcache
 if ($memcache_expire > 0)
@@ -281,7 +327,6 @@ function
 rsscache_download_feeds_by_category ($c)
 {
   global $rsscache_sql_db;
-  global $rsscache_user_agent;
 
   $c = trim ($c);
   $category = config_xml_by_category ($c);
@@ -294,34 +339,46 @@ rsscache_download_feeds_by_category ($c)
   if ($category == NULL)
     return;
 
-  for ($j = 0; isset ($category['rsscache:feed_'.$j.'_link']); $j++)
+  if (!rsscache_item_has_feed ($category))
+    return;
+
+  $table_suffix = (isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : NULL);
+  for ($j = 0; rsscache_item_has_feed ($category, $j); $j++)
     {
+      $exec = (isset ($category['rsscache:feed_'.$j.'_exec']) ? $category['rsscache:feed_'.$j.'_exec'] : '');
+      $link = (isset ($category['rsscache:feed_'.$j.'_link']) ? '"'.$category['rsscache:feed_'.$j.'_link'].'"' : '');
+
       $p = '';
       $p .= 'category: '.$c."\n"
-           .'exec: '.(isset ($category['rsscache:feed_'.$j.'_exec']) ? $category['rsscache:feed_'.$j.'_exec'] : '')."\n"
-           .'link: '.$category['rsscache:feed_'.$j.'_link']."\n"
-           .'table_suffix: '.(isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : '')."\n"
+           .'exec: '.$exec."\n"
+           .'link: '.$link."\n"
+           .'table_suffix: '.($table_suffix ? $table_suffix : '(none)')."\n"
 ; 
       echo $p;
 
       // get feed
-//      string exec ( string $command [, array &$output [, int &$return_var ]] )
-//      echo misc_exec ($p, $debug);
-      $exec = (isset ($category['rsscache:feed_'.$j.'_exec']) ? $category['rsscache:feed_'.$j.'_exec'] : '');
-      $url = $category['rsscache:feed_'.$j.'_link'];
-      exec ($exec.' '.$url, $a);
+      $p = $exec.' '.$link;
+      // DEBUG
+//      echo $p;
+//      exit;
+      exec ($p, $a);
       $p = implode ("\n", $a);
+      // DEBUG
+//      echo $p;
+//      exit;
       $rss = simplexml_load_string ($p, 'SimpleXMLElement', LIBXML_NOCDATA);
-print_r ($rss);
-exit;
+      // DEBUG
+      print_r ($rss);
+      exit;
       $a = rss2array ($rss);
+      // DEBUG
+      print_r ($a);
+      exit;
 
       // download thumbnails
-      $a = rsscache_download_thumbnails ($a);
+//      $a = rsscache_download_thumbnails ($a);
 
-      $sql_queries_s = rsstool_write_ansisql ($a, $c, 
-        (isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : ''),
-        $rsscache_sql_db->conn);
+      $sql_queries_s = rsstool_write_ansisql ($a, $c, $table_suffix, $rsscache_sql_db->conn);
 
       rsscache_sql_queries ($sql_queries_s);
     }
@@ -412,7 +469,7 @@ rsscache_default_channel_description ($use_mrss = 0, $use_rsscache = 0)
       .'        type<br>'."\n"
       .'TODO:      rsscache:filter         optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier<br>'."\n"
       .'      rsscache:feed[]<br>'."\n"
-      .'        rsscache:update                 optional, "cron" (default), "always" or "never"'."\n"
+//      .'        rsscache:update                 optional, "cron" (default), "always" or "never"'."\n"
       .'        rsscache:link                   link of feed (RSS, etc.)<br>'."\n"
       .'                                http://gdata.youtube.com/feeds/api/videos?author=USERNAME&amp;vq=SEARCH&amp;max-results=50<br>'."\n"
       .'                                http://gdata.youtube.com/feeds/api/videos?vq=SEARCH&amp;max-results=50<br>'."\n"
@@ -423,16 +480,16 @@ rsscache_default_channel_description ($use_mrss = 0, $use_rsscache = 0)
       .'        rsscache:exec           cmdline where feed link(s) are passed to<br>'."\n"
       .'TODO:      rsscache:filter       optional, boolean full-text search query for SQL query using IN BOOLEAN MODE modifier<br>'."\n"
       .'      rsscache:table_suffix  <br>'."\n"
-      .'TODO:      rsscache:votable          if items of this category can be voted for<br>'."\n"
-      .'                                       0 = not (default)<br>'."\n"
-      .'                                       1 = by everyone<br>'."\n"
-      .'TODO:      rsscache:reportable       if items can be reported to the admins<br>'."\n"
-      .'                                       0 = not (default)<br>'."\n"
-      .'                                       1 = by everyone<br>'."\n"
-      .'TODO:      rsscache:movable          if items can be moved to another category<br>'."\n"
-      .'                                       0 = not (default)<br>'."\n"
-      .'                                       1 = by the admin only<br>'."\n"
-      .'                                       2 = by everyone<br>'."\n"
+//      .'TODO:      rsscache:votable          if items of this category can be voted for<br>'."\n"
+//      .'                                       0 = not (default)<br>'."\n"
+//      .'                                       1 = by everyone<br>'."\n"
+//      .'TODO:      rsscache:reportable       if items can be reported to the admins<br>'."\n"
+//      .'                                       0 = not (default)<br>'."\n"
+//      .'                                       1 = by everyone<br>'."\n"
+//      .'TODO:      rsscache:movable          if items can be moved to another category<br>'."\n"
+//      .'                                       0 = not (default)<br>'."\n"
+//      .'                                       1 = by the admin only<br>'."\n"
+//      .'                                       2 = by everyone<br>'."\n"
       .'<br>'."\n"
       .'CMS options, widget.php/widget_cms():<br>'."\n"
       .'    cms:separate     optional, adds a line-feed or separator before the next category<br>'."\n"
@@ -447,9 +504,11 @@ rsscache_default_channel_description ($use_mrss = 0, $use_rsscache = 0)
       .'                            3 == "Preview!"<br>'."\n"
       .'                            4 == "Update!"<br>'."\n"
       .'    cms:select       add to select menu<br>'."\n"
+      .'<br>'."\n"
       .'    cms:local        optional, local file to embed<br>'."\n"
       .'    cms:iframe       optional, url to embed<br>'."\n"
       .'    cms:proxy        optional, url to embed (proxy-style)<br>'."\n"
+      .'    cms:feed         optional, url of RSS feed to render<br>'."\n"
       .'<br>'."\n"
       .'optional:<br>'."\n"
       .'rss<br>'."\n"

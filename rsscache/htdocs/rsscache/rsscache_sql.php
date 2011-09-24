@@ -105,18 +105,10 @@ rsscache_sql_queries ($sql_queries_s)
 
 
 function
-rsscache_sql_stats_func ($c = NULL, $t = 0)
+rsscache_sql_stats_func ($c, $t)
 {
   $a = array ();
-$table_suffix = NULL;
-  $rsstool_table = 'rsstool_table';
-  $keyword_table = 'keyword_table';
-  if ($table_suffix)
-    if (trim ($table_suffix) != '')
-      {      
-        $rsstool_table .= '_'.$table_suffix;
-        $keyword_table .= '_'.$table_suffix;
-      }
+  $rsstool_table = rsscache_tablename_by_category ('rsstool', $c);  
 
   if ($c)
     $a[] = 'tv2_moved = \''.$c.'\'';
@@ -136,11 +128,11 @@ $table_suffix = NULL;
 
 
 function
-rsscache_sql_stats ($db, $c = NULL)
+rsscache_sql_stats ($config_xml)
 {
+  global $rsscache_sql_db;
   global $rsscache_time;
-
-$table_suffix = NULL;
+  $db = $rsscache_sql_db;
 
   $debug = 0;
 
@@ -210,12 +202,6 @@ $table_suffix = NULL;
 
 
 function
-rsscache_sql_extern ($c, $q, $f, $v, $start, $num)
-{
-}
-
-
-function
 rsscache_sql2array ($d_array)
 {
   global $rsscache_link;
@@ -224,8 +210,7 @@ rsscache_sql2array ($d_array)
   global $rsscache_results;
   global $rsscache_admin;
   global $output;
-  global $rsscache_link_static,   
-         $rsscache_thumbnails_prefix;
+  global $rsscache_link_static;
 
   // DEBUG
 //  echo '<pre><tt>';
@@ -240,10 +225,10 @@ rsscache_sql2array ($d_array)
 
   for ($i = 0; isset ($d_array[$i]); $i++)
     {
-      $config_xml = config_xml_by_category ($d_array[$i]['tv2_moved']);
+      $category_xml = config_xml_by_category ($d_array[$i]['tv2_moved']);
   // DEBUG
 //  echo '<pre><tt>';
-//  print_r ($config_xml);
+//  print_r ($category_xml);
 //exit;
 
       $a = array ('title' => $d_array[$i]['rsstool_title'],
@@ -251,41 +236,39 @@ rsscache_sql2array ($d_array)
                        'link' => $d_array[$i]['rsstool_url'],
                        'description' => $d_array[$i]['rsstool_desc'],
                        'pubDate' => $d_array[$i]['rsstool_date'],
-                       'enclosure' => $config_xml['enclosure'],
+                       'enclosure' => $category_xml['enclosure'],
                        'category' => $d_array[$i]['tv2_moved'],
                        'author' => $d_array[$i]['rsstool_user'],
 
                        'media:duration' => ($d_array[$i]['rsstool_media_duration'] * 1),
                        'media:keywords' => str_replace (' ', ', ', $d_array[$i]['rsstool_keywords']),
-                       'media:thumbnail' => $rsscache_link_static
-                                           .'/thumbnails/'
-                                           .$rsscache_thumbnails_prefix
-                                           .'/rsscache/'
+                       'media:thumbnail' => misc_cleanup_slashes ($rsscache_link_static
+                                           .'/thumbnails/rsscache/'
                                            .$d_array[$i]['rsstool_url_crc32']
-                                           .'.jpg',
+                                           .'.jpg'),
 
                        'rsscache:dl_date' => ($d_array[$i]['rsstool_dl_date'] * 1),
                        'rsscache:related_id' => ($d_array[$i]['rsstool_related_id'] * 1),
                        'rsscache:event_start' => ($d_array[$i]['rsstool_event_start'] * 1),
                        'rsscache:event_end' => ($d_array[$i]['rsstool_event_end'] * 1),
                        'rsscache:url_crc32' => ($d_array[$i]['rsstool_url_crc32'] * 1),
-                       'rsscache:table_suffix' => isset ($config_xml['rsscache:table_suffix']) ? $config_xml['rsscache:table_suffix'] : NULL,
-                       'rsscache:category_title' => $config_xml['title'],
+                       'rsscache:table_suffix' => isset ($category_xml['rsscache:table_suffix']) ? $category_xml['rsscache:table_suffix'] : NULL,
+                       'rsscache:category_title' => $category_xml['title'],
 
-                       'rsscache:stats_category' => $config_xml['rsscache:stats_category'],
-                       'rsscache:stats_items' => ($config_xml['rsscache:stats_items'] * 1),
-                       'rsscache:stats_days' => ($config_xml['rsscache:stats_days'] * 1),
-                       'rsscache:stats_items_today' => ($config_xml['rsscache:stats_items_today'] * 1),
-                       'rsscache:stats_items_7_days' => ($config_xml['rsscache:stats_items_7_days'] * 1),
-                       'rsscache:stats_items_30_days' => ($config_xml['rsscache:stats_items_30_days'] * 1),
+                       'rsscache:stats_category' => $category_xml['rsscache:stats_category'],
+                       'rsscache:stats_items' => ($category_xml['rsscache:stats_items'] * 1),
+                       'rsscache:stats_days' => ($category_xml['rsscache:stats_days'] * 1),
+                       'rsscache:stats_items_today' => ($category_xml['rsscache:stats_items_today'] * 1),
+                       'rsscache:stats_items_7_days' => ($category_xml['rsscache:stats_items_7_days'] * 1),
+                       'rsscache:stats_items_30_days' => ($category_xml['rsscache:stats_items_30_days'] * 1),
 
-                       'cms:separate' => ($config_xml['cms:separate'] * 1),
-                       'cms:button_only' => ($config_xml['cms:button_only'] * 1),
-                       'cms:status' => isset ($config_xml['cms:status']) ? ($config_xml['cms:status'] * 1) : 0,
-                       'cms:select' => ($config_xml['cms:select'] * 1),
-                       'cms:local' => isset ($config_xml['cms:local']) ? $config_xml['cms:local'] : NULL,
-                       'cms:iframe' => isset ($config_xml['cms:iframe']) ? $config_xml['cms:iframe'] : NULL,
-                       'cms:proxy' => isset ($config_xml['cms:proxy']) ? $config_xml['cms:proxy'] : NULL,
+                       'cms:separate' => ($category_xml['cms:separate'] * 1),
+                       'cms:button_only' => ($category_xml['cms:button_only'] * 1),
+                       'cms:status' => isset ($category_xml['cms:status']) ? ($category_xml['cms:status'] * 1) : 0,
+                       'cms:select' => ($category_xml['cms:select'] * 1),
+                       'cms:local' => isset ($category_xml['cms:local']) ? $category_xml['cms:local'] : NULL,
+                       'cms:iframe' => isset ($category_xml['cms:iframe']) ? $category_xml['cms:iframe'] : NULL,
+                       'cms:proxy' => isset ($category_xml['cms:proxy']) ? $category_xml['cms:proxy'] : NULL,
 );
 
 //widget_media_demux ($media_url)
@@ -297,13 +280,13 @@ rsscache_sql2array ($d_array)
           $a['cms:demux'] = $demux;
         }
 
-      for ($j = 0; isset ($config_xml['rsscache:feed_'.$j.'_link']); $j++)
+      for ($j = 0; isset ($category_xml['rsscache:feed_'.$j.'_link']); $j++)
         {
           $b = array ();
-//          if (isset ($config_xml['rsscache:feed_'.$j.'_client']))
-//            $b['rsscache:feed_'.$j.'_client'] = $config_xml['rsscache:feed_'.$j.'_client'];
-          $b['rsscache:feed_'.$j.'_exec'] = $config_xml['rsscache:feed_'.$j.'_exec'];
-          $b['rsscache:feed_'.$j.'_link'] = $config_xml['rsscache:feed_'.$j.'_link'];
+//          if (isset ($category_xml['rsscache:feed_'.$j.'_client']))
+//            $b['rsscache:feed_'.$j.'_client'] = $category_xml['rsscache:feed_'.$j.'_client'];
+          $b['rsscache:feed_'.$j.'_exec'] = $category_xml['rsscache:feed_'.$j.'_exec'];
+          $b['rsscache:feed_'.$j.'_link'] = $category_xml['rsscache:feed_'.$j.'_link'];
           $a = array_merge ($b, $a);
         }
 
@@ -344,10 +327,10 @@ rsscache_sql_query2boolean ($q, $c = NULL)
   $filter = '';
   if ($c)
     {
-      $category = config_xml_by_category ($c);
+      $category_xml = config_xml_by_category ($c);
 
-      if ($category)
-        $q = trim ($q.' '.$category['rsscache:filter']);
+      if ($category_xml)
+        $q = trim ($q.' '.$category_xml['rsscache:filter']);
     }
   // DEBUG
   if ($debug == 1)
@@ -397,14 +380,8 @@ rsscache_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table
 //  if ($debug == 1)
 //    echo 'any: '.$any.'<br>require: '.$require.'<br>exclude: '.$exclude.'<br>';
 
-  $rsstool_table = 'rsstool_table';
-  $keyword_table = 'keyword_table';
-  if ($table_suffix)
-    if (trim ($table_suffix) != '')
-      {
-        $rsstool_table .= '_'.$table_suffix;
-        $keyword_table .= '_'.$table_suffix;
-      }
+  $rsstool_table = rsscache_tablename ('rsstool', $table_suffix);  
+  $keyword_table = rsscache_tablename ('keyword', $table_suffix); 
 
   // HACK: merge any and require since result is sorted by number of matches
   $q = $any.' '.$require;
@@ -449,9 +426,8 @@ rsscache_sql_keyword_func ($any = NULL, $require = NULL, $exclude = NULL, $table
 
 
 function
-rsscache_sql ($c, $q, $f, $v, $start, $num)
+rsscache_sql ($c, $q, $f, $v, $start, $num, $v_segments = NULL)
 {
-  $table_suffix = NULL;
   /*
     $c == category
     $q == query
@@ -474,33 +450,27 @@ rsscache_sql ($c, $q, $f, $v, $start, $num)
   $debug = $rsscache_debug_sql;
 //  $debug = 1;
 
-  $v_segments = rsscache_get_request_value ('v_segments');
-//  $q = rsscache_get_request_value ('q'); // we ignore the arg and make sure we get an unescaped one
-//  $c = $rsscache_sql_db->sql_stresc ($c);
-//  $v = $rsscache_sql_db->sql_stresc ($v);
-//  $start = $rsscache_sql_db->sql_stresc ($start);
-//  $num = $rsscache_sql_db->sql_stresc ($num);
-  $category = config_xml_by_category ($c);
+  $category0_xml = config_xml ();
 // DEBUG
 //echo '<pre><tt>';
-//print_r ($category);
+//print_r ($category0_xml);
+//exit;
+$c = 'snes';
+  $category_xml = config_xml_by_category ($c);
+  $c = $category_xml['category']; // safety
+// DEBUG
+//echo '<pre><tt>';
+//echo $c;
+//print_r ($category_xml);
 //exit;
 
   if ($f == 'stats')
     return rsscache_sql_stats ($rsscache_sql_db, $c);
-//      isset ($category['rsscache:table_suffix']) ? $category['rsscache:table_suffix'] : $table_suffix);
 
   if ($f == 'extern')
     return rsscache_sql_extern ($c, $q, $f, $v, $start, $num);
 
-  $rsstool_table = 'rsstool_table';
-  $keyword_table = 'keyword_table';
-  if ($table_suffix)
-    if (trim ($table_suffix) != '')
-      {
-        $rsstool_table .= '_'.$table_suffix;
-        $keyword_table .= '_'.$table_suffix;
-      }
+  $rsstool_table = rsscache_tablename_by_category ('rsstool', $c);
 
   $sql_query_s = '';
   $sql_query_s .= ''
@@ -576,7 +546,8 @@ rsscache_sql ($c, $q, $f, $v, $start, $num)
         if (trim ($v_segments) != '')
           $q .= ' +part';
       $b = rsscache_sql_query2boolean ($q, $c);
-      $sql_query_s .= ' FROM '.rsscache_sql_keyword_func ($b['any'], $b['require'], $b['exclude'], $table_suffix);
+      $sql_query_s .= ' FROM '.rsscache_sql_keyword_func ($b['any'], $b['require'], $b['exclude'],
+isset ($category_xml['rsscache:table_suffix']) ? $category_xml['rsscache:table_suffix'] : NULL);
     }
   else // default
     {
@@ -689,7 +660,6 @@ rsscache_update_ttl ()
   global $rsscache_item_ttl;
   global $rsscache_time;
   global $db;
-  global $table_suffix;
 
   if ($rsscache_item_ttl <= 0) // no ttl set
     {

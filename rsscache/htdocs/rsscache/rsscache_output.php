@@ -49,14 +49,8 @@ rsstool_write_ansisql ($a, $rsscache_category, $table_suffix = NULL, $db_conn = 
   $rsscache_engine = 1;
   $p = '';
 
-  $rsstool_table = 'rsstool_table';
-  $keyword_table = 'keyword_table';
-  if ($table_suffix)
-    if (trim ($table_suffix) != '')
-      {   
-        $rsstool_table .= '_'.$table_suffix;
-        $keyword_table .= '_'.$table_suffix;
-      }
+  $rsstool_table = rsscache_tablename ('rsstool', $table_suffix);
+  $keyword_table = rsscache_tablename ('keyword', $table_suffix);
 
   $p .= '-- -----------------------------------------------------------'."\n"
        .'-- RSStool - read, parse, merge and write RSS and Atom feeds'."\n"

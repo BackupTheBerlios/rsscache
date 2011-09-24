@@ -473,11 +473,10 @@ $a = array (
            'rsscache:event_start',
            'rsscache:event_end',
            'rsscache:url_crc32',
-           'rsscache:movable',
-           'rsscache:reportable',
-           'rsscache:votable',
+//           'rsscache:movable',
+//           'rsscache:reportable',
+//           'rsscache:votable',
            'rsscache:table_suffix',
-//           'rsscache:download',
 );
 
    $p .= generate_rss2_func ($item[$i], $a);
@@ -522,6 +521,7 @@ $a = array (
             'cms:local',
             'cms:iframe',
             'cms:proxy',
+            'cms:feed',
 //            'cms:query',
             'cms:demux',
 );
