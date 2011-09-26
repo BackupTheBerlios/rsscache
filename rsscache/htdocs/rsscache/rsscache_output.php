@@ -193,6 +193,216 @@ rsstool_write_ansisql ($a, $rsscache_category, $table_suffix = NULL, $db_conn = 
   return $p;
 }
 
+// TODO: turn into XSL
+
+
+/*
+{
+  "Herausgeber": "Xema",
+  "Nummer": "1234-5678-9012-3456",
+  "Deckung": 2e+6,
+  "Währung": "EUR",
+  "Inhaber": {
+    "Name": "Mustermann",
+    "Vorname": "Max",
+    "männlich": true,
+    "Depot": {},
+    "Hobbys": [ "Reiten", "Golfen", "Lesen" ],
+    "Alter": 42,
+    "Kinder": [],
+    "Partner": null
+  }
+}
+*/
+
+
+function
+generate_json_func ($item, $a)
+{
+  $p = '';
+  for ($i = 0; isset ($a[$i]); $i++)
+    if (isset ($item[$a[$i]]))
+      {
+        $t = $a[$i];
+
+        // DEBUG
+//        echo '<pre><tt>';
+//        print_r ($item);
+//        echo $t;
+
+        if (isset ($item[$t]))
+          $p .= '      "'.$t.'": '
+               .(is_string ($item[$t]) ? '"'.$item[$t].'"' : sprintf ("%u", $item[$t]))
+               .','."\n";
+      }
+  return $p;
+}
+
+
+function
+generate_json ($channel, $item, $use_mrss = 0, $use_rsscache = 0)
+{
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($channel);
+//  print_r ($item);
+
+  $use_cms = 0; 
+  if ($use_rsscache == 1)
+    $use_cms = 1;
+
+  $p = '';
+
+//  $p .= $comment;
+
+  $p .= '{';
+
+  $p .= '  {'."\n"
+;
+
+$a = array (
+           'title',
+           'link',
+           'description',
+           'docs',
+//           'rsscache:stats_category',
+           'rsscache:stats_items',
+           'rsscache:stats_days',
+           'rsscache:stats_items_today',
+           'rsscache:stats_items_7_days',
+           'rsscache:stats_items_30_days',
+);
+
+   $p .= generate_json_func ($channel, $a);
+
+  if (isset ($channel['lastBuildDate']))
+    $p .= '    "lastBuildDate": "'.strftime ("%a, %d %h %Y %H:%M:%S %z", $channel['lastBuildDate']).'",'."\n";
+
+  if (isset ($channel['image']))
+    $p .= ''
+       .'    "image": "'.$channel['image'].'",'."\n"
+;
+
+  // items
+//  for ($i = 0; isset ($item[$i]['link']); $i++)
+  for ($i = 0; isset ($item[$i]); $i++)
+    {
+      $p .= '    {'."\n";
+
+$a = array (
+           'title',
+           'link',
+           'description',
+           'category',
+           'author',
+           'comments',
+);
+   $p .= generate_json_func ($item[$i], $a);
+
+//                <pubDate>Fri, 05 Aug 2011 15:03:02 +0200</pubDate>
+      if (isset ($item[$i]['pubDate']))
+        $p .= ''
+             .'      "pubDate": "'
+             .strftime (
+                "%a, %d %h %Y %H:%M:%S %z",
+//                "%a, %d %h %Y %H:%M:%S %Z",
+                $item[$i]['pubDate'])
+             .'",'."\n"
+;
+      if (isset ($item[$i]['enclosure']))
+        $p .= '      "enclosure": "'.$item[$i]['enclosure'].'"'."\n";
+
+      // mrss
+      if ($use_mrss == 1)
+        {
+//      $p .= '      "media:content": "'.$item[$i]['link'].'",'."\n";
+
+//      $p .= '      "media:embed": "'.'",'."\n";
+
+//      $p .= '      "media:category": "'.'",'."\n";
+
+$a = array (
+           'media:thumbnail',
+           'media:duration',
+);
+   $p .= generate_json_func ($item[$i], $a);
+
+      if (isset ($item[$i]['media:keywords']))
+        $p .= '      "media:keywords": "'.str_replace (' ', ', ', $item[$i]['media:keywords']).'",'."\n";
+        }
+
+      // rsscache
+      if ($use_rsscache == 1)
+        {
+      if (isset ($item[$i]['pubDate']))
+        $p .= '      "rsscache:pubDate": '.sprintf ("%u", $item[$i]['pubDate']).','."\n";
+
+$a = array (
+           'rsscache:dl_date',
+           'rsscache:related_id',
+           'rsscache:event_start',
+           'rsscache:event_end',
+           'rsscache:url_crc32',
+           'rsscache:movable',
+           'rsscache:reportable',
+           'rsscache:votable',
+           'rsscache:table_suffix',
+           'rsscache:stats_category',
+           'rsscache:stats_items',
+           'rsscache:stats_days',
+           'rsscache:stats_items_today',
+           'rsscache:stats_items_7_days',
+           'rsscache:stats_items_30_days',
+);
+
+   $p .= generate_json_func ($item[$i], $a);
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($channel);
+//  print_r ($item);
+
+
+for ($j = 0; isset ($item[$i]['rsscache:feed_'.$j.'_link']); $j++)
+  {
+    $p .= '    "rsscache:feed": [ '."\n";
+    if (isset ($item[$i]['rsscache:feed_'.$j.'_client']))
+      $p .= '      "rsscache:client": "'.$item[$i]['rsscache:feed_'.$j.'_client'].'",'."\n";
+    if (isset ($item[$i]['rsscache:feed_'.$j.'_opts']))
+      $p .= '      "rsscache:opts": "'.$item[$i]['rsscache:feed_'.$j.'_opts'].'",'."\n";
+    if (isset ($item[$i]['rsscache:feed_'.$j.'_link']))
+      $p .= '      "rsscache:link": "'.$item[$i]['rsscache:feed_'.$j.'_link'].'",'."\n";
+    $p .= '    ],'."\n";
+  }
+        }
+
+      // CMS
+      if ($use_cms == 1)
+        {
+            $a = array (
+            'cms:separate',
+            'cms:button_only',
+            'cms:status',
+            'cms:select',
+            'cms:local',
+            'cms:iframe',
+            'cms:proxy',
+            'cms:query',
+            'cms:demux',
+);
+
+   $p .= generate_json_func ($item[$i], $a);
+        }
+
+      $p .= '    }'."\n";
+    }
+
+  $p .= '  }'."\n";
+
+  $p .= '}'."\n";
+
+  return $p;
+}
+
 
 }
 
