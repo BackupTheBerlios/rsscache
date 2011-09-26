@@ -32,7 +32,7 @@ require_once ('misc/json.php');
 require_once ('misc/sql.php');
 require_once ('misc/misc.php');
 require_once ('misc/youtube.php');
-require_once ('misc/wikipedia.php');
+//require_once ('misc/wikipedia.php');
 require_once ('misc/widget_media.php');
 require_once ('rsscache_misc.php');
 require_once ('rsscache_sql.php');
@@ -205,7 +205,7 @@ end time at which the reference to a particular location ends in the media objec
 //            $a['item'][$i]['media:content_'.$j.'_duration'] = 300;
           }
 
-        // enrich with information from wikipedia
+        // HACK: enrich with information from wikipedia?
 //        $a['item'][$i]['rsscache:wikipedia'] = 
       }
   }
