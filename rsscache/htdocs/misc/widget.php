@@ -467,7 +467,7 @@ widget_cms ($image, $config_xml, $link_suffix = NULL, $flags = 4)
       // <cms:rss>
       if ($category_cms->rss)
         if (trim ($category_cms->rss) != '')
-          $s .= '<a href="'.$category_cms->rss.'"><img src="images/rss_feed.png" border="0"></a>'
+          $s .= '&nbsp;<a href="'.$category_cms->rss.'"><img src="images/rss_feed.png" border="0" width="16" height="16"></a>';
 
       // <cms:status>
       if ($category_cms->status == 1)
