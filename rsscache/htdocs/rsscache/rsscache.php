@@ -28,7 +28,6 @@ define ('RSSCACHE_PHP', 1);
 require_once ('default.php');
 require_once ('config.php');
 require_once ('misc/rss.php');
-require_once ('misc/json.php');
 require_once ('misc/sql.php');
 require_once ('misc/misc.php');
 require_once ('misc/youtube.php');
