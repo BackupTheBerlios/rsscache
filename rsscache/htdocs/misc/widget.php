@@ -295,6 +295,7 @@ widget_button ($icon, $query, $label, $tooltip, $link_suffix = NULL, $flags = 0)
       <link>http:///?embed=aa2map_ascii.php</link>
       <cms:status>0</cms:status>
       <cms:separate>1</cms:separate>
+      <cms:rss>http:///?output=rss</cms:rss>
     </item>
   </channel>
 </rss>
@@ -462,6 +463,11 @@ widget_cms ($image, $config_xml, $link_suffix = NULL, $flags = 4)
             }
           $s .= $category->title;
         }
+
+      // <cms:rss>
+      if ($category_cms->rss)
+        if (trim ($category_cms->rss) != '')
+          $s .= '<a href="'.$category_cms->rss.'"><img src="images/rss_feed.png" border="0"></a>'
 
       // <cms:status>
       if ($category_cms->status == 1)
