@@ -165,6 +165,10 @@ rss2array ($rss, $debug = 0)
           if ($o)
             $a = array_merge ($a, misc_object2array ($o, 'cms:'));
 
+          $o = $category->children ('ircbot', TRUE);
+          if ($o)
+            $a = array_merge ($a, misc_object2array ($o, 'ircbot:'));
+
           $o = $category->children ('media', TRUE);
           if ($o)
             $a = array_merge ($a, misc_object2array ($o, 'media:'));
@@ -217,8 +221,9 @@ rss2array ($rss, $debug = 0)
 //      if (isset ($a['media:keywords']))
 //        $a['media:keywords'] = str_replace (' ', ', ', $a['media:keywords']);
 
-      if (!isset ($a['rsscache:category_title']))
-        $a['rsscache:category_title'] = $a['title'];
+        // do this NOT here
+//      if (!isset ($a['rsscache:category_title']))
+//        $a['rsscache:category_title'] = $a['title'];
 
       if (isset ($a['enclosure']))
         if (isset ($a['enclosure']['@attributes']))  
@@ -250,6 +255,10 @@ rss2array ($rss, $debug = 0)
       $o = $rss->children ('rsscache', TRUE);
       if ($o)
         $channel = array_merge ($channel, misc_object2array ($o, 'rsscache:'));
+
+      $o = $rss->children ('ircbot', TRUE);
+      if ($o)
+        $channel = array_merge ($channel, misc_object2array ($o, 'ircbot:'));
 
 //      $o = $rss->children ('cms', TRUE);
 //      if ($o)
