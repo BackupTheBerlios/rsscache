@@ -56,20 +56,20 @@ rsscache_add_stats ($a)
 //exit;
   for ($i = 0; isset ($a['item'][$i]); $i++)
     if (rsscache_item_has_feed ($a['item'][$i]))
-          {
-            $stats = rsscache_sql_stats ($a['item'][$i]['category']);
-//            $stats = rsscache_sql_stats ();
+      {
+        $stats = rsscache_sql_stats ($a['item'][$i]['category']);
+//        $stats = rsscache_sql_stats ();
 // DEBUG
 //echo '<pre><tt>123';
 //print_r ($stats);
 //exit;
-            $a['item'][$i] = array_merge ($a['item'][$i], misc_prefixate_array ($stats[$j], 'rsscache:'));
-      $a['channel']['rsscache:stats_items'] += $stats[$j]['stats_items'];
-      $a['channel']['rsscache:stats_items_today'] += $stats[$j]['stats_items_today'];
-      $a['channel']['rsscache:stats_items_7_days'] += $stats[$j]['stats_items_7_days'];
-      $a['channel']['rsscache:stats_items_30_days'] += $stats[$j]['stats_items_30_days'];
-      $a['channel']['rsscache:stats_days'] += $stats[$j]['stats_days'];
-          }
+        $a['item'][$i] = array_merge ($a['item'][$i], misc_prefixate_array ($stats[$j], 'rsscache:'));
+        $a['channel']['rsscache:stats_items'] += $stats[$i]['stats_items'];
+        $a['channel']['rsscache:stats_items_today'] += $stats[$i]['stats_items_today'];
+        $a['channel']['rsscache:stats_items_7_days'] += $stats[$i]['stats_items_7_days'];
+        $a['channel']['rsscache:stats_items_30_days'] += $stats[$i]['stats_items_30_days'];
+        $a['channel']['rsscache:stats_days'] += $stats[$i]['stats_days'];
+      }
 
   return $a;
 }

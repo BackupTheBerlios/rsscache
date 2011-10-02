@@ -77,7 +77,7 @@ category: <b><xsl:value-of disable-output-escaping="yes" select="category"/></b>
 <xsl:value-of disable-output-escaping="yes" select="rsscache:stats_items"/> items<br/>
 <b><xsl:value-of disable-output-escaping="yes" select="rsscache:stats_items_today"/></b> items today<br/>
 <xsl:value-of disable-output-escaping="yes" select="rsscache:stats_items_7_days"/> items last 7 days<br/>
-<xsl:value-of disable-output-escaping="yes" select="rsscache:stats_items_30_days"/> items last 30 days ( items per day)<br/>
+<xsl:value-of disable-output-escaping="yes" select="rsscache:stats_items_30_days"/> items last 30 days (<xsl:value-of disable-output-escaping="yes" select="rsscache:stats_items_30_days / 30"/> items per day)<br/>
 <xsl:value-of disable-output-escaping="yes" select="rsscache:stats_days"/> days since creation of category<br/>
 table_suffix: <b><xsl:value-of disable-output-escaping="yes" select="rsscache:table_suffix"/></b><br/>
 </div>
