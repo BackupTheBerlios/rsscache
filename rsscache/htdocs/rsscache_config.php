@@ -29,6 +29,11 @@ $rsscache_thumbnails_prefix = '';
 $rsscache_debug_sql = 0;
 $rsscache_enable_search = 1; // allow users to search
 $rsscache_related_search = 1; // make use of related searches (requires keywords)
+$rsscache_title = 'title';
+$rsscache_logo = 'http://'.$_SERVER['SERVER_NAME'].'/images/rsscache_logo.png';
+$rsscache_description = 'desc';
+
+$rsscache_default_output = 'html';
 $rsscache_xsl_trans = 0; // XSL transformation for HTML output (0 == server, 1 == client, 2 == auto)
 //$rsscache_xsl_stylesheet_path = 'rsscache/xsl';  // path to XSL files relative to htdocs/
 //$rsscache_js = 'http://'.$_SERVER['SERVER_NAME'].'/rsscache.js';

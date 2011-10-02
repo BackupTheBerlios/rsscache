@@ -54,6 +54,8 @@ $debug = 0;
 $c = rsscache_get_request_value ('c'); // category
 $f = rsscache_get_request_value ('f'); // function
 $output = rsscache_get_request_value ('output'); // output
+if (!($output))
+  $output = $rsscache_default_output;
 $q = rsscache_get_request_value ('q'); // search query
 $item = rsscache_get_request_value ('item'); // item crc32
 $start = rsscache_get_request_value ('start'); // offset

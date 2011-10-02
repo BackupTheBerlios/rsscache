@@ -128,7 +128,7 @@ rsscache_sql_stats_func ($c, $t)
 
 
 function
-rsscache_sql_stats ($config_xml)
+rsscache_sql_stats ($c = '')
 {
   global $rsscache_sql_db;
   global $rsscache_time;
@@ -218,7 +218,7 @@ rsscache_sql2array ($d_array)
 //exit;
 
   $f = rsscache_get_request_value ('f'); // function
-  $output = rsscache_get_request_value ('output');
+//  $output = rsscache_get_request_value ('output');
 
   $item = array ();
 //  $config = config_xml ();
@@ -255,13 +255,6 @@ rsscache_sql2array ($d_array)
                        'rsscache:table_suffix' => isset ($category_xml['rsscache:table_suffix']) ? $category_xml['rsscache:table_suffix'] : NULL,
                        'rsscache:category_title' => $category_xml['title'],
 
-                       'rsscache:stats_category' => $category_xml['rsscache:stats_category'],
-                       'rsscache:stats_items' => ($category_xml['rsscache:stats_items'] * 1),
-                       'rsscache:stats_days' => ($category_xml['rsscache:stats_days'] * 1),
-                       'rsscache:stats_items_today' => ($category_xml['rsscache:stats_items_today'] * 1),
-                       'rsscache:stats_items_7_days' => ($category_xml['rsscache:stats_items_7_days'] * 1),
-                       'rsscache:stats_items_30_days' => ($category_xml['rsscache:stats_items_30_days'] * 1),
-
                        'cms:separate' => ($category_xml['cms:separate'] * 1),
                        'cms:button_only' => ($category_xml['cms:button_only'] * 1),
                        'cms:status' => isset ($category_xml['cms:status']) ? ($category_xml['cms:status'] * 1) : 0,
@@ -270,6 +263,16 @@ rsscache_sql2array ($d_array)
                        'cms:iframe' => isset ($category_xml['cms:iframe']) ? $category_xml['cms:iframe'] : NULL,
                        'cms:proxy' => isset ($category_xml['cms:proxy']) ? $category_xml['cms:proxy'] : NULL,
 );
+
+if (isset ($category_xml['rsscache:stats_category']))
+  {
+    $a['rsscache:stats_category'] = $category_xml['rsscache:stats_category'];
+    $a['rsscache:stats_items'] = ($category_xml['rsscache:stats_items'] * 1);
+    $a['rsscache:stats_days'] = ($category_xml['rsscache:stats_days'] * 1);
+    $a['rsscache:stats_items_today'] = ($category_xml['rsscache:stats_items_today'] * 1);
+    $a['rsscache:stats_items_7_days'] = ($category_xml['rsscache:stats_items_7_days'] * 1);
+    $a['rsscache:stats_items_30_days'] = ($category_xml['rsscache:stats_items_30_days'] * 1);
+  }
 
 //widget_media_demux ($media_url)
 //widget_media ($media_url, $width = NULL, $height = NULL, $ratio = NULL, $autoplay = 0, $hq = 0, $loop = 0, $blackbg = 0)
