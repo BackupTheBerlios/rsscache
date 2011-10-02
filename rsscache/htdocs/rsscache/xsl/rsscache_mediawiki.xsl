@@ -1,5 +1,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:media="http://search.yahoo.com/mrss/" xmlns:rsscache="data:,rsscache" xmlns:cms="data:,cms">
 <xsl:output method="xml" indent="yes"/>
+
+
 <xsl:template match="/"><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.4/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.4/ http://www.mediawiki.org/xml/export-0.4.xsd"
  version="0.4" xml:lang="en">
@@ -60,4 +62,6 @@
 </mediawiki>
 
 </xsl:template>
+
+
 </xsl:stylesheet>

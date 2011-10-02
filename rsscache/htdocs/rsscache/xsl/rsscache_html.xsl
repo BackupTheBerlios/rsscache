@@ -43,10 +43,9 @@
   <img src="images/rsscache_logo.png"/>
   </a>
   <br/>
+  <xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/>
   <br/>
-  <xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/><br/>
-  <br/>
-  <xsl:value-of disable-output-escaping="yes" select="rss/channel/description"/><br/>
+  <xsl:value-of disable-output-escaping="yes" select="rss/channel/description"/>
   <br/>
 </xsl:template>
 
@@ -171,14 +170,26 @@
 </xsl:template>
 
 
+<xsl:template name="index_menu">
+  <xsl:for-each select="rss/channel/item">
+    <img>
+    <xsl:attribute name="src"><xsl:value-of disable-output-escaping="yes" select="enclosure/@url"/></xsl:attribute>
+    </img>
+    <a href="{link}"><xsl:value-of disable-output-escaping="yes" select="title"/></a>
+  </xsl:for-each>
+</xsl:template>
+
+
 <xsl:template match="/">
   <html>
   <head>
   <title><xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/></title>
-  <style type="text/css">
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"></meta>
+  <!-- style type="text/css">
 @import url('rsscache/rsscache.css');
-</style>
-  <!-- style type="text/css" src="rsscache/rsscache.css"></style -->
+</style -->
+  <style type="text/css" src="rsscache/rsscache.css"></style>
+  <link rel="icon" type="image/png" href="images/rsscache_icon.png"></link>
   <link rel="alternate" type="application/rss+xml">
     <xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/></xsl:attribute>
     <xsl:attribute name="title"><xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/></xsl:attribute>
@@ -195,6 +206,7 @@
     <xsl:if test="count(rss/channel/item) &gt; 1">
       <xsl:choose>
         <xsl:when test="rss/channel/rsscache:stats_items">
+          <!-- xsl:call-template name="index_menu"/ -->
           <xsl:call-template name="index_stats"/>
         </xsl:when>
         <xsl:otherwise>
