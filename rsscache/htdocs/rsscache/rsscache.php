@@ -201,9 +201,9 @@ end time at which the reference to a particular location ends in the media objec
             else
               $a['item'][$i]['media:content_'.$j.'_url'] = $b[$j];
             $a['item'][$i]['media:content_'.$j.'_medium'] = 'video';
-//            $a['item'][$i]['media:content_'.$j.'_width'] = $a['item'][$i]['media:duration'];
-//            $a['item'][$i]['media:content_'.$j.'_height'] = 400;
-//            $a['item'][$i]['media:content_'.$j.'_duration'] = 300;
+//            $a['item'][$i]['media:content_'.$j.'_duration'] = $a['item'][$i]['media:duration'];
+//            $a['item'][$i]['media:content_'.$j.'_width'] = 400;
+//            $a['item'][$i]['media:content_'.$j.'_height'] = 300;
           }
 
         // HACK: enrich with information from wikipedia?
@@ -224,18 +224,18 @@ if ($output == 'json')
                                                 array ('&', ' ', "\n"), $a['channel']['description']);
   }
 
-// generate RSS (and transform using XSL)
+if ($output == 'ansisql')
   {
+// TODO: 
+    $p = rsscache_write_ansisql ($a, $rsscache_category, $table_suffix, $rsscache_sql_db);
+  }
+else
+  {
+    // generate RSS (and transform using XSL)
     $s = NULL;
     if ($output)
       {
-        if ($output == 'ansisql')
-          $s = ''
-//            .'http://'.$_SERVER['SERVER_NAME']
-            .$rsscache_xsl_stylesheet_path
-            .'/rsstool_'.basename ($output).'.xsl';
-        else
-          $s = ''
+        $s = ''
 //            .'http://'.$_SERVER['SERVER_NAME']
             .$rsscache_xsl_stylesheet_path
             .'/rsscache_'.basename ($output).'.xsl';
@@ -250,70 +250,8 @@ if ($output == 'json')
 
     $p = generate_rss2 ($a['channel'], $a['item'], 1, 1, $s);
 
-    // XSL transformation
     if ($s)
-      {
-        if ($rsscache_xsl_trans == 2) // check user-agent and decide
-          {
-            // TODO
-            $rsscache_xsl_trans = 0;
-          }
-        if ($rsscache_xsl_trans == 0) // transform on server
-          {
-            $xsl = file_get_contents ($s);
-            $xslt = new XSLTProcessor (); 
-            $xslt->importStylesheet (new SimpleXMLElement ($xsl));
-            $p = $xslt->transformToXml (new SimpleXMLElement ($p));
-          }
-        else if ($rsscache_xsl_trans == 1) // transform on client
-          {
-/*
-$p = '<html>
-<head>
-<script>
-function loadXMLDoc(dname)
-{
-if (window.XMLHttpRequest)
-  {
-  xhttp=new XMLHttpRequest();
-  }
-else
-  {
-  xhttp=new ActiveXObject("Microsoft.XMLHTTP");
-  }
-xhttp.open("GET",dname,false);
-xhttp.send("");
-return xhttp.responseXML;
-}
-
-function displayResult()
-{
-xml=loadXMLDoc("?f=stats");
-xsl=loadXMLDoc("'.$s.'");
-// code for IE
-//if (window.ActiveXObject)
-//  {
-//  ex=xml.transformNode(xsl);
-//  document.getElementById("example").innerHTML=ex;
-//  }
-// code for Mozilla, Firefox, Opera, etc.
-//else if (document.implementation && document.implementation.createDocument)
-  {
-  xsltProcessor=new XSLTProcessor();
-  xsltProcessor.importStylesheet(xsl);
-  resultDocument = xsltProcessor.transformToFragment(xml,document);
-  document.getElementById("example").appendChild(resultDocument);
-  }
-}
-</script>
-</head>
-<body onload="displayResult()">
-<div id="example" />
-</body>
-</html>';
-*/
-          }
-      }
+      $p = rsscache_write_xsl ($p, $s);
   }
 
 

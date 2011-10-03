@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!-- xmlns="http://www.w3.org/1999/xhtml" -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:media="http://search.yahoo.com/mrss/" xmlns:rsscache="data:,rsscache" xmlns:cms="data:,cms">
 <xsl:output method="html" indent="no"/>
 
@@ -37,7 +37,6 @@
 
 
 <xsl:template name="index_header">
-  <!-- xsl:value-of select="document('?f=stats')"/ -->
   <a>
   <xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/></xsl:attribute>
   <img src="images/rsscache_logo.png"/>

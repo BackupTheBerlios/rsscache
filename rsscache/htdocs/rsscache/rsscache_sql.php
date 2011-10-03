@@ -458,7 +458,7 @@ rsscache_sql ($c, $q, $f, $v, $start, $num, $v_segments = NULL)
 //echo '<pre><tt>';
 //print_r ($category0_xml);
 //exit;
-$c = 'snes';
+$c = 'c64';
   $category_xml = config_xml_by_category ($c);
   $c = $category_xml['category']; // safety
 // DEBUG
