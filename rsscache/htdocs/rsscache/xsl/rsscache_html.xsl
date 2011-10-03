@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:media="http://search.yahoo.com/mrss/" xmlns:rsscache="data:,rsscache" xmlns:cms="data:,cms">
+<!-- xmlns="http://www.w3.org/1999/xhtml" -->
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+ xmlns:media="http://search.yahoo.com/mrss/" xmlns:rsscache="data:,rsscache" xmlns:cms="data:,cms">
 <xsl:output method="html" indent="no"/>
-
-
-<!-- xsl:variable name="test">sdfsdgsdgh</xsl:variable -->
 
 
 <xsl:template name="dropout">
@@ -38,6 +37,7 @@
 
 
 <xsl:template name="index_header">
+  <!-- xsl:value-of select="document('?f=stats')"/ -->
   <a>
   <xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/></xsl:attribute>
   <img src="images/rsscache_logo.png"/>
@@ -95,7 +95,9 @@
 
     <xsl:if test="media:thumbnail/@url != ''">
       <br/>
+
     <xsl:choose>
+
       <xsl:when test="media:embed != ''">
         <a>
         <xsl:attribute name="href">?item=<xsl:value-of disable-output-escaping="yes" select="rsscache:url_crc32"/>&amp;output=html</xsl:attribute>
@@ -104,6 +106,7 @@
         </img>
         </a>
       </xsl:when>
+
       <xsl:otherwise>
         <a href="{link}">
         <img border="0" width="25%">
@@ -111,7 +114,9 @@
         </img>
         </a>
       </xsl:otherwise>
+
     </xsl:choose>
+
       <br/>
       <br/>
     </xsl:if>
@@ -143,6 +148,7 @@
 <xsl:template name="index_stats">
 
   <xsl:call-template name="index_header"/>       
+  <xsl:call-template name="index_menu"/>
   <xsl:call-template name="index_channel_stats"/>
 
   <xsl:for-each select="rss/channel/item">
@@ -185,35 +191,57 @@
   <head>
   <title><xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/></title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8"></meta>
+
   <!-- style type="text/css">
 @import url('rsscache/rsscache.css');
 </style -->
   <style type="text/css" src="rsscache/rsscache.css"></style>
+
   <link rel="icon" type="image/png" href="images/rsscache_icon.png"></link>
-  <link rel="alternate" type="application/rss+xml">
-    <xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/></xsl:attribute>
-    <xsl:attribute name="title"><xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/></xsl:attribute>
+  <!-- link rel="alternate" type="application/rss+xml">
+  <xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/></xsl:attribute>
+  <xsl:attribute name="title"><xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/></xsl:attribute>
   </link>
-  <link rel="alternate" type="application/rss+xml">
-    <xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/>?f=stats</xsl:attribute>
-    <xsl:attribute name="title">Statistics</xsl:attribute>
+  <link rel="alternate" type="application/rss+xml" title="Statistics">
+  <xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/>?f=stats</xsl:attribute>
+  </link -->
+
+  <!-- meta name="Description" content="support battlefield beta the deadliest bush gameplay min hours ago well actually just look pdw and potential uses outdoor section operation metro tags totalbiscuit totalhalibut cynicalbrit fps game commentary live feat woodysgamertag ibashtv part leveling prestiging http www.youtube.com cached thanks for watching guys should later today have some great black ops videos planned coming weeks video bash follow www.twitter.com like www.facebook.com tmartn tmart tmartin rush sniping ump xbox playstation callouts sniper mvp using scope nitroy playing show how looks hope you enjoy youtube.com welcome open five kills one grenade watch quot herbbzy get with only this incredible special user funny lol let play together terraria deutsch zwischendurch glitch was uploaded from android phone lets airwolf german diesem zeige ich euch den mod way fight war that gshd twitter.com"><meta name="keywords" content="support battlefield beta the deadliest bush gameplay min hours ago well actually just look pdw and potential uses outdoor section operation metro tags totalbiscuit totalhalibut cynicalbrit fps game commentary live feat woodysgamertag ibashtv part leveling prestiging http www.youtube.com cached thanks for watching guys should later today have some great black ops videos planned coming weeks video bash follow www.twitter.com like www.facebook.com tmartn tmart tmartin rush sniping ump xbox playstation callouts sniper mvp using scope nitroy playing show how looks hope you enjoy youtube.com welcome open five kills one grenade watch quot herbbzy get with only this incredible special user funny lol let play together terraria deutsch zwischendurch glitch was uploaded from android phone lets airwolf german diesem zeige ich euch den mod way fight war that gshd twitter.com"></meta -->
+
+  <link rel="alternate" type="application/rss+xml" href="?output=rss">
+  <xsl:attribute name="title"><xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/></xsl:attribute>
   </link>
+  <link rel="alternate" type="application/rss+xml" title="Statistics" href="?f=stats&amp;output=rss"></link>
+  <!-- meta name="google-site-verification" content=""></meta -->
+  <link rel="stylesheet" type="text/css" media="screen" href="tv2/tv2.css"></link>
+  <link rel="stylesheet" type="text/css" media="screen" href="pwnoogle.css"></link>
+  <script type="text/javascript" src="misc/jquery.js"></script>
+  <script type="text/javascript" src="misc/jquery_ui.js"></script>
+  <!-- script type="text/javascript" src="misc/jquery_easing.js"></script -->
+  <script type="text/javascript" src="misc/jquery_lavalamp.js"></script>
+  <script type="text/javascript" src="misc/misc.js"></script>
+  <script type="text/javascript" src="tv2/tv2.js"></script>
   </head>
   <body>
+
     <xsl:if test="count(rss/channel/item) = 1">
       <xsl:call-template name="dropout"/>
     </xsl:if>
+
     <xsl:if test="count(rss/channel/item) &gt; 1">
       <xsl:choose>
+
         <xsl:when test="rss/channel/rsscache:stats_items">
-          <!-- xsl:call-template name="index_menu"/ -->
           <xsl:call-template name="index_stats"/>
         </xsl:when>
+
         <xsl:otherwise>
           <xsl:call-template name="index"/>
         </xsl:otherwise>
+
       </xsl:choose>
     </xsl:if>
+
   </body>
   </html>
 </xsl:template>

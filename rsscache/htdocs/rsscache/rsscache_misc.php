@@ -190,7 +190,7 @@ config_xml_normalize ($config)
 //  echo generate_rss2 ($a['channel'], $a['item'], 1, 1);
 //  exit;
 
-  return $a;
+  return array ('channel' => rsscache_default_channel (), 'item' => $a['item']);
 }
 
 

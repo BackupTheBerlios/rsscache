@@ -270,6 +270,51 @@ else // generate RSS (and transform using XSL)
           }
         else if ($rsscache_xsl_trans == 1) // transform on client
           {
+/*
+$p = '<html>
+<head>
+<script>
+function loadXMLDoc(dname)
+{
+if (window.XMLHttpRequest)
+  {
+  xhttp=new XMLHttpRequest();
+  }
+else
+  {
+  xhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xhttp.open("GET",dname,false);
+xhttp.send("");
+return xhttp.responseXML;
+}
+
+function displayResult()
+{
+xml=loadXMLDoc("?f=stats");
+xsl=loadXMLDoc("'.$s.'");
+// code for IE
+//if (window.ActiveXObject)
+//  {
+//  ex=xml.transformNode(xsl);
+//  document.getElementById("example").innerHTML=ex;
+//  }
+// code for Mozilla, Firefox, Opera, etc.
+//else if (document.implementation && document.implementation.createDocument)
+  {
+  xsltProcessor=new XSLTProcessor();
+  xsltProcessor.importStylesheet(xsl);
+  resultDocument = xsltProcessor.transformToFragment(xml,document);
+  document.getElementById("example").appendChild(resultDocument);
+  }
+}
+</script>
+</head>
+<body onload="displayResult()">
+<div id="example" />
+</body>
+</html>';
+*/
           }
       }
   }
@@ -290,7 +335,14 @@ if (isset ($a[$output]))
 else
 //  header ('Content-type: text/xml');
   header ('Content-type: application/xml');
+//    header('content-type: application/xml; charset=UTF-8');
 
+// disable any caching by the browser
+//header('Expires: Mon, 14 Oct 2002 05:00:00 GMT'); // Date in the past
+//header('Last-Modified: ' .gmdate("D, d M Y H:i:s") .' GMT'); // always modified
+//header('Cache-Control: no-store, no-cache, must-revalidate'); // HTTP 1.1
+//header('Cache-Control: post-check=0, pre-check=0', false);
+//header('Pragma: no-cache'); // HTTP 1.0
 
 // the _only_ echo
 if ($use_gzip == 1)

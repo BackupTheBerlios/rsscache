@@ -59,6 +59,7 @@ SuPHP_ConfigPath /home/pwnoogle/public_html
 #php_flag session.use_only_cookies off
 AddType video/webm .webm
 AddType audio/webm .weba
+AddType text/xsl .xsl
 ErrorDocument 404 /?f=error404
 ErrorDocument 304 /?f=error304
 ErrorDocument 300 /?f=error300
