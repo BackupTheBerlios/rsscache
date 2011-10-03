@@ -258,6 +258,7 @@ else
 $a = array (
   'js' =>    'Content-type: text/javascript',
   'html' =>  'Content-type: text/html',
+  'cms' =>  'Content-type: text/html',
   'json' =>  'Content-type: application/json',
   'rss' =>   'Content-type: application/rss+xml', 
 //  'rss' => 'Content-type: application/xml',

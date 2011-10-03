@@ -169,16 +169,6 @@
 </xsl:template>
 
 
-<xsl:template name="body_menu">
-  <xsl:for-each select="rss/channel/item">
-    <img>
-    <xsl:attribute name="src"><xsl:value-of disable-output-escaping="yes" select="enclosure/@url"/></xsl:attribute>
-    </img>
-    <a href="{link}"><xsl:value-of disable-output-escaping="yes" select="title"/></a>
-  </xsl:for-each>
-</xsl:template>
-
-
 <xsl:template match="/">
   <html>
   <head>
@@ -204,28 +194,8 @@
   </link>
   <link rel="alternate" type="application/rss+xml" title="Statistics" href="?f=stats&amp;output=rss"></link>
 
-<!-- TODO: head seo -->
-  <!-- meta name="Description" content="support battlefield beta the deadliest bush gameplay min hours ago well actually just look pdw and potential uses outdoor section operation metro tags totalbiscuit totalhalibut cynicalbrit fps game commentary live feat woodysgamertag ibashtv part leveling prestiging http www.youtube.com cached thanks for watching guys should later today have some great black ops videos planned coming weeks video bash follow www.twitter.com like www.facebook.com tmartn tmart tmartin rush sniping ump xbox playstation callouts sniper mvp using scope nitroy playing show how looks hope you enjoy youtube.com welcome open five kills one grenade watch quot herbbzy get with only this incredible special user funny lol let play together terraria deutsch zwischendurch glitch was uploaded from android phone lets airwolf german diesem zeige ich euch den mod way fight war that gshd twitter.com"><meta name="keywords" content="support battlefield beta the deadliest bush gameplay min hours ago well actually just look pdw and potential uses outdoor section operation metro tags totalbiscuit totalhalibut cynicalbrit fps game commentary live feat woodysgamertag ibashtv part leveling prestiging http www.youtube.com cached thanks for watching guys should later today have some great black ops videos planned coming weeks video bash follow www.twitter.com like www.facebook.com tmartn tmart tmartin rush sniping ump xbox playstation callouts sniper mvp using scope nitroy playing show how looks hope you enjoy youtube.com welcome open five kills one grenade watch quot herbbzy get with only this incredible special user funny lol let play together terraria deutsch zwischendurch glitch was uploaded from android phone lets airwolf german diesem zeige ich euch den mod way fight war that gshd twitter.com"></meta -->
-
-  <!-- meta name="google-site-verification" content=""></meta -->
-
-  <link rel="stylesheet" type="text/css" media="screen" href="tv2/tv2.css"></link>
-  <link rel="stylesheet" type="text/css" media="screen" href="pwnoogle.css"></link>
-
-  <script type="text/javascript" src="misc/jquery.js"></script>
-  <script type="text/javascript" src="misc/jquery_ui.js"></script>
-  <!-- script type="text/javascript" src="misc/jquery_easing.js"></script -->
-  <script type="text/javascript" src="misc/jquery_lavalamp.js"></script>
-  <script type="text/javascript" src="misc/misc.js"></script>
-  <script type="text/javascript" src="tv2/tv2.js"></script>
-
-<!-- parse:head_tag -->
-
   </head>
   <body>
-
-<!-- parse:body_header -->
-<!-- parse:body -->
 
     <xsl:if test="count(rss/channel/item) = 1">
       <xsl:call-template name="body_popout"/>
@@ -234,8 +204,6 @@
     <xsl:if test="count(rss/channel/item) &gt; 1">
 
   <xsl:call-template name="body_header"/>       
-  <xsl:call-template name="body_menu"/>
-   <!-- tv2_page ($start, $num, sizeof ($d_array['item']) -->
 
       <xsl:choose>
 
@@ -248,7 +216,6 @@
         </xsl:otherwise>
 
       </xsl:choose>
-   <!-- tv2_page ($start, $num, sizeof ($d_array['item']) -->
 
   <br/><div style="width:100%;text-align:right;"><xsl:value-of select="rss/channel/title"/></div>
 
