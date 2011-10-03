@@ -222,12 +222,9 @@ if ($output == 'json')
   {
     $a['channel']['description'] = str_replace (array ('&amp;', '&nbsp;', '<br>'),
                                                 array ('&', ' ', "\n"), $a['channel']['description']);
-    $p = generate_json ($a['channel'], $a['item'], 1, 1);
   }
-else if ($output == 'atom')
-  {
-  }
-else // generate RSS (and transform using XSL)
+
+// generate RSS (and transform using XSL)
   {
     $s = NULL;
     if ($output)
