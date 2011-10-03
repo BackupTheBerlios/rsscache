@@ -216,6 +216,7 @@ rsstool_write_ansisql ($a, $rsscache_category, $table_suffix = NULL, $db_conn = 
 */
 
 
+/*
 function
 generate_json_func ($item, $a)
 {
@@ -402,6 +403,7 @@ for ($j = 0; isset ($item[$i]['rsscache:feed_'.$j.'_link']); $j++)
 
   return $p;
 }
+*/
 
 
 }
