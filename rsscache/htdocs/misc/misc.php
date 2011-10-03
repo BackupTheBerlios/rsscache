@@ -475,9 +475,27 @@ set_suffix ($filename, $suffix)
 }
 
 
+
+function
+str_shorten2 ($text, $limitstr, $limitwrd)
+{
+  if (strlen ($text) > $limitstr)
+    {
+      $words = str_word_count ($text, 2);
+      if ($words > $limitwrd)
+        {
+          $pos = array_keys ($words);
+          $text = substr ($text, 0, $pos[$limitwrd]).'...';
+        }
+    }
+  return $text;
+}
+
+
 function
 str_shorten ($s, $limit)
 {
+  return str_shorten2 ($s, $limit, 5);
   // Make sure a small or negative limit doesn't cause a negative length for substr().
   if ($limit < 3)
     $limit = 3;
