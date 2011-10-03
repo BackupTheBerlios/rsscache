@@ -134,14 +134,20 @@ rsscache_sql_close ();
 if ($rsscache_admin == 0)
   {
     for ($i = 0; isset ($a['item'][$i]); $i++)
-      for ($j = 0; isset ($a['item'][$i]['rsscache:feed_'.$j.'_link']); $j++)
-        {
-          // hide feeds
-          unset ($a['item'][$i]['rsscache:feed_'.$j.'_link']);
-          unset ($a['item'][$i]['rsscache:feed_'.$j.'_exec']);
-          // hide direct download
-          unset ($a['item'][$i]['rsscache:download']);
-        }
+      {
+        for ($j = 0; isset ($a['item'][$i]['rsscache:feed_'.$j.'_link']); $j++)
+          {
+            // hide feeds
+            unset ($a['item'][$i]['rsscache:feed_'.$j.'_link']);
+            unset ($a['item'][$i]['rsscache:feed_'.$j.'_exec']);
+            // hide direct download
+            unset ($a['item'][$i]['rsscache:download']);
+          }
+
+        $a['item'][$i]['cms:button_html'] = 'widget_button()';
+        $a['item'][$i]['cms:option_html'] = 'widget_option()';
+        $a['item'][$i]['cms:subdomain'] = $a['channel']['cms:subdomain'];
+      }
   }
 else
   {
@@ -226,7 +232,6 @@ if ($output == 'json')
 
 if ($output == 'ansisql')
   {
-// TODO: 
     $p = rsscache_write_ansisql ($a, $rsscache_category, $table_suffix, $rsscache_sql_db);
   }
 else
@@ -236,7 +241,7 @@ else
     if ($output)
       {
         $s = ''
-//            .'http://'.$_SERVER['SERVER_NAME']
+//            .'http://'.$_SERVER['SERVER_NAME'].'/'
             .$rsscache_xsl_stylesheet_path
             .'/rsscache_'.basename ($output).'.xsl';
 
@@ -254,16 +259,15 @@ else
       $p = rsscache_write_xsl ($p, $s);
   }
 
-
 $a = array (
-  'js' =>    'Content-type: text/javascript',
-  'html' =>  'Content-type: text/html',
-  'cms' =>  'Content-type: text/html',
-  'json' =>  'Content-type: application/json',
-  'rss' =>   'Content-type: application/rss+xml', 
-//  'rss' => 'Content-type: application/xml',
-  'pls' =>   'Content-type: text/plain',
-  'm3u' =>   'Content-type: text/plain',
+  'js' =>      'Content-type: text/javascript',
+  'html' =>    'Content-type: text/html',
+  'cms' =>     'Content-type: text/html',
+  'json' =>    'Content-type: application/json',
+  'rss' =>     'Content-type: application/rss+xml',
+//  'rss' =>     'Content-type: application/xml',
+  'pls' =>     'Content-type: text/plain',
+  'm3u' =>     'Content-type: text/plain',
   'ansisql' => 'Content-type: text/plain',
 );
 if (isset ($a[$output]))
@@ -271,6 +275,7 @@ if (isset ($a[$output]))
 else
 //  header ('Content-type: text/xml');
   header ('Content-type: application/xml');
+//  header ('Content-type: text/plain');
 //    header('content-type: application/xml; charset=UTF-8');
 
 // disable any caching by the browser

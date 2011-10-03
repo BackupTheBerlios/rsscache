@@ -62,7 +62,8 @@ rsscache_write_xsl ($p, $s)
     }
   else if ($rsscache_xsl_trans == 1) // transform on client
     {
-/*
+return $p;
+
 $p = '<html>
 <head>
 <script>
@@ -106,7 +107,6 @@ xsl=loadXMLDoc("'.$s.'");
 <div id="example" />
 </body>
 </html>';
-*/
     }
 
   return $p;

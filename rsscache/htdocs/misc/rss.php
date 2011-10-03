@@ -137,6 +137,78 @@ misc_prefixate_array ($a, $prefix = NULL)
 
 
 function
+rss2array_func ($a)
+{
+  // normalize item
+  for ($j = 0; isset ($a['rsscache:feed']['rsscache:'.$j]); $j++)
+    if (isset ($a['rsscache:feed']['rsscache:'.$j]))
+    {
+      $feed = $a['rsscache:feed']['rsscache:'.$j];
+      
+      // DEBUG
+//      echo '<pre><tt>';
+//      print_r ($feed);
+//      exit;
+
+      $p = ''; 
+      if (isset ($feed['rsscache:link']))
+        {
+          $p .= $feed['rsscache:link'];
+        }
+      else if (isset ($feed['rsscache:link_prefix']))
+        for ($k = 0; isset ($feed['rsscache:link_search']['rsscache:'.$k]); $k++)
+          {
+//            if (isset ($feed['rsscache:link_prefix']))
+          $p .= $feed['rsscache:link_prefix'];
+//            if (isset ($feed['rsscache:link_search']['rsscache:'.$k]))
+              $p .= $feed['rsscache:link_search']['rsscache:'.$k];
+            if (isset ($feed['rsscache:link_suffix']))
+              $p .= $feed['rsscache:link_suffix'];
+          }
+
+      $a['rsscache:feed_'.$j.'_exec'] = (isset ($feed['rsscache:exec']) ? $feed['rsscache:exec'] : '');
+      $a['rsscache:feed_'.$j.'_link'] = $p;
+    }
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($a);
+//  exit;
+
+  // normalize
+//  if (isset ($a['media:keywords']))
+//    $a['media:keywords'] = str_replace (' ', ', ', $a['media:keywords']);
+
+    // do this NOT here
+//  if (!isset ($a['rsscache:category_title']))
+//    $a['rsscache:category_title'] = $a['title'];
+
+  if (isset ($a['enclosure']))
+    if (isset ($a['enclosure']['@attributes']))  
+      if (isset ($a['enclosure']['@attributes']['url']))
+        $a['enclosure'] = $a['enclosure']['@attributes']['url'];
+
+  if (isset ($a['media:thumbnail']))
+    if (isset ($a['media:thumbnail']['media:@attributes']))  
+      if (isset ($a['media:thumbnail']['media:@attributes']['media:url']))
+        $a['media:thumbnail'] = $a['media:thumbnail']['media:@attributes']['media:url'];
+
+  unset ($a['rsscache:feed']);
+  unset ($a['comment']);
+  unset ($a['cms:comment']);
+  unset ($a['media:comment']);
+  unset ($a['rsscache:comment']);
+
+  // DEBUG
+//  echo '<pre><tt>';
+//  print_r ($a);
+//  exit;
+
+  return $a;
+}
+
+
+function
 rss2array ($rss, $debug = 0)
 {
   $rss = $rss->channel;
@@ -149,6 +221,10 @@ rss2array ($rss, $debug = 0)
 //  exit;
     }
 
+  // namespaces recursively
+  $ns = array_keys ($rss->getNamespaces (TRUE));
+
+  // items to array
   $item = array ();
   for ($i = 0; isset ($rss->item[$i]); $i++)
     {
@@ -157,21 +233,13 @@ rss2array ($rss, $debug = 0)
       $a = misc_object2array ($category);
       if (method_exists ($category, 'children'))
         {
-          $o = $category->children ('rsscache', TRUE);
-          if ($o)
-            $a = array_merge ($a, misc_object2array ($o, 'rsscache:'));
-
-          $o = $category->children ('cms', TRUE);
-          if ($o)
-            $a = array_merge ($a, misc_object2array ($o, 'cms:'));
-
-          $o = $category->children ('ircbot', TRUE);
-          if ($o)
-            $a = array_merge ($a, misc_object2array ($o, 'ircbot:'));
-
-          $o = $category->children ('media', TRUE);
-          if ($o)
-            $a = array_merge ($a, misc_object2array ($o, 'media:'));
+          // rsscache, cms, ircbot, media, game, etc. namespaces
+          for ($j = 0; isset ($ns[$j]); $j++)
+            {
+              $o = $category->children ($ns[$j], TRUE);
+              if ($o)
+                $a = array_merge ($a, misc_object2array ($o, $ns[$j].':'));
+            }
         }
 
 //  if ($debug == 1)
@@ -182,64 +250,13 @@ rss2array ($rss, $debug = 0)
 //      exit;
 //    }
 
-      // feeds
-      for ($j = 0; isset ($a['rsscache:feed']['rsscache:'.$j]); $j++)
-        if (isset ($a['rsscache:feed']['rsscache:'.$j]))
-        {
-          $feed = $a['rsscache:feed']['rsscache:'.$j];
-          
-          // DEBUG
-//          echo '<pre><tt>';
-//          print_r ($feed);
-//          exit;
-
-          $p = ''; 
-          if (isset ($feed['rsscache:link']))
-            {
-              $p .= $feed['rsscache:link'];
-            }
-          else if (isset ($feed['rsscache:link_prefix']))
-            for ($k = 0; isset ($feed['rsscache:link_search']['rsscache:'.$k]); $k++)
-              {
-//                if (isset ($feed['rsscache:link_prefix']))
-                  $p .= $feed['rsscache:link_prefix'];
-//                if (isset ($feed['rsscache:link_search']['rsscache:'.$k]))
-                  $p .= $feed['rsscache:link_search']['rsscache:'.$k];
-                if (isset ($feed['rsscache:link_suffix']))
-                  $p .= $feed['rsscache:link_suffix'];
-              }
-
-          $a['rsscache:feed_'.$j.'_exec'] = (isset ($feed['rsscache:exec']) ? $feed['rsscache:exec'] : '');
-          $a['rsscache:feed_'.$j.'_link'] = $p;
-        }
-
-      // DEBUG
-//      echo '<pre><tt>';
-//      print_r ($a);
-//      exit;
-
-//      if (isset ($a['media:keywords']))
-//        $a['media:keywords'] = str_replace (' ', ', ', $a['media:keywords']);
-
-        // do this NOT here
-//      if (!isset ($a['rsscache:category_title']))
-//        $a['rsscache:category_title'] = $a['title'];
-
-      if (isset ($a['enclosure']))
-        if (isset ($a['enclosure']['@attributes']))  
-          if (isset ($a['enclosure']['@attributes']['url']))
-            $a['enclosure'] = $a['enclosure']['@attributes']['url'];
-
-      if (isset ($a['media:thumbnail']))
-        if (isset ($a['media:thumbnail']['media:@attributes']))  
-          if (isset ($a['media:thumbnail']['media:@attributes']['media:url']))
-            $a['media:thumbnail'] = $a['media:thumbnail']['media:@attributes']['media:url'];
-
-      unset ($a['rsscache:feed']);
-      unset ($a['comment']);
-      unset ($a['cms:comment']);
-      unset ($a['media:comment']);
-      unset ($a['rsscache:comment']);
+      // normalize item
+//      for ($i = 0; isset ($ns[$i]); $i++)
+// NOT       if (in_array ($ns[$i], array ('rsscache', 'media', 'cms')))
+          {
+            $a = rss2array_func ($a);
+//            break;
+          }
 
       // DEBUG
 //      echo '<pre><tt>';
@@ -249,22 +266,20 @@ rss2array ($rss, $debug = 0)
       $item[] = $a;
     }
 
+  // channel to array
   $channel = misc_object2array ($rss);
   if (method_exists ($rss, 'children'))
     {
-      $o = $rss->children ('rsscache', TRUE);
-      if ($o)
-        $channel = array_merge ($channel, misc_object2array ($o, 'rsscache:'));
-
-      $o = $rss->children ('ircbot', TRUE);
-      if ($o)
-        $channel = array_merge ($channel, misc_object2array ($o, 'ircbot:'));
-
-//      $o = $rss->children ('cms', TRUE);
-//      if ($o)
-//        $channel = array_merge ($channel, misc_object2array ($o, 'cms:'));
+      // rsscache, cms, ircbot, media, game, etc. namespaces
+      for ($j = 0; isset ($ns[$j]); $j++)
+        {
+          $o = $rss->children ($ns[$j], TRUE);
+          if ($o)
+            $channel = array_merge ($channel, misc_object2array ($o, $ns[$j].':'));
+        }
     }
 
+  // normalize channel
   if (isset ($channel['image']))
     if (isset ($channel['image']['url']))
       $channel['image'] = $channel['image']['url']; 
@@ -348,6 +363,7 @@ $a = array (
            'link',
            'description',
            'docs',
+           'cms:subdomain',
 );
 
    $p .= generate_rss2_func ($channel, $a, '    ');
@@ -533,6 +549,8 @@ $a = array (
             'cms:feed',
 //            'cms:query',
             'cms:demux',
+            'cms:button_html',
+            'cms:option_html',
 );
 
    $p .= generate_rss2_func ($item[$i], $a);

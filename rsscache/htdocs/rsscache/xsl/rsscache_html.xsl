@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- xmlns="http://www.w3.org/1999/xhtml" -->
+<!-- xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:media="http://search.yahoo.com/mrss/" xmlns:rsscache="data:,rsscache" xmlns:cms="data:,cms" -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns="http://www.w3.org/1999/xhtml"
  xmlns:media="http://search.yahoo.com/mrss/" xmlns:rsscache="data:,rsscache" xmlns:cms="data:,cms">
-<xsl:output method="html" indent="no"/>
+<xsl:output method="html" media-type="text/xhtml" omit-xml-declaration="yes" indent="yes"/>
 
 
 <xsl:template name="body_popout">
@@ -182,21 +184,19 @@
 
   <link rel="icon" type="image/png" href="images/rsscache_icon.png"></link>
 
-  <!-- link rel="alternate" type="application/rss+xml">
-  <xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/></xsl:attribute>
+  <!-- RSS link -->
+  <link rel="alternate" type="application/rss+xml">
+  <xsl:attribute name="href"><!-- xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/ -->?output=rss</xsl:attribute>
   <xsl:attribute name="title"><xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/></xsl:attribute>
   </link>
+
+  <!-- statistics RSS -->
   <link rel="alternate" type="application/rss+xml" title="Statistics">
-  <xsl:attribute name="href"><xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/>?f=stats</xsl:attribute>
-  </link -->
-  <link rel="alternate" type="application/rss+xml" href="?output=rss">
-  <xsl:attribute name="title"><xsl:value-of disable-output-escaping="yes" select="rss/channel/title"/></xsl:attribute>
+  <xsl:attribute name="href"><!-- xsl:value-of disable-output-escaping="yes" select="rss/channel/link"/ -->?f=stats&amp;output=rss</xsl:attribute>
   </link>
-  <link rel="alternate" type="application/rss+xml" title="Statistics" href="?f=stats&amp;output=rss"></link>
 
   </head>
   <body>
-
     <xsl:if test="count(rss/channel/item) = 1">
       <xsl:call-template name="body_popout"/>
     </xsl:if>
