@@ -256,7 +256,7 @@ else
             $s = NULL;
           }
       }
-/*
+
     if ($rsscache_xsl_trans > 0 && in_array ($output, array ('html', 'cms',)))
       {
         // turn into XML for stupid browsers that ignore XSL inside RSS
@@ -265,14 +265,13 @@ else
             .$rsscache_xsl_stylesheet_path
             .'/rsscache_xml.xsl';
 
-        $p = generate_rss2 ($a['channel'], $a['item'], 1, 1);
+        $p = generate_rss2 ($a['channel'], $a['item'], 1, 1, $s);
         $original = $rsscache_xsl_trans;
-        $rsscache_xsl_trans = 1;
+        $rsscache_xsl_trans = 0;
         $p = rsscache_write_xsl ($p, $t);
         $rsscache_xsl_trans = $original;
       }
     else
-*/
       $p = generate_rss2 ($a['channel'], $a['item'], 1, 1, $s);
 
     if ($s)

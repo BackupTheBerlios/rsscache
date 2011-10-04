@@ -53,6 +53,7 @@ rsscache_write_xsl ($p, $s)
       // TODO
       $rsscache_xsl_trans = 0;
     }
+
   if ($rsscache_xsl_trans == 0) // transform on server
     {
       $xsl = file_get_contents ($s);
