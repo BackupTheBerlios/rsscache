@@ -256,7 +256,6 @@ else
             $s = NULL;
           }
       }
-
 /*
     if ($rsscache_xsl_trans > 0 && in_array ($output, array ('html', 'cms',)))
       {
@@ -266,8 +265,11 @@ else
             .$rsscache_xsl_stylesheet_path
             .'/rsscache_xml.xsl';
 
-        $p = generate_rss2 ($a['channel'], $a['item'], 1, 1, $t);
+        $p = generate_rss2 ($a['channel'], $a['item'], 1, 1);
+        $original = $rsscache_xsl_trans;
+        $rsscache_xsl_trans = 1;
         $p = rsscache_write_xsl ($p, $t);
+        $rsscache_xsl_trans = $original;
       }
     else
 */
