@@ -39,7 +39,7 @@ require valid-user
 </files>
 <ifmodule mod_rewrite.c>
 RewriteEngine on 
-#RewriteRule ^sitemap\.xml$ /index.php?output=sitemap
+RewriteRule ^sitemap\.xml$ /index.php?output=sitemap
 RewriteRule ^robots\.txt$ /index.php?f=robots
 #RewriteRule ^([^/]*)/index.php$ /index.php?template=$1 [L]
 #RewriteRule ^([^/]*)$ /index.php?c=$1 [L]

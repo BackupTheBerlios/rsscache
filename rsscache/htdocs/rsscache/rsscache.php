@@ -51,6 +51,8 @@ $rsscache_user_agent = random_user_agent ();
 
 
 $debug = 0;
+
+
 $c = rsscache_get_request_value ('c'); // category
 $f = rsscache_get_request_value ('f'); // function
 $output = rsscache_get_request_value ('output'); // output
@@ -66,6 +68,16 @@ if (!($num))
   $num = $rsscache_results;
 if ($num > $rsscache_max_results)
   $num = $rsscache_max_results;
+
+
+$config = config_xml ();
+
+// DEBUG
+//echo '<pre><tt>';
+//print_r ($config);
+//echo generate_rss2 ($config['channel'], $config['item'], 1, 1);
+//exit;
+
 
 // NOT admin
 if ($rsscache_admin == 0)
@@ -85,14 +97,6 @@ if ($f == 'robots')
 
 rsscache_sql_open ();
 
-$config = config_xml ();
-
-// DEBUG
-//echo '<pre><tt>';
-//print_r ($config);
-//echo generate_rss2 ($config['channel'], $config['item'], 1, 1);
-//exit;
-
 if ($f == 'cache') // cache (new) items into database
   {
     if ($c)
@@ -110,7 +114,7 @@ if ($f == 'cache') // cache (new) items into database
   }
 else if ($f == 'config' || $f == 'stats' || $output == 'sitemap')
   {
-$config = rsscache_add_stats ($config);
+    $config = rsscache_add_stats ($config);
     $a = $config;
   }
 else
@@ -253,7 +257,21 @@ else
           }
       }
 
-    $p = generate_rss2 ($a['channel'], $a['item'], 1, 1, $s);
+/*
+    if ($rsscache_xsl_trans > 0 && in_array ($output, array ('html', 'cms',)))
+      {
+        // turn into XML for stupid browsers that ignore XSL inside RSS
+        $t = ''
+//            .'http://'.$_SERVER['SERVER_NAME'].'/'
+            .$rsscache_xsl_stylesheet_path
+            .'/rsscache_xml.xsl';
+
+        $p = generate_rss2 ($a['channel'], $a['item'], 1, 1, $t);
+        $p = rsscache_write_xsl ($p, $t);
+      }
+    else
+*/
+      $p = generate_rss2 ($a['channel'], $a['item'], 1, 1, $s);
 
     if ($s)
       $p = rsscache_write_xsl ($p, $s);
@@ -266,6 +284,7 @@ $a = array (
   'json' =>    'Content-type: application/json',
   'rss' =>     'Content-type: application/rss+xml',
 //  'rss' =>     'Content-type: application/xml',
+//  'xml' =>     'Content-type: application/xml',
   'pls' =>     'Content-type: text/plain',
   'm3u' =>     'Content-type: text/plain',
   'ansisql' => 'Content-type: text/plain',

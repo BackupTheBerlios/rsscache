@@ -433,11 +433,6 @@ rsscache_default_channel ()
                     'image' => $rsscache_logo,
                     'lastBuildDate' => $rsscache_time,
                     'docs' => $rsscache_link,
-//                    'rsscache:stats_items' => ($config['channel']['rsscache:stats_items'] * 1),
-//                    'rsscache:stats_days' => ($config['channel']['rsscache:stats_days'] * 1),
-//                    'rsscache:stats_items_today' => ($config['channel']['rsscache:stats_items_today'] * 1),
-//                    'rsscache:stats_items_7_days' => ($config['channel']['rsscache:stats_items_7_days'] * 1),
-//                    'rsscache:stats_items_30_days' => ($config['channel']['rsscache:stats_items_30_days'] * 1),
 );
   return $channel;
 }
