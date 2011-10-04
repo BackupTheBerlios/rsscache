@@ -3,6 +3,7 @@
 
 
 <xsl:template match="/rss">
+  <!-- xml xmlns:media="http://search.yahoo.com/mrss/" xmlns:rsscache="data:,rsscache" xmlns:cms="data:,cms" -->
   <xml>
     <xsl:apply-templates/>
   </xml>
